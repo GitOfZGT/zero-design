@@ -1,0 +1,11 @@
+{
+    "printWidth":120,
+    "tabWidth":4,
+    "useTabs":true,
+    "arrowParens":"always",
+    "trailingComma":"all",
+    "bracketSpacing":true,
+    "singleQuote":false,
+    "semi":true,
+    "eslintIntegration":false
+}

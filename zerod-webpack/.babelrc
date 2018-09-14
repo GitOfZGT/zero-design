@@ -1,0 +1,36 @@
+{
+	"presets": [
+		[
+			"env",
+			{
+				"modules": false,
+				"targets": {
+					"browsers": ["> 1%", "last 2 versions", "not ie <= 9"]
+				}
+			}
+		],
+		"react",
+		"stage-2"
+	],
+	"plugins": [
+		"transform-runtime",
+		"syntax-dynamic-import",
+		[
+			"import",
+			{
+				"libraryName": "antd",
+				"style": true,
+				"libraryDirectory": "es"
+			}
+		],
+		[
+			"import",
+			{
+				"libraryName": "zerod",
+				"style": false,
+				"libraryDirectory": "components",
+				"camel2DashComponentName": false
+			}
+		]
+	]
+}

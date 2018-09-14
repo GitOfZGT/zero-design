@@ -1,0 +1,41 @@
+{
+	"name": "zerod",
+	"version": "0.0.43",
+	"description": "react+antd+scss的扩展组件，结合zerod-admin-web脚手架使用",
+	"author": "zgt",
+	"main": "index.js",
+	"module": "index.js",
+	"scripts": {
+		"login": "npm login --registry=http://172.16.8.10:8081/repository/hosted-npm/"
+	},
+	"repositories": [
+		{
+			"type": "git",
+			"url": "http://172.16.26.120/components/zerod-component-doc.git"
+		}
+	],
+	"dependencies": {
+		"dragula": "^3.7.2",
+		"iscroll": "^5.2.0",
+		"viewerjs": "^1.2.0",
+		"prismjs": "^1.15.0",
+		"swiper": "^4.3.5"
+	},
+	"peerDependencies": {
+		"react": ">=16.0.0",
+		"react-dom": ">=16.0.0"
+	},
+	"license": "MIT",
+	"engines": {
+		"node": ">= 6.11.0",
+		"npm": ">= 5.0.0"
+	},
+	"browserslist": [
+		"> 1%",
+		"last 2 versions",
+		"not ie <= 8"
+	],
+	"publishConfig": {
+		"registry": "http://172.16.8.10:8081/repository/hosted-npm/"
+	}
+}

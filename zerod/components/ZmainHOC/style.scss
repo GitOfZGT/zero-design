@@ -1,0 +1,102 @@
+@import "../../scssMixin/generateClassName";
+@import "../../scss/vars";
+
+@mixin navTheme($name, $nav-bg, $selected-bg, $select-border) {
+	@at-root {
+		:global {
+			.z-layout-#{$name} .z-scroll-color {
+				.iScrollIndicator {
+					background-color: rgba($color: lighten($color: $nav-bg, $amount: 40%), $alpha: 0.7);
+				}
+			}
+		}
+	}
+
+	@include is($name) {
+		background-color: $nav-bg;
+		:global {
+			.ant-menu-dark .ant-menu-inline.ant-menu-sub {
+				box-shadow: none;
+			}
+			.ant-menu-dark .ant-menu-item-selected {
+				color: lighten($color: $nav-bg, $amount: 90%);
+				background-color: $selected-bg;
+				&:after {
+					border-right: 4px solid $select-border;
+				}
+			}
+			.ant-menu-dark .ant-menu-sub {
+				// background-color: lighten($color: $nav-bg, $amount: 4%);
+				background-color: $nav-bg;
+			}
+		}
+	}
+}
+
+@mixin logoTheme($name, $nav-bg) {
+	@include is($name) {
+		background-color: $nav-bg;
+		border-bottom: 1px solid $nav-bg;
+		color: lighten($nav-bg, 90%);
+	}
+}
+
+@include z("main-left") {
+	position: relative;
+	z-index: 3;
+
+	user-select: none;
+	@include is("dark") {
+		box-shadow: none;
+	}
+	@include is("light") {
+		box-shadow: 2px 0px 6px #dbdbdb;
+	}
+}
+
+@include z("main-logo") {
+	white-space: nowrap;
+
+	@include logoTheme("light", $--main-logo-light-bg);
+	@include logoTheme("dark", $--main-logo-dark-bg);
+	@include logoTheme("mazarine", $--main-logo-mazarine-bg);
+	@include is("light") {
+		background-color: $--main-logo-light-bg;
+		border-bottom: 1px solid #e3e6ea;
+		color: #333333;
+	}
+}
+@include z("main-nav") {
+	:global {
+		.ant-menu-dark {
+			background-color: transparent;
+		}
+	}
+
+	@include navTheme("light", $--main-nav-light-bg, $--blue-deep, $--yellow-color);
+	@include navTheme("dark", $--main-nav-dark-bg, $--blue-deep, $--yellow-color);
+	@include navTheme("mazarine", $--main-nav-mazarine-bg, $--blue-deep, $--yellow-color);
+	@include is("light") {
+		:global {
+			.ant-menu-submenu.ant-menu-submenu-open .ant-menu-submenu-title {
+				color: $primary-color;
+			}
+		}
+	}
+
+	:global {
+		.ant-menu-inline,
+		.ant-menu-vertical,
+		.ant-menu-vertical-left {
+			border-right: 0;
+		}
+	}
+}
+
+@include z("main-header") {
+	background-color: white;
+	border-bottom: 1px solid #e3e6ea;
+}
+
+@include z("main-body") {
+}

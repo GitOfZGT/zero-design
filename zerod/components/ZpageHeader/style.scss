@@ -1,0 +1,36 @@
+@import "../../scssMixin/generateClassName";
+@import "../../scss/vars";
+@include z("page-header") {
+	background-color: white;
+	padding: 16px 32px 0;
+	box-shadow: $--box-shadow;
+
+	@include z("page-header-title") {
+		margin-top: 8px;
+		margin-bottom: 10px;
+		font-size: 28px;
+		color: #333333;
+		letter-spacing: 0;
+	}
+}
+
+@include z("pillars") {
+	
+	&>li {
+        list-style: none;
+		height: 6px;
+		width: 60px;
+		&.blue {
+			background-color: $--blue-color;
+		}
+		&.yellow {
+			background-color: $--yellow-color;
+		}
+		&.green {
+			background-color: $--green-color;
+		}
+		&.red {
+			background-color: $--red-color;
+		}
+	}
+}

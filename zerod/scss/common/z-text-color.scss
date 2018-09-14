@@ -1,0 +1,26 @@
+@import '../../scssMixin/generateClassName';
+// @import '../universal';
+// //定义了多种 文字颜色clasName
+
+$--text-blue : #166CCF;
+$--text-light-blue : #31A5E9;
+$--text-green:#13C900;
+$--text-yellow:#F7C921;
+$--text-red:#DD4949;
+
+$--text-black:#333333;
+$--text-light-black:rgba($--text-black,0.8);
+$--text-gray:rgba($--text-black,0.5);
+$--text-light-gray:rgba($--text-black,0.3);
+
+$--list-var:('text-blue':$--text-blue,'text-light-blue':$--text-light-blue,'text-green':$--text-green,'text-yellow':$--text-yellow,'text-red':$--text-red,'text-black':$--text-black,'text-light-black':$--text-light-black,'text-gray':$--text-gray,'text-light-gray':$--text-light-gray);
+//生成 如z-text-blue,z-text-blue-important的 className
+@each $i,$color in $--list-var {
+    @include z($i,$global:true){
+        color: $color;
+    }
+    //如需提高 color 权重 使用后缀 "-important"的className
+    @include z($i+'-important',$global:true){
+        color: $color !important;
+    }
+}

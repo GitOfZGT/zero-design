@@ -1,0 +1,47 @@
+@import "../../scssMixin/generateClassName";
+@import "../../scss/vars";
+$--z: 999;
+@include z("pop-cover") {
+	position: absolute;
+	z-index: $--z - 1;
+	left: 0;
+	bottom: 0;
+	right: 0;
+	top: 0;
+	background-color: rgba(#000, 0.2);
+	cursor: pointer;
+}
+@include z("pop-content") {
+	transition: transform 0.2s ease-out;
+	position: absolute;
+	width: 90%;
+	height: 100%;
+	right: 0;
+	top: 0;
+	z-index: $--z;
+	box-shadow: -2px 0 8px rgba(0, 0, 0, 0.15);
+	// border-left: 1px solid #e3e6ea;
+	background-color: white;
+	@include is("right-hide") {
+		transform: translateX(101%);
+	}
+	@at-root {
+		@include z("pop-close") {
+            position: absolute;
+            left: 0px;
+            top:0;
+            bottom:0;
+            z-index: 9999;
+            cursor: pointer;
+            @include z('btn'){
+                padding: 20px 0;
+                background-color: $primary-5;
+                color: white;
+                border-top-right-radius: 8px;
+                border-bottom-right-radius: 8px;
+                font-size: 12px;
+            }
+
+		}
+	}
+}

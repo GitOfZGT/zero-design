@@ -1,0 +1,115 @@
+@import "../../scssMixin/generateClassName";
+@import "../../scss/vars";
+
+$--border-color: $border-color-base;
+$--border-radius: $border-radius-base;
+$--header-h: 40px;
+$--padding-left:1em;
+@include z("transfer-box") {
+    user-select: none;
+    position: relative;
+    height: 300px;
+    border-width: 1px;
+    border-style: solid;
+    border-color: $--border-color;
+	border-radius: $--border-radius;
+
+    @include is("over"){
+        border-style: dashed;
+        border-color: $primary-5;
+    }
+	@include z("transfer-heading") {
+        display:flex;
+        justify-content: space-between;
+        align-items: center;
+		height: $--header-h;
+        line-height: $--header-h;
+        color: $primary-5;
+        border-bottom: 1px solid lighten($--border-color, 5%);
+        padding:0 $--padding-left;
+	}
+	@include z("transfer-body") {
+		position: absolute !important;
+		top: $--header-h;
+		bottom: 0;
+		left: 0;
+        right: 0;
+        overflow: hidden;
+	}
+	@include z("transfer-ul") {
+        list-style: none;
+        padding:6px 0;  
+        @include is("ul-over"){
+            background-color: rgba($primary-2, 0.3);
+        }
+	}
+	@include z("transfer-li") {
+        padding:6px $--padding-left;
+        &::after{
+            display: block;
+            content: " ";
+            height: 0;
+            clear: both;
+        }
+        cursor: move;
+        &:not(.is-li-disabled):hover{
+            
+            background-color: $primary-1;
+        }
+        @include is("li-move"){
+            border-top:1px dashed $primary-5;
+            border-bottom:1px dashed $primary-5;
+        }
+        @include is("li-droged"){
+            border-top:1px dashed $primary-3;
+            border-bottom:1px dashed $primary-3;
+            background-color: $primary-1;
+            margin-top:-1px;
+        }
+        @include is("li-disabled"){
+            cursor: no-drop;
+            color: lighten($text-color, 60%);
+        }
+        @include is("sub"){
+            cursor: pointer;
+            // color: lighten($text-color, 60%);
+            // &:not(:first-child){
+            //     border-top: 1px solid lighten($--border-color, 10%);
+            // }
+        }
+        @include z('right'){
+            margin-top:0.4em;
+            float: right;
+            
+            transition: all 0.3s ease-in-out;
+            @include is("90"){
+                transform: rotate(90deg);
+            }
+        }
+	}
+}
+@include z("transfer-item-clone",true){
+    padding:6px $--padding-left;
+    background-color: $primary-1;
+    border:1px dashed $primary-3;
+    cursor: move;
+}
+
+@include z('min-height'){
+    min-height: 100% !important;
+}
+$--arrow-w:16px;
+@include z('arrow-right'){
+    font-size: 12px;
+    position: absolute;
+    top:0;
+    width: $--arrow-w;
+    right:- $--arrow-w/2;
+    height: 100%;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    @include z("swap-right-down"){
+        transform: rotate(180deg)
+    }
+}

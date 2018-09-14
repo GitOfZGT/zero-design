@@ -1,0 +1,24 @@
+@import '../../scssMixin/generateClassName';
+
+@include z("form"){
+    width:80%;
+    margin: 0 auto;
+}
+$--row-gutter: 12px;
+@include z("form-row") {
+    :global {
+		.ant-form-item-children,.ant-input-number{
+			width: 100%;
+			display: block;
+        }
+        .ant-form-item-children .ant-btn{
+            float: left;
+        }
+	}
+	margin-left: -$--row-gutter;
+	margin-right: -$--row-gutter;
+	& > div {
+		padding-left: $--row-gutter;
+		padding-right: $--row-gutter;
+	}
+}

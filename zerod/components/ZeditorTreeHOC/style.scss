@@ -1,0 +1,41 @@
+@import "../../scssMixin/generateClassName";
+@include z("editor-tree") {
+	:global {
+		.ant-tree li {
+			display: flex;
+			flex-wrap: wrap;
+			.ant-tree-child-tree {
+				width: 100%;
+			}
+			.ant-tree-node-content-wrapper {
+				flex: 1;
+			}
+			.ant-tree-switcher,
+			.ant-tree-iconEle,
+			.ant-tree-node-content-wrapper {
+				height: 36px;
+				line-height: 36px;
+			}
+			.ant-tree-title {
+				display: block;
+			}
+		}
+	}
+}
+@include z("tree-line"){
+    flex: 1;
+    display: flex;
+    align-items: center;
+    padding:0 15px;
+    &::after{
+        content: "";
+        display: block;
+        flex:1;
+        border-bottom: 1px dashed #999999;
+    }
+}
+@include z("tree-btns"){
+    button:not(:first-child){
+        margin-left:15px;
+    }
+}

@@ -1,0 +1,21 @@
+/* create by zgt */
+@import '../../scssMixin/generateClassName';
+
+//定义浮动样式className
+
+//清除浮动
+@include z('clear-fix',$global:true){
+    &::after{
+        display: table;
+        content: '';
+        height: 0;
+        clear: both;
+    }
+}
+
+@include z('float-left',$global:true){
+    float: left;
+}
+@include z('float-right',$global:true){
+    float: right;
+}

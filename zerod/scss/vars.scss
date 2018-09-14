@@ -1,0 +1,19 @@
+
+@import "../ant-theme-vars";
+
+:global {
+	.ant-btn-primary {
+        background-image: linear-gradient(90deg, $--blue-tint 0%, $--blue-deep 100%);
+    }
+    .ant-btn-danger{
+        background-image: linear-gradient(90deg, $--red-tint 0%, $--red-color 100%);
+        &:hover,&:focus{
+            background-color:$--red-tint;
+            border-color:$--red-tint;
+        }
+        &:active{
+            background-color:$--red-color;
+            border-color:$--red-color;
+        }
+    }
+}

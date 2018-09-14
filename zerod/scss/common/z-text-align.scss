@@ -1,0 +1,30 @@
+@import '../../scssMixin/generateClassName';
+
+//定义了文本对齐的 clasName
+
+@include z('text-center',$global:true){//居中
+    text-align: center;
+}
+@include z('text-left',$global:true){//居左
+    text-align: left;
+}
+@include z('text-right',$global:true){//居右
+    text-align: right;
+}
+@include z('text-underline',$global:true){//文字下划线
+    text-decoration: underline;
+}
+@include z('text-underline-hover',$global:true){//文字 hover后显示下划线
+    &:hover{
+        text-decoration: underline;
+    }
+}
+@include z('vertical-top',$global:true){//顶部对齐
+    vertical-align: top;
+}
+@include z('vertical-middle',$global:true){//中间对齐
+    vertical-align: middle;
+}
+@include z('vertical-bottom',$global:true){//底部对齐
+    vertical-align: bottom;
+}

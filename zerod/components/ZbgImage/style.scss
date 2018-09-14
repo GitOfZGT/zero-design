@@ -1,0 +1,28 @@
+@import '../../scssMixin/generateClassName';
+@include z("bg-image-box") {
+	position: relative;
+	background-color: #ebebeb;
+	color: #cfcfcf;
+	width: 100%;
+	overflow: hidden;
+	font-size: 18px;
+    min-height: 100%;
+	@at-root {
+		@include z("bg-image") {
+			position: absolute;
+			z-index: 2;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background-repeat: no-repeat;
+			background-size: cover;
+			@include is("bg-top") {
+				background-position: top center;
+			}
+			@include is("bg-center") {
+				background-position: center center;
+			}
+		}
+	}
+}

@@ -1,0 +1,84 @@
+@import "../../scssMixin/generateClassName";
+@import "../../scss/vars";
+@include z("cascader"){
+	position: relative;
+	min-height: 60px;
+}
+@include z("cascader-item") {
+	position: relative;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
+	min-width: 100px;
+	max-width: 180px;
+	padding: 0 10px;
+	min-height: 26px;
+	line-height: 26px;
+	margin-right: 10px;
+	text-align: center;
+	margin-bottom: 10px;
+	color: #666;
+	user-select: none;
+	border-radius: 3px;
+	&:hover {
+		cursor: pointer;
+		background-color: #e8f5ff;
+	}
+	&.active {
+		color: #c7254e;
+		background-color: #f9f2f4;
+		box-shadow: inset 1px 1px 8px #f7dbe5;
+	}
+	.close {
+		float: right;
+		margin-top: 8px;
+		margin-left: 10px;
+		font-style: normal;
+		border: 1px solid #f5d8e8;
+		width: 12px;
+		text-align: center;
+		height: 12px;
+		line-height: 10px;
+		font-family: Arial, Helvetica, sans-serif;
+		color: #8b0a4b;
+		opacity: 0.7;
+		&:hover {
+			opacity: 1;
+		}
+	}
+	&.disabled {
+		color: #666666;
+		background-color: #e8e8e8;
+		box-shadow: inset 1px 1px 8px #d6d6d6;
+		&:hover {
+			cursor: no-drop;
+		}
+	}
+}
+@include z("cascader-right") {
+	width: 40px;
+	margin: 0;
+	display: flex;
+	align-items: flex-end;
+	justify-content: center;
+	& > i {
+		display: inline-block;
+		cursor: pointer;
+		font-size: 12px;
+		color: #fff;
+		opacity: 0.8;
+		transform: rotate(-90deg);
+		border-radius: 4px 0px 0px 4px; // transform:scalex(1);
+		padding: 0px 3px;
+		background-color: $--blue-color;
+		line-height: 26px;
+		transition: all 0.2s ease-in-out;
+		margin-bottom: 0.7em;
+		&:hover {
+			opacity: 1;
+		}
+		&.rotate-90 {
+			transform: rotate(90deg);
+		}
+	}
+}

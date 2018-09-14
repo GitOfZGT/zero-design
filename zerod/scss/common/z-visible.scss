@@ -1,0 +1,14 @@
+@import '../../scssMixin/generateClassName';
+
+@include z('display-block',$global:true){
+    display: block;
+}
+@include z('display-inline-block',$global:true){
+    display: inline-block;
+}
+@include z('display-inline',$global:true){
+    display: inline;
+}
+@include z('display-none',$global:true){
+    display: none;
+}

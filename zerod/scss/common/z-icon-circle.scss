@@ -1,0 +1,14 @@
+
+@import '../../scssMixin/generateClassName';
+@include z('icon-circle',$global:true){
+    $--w:24px;
+    text-align: center;
+    width: $--w;
+    height: $--w;
+    line-height: $--w;
+    border-radius: $--w/2;
+    background-color: white;
+    color:#1890ff;
+    display: inline-block;
+    vertical-align: middle;
+}

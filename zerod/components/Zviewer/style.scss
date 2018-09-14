@@ -1,0 +1,61 @@
+@import "../../scssMixin/generateClassName";
+
+@include z("viewer-ul") {
+	list-style: none;
+	overflow: hidden;
+	> li {
+		position: relative;
+		float: left;
+		overflow: hidden;
+		width: 180px;
+		height: 120px;
+		&:not(:last-child) {
+			margin-right: 8px;
+			margin-bottom:8px;
+		}
+		& > img {
+			position: absolute;
+			top: 0;
+			left: 0;
+			z-index: 9;
+			opacity: 0;
+			height: 100%;
+			width: 100%;
+			vertical-align: middle;
+			border-style: none;
+			cursor: zoom-in;
+		}
+	}
+}
+$--btn-h: 100px;
+$--btn-w: 48px;
+%btnCommon {
+	cursor: pointer;
+	position: absolute;
+	top: 50%;
+	margin-top: -$--btn-h/2;
+	width: $--btn-w;
+	height: $--btn-h;
+	z-index: 999;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background-color: rgba($color: #eaeaea, $alpha: 0.5);
+	font-size: 24px;
+	color: white;
+	opacity: 0.5;
+	&:hover {
+		opacity: 1;
+	}
+}
+$--border-ra:3px;
+@include z("prev") {
+	left: 0;
+	border-radius: 0 $--border-ra $--border-ra 0;
+	@extend %btnCommon;
+}
+@include z("next") {
+	right: 0;
+	border-radius: $--border-ra 0 0 $--border-ra;
+	@extend %btnCommon;
+}

@@ -1,0 +1,17 @@
+@import '../../scssMixin/generateClassName';
+@include z("sorter-btn") {
+    display: inline-block;
+    border:1px dashed #d9d9d9;
+    background-color: white;
+    padding:0 15px;
+    height: 32px;
+    line-height: 32px;
+}
+.z-sorter-btn+.z-sorter-btn{
+    margin-left: 10px;
+}
+:global{
+    .ant-table-column-sorter{
+       vertical-align: 0 !important;
+    }
+}
