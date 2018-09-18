@@ -130,7 +130,7 @@ class Myjavascript extends React.Component {
 	<tbody>
 		<tr>
 			<td>items</td>
-			<td>生成表单的json数组，结构：{key:表单控件value对应的字段名,lable:表单控件名称,span:栅栏占格(antd分24栏)默认是defaultSpan,render:渲染表单控件的函数(form,panel)=>{return;},isFormItem:默认为true、如果为false则render函数可以渲染非表单控件内容,className:可以给每项添加className,options:<a href="https://ant.design/components/form-cn/" target="_blank">Antd的表单中getFieldDecorator函数的options参数</a>}</td>
+			<td>生成表单的json数组，请看下面的items结构</td>
 			<td>array</td>
 			<td>--</td>
 		</tr>
@@ -174,6 +174,63 @@ class Myjavascript extends React.Component {
 			<td>getFormInstance</td>
 			<td>获取Form实例的钩子，外部通过(form)=>{this.formIstance=form;}获得form实例对象,通过this.formInstance.调用antd<a href="https://ant.design/components/form-cn/" target="_blank">表单相关方法</a></td>
 			<td>function</td>
+			<td>--</td>
+		</tr>
+	</tbody>
+</table>
+
+## items 结构
+
+<table>
+	<thead>
+		<tr>
+			<th>参数</th>
+			<th>说明</th>
+			<th>类型</th>
+			<th>默认值</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>key</td>
+			<td>表单控件value对应的字段名</td>
+			<td>string</td>
+			<td>--</td>
+		</tr>
+		<tr>
+			<td>label</td>
+			<td>表单控件label</td>
+			<td>string</td>
+			<td>--</td>
+		</tr>
+		<tr>
+			<td>render</td>
+			<td>渲染表单控件的钩子</td>
+			<td>(form,_this)=>{return ReactNode | Element}</td>
+			<td>--</td>
+		</tr>
+		<tr>
+			<td>span</td>
+			<td>栅栏占格(antd的栅栏组件分24栏)，例：{xxl:4,xl:6,lg:8}，默认取this.props.defaultSpan</td>
+			<td>number | object</td>
+			<td>--</td>
+		</tr>
+		<tr>
+			<td>isFormItem</td>
+			<td>默认为true、如果为false则render函数可以渲染非表单控件内容</td>
+			<td>boolean</td>
+			<td>--</td>
+		</tr>
+		<tr>
+			<td>className</td>
+			<td>可以给每项添加className</td>
+			<td>string</td>
+			<td>--</td>
+		</tr>
+		<tr>
+			<td>options</td>
+			<td><a href="https://ant.design/components/form-cn/" target="_blank">Antd的表单中getFieldDecorator函数的options参数</a>,可以配置验证规则}</td>
+			<td>string</td>
 			<td>--</td>
 		</tr>
 	</tbody>

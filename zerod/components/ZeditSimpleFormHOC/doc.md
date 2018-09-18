@@ -322,31 +322,31 @@ export default ZeditSimpleFormHOC(pageConfig);
 		</tr>
 		<tr>
 			<td>items</td>
-			<td>生成表单的json数组，结构：{key:表单控件value对应的字段名,lable:表单控件名称,span:栅栏占格(antd分24栏)默认是defaultSpan,render:渲染表单控件的函数(form,panel)=>{return;},isFormItem:默认为true、如果为false则render函数可以渲染非表单控件内容,className:可以给每项添加className,options:<a href="https://ant.design/components/form-cn/" target="_blank">Antd的表单中getFieldDecorator函数的options参数</a>}</td>
+			<td>生成表单的json数组，结构：同 组件/Zform 的items结构</td>
 			<td>array[object] | null</td>
 			<td>--</td>
 		</tr>
 		<tr>
 			<td>defaultSpan</td>
-			<td>统一设置items栅栏占格，默认：{xxl:6,xl:8,lg:12,md:24}，但items中的span属性的优先级比这个高</td>
+			<td>同 组件/Zform 的defaultSpan属性</td>
 			<td>number | object</td>
 			<td>--</td>
 		</tr>
 		<tr>
 			<td>submitBtnName</td>
-			<td>提交按钮的名称</td>
+			<td>同 组件/Zform 的submitBtnName属性</td>
 			<td>string</td>
 			<td>保存</td>
 		</tr>
         <tr>
 			<td>submitMsg</td>
-			<td>提交表单时的确认提示框文本，如果为空，则不会触发提示</td>
+			<td>同 组件/Zform 的submitMsg属性</td>
 			<td>string</td>
 			<td>点击确定按钮提交数据</td>
 		</tr>
         <tr>
 			<td>submitBtnRender</td>
-			<td>渲染提交按钮的函数，可以用自定义内容替换默认的提交按钮;参数有onSubmit：内置的提交按钮的方法，props:Zform组件的props,可以取得props.form</td>
+			<td>同 组件/Zform 的submitBtnRender属性</td>
 			<td>funtion(onSubmit,props){return ReactNode | Element;}</td>
 			<td>--</td>
 		</tr>
