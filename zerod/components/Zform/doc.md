@@ -142,14 +142,16 @@ class Myjavascript extends React.Component {
 		</tr>
 		<tr>
 			<td>onSubmit</td>
-			<td>表单提交事件,(values)=>{return Promise.resolve()},当submitMsg不为空时,onSubmit函数必须返回Promise对象才能关闭提示框；如果不提供onSubmit则不显示保存按钮</td>
+			<td>表单提交事件,(values)=>{return Promise.resolve()},当submitMsg不为空时,onSubmit函数必须返回Promise对象才能关闭提示框</td>
 			<td>function</td>
 			<td>--</td>
 		</tr>
         <tr>
 			<td>submitBtnName</td>
-			<td>提交按钮的名称</td>
-			<td>string</td>
+			<td>提交按钮的名称，如果为空则不显示默认的提交按钮</td>
+			<td>string | furnction(){
+				return ReactNode | Element;
+			}</td>
 			<td>保存</td>
 		</tr>
         <tr>

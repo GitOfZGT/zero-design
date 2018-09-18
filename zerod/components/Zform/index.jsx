@@ -21,6 +21,7 @@ export const Zform = Form.create()(
 			items: [{ lable: "字段名", key: "name", options: {}, render: (form, panel) => <Input /> }],
 			submitMsg: "点击确定按钮提交数据",
 			defaultSpan: { xxl: 6, xl: 8, lg: 12, md: 24 },
+			submitBtnName: "保存",
 		};
 		methods = {
 			onSubmit: (e) => {
@@ -103,14 +104,10 @@ export const Zform = Form.create()(
 						</TransitionGroup>
 						{typeof submitBtnRender === "function" ? (
 							submitBtnRender(this.methods.onSubmit, this.props)
-						) : onSubmit ? (
+						) : submitBtnName ? (
 							<Col span={24} className="z-text-center">
 								<Button type="primary" htmlType="submit">
-									{submitBtnName
-										? typeof submitBtnName === "function"
-											? submitBtnName()
-											: submitBtnName
-										: "保存"}
+									{typeof submitBtnName === "function" ? submitBtnName() : submitBtnName}
 								</Button>
 							</Col>
 						) : null}
