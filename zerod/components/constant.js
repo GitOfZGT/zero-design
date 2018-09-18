@@ -10,9 +10,9 @@ export const const_insertLocations = {
 export const const_showLoading = (insertLocation, props) => {
 	return function(show) {
 		if (insertLocation === const_insertLocations.mainRoute) {
-			props.showRouteLoading(show);
+			props.showRouteLoading&&props.showRouteLoading(show);
 		} else {
-			props.showModalLoading(show, insertLocation);
+			props.showRouteLoading&&props.showModalLoading(show, insertLocation);
 		}
 	};
 };

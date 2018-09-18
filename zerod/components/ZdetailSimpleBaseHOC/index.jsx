@@ -76,7 +76,7 @@ export function ZdetailSimpleBaseHOC(pageConfig) {
 			getDetailData: () => {
 				this.methods.showLoading(true);
 				this.config.detail
-					.detailApiInterface(this.props.detailId, this.props)
+					.detailApiInterface(this.props.detailId, this.props,this.tool)
 					.then((re) => {
 						this.setState({
 							detailData: re.data,

@@ -14,10 +14,13 @@ export const Zform = Form.create()(
 			formDefaultValues: PropTypes.object,
 			submitBtnName: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
 			submitMsg: PropTypes.any,
+			defaultSpan: PropTypes.oneOfType([PropTypes.number, PropTypes.object]),
+			submitBtnRender: PropTypes.func,
 		};
 		static defaultProps = {
 			items: [{ lable: "字段名", key: "name", options: {}, render: (form, panel) => <Input /> }],
 			submitMsg: "点击确定按钮提交数据",
+			defaultSpan: { xxl: 6, xl: 8, lg: 12, md: 24 },
 		};
 		methods = {
 			onSubmit: (e) => {
@@ -41,21 +44,39 @@ export const Zform = Form.create()(
 		getFormItems() {
 			const { getFieldDecorator } = this.props.form;
 			return this.props.items.map((item, i) => {
-				const control=item.render(this.props.form, this);
-				const span=item.span?item.span:control.props.prefixCls=="ant-input"&&control.type.TextArea==undefined?{lg:24}:{xxl:6,xl:8,lg:12} 
+				const control = item.render(this.props.form, this);
+				let span =
+					typeof this.props.defaultSpan === "number"
+						? { md: this.props.defaultSpan }
+						: this.props.defaultSpan;
+				span = item.span
+					? typeof item.span === "number"
+						? { md: item.span }
+						: item.span
+					: control.props.prefixCls == "ant-input" && control.type.TextArea == undefined
+						? { md: 24 }
+						: span;
+				const isFormItem = typeof item.isFormItem === "boolean" ? item.isFormItem : true;
 				return (
 					<CSSTransition key={i} timeout={animateTimout.flipInTime} classNames="fadeIn-to-down">
-						<Col {...span}>
-							<Form.Item label={item.label}>
-								{getFieldDecorator(item.key, item.options)(control)}
-							</Form.Item>
+						<Col {...span} className={item.className}>
+							{isFormItem ? (
+								<Form.Item label={item.label}>
+									{getFieldDecorator(item.key, item.options)(control)}
+								</Form.Item>
+							) : (
+								control
+							)}
 						</Col>
 					</CSSTransition>
 				);
 			});
 		}
-		componentDidMount() {
+		setFormValues() {
 			this.props.formDefaultValues && this.props.form.setFieldsValue(this.props.formDefaultValues);
+		}
+		componentDidMount() {
+			this.setFormValues();
 			this.props.getFormInstance && this.props.getFormInstance(this.props.form);
 			this.props.getInbuiltTool &&
 				this.props.getInbuiltTool({
@@ -63,15 +84,26 @@ export const Zform = Form.create()(
 					submit: this.methods.onSubmit,
 				});
 		}
+		componentDidUpdate(prevProps) {
+			if (this.props.formDefaultValues !== prevProps.formDefaultValues) {
+				this.setFormValues();
+			}
+		}
 		render() {
-			const { submitBtnName, onSubmit,className ,style} = this.props;
+			const { submitBtnName, onSubmit, className, style, submitBtnRender } = this.props;
 			return (
-				<Form onSubmit={this.methods.onSubmit} className={`${cssClass["z-form"]} ${className?className:''}`} style={style}>
-					<Row type="flex" className={cssClass['z-form-row']}>
+				<Form
+					onSubmit={this.methods.onSubmit}
+					className={`${cssClass["z-form"]} ${className ? className : ""}`}
+					style={style}
+				>
+					<Row type="flex" className={cssClass["z-form-row"]}>
 						<TransitionGroup component={null} enter={true} exit={true} appear={true}>
 							{this.getFormItems()}
 						</TransitionGroup>
-						{this.props.onSubmit ? (
+						{typeof submitBtnRender === "function" ? (
+							submitBtnRender(this.methods.onSubmit, this.props)
+						) : onSubmit ? (
 							<Col span={24} className="z-text-center">
 								<Button type="primary" htmlType="submit">
 									{submitBtnName

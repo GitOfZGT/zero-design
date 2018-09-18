@@ -130,13 +130,19 @@ class Myjavascript extends React.Component {
 	<tbody>
 		<tr>
 			<td>items</td>
-			<td>生成表单的josn数组，结构：{key:表单控件value对应的字段名,lable:表单控件名称,span:栅栏占格默认为{xxl:6,xl:8,lg:12},render:渲染表单控件的函数(form,panel)=>{return;},options:<a href="https://ant.design/components/form-cn/" target="_blank">Antd的表单中getFieldDecorator函数的options参数</a>}</td>
+			<td>生成表单的json数组，结构：{key:表单控件value对应的字段名,lable:表单控件名称,span:栅栏占格(antd分24栏)默认是defaultSpan,render:渲染表单控件的函数(form,panel)=>{return;},isFormItem:默认为true、如果为false则render函数可以渲染非表单控件内容,className:可以给每项添加className,options:<a href="https://ant.design/components/form-cn/" target="_blank">Antd的表单中getFieldDecorator函数的options参数</a>}</td>
 			<td>array</td>
 			<td>--</td>
 		</tr>
 		<tr>
+			<td>defaultSpan</td>
+			<td>统一设置items栅栏占格，默认：{xxl:6,xl:8,lg:12,md:24}，但items中的span属性的优先级比这个高</td>
+			<td>number | object</td>
+			<td>--</td>
+		</tr>
+		<tr>
 			<td>onSubmit</td>
-			<td>表单提交事件,(values)=>{return Promise.resolve()},当submitMsg不为空时,onSubmit函数必须返回Promise对象才能关闭提示框</td>
+			<td>表单提交事件,(values)=>{return Promise.resolve()},当submitMsg不为空时,onSubmit函数必须返回Promise对象才能关闭提示框；如果不提供onSubmit则不显示保存按钮</td>
 			<td>function</td>
 			<td>--</td>
 		</tr>
@@ -153,6 +159,12 @@ class Myjavascript extends React.Component {
 			<td>点击确定按钮提交数据</td>
 		</tr>
         <tr>
+			<td>submitBtnRender</td>
+			<td>渲染提交按钮的函数，可以用自定义内容替换默认的提交按钮;参数有onSubmit：内置的提交按钮的方法，props:Zform组件的props,可以取得props.form</td>
+			<td>funtion(onSubmit,props){return ReactNode | Element;}</td>
+			<td>--</td>
+		</tr>
+        <tr>
 			<td>formDefaultValues</td>
 			<td>返显表单的数据，如{serviceName:"名称"}，"serviceName"对应items属性里面的key</td>
 			<td>object</td>
@@ -160,7 +172,7 @@ class Myjavascript extends React.Component {
 		</tr>
         <tr>
 			<td>getFormInstance</td>
-			<td>获取Form实例的钩子，外部通过(form)=>{this.formIstance=form;}获得form实例对象,通过this.formInstance调用antd<a href="https://ant.design/components/form-cn/" target="_blank">表单相关方法</a></td>
+			<td>获取Form实例的钩子，外部通过(form)=>{this.formIstance=form;}获得form实例对象,通过this.formInstance.调用antd<a href="https://ant.design/components/form-cn/" target="_blank">表单相关方法</a></td>
 			<td>function</td>
 			<td>--</td>
 		</tr>

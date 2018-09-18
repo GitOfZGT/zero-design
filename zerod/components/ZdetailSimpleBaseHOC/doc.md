@@ -96,7 +96,7 @@ let defaultConfig = {
 		<tr>
 			<td>moreContentRender</td>
 			<td>在表单之后添加更多内容的渲染函数,有两个参数detail：detailApiInterface接口获取的详情数据、panel:组件的实例对象</td>
-			<td>(detail,panel) =>{return;}</td>
+			<td>(detail,tool) =>{return;}</td>
 			<td>--</td>
 		</tr>
 	</tbody>
@@ -135,8 +135,17 @@ let defaultConfig = {
 		<tr>
 			<td>detailApiInterface</td>
 			<td>获取详细数据的后台接口函数,必须返回Promise,参数有 detailId : ZeditSimpleFormHOC(pageConfig)得到组件的detailId属性，props ：ZeditSimpleFormHOC(pageConfig)得到组件的其他属性</td>
-			<td>(detailId, props) =>{return Promise;}</td>
+			<td>(detailId, props,tool) =>{return Promise;}</td>
 			<td>--</td>
 		</tr>
 	</tbody>
 </table>
+
+
+## tool 参数
+
+pageConfig 中的一些函数如`moreContentRender`提供了`tool`参数出来，有如下内容：
+
+### tool.showLoading
+
+用于显示/取消当前页的loading  :  tool.showLoading(true)

@@ -322,20 +322,44 @@ export default ZeditSimpleFormHOC(pageConfig);
 		</tr>
 		<tr>
 			<td>items</td>
-			<td>表单的渲染项，如果为null则不显示查询表单，map结构：{key:表单控件value对应的字段名,lable:表单控件名称,render:渲染表单控件的函数(form,panel)=>{return;},options:<a href="https://ant.design/components/form-cn/" target="_blank">Antd的表单中getFieldDecorator函数的options参数</a>}</td>
+			<td>生成表单的json数组，结构：{key:表单控件value对应的字段名,lable:表单控件名称,span:栅栏占格(antd分24栏)默认是defaultSpan,render:渲染表单控件的函数(form,panel)=>{return;},isFormItem:默认为true、如果为false则render函数可以渲染非表单控件内容,className:可以给每项添加className,options:<a href="https://ant.design/components/form-cn/" target="_blank">Antd的表单中getFieldDecorator函数的options参数</a>}</td>
 			<td>array[object] | null</td>
+			<td>--</td>
+		</tr>
+		<tr>
+			<td>defaultSpan</td>
+			<td>统一设置items栅栏占格，默认：{xxl:6,xl:8,lg:12,md:24}，但items中的span属性的优先级比这个高</td>
+			<td>number | object</td>
+			<td>--</td>
+		</tr>
+		<tr>
+			<td>submitBtnName</td>
+			<td>提交按钮的名称</td>
+			<td>string</td>
+			<td>保存</td>
+		</tr>
+        <tr>
+			<td>submitMsg</td>
+			<td>提交表单时的确认提示框文本，如果为空，则不会触发提示</td>
+			<td>string</td>
+			<td>点击确定按钮提交数据</td>
+		</tr>
+        <tr>
+			<td>submitBtnRender</td>
+			<td>渲染提交按钮的函数，可以用自定义内容替换默认的提交按钮;参数有onSubmit：内置的提交按钮的方法，props:Zform组件的props,可以取得props.form</td>
+			<td>funtion(onSubmit,props){return ReactNode | Element;}</td>
 			<td>--</td>
 		</tr>
 		<tr>
 			<td>detailApiInterface</td>
 			<td>获取详细数据的后台接口函数,必须返回Promise,只有form.type="update"才自动调用,参数有 detailId : ZeditSimpleFormHOC(pageConfig)得到组件的detailId属性，props ：ZeditSimpleFormHOC(pageConfig)得到组件的其他属性</td>
-			<td>(detailId, props) =>{return Promise;}</td>
+			<td>(detailId, props,tool) =>{return Promise;}</td>
 			<td>--</td>
 		</tr>
 		<tr>
 			<td>submitApiInterface</td>
 			<td>保存数据的后台接口函数,即保存按钮点击触发的函数,必须返回Promise,参数有：values:表单的值，props ：ZeditSimpleFormHOC(pageConfig)得到组件的其他属性</td>
-			<td>(values, props) =>{return Promise;}</td>
+			<td>(values, props,tool) =>{return Promise;}</td>
 			<td>--</td>
 		</tr>
 		<tr>
@@ -346,9 +370,33 @@ export default ZeditSimpleFormHOC(pageConfig);
 		</tr>
         <tr>
 			<td>afterSubmitSuccess</td>
-			<td>保存数据成功的回调 closeRightModal是一个关闭modal的函数，values：表单的值</td>
-			<td>(closeRightModal, values) =>{}</td>
+			<td>保存数据成功的回调 values：表单的值</td>
+			<td>(value, tool) =>{}</td>
 			<td>--</td>
 		</tr>
 	</tbody>
 </table>
+
+## tool 参数
+
+pageConfig 中的一些函数如`moreContentRender`提供了`tool`参数出来，有如下内容：
+
+### tool.getFormInstance
+
+是一个函数，可以const myform=tool.getFormInstance()取得antd中经 Form.create() 包装过的组件自带的this.props.form 属性 ；<a href="https://ant.design/components/form-cn/" target="_blank"> 更多请查看antd的Form</a>
+
+### tool.submit
+
+ZeditSimpleFormHOC的submit方法，需参数values:表单的所有值的map对象，tool.submit(values)会触发submitApiInterface，异步回调后会触发afterSuccess
+
+### tool.showLoading
+
+用于显示/取消当前页的loading  :  tool.showLoading(true)
+
+### tool.closeRightModal
+
+如果ZeditSimpleFormHOC渲染在rightModal中，tool.closeRightModal()可以关闭当前rightModal
+
+### tool.showRightModal
+
+就是上下文`ZerodMainContext`提供的 showRightModal 函数(用于打开/关闭 rightModal)

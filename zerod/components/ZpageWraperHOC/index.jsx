@@ -40,7 +40,7 @@ export function ZpageWraperHOC() {
 			pageHeader: {},
 			hasBodyPadding: true,
         };
-        breadcrumbsFromMenu=getBreadcrumbsFromMenu(this.props.getSideMenuData(), this.props.location.pathname);
+        breadcrumbsFromMenu=getBreadcrumbsFromMenu(this.props.getSideMenuData?this.props.getSideMenuData():[], this.props.location.pathname);
 		newPageHeader = Object.assign({}, this.props.pageHeader, {
 			breadcrumbRoutes: this.props.pageHeader.breadcrumbRoutes
 				? [

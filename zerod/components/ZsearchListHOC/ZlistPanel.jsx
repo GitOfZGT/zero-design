@@ -222,7 +222,7 @@ class ZlistPanel extends React.Component {
 			});
 		},
 		openModal:(content)=>{
-            content && this.props.showRightModal(true, const_getModalType(this.props.insertLocation), content);
+            content && this.props.showRightModal&&this.props.showRightModal(true, const_getModalType(this.props.insertLocation), content);
         },
 		onAdd: () => {
 			const content = this.props.addPageRender(this.getExportSomething());

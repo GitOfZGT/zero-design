@@ -1,4 +1,5 @@
 import React from "react";
+import {withRouter} from "react-router-dom";
 import { const_showLoading, const_insertLocations } from "../constant";
 import PropTypes from "prop-types";
 import { Zform } from "../Zform";
@@ -31,6 +32,10 @@ export function ZeditSimpleFormHOC(pageConfig) {
 		form: {
 			type: "add", //'add' | 'update'
 			panelHeader: "表单",
+			defaultSpan: undefined,
+			submitBtnRender: undefined,
+			submitMsg: undefined,
+			submitBtnName: undefined,
 			items: [
 				{
 					key: "serviceCode",
@@ -58,12 +63,12 @@ export function ZeditSimpleFormHOC(pageConfig) {
 				},
 			],
 			// 获取详细数据的后台接口函数
-			detailApiInterface: (detailId, props) => Promise.reject({ mag: "未提供后台接口" }),
+			detailApiInterface: (detailId, props,tool) => Promise.reject({ mag: "未提供后台接口" }),
 			// 保存数据的后台接口函数
-			submitApiInterface: (values, props) => Promise.reject({ mag: "未提供后台接口" }),
+			submitApiInterface: (values, props,tool) => Promise.reject({ mag: "未提供后台接口" }),
 			showSubmitBtn: true,
-			// 保存数据成功的回调 closeRightModal是一个关闭modal的函数
-			afterSubmitSuccess: (closeRightModal, values) => {},
+			// submitApiInterface接口成功之后的回调
+			afterSubmitSuccess: (values,tool) => {},
 		},
 		// 更多渲染内容函数
 		moreContentRender: (detail, tool) => {
@@ -76,9 +81,6 @@ export function ZeditSimpleFormHOC(pageConfig) {
 			detailId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 		};
 		config = defaultConfig;
-		state = {
-			submitLoading: false,
-		};
 		detailData = {};
 		methods = {
 			showLoading: (show) => {
@@ -90,7 +92,7 @@ export function ZeditSimpleFormHOC(pageConfig) {
 				}
 				this.methods.showLoading(true);
 				this.config.form
-					.detailApiInterface(this.props.detailId, this.props)
+					.detailApiInterface(this.props.detailId, this.props,this.tool)
 					.then((re) => {
 						this.detailData = re.data;
 						const valueData = {};
@@ -108,17 +110,17 @@ export function ZeditSimpleFormHOC(pageConfig) {
 			},
 			closeRightModal: () => {
 				if (this.config.insertLocation !== const_insertLocations.mainRoute)
-					this.props.showRightModal(false, this.config.insertLocation);
+				this.props.showRightModal&&this.props.showRightModal(false, this.config.insertLocation);
 			},
 			onSubmit: (values) => {
 				const afterSuccess = this.config.form.afterSubmitSuccess;
 				this.props.showModalLoading(true);
 				return this.config.form
-					.submitApiInterface(values, this.props)
+					.submitApiInterface(values, this.props,this.tool)
 
 					.then((re) => {
 						message.success("保存成功");
-						typeof afterSuccess === "function" && afterSuccess(this.methods.closeRightModal, values);
+						typeof afterSuccess === "function" && afterSuccess(values,this.tool);
 					})
 					.catch((re) => {
 						message.error(re && re.msg ? re.msg : "保存失败");
@@ -144,6 +146,7 @@ export function ZeditSimpleFormHOC(pageConfig) {
 			submit: this.methods.onSubmit,
 			showLoading: this.methods.showLoading,
 			closeRightModal: this.methods.closeRightModal,
+			showRightModal:this.props.showRightModal,
 		};
 
 		componentDidMount() {
@@ -161,6 +164,9 @@ export function ZeditSimpleFormHOC(pageConfig) {
 								onSubmit={this.config.form.showSubmitBtn ? this.methods.onSubmit : null}
 								items={this.config.form.items}
 								getFormInstance={this.getFormInstance}
+								submitBtnRender={this.config.form.submitBtnRender}
+								submitBtnName={this.config.form.submitBtnName}
+								submitMsg={this.config.form.submitMsg}
 							/>
 						</div>
 					</div>
@@ -170,7 +176,7 @@ export function ZeditSimpleFormHOC(pageConfig) {
 			);
 		}
 	}
-	return ZerodMainContext.setConsumer(myForm);
+	return ZerodMainContext.setConsumer(withRouter(myForm));
 }
 
 export default ZeditSimpleFormHOC;
