@@ -251,7 +251,11 @@ export function ZmainHOC(pageConfig) {
 					this.setState({
 						hasLogin: true,
 					});
-				});
+				},this.$router);
+		}
+		$router={
+			history:this.props.history,
+			location:this.props.location,
 		}
 		getTemplate() {
 			const leftWidth = this.state.isCollapse ? 80 : this.config.leftExpandWidth;
@@ -267,6 +271,7 @@ export function ZmainHOC(pageConfig) {
 						showRightModal: this.methods.showRightModal,
 						getTemporaryStorage: this.methods.getTemporaryStorage,
 						setTemporaryStorage: this.methods.setTemporaryStorage,
+						$router:this.$router,
 					}}
 				>
 					<Zlayout flexRow className={`z-layout-${this.config.theme}`}>

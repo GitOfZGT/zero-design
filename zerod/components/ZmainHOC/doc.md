@@ -281,8 +281,8 @@ export default ZmainHOC(pageConfig);
 		</tr>
 		<tr>
 			<td>componentDidMount</td>
-			<td>main组件加载完的钩子,考虑到可能走后台接口,提供一个一定要调用的callback，这个函数可传入两个可选参数:callback(userInfo = {}, menuData = []),userInfo是用户登录后要储存的一个对象，menuData是侧边导航的数据(map结构由pageConfig.sideMenu.mapKeys对应)</td>
-			<td>function(callback){}</td>
+			<td>main组件加载完的钩子,考虑到可能走后台接口,提供一个一定要调用的callback，这个函数可传入两个可选参数:callback(userInfo = {}, menuData = []),userInfo是用户登录后要储存的一个对象，menuData是侧边导航的数据(map结构由pageConfig.sideMenu.mapKeys对应)。$router:是一个对象，提供history和location属性</td>
+			<td>function(callback,$router){}</td>
 			<td>--</td>
 		</tr>
 	</tbody>

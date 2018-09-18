@@ -156,3 +156,7 @@ ZmainHOC 的 componentDidMount 钩子中的 callback 函数注入的 userInfo �
 ## 临时存储器: setTemporaryStorage(data)  和 getTemporaryStorage()
 
 setTemporaryStorage(data)用于跨页面临时存储一些数据，data参数是一个对象：{"key":"存储的数据"}；getTemporaryStorage()获取当前存储器的数据
+
+## $router
+
+$router:是一个对象，提供history和location属性
