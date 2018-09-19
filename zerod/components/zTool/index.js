@@ -1,7 +1,7 @@
 import IScroll from "iscroll";
 // import moment from "moment";
 import Ajax from "./httpAjax";
-import lodash from "lodash";
+import debounce from "lodash.debounce";
 import ResizeSensor from "./ResizeSensor";
 export const httpAjax = Ajax;
 /*加载一批文件，_files:文件路径数组,可包括js,css,less文件,isSequence 是否按数组的顺序加载*/
@@ -628,7 +628,7 @@ export const scrollDisableWheel = function(el) {
 };
 //监听盒子（div）尺寸变化
 export const listenDivSizeChange = function(el, scrollFun) {
-	new ResizeSensor(el, lodash.debounce(scrollFun, 70));
+	new ResizeSensor(el, debounce(scrollFun, 70));
 	// return;
 	// // scroll passive events
 	// let passiveEvents = false;

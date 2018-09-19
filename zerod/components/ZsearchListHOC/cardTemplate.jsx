@@ -76,7 +76,7 @@ export default function cardTemplate() {
 										{this.tableColumns.map((col, index) => {
 											const contentRender = () => {
 												return typeof col.render === "function"
-													? col.render(item[col.dataIndex], item)
+													? col.render(item[col.dataIndex], item,i)
 													: item[col.dataIndex];
 											};
 											if (index === 0) {

@@ -16,7 +16,12 @@ class Myjavascript extends React.Component {
 			key: "serviceCode",
 			label: "服务编码",
 			render: (form) => {
-				return <Input placeholder="请输入服务编码" />;
+				//异步加载表单控件
+				return new Promise((resolve) => {
+					setTimeout(() => {
+						resolve(<Input placeholder="请输入服务编码" />);
+					}, 5000);
+				});
 			},
 			//antd的 form.getFieldDecorator的options
 			options: {
@@ -207,8 +212,8 @@ class Myjavascript extends React.Component {
 		</tr>
 		<tr>
 			<td>render</td>
-			<td>渲染表单控件的钩子</td>
-			<td>(form,_this)=>{return ReactNode | Element}</td>
+			<td>渲染表单控件的钩子。支持异步加载：必须return的是Promise对象。例如使用了后台接口：(form)=>api.getOptions.then(re=>{return 表单控件})</td>
+			<td>(form)=>{return ReactNode | Element | Promise}</td>
 			<td>--</td>
 		</tr>
 		<tr>

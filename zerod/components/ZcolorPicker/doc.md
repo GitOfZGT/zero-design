@@ -2,7 +2,7 @@
 
 `ZcolorPicker`是一个颜色选择器控件，支持在`Form`、`Zform`等表单中使用
 
-依赖 <a href="http://casesandberg.github.io/react-color/" target="_blank">react-color库</a> ，目前只选用了`react-color`的`SketchPicker`组件
+依赖 <a href="http://casesandberg.github.io/react-color/" target="_blank">react-color 库</a> ，目前只选用了`react-color`的`SketchPicker`组件
 
 1、基本使用
 
@@ -38,6 +38,12 @@ class Myjavascript extends React.Component {
 		</tr>
 	</thead>
 	<tbody>
+	 	<tr>
+			<td>valueType</td>
+			<td>颜色值类型,hex:十六进制模式，rgb：RGB模式(包括rgba)</td>
+			<td>hex | rgb</td>
+			<td>hex</td>
+		</tr>
 		<tr>
 			<td>value</td>
 			<td>颜色值，支持十六进制和RGB模式，如 "#FFFFFF"、"rgba(255,214,21,0.9)"</td>
@@ -55,12 +61,6 @@ class Myjavascript extends React.Component {
 			<td>颜色值改变后触发</td>
 			<td>(value)=>{}</td>
 			<td>--</td>
-		</tr>
-        <tr>
-			<td>valueType</td>
-			<td>颜色值类型,hex:十六进制模式，rgb：RGB模式(包括rgba)</td>
-			<td>hex | rgb</td>
-			<td>hex</td>
 		</tr>
 	</tbody>
 </table>

@@ -18,7 +18,10 @@ class Com extends React.Component {
 		onOpenChange: PropTypes.func,
 		menuData: PropTypes.arrayOf(PropTypes.object).isRequired,
 	};
-
+	state = {
+		selectKeys: [],
+		openKeys: [],
+	};
 	allSubKeys = [];
 	getMenuItems(data) {
 		return data.map((el, i) => {
@@ -50,34 +53,72 @@ class Com extends React.Component {
 		});
 	}
 	openTimer = null;
-	openChange = () => {
+	isOpenClick = false;
+	openChange = (keys) => {
 		if (this.props.onOpenChange) {
 			clearTimeout(this.openTimer);
 			this.openTimer = setTimeout(() => {
 				this.props.onOpenChange();
 			}, 300);
 		}
+		this.isOpenClick = true;
+		this.setState({
+			openKeys: keys,
+		});
 	};
 	onSelect = ({ item, key, selectedKeys }) => {
 		if (/^\/[A-Za-z0-9]*/.test(key)) this.props.history.push(key);
 		this.props.onSelect && this.props.onSelect({ item, key, selectedKeys });
 	};
-	defaultSelectedKeys = [this.props.location.pathname];
-	defaultOpenKeys = [this.props.location.pathname.replace(`/${this.props.location.pathname.split("/").pop()}`, "")];
+	defaultOpenKeys = [];
+	findKeys = (arr, currentPath) => {
+		let keys = [];
+		arr.forEach((item) => {
+			if (item.children && item.children.length) {
+				let childKeys = this.findKeys(item.children, currentPath);
+				if (childKeys.length) {
+					keys = keys.concat(childKeys);
+					this.defaultOpenKeys.push(item.path);
+				}
+			} else if (currentPath.startsWith(item.path)) {
+				keys.push(item.path);
+			}
+		});
+		return keys;
+	};
+	getDefaultKeys = () => {
+		const currentPath = this.props.location.pathname;
+		return this.findKeys(this.props.menuData, currentPath);
+	};
 
+	initKeys = () => {
+		const selectKeys = this.getDefaultKeys();
+		this.setState({
+			selectKeys,
+			openKeys: this.defaultOpenKeys,
+		});
+	};
+	componentDidUpdate(prevProps) {
+		if (this.props.location.pathname !== prevProps.location.pathname) {
+			this.initKeys();
+		}
+	}
+	componentDidMount() {
+		this.initKeys();
+	}
 	render() {
 		this.allSubKeys = [];
 		const items = this.getMenuItems(this.props.menuData);
-		const openKeys = this.props.openAllSubmenu ? this.allSubKeys : this.defaultOpenKeys;
+		const openKeys = this.props.openAllSubmenu && !this.isOpenClick ? this.allSubKeys : this.state.openKeys;
 		return (
 			<Menu
 				mode="inline"
-				defaultSelectedKeys={this.defaultSelectedKeys}
-				defaultOpenKeys={openKeys}
+				selectedKeys={this.state.selectKeys}
+				openKeys={openKeys}
 				onSelect={this.onSelect}
 				onOpenChange={this.openChange}
 				inlineCollapsed={this.props.collapsed}
-				theme={this.props.theme=="light"?"light":"dark"}
+				theme={this.props.theme == "light" ? "light" : "dark"}
 			>
 				{items}
 			</Menu>

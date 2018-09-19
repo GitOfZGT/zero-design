@@ -1,6 +1,6 @@
 {
 	"name": "zerod",
-	"version": "0.0.44",
+	"version": "0.0.45",
 	"description": "react+antd+scss的扩展组件，结合zerod-admin-web脚手架使用",
 	"author": "zgt",
 	"main": "index.js",
@@ -20,7 +20,9 @@
 		"viewerjs": "^1.2.0",
 		"prismjs": "^1.15.0",
 		"swiper": "^4.3.5",
-		"react-color": "^2.14.1"
+		"react-color": "^2.14.1",
+		"lodash.debounce":"^4.0.8",
+		"lodash.throttle":"^4.1.1"
 	},
 	"peerDependencies": {
 		"react": ">=16.0.0",
