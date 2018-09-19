@@ -1,0 +1,56 @@
+@import "../../scssMixin/generateClassName";
+$--w: 32px;
+$--p: 2px;
+@include z("color-box") {
+	cursor: pointer;
+	position: relative;
+	display: inline-block;
+	background-color: white;
+	width: $--w;
+	height: $--w;
+	border-radius: 4px;
+	border: 1px solid #d9d9d9;
+	padding: $--p;
+	@include z("bg") {
+		position: relative;
+		z-index: 1;
+		display: block;
+		width: $--w - ($--p * 2) - 2;
+		height: $--w - ($--p * 2) - 2;
+		background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAMUlEQVQ4T2NkYGAQYcAP3uCTZhw1gGGYhAGBZIA/nYDCgBDAm9BGDWAAJyRCgLaBCAAgXwixzAS0pgAAAABJRU5ErkJggg==");
+		background-position: center center;
+		background-repeat: repeat;
+	}
+	@include z("color") {
+		border-radius: 2px;
+		position: absolute;
+		z-index: 2;
+		top: $--p;
+		left: $--p;
+		display: block;
+		width: $--w - ($--p * 2) - 2;
+		height: $--w - ($--p * 2) - 2;
+		background-color: transparent;
+	}
+}
+@include z("cover") {
+	position: fixed;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	z-index: 9999;
+	display: none;
+	visibility: hidden;
+
+}
+
+@include z("picker") {
+	position: absolute;
+	box-sizing: initial;
+	:global{
+		div,input,span{
+			box-sizing: initial;
+		}
+	}
+}

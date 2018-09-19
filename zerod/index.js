@@ -14,6 +14,7 @@ export { default as ZsorterBtn } from "./components/ZsorterBtn";
 export { default as ZoneWayTransfer } from "./components/ZoneWayTransfer";
 export { default as Zcascader } from "./components/Zcascader";
 export { default as Zviewer } from "./components/Zviewer";
+export { default as ZcolorPicker } from "./components/ZcolorPicker";
 
 export { default as ZdetailSimpleBaseHOC } from "./components/ZdetailSimpleBaseHOC";
 export { default as ZeditSimpleFormHOC } from "./components/ZeditSimpleFormHOC";

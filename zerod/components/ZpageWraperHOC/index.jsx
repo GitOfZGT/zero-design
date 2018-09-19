@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import {withRouter} from "react-router-dom"
+import { withRouter } from "react-router-dom";
 // my component
 import { Zlayout } from "../Zlayout";
 import { ZpageHeader } from "../ZpageHeader";
@@ -39,8 +39,11 @@ export function ZpageWraperHOC() {
 		static defaultProps = {
 			pageHeader: {},
 			hasBodyPadding: true,
-        };
-        breadcrumbsFromMenu=getBreadcrumbsFromMenu(this.props.getSideMenuData?this.props.getSideMenuData():[], this.props.location.pathname);
+		};
+		breadcrumbsFromMenu = getBreadcrumbsFromMenu(
+			this.props.getSideMenuData ? this.props.getSideMenuData() : [],
+			this.props.location.pathname,
+		);
 		newPageHeader = Object.assign({}, this.props.pageHeader, {
 			breadcrumbRoutes: this.props.pageHeader.breadcrumbRoutes
 				? [
@@ -57,23 +60,26 @@ export function ZpageWraperHOC() {
 		};
 
 		componentDidMount() {
-            document.addEventListener("transitionend",this.initDoms,false)
+			document.addEventListener("transitionend", this.initDoms, false);
 			setTimeout(() => {
 				this.initDoms();
 			}, 100);
 			window.addEventListener("resize", this.initDoms, false);
-            // console.log(this.props.location.pathname)
+			// console.log(this.props.location.pathname)
 		}
 		componentWillUnmount() {
-            window.removeEventListener("resize", this.initDoms, false);
-            document.removeEventListener("transitionend",this.initDoms,false)
+			window.removeEventListener("resize", this.initDoms, false);
+			document.removeEventListener("transitionend", this.initDoms, false);
 		}
 		render() {
+			const { className } = this.props;
 			return (
 				<Zlayout.Template>
 					{this.props.pageHeader.show ? <ZpageHeader {...this.newPageHeader} /> : null}
 					<div
-						className={this.props.hasBodyPadding ? cssClass["z-wraper-body"] : ""}
+						className={`${this.props.hasBodyPadding ? cssClass["z-wraper-body"] : ""} ${
+							className ? className : ""
+						}`}
 						ref={(el) => (this.wrapEl = el)}
 					>
 						{this.props.children}
