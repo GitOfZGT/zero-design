@@ -9,7 +9,7 @@ import cssClass from "./style.scss";
 import { dataTypeTest, mergeConfig } from "../zTool/";
 // 上下文
 import ZerodMainContext from "../ZerodMainContext";
-
+import Zinfo from "../Zinfo";
 // 其他HOC
 import ZpageWraperHOC from "../ZpageWraperHOC/";
 const PageWraper = ZpageWraperHOC();
@@ -32,26 +32,25 @@ export function ZdetailSimpleBaseHOC(pageConfig) {
 		},
 		detail: {
 			panelHeader: "基础信息",
+			defaultSpan: undefined,
 			items: [
 				{
 					key: "serviceCode",
 					label: "名称",
 					span: 8,
-					render: (value, record) => {
-						return value;
+					render: () => {
+						return (value, record)=>value;
 					},
 				},
 				{
 					key: "serviceName",
 					label: "描述",
 					span: 8,
-					render: (value, record) => {
-						return value;
+					render: () => {
+						return (value, record)=>value;
 					},
 				},
 			],
-			// 用于修改每个item的结构的钩子，(item,data)=>{return <div>{`${item.label}:${data[item.key]}`}</div>}
-			itemsRender: null,
 			// 获取详情数据的后台接口函数，必须返回 Promise
 			detailApiInterface: () => Promise.reject({ mag: "未提供后台接口" }),
 		},
@@ -76,7 +75,7 @@ export function ZdetailSimpleBaseHOC(pageConfig) {
 			getDetailData: () => {
 				this.methods.showLoading(true);
 				this.config.detail
-					.detailApiInterface(this.props.detailId, this.props,this.tool)
+					.detailApiInterface(this.props.detailId, this.props, this.tool)
 					.then((re) => {
 						this.setState({
 							detailData: re.data,
@@ -90,39 +89,6 @@ export function ZdetailSimpleBaseHOC(pageConfig) {
 					});
 			},
 		};
-		getItems() {
-			const data = this.state.detailData;
-			return this.config.detail.items.map((item, i) => {
-				let span = dataTypeTest(item.span) === "object" ? item.span : { xxl: 6, xl: 8, lg: 12 };
-				return (
-					<CSSTransition key={i} timeout={animateTimout.flipInTime} classNames="flipX">
-						<Col {...span}>
-							{typeof this.config.detail.itemsRender === "function" ? (
-								this.config.detail.itemsRender(item, data)
-							) : (
-								<div className="z-info z-margin-bottom-20 is-border-right">
-									<div className="z-info-left z-padding-bottom-10">{item.label}</div>
-									<div className="z-info-right z-padding-bottom-10">
-										{typeof item.render === "function"
-											? item.render(data[item.key], data)
-											: data[item.key]}
-									</div>
-								</div>
-								// <div className="z-flex z-margin-bottom-20">
-								// 	<label className="z-text-black">{item.label}</label>
-								// 	<span className="z-margin-left-5 z-margin-right-5">:</span>
-								// 	<span className="flex-1">
-								// 		{typeof item.render === "function"
-								// 			? item.render(data[item.key], data)
-								// 			: data[item.key]}
-								// 	</span>
-								// </div>
-							)}
-						</Col>
-					</CSSTransition>
-				);
-			});
-		}
 		getPanleHeader() {
 			const heading = this.config.detail.panelHeader;
 			return heading ? (
@@ -141,11 +107,11 @@ export function ZdetailSimpleBaseHOC(pageConfig) {
 					<div className="z-panel">
 						{this.getPanleHeader()}
 						<div className="z-panel-body">
-							<Row type="flex" className={cssClass["z-info-row"]}>
-								<TransitionGroup component={null} enter={true} exit={true} appear={true}>
-									{this.getItems()}
-								</TransitionGroup>
-							</Row>
+							<Zinfo
+								items={this.config.detail.items}
+								fieldValue={this.state.detailData}
+								defaultSpan={this.config.detail.defaultSpan}
+							/>
 						</div>
 					</div>
 					{typeof this.config.moreContentRender === "function" &&

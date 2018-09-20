@@ -11,7 +11,7 @@ import cssClass from "./style.scss";
 // 卡片类型
 export default function cardTemplate() {
 	const actionCol = this.tableColumns.slice(-1)[0];
-	
+
 	let sorters = [];
 	this.tableColumns.forEach((col, index) => {
 		if (col.sorter) {
@@ -47,7 +47,7 @@ export default function cardTemplate() {
 					<div className="z-panel-body z-padding-bottom-0-important">{this.searchForm}</div>
 				) : null}
 			</div>
-			{sorters.length ? <div className="z-margin-bottom-15">{sorters}</div>:null}
+			{sorters.length ? <div className="z-margin-bottom-15">{sorters}</div> : null}
 			<Row type="flex" className={cssClass["z-card-row"]}>
 				{this.props.showAddBtn ? (
 					<Col span={8} className={`${cssClass["z-list-card"]} z-margin-bottom-15`}>
@@ -64,7 +64,10 @@ export default function cardTemplate() {
 				) : null}
 				<TransitionGroup component={null} enter={true} exit={false} appear={true}>
 					{this.state.listData.map((item, i) => {
-						const cardActions=actionCol&&actionCol.key== "actionBtns"?actionCol.render(item[actionCol.dataIndex], item):[];
+						const cardActions =
+							actionCol && actionCol.key == "actionBtns"
+								? actionCol.render(item[actionCol.dataIndex], item)
+								: [];
 						return (
 							<CSSTransition key={i} timeout={animateTimout.flipInTime} classNames="fadeIn-to-down">
 								<Col span={8} className={`${cssClass["z-list-card"]} z-margin-bottom-15`}>
@@ -76,7 +79,12 @@ export default function cardTemplate() {
 										{this.tableColumns.map((col, index) => {
 											const contentRender = () => {
 												return typeof col.render === "function"
-													? col.render(item[col.dataIndex], item,i)
+													? col.render(
+															item[col.dataIndex],
+															item,
+															i,
+															this.getExportSomething(),
+													  )
 													: item[col.dataIndex];
 											};
 											if (index === 0) {

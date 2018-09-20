@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { const_showLoading, const_getModalType,const_getPanleHeader } from "../constant";
+import { const_showLoading, const_getModalType, const_getPanleHeader } from "../constant";
 import { Button, Icon, Divider, Dropdown, Menu, Modal, message, Tooltip } from "antd";
 import { ZsearchForm } from "../ZsearchForm";
 import cssClass from "./style.scss";
@@ -29,6 +29,7 @@ class ZlistPanel extends React.Component {
 		tableColumns: PropTypes.arrayOf(PropTypes.object), // 表格列map数据数据，同antd的表格 columns
 		moreBtnMap: PropTypes.arrayOf(PropTypes.object), //更多操作按钮的map数据
 		onMoreBtnClick: PropTypes.func, // 更多按钮点击事件
+		actionColumnWidth: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),//表格操作列的宽度
 		actionDataIndex: PropTypes.any, // 操作列的key
 		actionRender: PropTypes.func, // 操作列的render,可以自定义操作列的按钮
 		addBtnPermCode: PropTypes.string, // 新建按钮权限控制代码
@@ -56,6 +57,7 @@ class ZlistPanel extends React.Component {
 		getPageSize: function(listType, isListCard) {
 			return isListCard ? 8 : 10;
 		},
+		actionColumnWidth:360
 	};
 
 	handleMenuClick = (record) => {
@@ -66,7 +68,7 @@ class ZlistPanel extends React.Component {
 	hasMoreMenu = this.props.moreBtnMap && this.props.moreBtnMap.length;
 	//更多操作按钮
 	moreMenu = (record) => {
-		const onClick=this.handleMenuClick(record);
+		const onClick = this.handleMenuClick(record);
 		return this.hasMoreMenu ? (
 			<Menu onClick={onClick}>
 				{this.props.moreBtnMap.map((item) => {
@@ -221,9 +223,11 @@ class ZlistPanel extends React.Component {
 				},
 			});
 		},
-		openModal:(content)=>{
-            content && this.props.showRightModal&&this.props.showRightModal(true, const_getModalType(this.props.insertLocation), content);
-        },
+		openModal: (content) => {
+			content &&
+				this.props.showRightModal &&
+				this.props.showRightModal(true, const_getModalType(this.props.insertLocation), content);
+		},
 		onAdd: () => {
 			const content = this.props.addPageRender(this.getExportSomething());
 			this.methods.openModal(content);
@@ -249,11 +253,11 @@ class ZlistPanel extends React.Component {
 		currentListData: () => {
 			return deepCopy(this.state.listData);
 		},
-		setDataState:(data)=>{
+		setDataState: (data) => {
 			this.setState({
-				listData:data,
-			})
-		}
+				listData: data,
+			});
+		},
 	};
 	actionBtns() {
 		return this.props.showDetailBtn || this.props.showUpdateBtn || this.props.showDeleteBtn || this.hasMoreMenu
@@ -262,10 +266,16 @@ class ZlistPanel extends React.Component {
 						title: "操作",
 						dataIndex: this.props.actionDataIndex,
 						key: "actionBtns",
-						width: 360,
-						render: (text, record) => {
+						width: this.props.actionColumnWidth,
+						render: (text, record,index) => {
 							if (typeof this.props.actionRender === "function") {
-								return this.props.actionRender(text, record, this.getExportSomething(),this.state.isListCard);
+								return this.props.actionRender(
+									text,
+									record,
+									index,
+									this.getExportSomething(),
+									this.state.isListCard,
+								);
 							}
 							const btnSize = "small";
 							const detailBtnName = "详情";
@@ -385,7 +395,7 @@ class ZlistPanel extends React.Component {
 		const colRender = col.render;
 		if (typeof colRender === "function") {
 			col.render = (text, record, index) => {
-				return colRender(text, record, index, this);
+				return colRender(text, record, index, this.getExportSomething());
 			};
 		}
 		return col;
@@ -444,5 +454,5 @@ class ZlistPanel extends React.Component {
 		return this.state.isListCard ? cardTemplate.call(this) : tableTemplate.call(this);
 	}
 }
-ZlistPanel.prototype.getPanleHeader=const_getPanleHeader;
+ZlistPanel.prototype.getPanleHeader = const_getPanleHeader;
 export default ZerodMainContext.setConsumer(ZlistPanel);

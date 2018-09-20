@@ -1,0 +1,11 @@
+@import '../../scssMixin/generateClassName';
+
+$--row-gutter: 8px;
+@include z("info-row") {
+	margin-left: -$--row-gutter;
+	margin-right: -$--row-gutter;
+	& > div {
+		padding-left: $--row-gutter;
+		padding-right: $--row-gutter;
+	}
+}

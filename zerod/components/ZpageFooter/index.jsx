@@ -4,7 +4,7 @@ import cssClass from "./style.scss";
 class Com extends React.Component {
 	static propTypes = {
 		links: PropTypes.arrayOf(PropTypes.object),
-		copyright: PropTypes.any,
+		copyright: PropTypes.oneOfType([PropTypes.func, PropTypes.string]),
 	};
 	render() {
 		const { links, copyright } = this.props;
@@ -13,16 +13,24 @@ class Com extends React.Component {
 				className={`${cssClass["z-page-footer"]} ${this.props.className ? this.props.className : ""}`}
 				ref={this.props.forwardRef}
 			>
-				{links && (
+				{links ? (
 					<div className={cssClass["z-footer-link"]}>
-						{links.map((link) => (
-							<a key={link.key} target={link.blankTarget ? "_blank" : "_self"} href={link.href}>
+						{links.map((link, i) => (
+							<a
+								key={link.key ? link.key : i}
+								target={link.blankTarget ? "_blank" : "_self"}
+								href={link.href}
+							>
 								{link.title}
 							</a>
 						))}
 					</div>
-				)}
-				{copyright && <div className={cssClass["z-footer-copyright"]}>{copyright}</div>}
+				) : null}
+				{copyright ? (
+					<div className={cssClass["z-footer-copyright"]}>
+						{typeof copyright == "function" ? copyright() : copyright}
+					</div>
+				) : null}
 			</div>
 		);
 	}

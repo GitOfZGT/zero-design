@@ -1,4 +1,5 @@
 export { default as Zform } from "./components/Zform";
+export { default as Zinfo } from "./components/Zinfo";
 export { default as Zlayout } from "./components/Zlayout";
 export { default as ZpageFooter } from "./components/ZpageFooter";
 export { default as ZpageHeader } from "./components/ZpageHeader";

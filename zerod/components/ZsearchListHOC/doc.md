@@ -324,9 +324,15 @@ const pageConfig = {
 		</tr>
 		<tr>
 			<td>tableColumns</td>
-			<td>表格列数据,<a href="https://ant.design/components/table-cn/" target="_blank">同Antd的表格 columns</a>,尽管属性名与"table"相关,当listType="card"时也是有效的,也是必需的</td>
+			<td>表格列数据,<a href="https://ant.design/components/table-cn/" target="_blank">同Antd的表格 columns</a>，其中render函数参数为：(text,record,index,tool)=>自定义内容。尽管属性名与"table"相关,当listType="card"时也是有效的,也是必需的</td>
 			<td>array[object]</td>
 			<td>--</td>
+		</tr>
+		<tr>
+			<td>actionColumnWidth</td>
+			<td>表格操作列的宽度</td>
+			<td>string | number</td>
+			<td>360</td>
 		</tr>
 		<tr>
 			<td>actionDataIndex</td>
@@ -337,7 +343,7 @@ const pageConfig = {
 		<tr>
 			<td>actionRender</td>
 			<td>操作区的render,可以自定义操作按钮</td>
-			<td>(text, record,tool,isListCard)=>{}</td>
+			<td>(text, record,index,tool,isListCard)=>{}</td>
 			<td>--</td>
 		</tr>
 		<tr>

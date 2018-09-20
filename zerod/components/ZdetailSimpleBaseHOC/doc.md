@@ -122,14 +122,14 @@ let defaultConfig = {
 		</tr>
 		<tr>
 			<td>items</td>
-			<td>详情数据的渲染项，map结构：{key:对应后台数据的key,lable:名称,render:可对值自定义渲染的函数(value, record)=>{return;},span：栅栏布局的占比</td>
+			<td>同 组件/Zinfo的items属性</td>
 			<td>array[object]</td>
 			<td>--</td>
 		</tr>
 		<tr>
-			<td>itemsRender</td>
-			<td>用于修改每个item的结构的钩子，(item,data)=>{return <\div>{`${item.label}:${data[item.key]}`}<\/div>}</td>
-			<td>function</td>
+			<td>defaultSpan</td>
+			<td>同 组件/Zinfo的defaultSpan属性</td>
+			<td>array[object]</td>
 			<td>--</td>
 		</tr>
 		<tr>

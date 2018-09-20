@@ -1,5 +1,6 @@
 import React from "react";
-import {Button} from 'antd';
+import { Button } from "antd";
+import { dataTypeTest } from "./zTool";
 //
 export const const_insertLocations = {
 	mainRoute: "mainRoute",
@@ -10,9 +11,9 @@ export const const_insertLocations = {
 export const const_showLoading = (insertLocation, props) => {
 	return function(show) {
 		if (insertLocation === const_insertLocations.mainRoute) {
-			props.showRouteLoading&&props.showRouteLoading(show);
+			props.showRouteLoading && props.showRouteLoading(show);
 		} else {
-			props.showRouteLoading&&props.showModalLoading(show, insertLocation);
+			props.showRouteLoading && props.showModalLoading(show, insertLocation);
 		}
 	};
 };
@@ -32,8 +33,80 @@ export const animateTimout = {
 	flipInTime: 500,
 	flipOutTime: 300,
 };
+//如在Zform中使用const_initItems.call(this,<Input placeholder="加载中" disabled />);
+export const const_initItems = function(items,disableControl, renderArgument = {}) {
+	this.allAsync = [];
+	const newItems = items.map((item, index) => {
+		let render = item.render;
+		if (render && typeof render !== "function") {
+			throw Error("render属性必须是函数");
+		}
+		let control = (value)=>value;
+		let loading = false;
+		let renderValue = null;
+		if (render) {
+			renderValue = render(renderArgument);
+			if (Object.prototype.toString.call(renderValue) === "[object Promise]") {
+				this.allAsync.push({ promise: renderValue, index });
+				renderValue = disableControl;
+				loading = true;
+			}
+		}
+		if (renderValue) {
+			control = renderValue;
+		}
+		let span0 = this.props.defaultSpan;
+		span0 = typeof span0 === "number" ? { md: span0 } : span0;
+		let span1 =
+			dataTypeTest(control) == "object" &&
+			control.props &&
+			control.props.prefixCls == "ant-input" &&
+			control.type.TextArea == undefined
+				? { md: 24 }
+				: span0;
+		let span2 = typeof item.span === "number" ? { md: item.span } : item.span;
+		let span = item.span ? span2 : span1;
+		const newItem = {
+			...item,
+			loading,
+			control,
+			span,
+		};
+		return newItem;
+	});
+	this.setState({
+		items: newItems,
+	});
+};
+//如在Zform中使用 const_execAsync.call(this,callback);
+export const const_execAsync = function(callback) {
+	callback = typeof callback == "function" ? callback : function() {};
+	if (this.allAsync.length) {
+		this.allAsync.forEach((asy) => {
+			asy.promise.then((control) => {
+				this.state.items[asy.index].control = control;
+				this.state.items[asy.index].loading = false;
+			});
+		});
+		Promise.all(
+			this.allAsync.map((asy) => {
+				return asy.promise;
+			}),
+		).then((re) => {
+			this.allAsync = [];
+			this.setState(
+				{
+					items: [...this.state.items],
+				},
+				callback,
+			);
+		});
+	} else {
+		callback();
+	}
+};
 //ZtreePanel和ZlistPanel的heading,这里不能是箭头函数
-export const const_getPanleHeader=function (){
+export const const_getPanleHeader = function() {
 	this.addBtn = this.props.showAddBtn ? (
 		// <div className="z-margin-bottom-15">
 		<Button type="primary" icon="plus" className="z-margin-left-10" onClick={this.methods.onAdd}>
@@ -44,15 +117,10 @@ export const const_getPanleHeader=function (){
 	const heading = this.props.panelHeader;
 	return heading ? (
 		<div className="z-panel-heading z-flex-items-v-center z-flex-space-between">
-			{<span>{typeof heading == "function" ? heading(this) : <span>{heading}</span>}</span>}
+			<span>{typeof heading == "function" ? heading(this) : <span>{heading}</span>}</span>
 			<span>
 				{this.props.colFormItems && this.props.colFormItems.length ? (
-					<Button
-						type="dashed"
-						icon="search"
-						className="z-margin-left-10"
-						onClick={this.methods.openSearch}
-					>
+					<Button type="dashed" icon="search" className="z-margin-left-10" onClick={this.methods.openSearch}>
 						条件查询
 					</Button>
 				) : null}
@@ -60,7 +128,7 @@ export const const_getPanleHeader=function (){
 			</span>
 		</div>
 	) : null;
-}
+};
 export const const_getListConfig = (name, protos) => {
 	const dataConfig = {
 		/**----------------共有的属性-------------- */
@@ -98,9 +166,9 @@ export const const_getListConfig = (name, protos) => {
 		deleteApiInterface: (data) => Promise.reject({ mag: "未提供后台接口" }),
 		//用于接收列表内部一些东西的钩子 (obj)=>{}
 		exportSomething: null,
-		panelBeforeRender:null,
-		panelAfterRender:null,
-		moreContentRender:null,
+		panelBeforeRender: null,
+		panelAfterRender: null,
+		moreContentRender: null,
 		/**--------------ZlistPanel专有的属性---------------- */
 		// 列表类型 table | card
 		listType: "table",

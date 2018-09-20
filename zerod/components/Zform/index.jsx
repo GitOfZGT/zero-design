@@ -3,7 +3,7 @@ import { Form, Modal, Input, Button, Row, Col } from "antd";
 import PropTypes from "prop-types";
 import cssClass from "./style.scss";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
-import { animateTimout } from "../constant";
+import { animateTimout, const_initItems, const_execAsync } from "../constant";
 import ZpageLoading from "../ZpageLoading";
 export const Zform = Form.create()(
 	class extends React.Component {
@@ -47,58 +47,12 @@ export const Zform = Form.create()(
 				});
 			},
 		};
-		allAsync = [];
-		initItems() {
-			this.allAsync = [];
-			const newItems = this.props.items.map((item, index) => {
-				let control = item.render(this.props.form);
-				let loading=false;
-				if (Object.prototype.toString.call(control) === "[object Promise]") {
-					this.allAsync.push({ promise: control, index });
-					control = <Input placeholder="加载中" disabled />;
-					loading=true;
-				}
-				const newItem = {
-					...item,
-					loading,
-					control,
-				};
-				delete newItem.render;
-				return newItem;
-			});
-			this.setState({
-				items: newItems,
-			});
-		}
-
 		setFormValues() {
 			this.props.formDefaultValues && this.props.form.setFieldsValue(this.props.formDefaultValues);
 		}
 		execAsync(callback) {
-			this.initItems();
-			if (this.allAsync.length) {
-				this.allAsync.forEach((asy) => {
-					asy.promise.then((control) => {
-						this.state.items[asy.index].control = control;
-						this.state.items[asy.index].loading = false;
-					});
-				});
-				Promise.all(
-					this.allAsync.map((asy) => {
-						return asy.promise;
-					}),
-				).then((re) => {
-					this.allAsync = [];
-					this.setState(
-						{
-							items: [...this.state.items],
-						},
-						callback,
-					);
-				});
-			} else {
-				callback();
-			}
+			const_initItems.call(this, this.props.items,<Input placeholder="加载中" disabled />,this.props.form);
+			const_execAsync.call(this, callback);
 		}
 		componentDidMount() {
 			this.execAsync(this.setFormValues.bind(this));
@@ -118,22 +72,12 @@ export const Zform = Form.create()(
 			const { getFieldDecorator } = this.props.form;
 			return this.state.items.map((item, i) => {
 				const control = item.control;
-				let span =
-					typeof this.props.defaultSpan === "number"
-						? { md: this.props.defaultSpan }
-						: this.props.defaultSpan;
-				span = item.span
-					? typeof item.span === "number"
-						? { md: item.span }
-						: item.span
-					: control.props.prefixCls == "ant-input" && control.type.TextArea == undefined
-						? { md: 24 }
-						: span;
+				let span = item.span;
 				const isFormItem = typeof item.isFormItem === "boolean" ? item.isFormItem : true;
 				return (
 					<CSSTransition key={i} timeout={animateTimout.flipInTime} classNames="fadeIn-to-down">
 						<Col {...span} className={item.className}>
-							<ZpageLoading showLoading={item.loading} size="small"/>
+							<ZpageLoading showLoading={item.loading} size="small" />
 							{isFormItem ? (
 								<Form.Item label={item.label}>
 									{getFieldDecorator(item.key, item.options)(control)}
