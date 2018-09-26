@@ -33,15 +33,15 @@ export const animateTimout = {
 	flipInTime: 500,
 	flipOutTime: 300,
 };
-//如在Zform中使用const_initItems.call(this,<Input placeholder="加载中" disabled />);
-export const const_initItems = function(items,disableControl, renderArgument = {}) {
+//如在Zform中使用const_initItems.call(this,this.props.items,<Input placeholder="加载中" disabled />);
+export const const_initItems = function(items, disableControl, renderArgument = {}) {
 	this.allAsync = [];
 	const newItems = items.map((item, index) => {
 		let render = item.render;
 		if (render && typeof render !== "function") {
 			throw Error("render属性必须是函数");
 		}
-		let control = (value)=>value;
+		let control = (value) => value;
 		let loading = false;
 		let renderValue = null;
 		if (render) {
@@ -129,47 +129,49 @@ export const const_getPanleHeader = function() {
 		</div>
 	) : null;
 };
-export const const_getListConfig = (name, protos) => {
-	const dataConfig = {
-		/**----------------共有的属性-------------- */
-		//面板头部string | function(){return ReactNode}
-		panelHeader: "",
-		// 是否显示新建按钮
-		showAddBtn: true,
-		// 新建按钮权限控制代码
-		addBtnPermCode: "",
-		addPageRender: (panel) => {
-			return <div>新增页面</div>;
-		},
-		// 是否显示详情按钮
-		showDetailBtn: true,
-		// 详情按钮权限控制代码
-		detailBtnPermCode: "",
-		detailPageRender: (record, panel) => {
-			return <div>详情页面</div>;
-		},
-		// 是否显示修改按钮
-		showUpdateBtn: true,
-		// 修改按钮权限控制代码
-		updateBtnPermCod: "",
-		updatePageRender: (record, panel) => {
-			return <div>修改页面</div>;
-		},
-		// 是否显示删除按钮
-		showDeleteBtn: true,
-		// 删除按钮权限控制代码
-		deleteBtnPermCod: "",
-		//更多操作按钮的map数据 [{key: "0",name: "默认的按钮",}]
-		moreBtnMap: null,
-		onMoreBtnClick: (item, record) => {},
-		// 删除按钮后台接口函数，其必须内部返回Promise
-		deleteApiInterface: (data) => Promise.reject({ mag: "未提供后台接口" }),
-		//用于接收列表内部一些东西的钩子 (obj)=>{}
-		exportSomething: null,
-		panelBeforeRender: null,
-		panelAfterRender: null,
-		moreContentRender: null,
-		/**--------------ZlistPanel专有的属性---------------- */
+
+/**----------------共有的属性-------------- */
+const common_protos = {
+	//面板头部string | function(){return ReactNode}
+	panelHeader: "",
+	// 是否显示新建按钮
+	showAddBtn: true,
+	// 新建按钮权限控制代码
+	addBtnPermCode: "",
+	addPageRender: (tool) => {
+		return <div>新增页面</div>;
+	},
+	// 是否显示详情按钮
+	showDetailBtn: true,
+	// 详情按钮权限控制代码
+	detailBtnPermCode: "",
+	detailPageRender: (record, tool) => {
+		return <div>详情页面</div>;
+	},
+	// 是否显示修改按钮
+	showUpdateBtn: true,
+	// 修改按钮权限控制代码
+	updateBtnPermCod: "",
+	updatePageRender: (record, tool) => {
+		return <div>修改页面</div>;
+	},
+	// 是否显示删除按钮
+	showDeleteBtn: true,
+	// 删除按钮权限控制代码
+	deleteBtnPermCod: "",
+	//更多操作按钮的map数据 [{key: "0",name: "默认的按钮",}]
+	moreBtnMap: null,
+	onMoreBtnClick: (item, record) => {},
+	// 删除按钮后台接口函数，其必须内部返回Promise
+	deleteApiInterface: (data) => Promise.reject({ mag: "未提供后台接口" }),
+	//用于接收列表内部一些东西的钩子 (obj)=>{}
+	exportSomething: null,
+	panelBeforeRender: null,
+	panelAfterRender: null,
+	moreContentRender: null,
+};
+const private_protos = {
+	ZlistPanel: {
 		// 列表类型 table | card
 		listType: "table",
 		cardCoverRender: null, // listType=="card"时的一个前置render
@@ -187,18 +189,21 @@ export const const_getListConfig = (name, protos) => {
 		// 分页类型 paging | infinite
 		paginationType: "paging",
 		// 设置pageSize的钩子 (listType, isListCard)=>isListCard ? 8 : 10
-		getPageSize: undefined,
-
-		/**---------------ZtreePanel专有的属性-------- */
+		getPageSize: function(listType, isListCard) {
+			return isListCard ? 8 : 10;
+		},
+		actionColumnWidth:360,
+	},
+	ZtreePanel: {
 		treeDataKeys: { name: "name", id: "id", children: "children" },
 		treeApiInterface: (query) => Promise.reject({ mag: "未提供后台接口" }),
 		// childApiInterface: (query) => Promise.reject({ mag: "未提供后台接口" }),
 		childApiInterface: false,
-	};
-	const list = {};
-	protos.forEach((key) => {
-		list[key] = dataConfig[key];
-	});
+	},
+};
+
+export const const_getListConfig = (name, componentName) => {
+	const list = Object.assign({}, common_protos, private_protos[componentName]);
 	return {
 		//视图显示的地方：  mainRoute | mainModal | appModal
 		insertLocation: "mainRoute",

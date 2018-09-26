@@ -34,10 +34,12 @@ export function ZpageWraperHOC() {
 	class Page extends React.Component {
 		static propTypes = {
 			pageHeader: PropTypes.object,
+			pageFooter: PropTypes.object,
 			hasBodyPadding: PropTypes.bool,
 		};
 		static defaultProps = {
-			pageHeader: {},
+			pageHeader: { show: true },
+			pageFooter: { show: true },
 			hasBodyPadding: true,
 		};
 		breadcrumbsFromMenu = getBreadcrumbsFromMenu(
@@ -53,10 +55,12 @@ export function ZpageWraperHOC() {
 				: this.breadcrumbsFromMenu,
 		});
 		initDoms = () => {
-			const pos = this.wrapEl.getBoundingClientRect();
-			const fpos = this.footerWrapEl.getBoundingClientRect();
-			let H = document.documentElement.clientHeight - pos.top - fpos.height;
-			this.wrapEl.style.minHeight = H + "px";
+			if (this.footerWrapEl) {
+				const pos = this.wrapEl.getBoundingClientRect();
+				const fpos = this.footerWrapEl.getBoundingClientRect();
+				let H = document.documentElement.clientHeight - pos.top - fpos.height;
+				this.wrapEl.style.minHeight = H + "px";
+			}
 		};
 
 		componentDidMount() {
@@ -72,7 +76,17 @@ export function ZpageWraperHOC() {
 			document.removeEventListener("transitionend", this.initDoms, false);
 		}
 		render() {
-			const { className } = this.props;
+			const { className, pageFooter } = this.props;
+			const _footerLinks = pageFooter.links
+				? pageFooter.links
+				: this.props.footerLinks
+					? this.props.footerLinks
+					: footerLinks;
+			const _footerCopyright = pageFooter.copyright
+				? pageFooter.copyright
+				: this.props.footerCopyright
+					? this.props.footerCopyright
+					: footerCopyright;
 			return (
 				<Zlayout.Template>
 					{this.props.pageHeader.show ? <ZpageHeader {...this.newPageHeader} /> : null}
@@ -84,11 +98,13 @@ export function ZpageWraperHOC() {
 					>
 						{this.props.children}
 					</div>
-					<ZpageFooter
-						links={this.props.footerLinks ? this.props.footerLinks : footerLinks}
-						copyright={this.props.footerCopyright ? this.props.footerCopyright : footerCopyright}
-						ref={(el) => (this.footerWrapEl = el)}
-					/>
+					{pageFooter.show ? (
+						<ZpageFooter
+							links={_footerLinks}
+							copyright={_footerCopyright}
+							ref={(el) => (this.footerWrapEl = el)}
+						/>
+					) : null}
 				</Zlayout.Template>
 			);
 		}

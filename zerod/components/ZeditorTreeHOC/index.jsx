@@ -17,30 +17,7 @@ const PageWraper = ZpageWraperHOC();
 
 export function ZeditorTreeHOC(pageConfig) {
 	pageConfig = pageConfig ? pageConfig : {};
-	let defaultConfig = const_getListConfig("tree", [
-		"panelHeader",
-		"showAddBtn",
-		"addBtnPermCode",
-		"addPageRender",
-		"showDetailBtn",
-		"detailBtnPermCode",
-		"detailPageRender",
-		"showUpdateBtn",
-		"updateBtnPermCod",
-		"updatePageRender",
-		"showDeleteBtn",
-		"deleteBtnPermCod",
-		"moreBtnMap",
-		"onMoreBtnClick",
-		"deleteApiInterface",
-		"exportSomething",
-		"treeDataKeys",
-		"treeApiInterface",
-		"childApiInterface",
-		"panelBeforeRender",
-		"panelAfterRender",
-		"moreContentRender",
-	]);
+	let defaultConfig = const_getListConfig("tree","ZtreePanel");
 
 	defaultConfig = mergeConfig(defaultConfig, pageConfig);
 	class List extends React.Component {

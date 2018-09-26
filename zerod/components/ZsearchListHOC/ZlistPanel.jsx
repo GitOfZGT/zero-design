@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { const_showLoading, const_getModalType, const_getPanleHeader } from "../constant";
+import { const_showLoading, const_getModalType, const_getPanleHeader, const_getListConfig } from "../constant";
 import { Button, Icon, Divider, Dropdown, Menu, Modal, message, Tooltip } from "antd";
 import { ZsearchForm } from "../ZsearchForm";
 import cssClass from "./style.scss";
@@ -10,7 +10,7 @@ import { dataTypeTest, deepCopy } from "../zTool";
 
 import tableTemplate from "./tableTemplate";
 import cardTemplate from "./cardTemplate";
-
+let defaultConfig = const_getListConfig("list", "ZlistPanel");
 class ZlistPanel extends React.Component {
 	static propTypes = {
 		listType: PropTypes.string, // table | card
@@ -29,7 +29,7 @@ class ZlistPanel extends React.Component {
 		tableColumns: PropTypes.arrayOf(PropTypes.object), // 表格列map数据数据，同antd的表格 columns
 		moreBtnMap: PropTypes.arrayOf(PropTypes.object), //更多操作按钮的map数据
 		onMoreBtnClick: PropTypes.func, // 更多按钮点击事件
-		actionColumnWidth: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),//表格操作列的宽度
+		actionColumnWidth: PropTypes.oneOfType([PropTypes.string, PropTypes.number]), //表格操作列的宽度
 		actionDataIndex: PropTypes.any, // 操作列的key
 		actionRender: PropTypes.func, // 操作列的render,可以自定义操作列的按钮
 		addBtnPermCode: PropTypes.string, // 新建按钮权限控制代码
@@ -52,13 +52,7 @@ class ZlistPanel extends React.Component {
 		tableParams: PropTypes.object, // 对应antd 的Table的参数
 		insertLocation: PropTypes.string, //  mainRoute | mainModal | appModal
 	};
-	static defaultProps = {
-		tableParams: {},
-		getPageSize: function(listType, isListCard) {
-			return isListCard ? 8 : 10;
-		},
-		actionColumnWidth:360
-	};
+	static defaultProps = defaultConfig.list;
 
 	handleMenuClick = (record) => {
 		return (item) => {
@@ -267,7 +261,7 @@ class ZlistPanel extends React.Component {
 						dataIndex: this.props.actionDataIndex,
 						key: "actionBtns",
 						width: this.props.actionColumnWidth,
-						render: (text, record,index) => {
+						render: (text, record, index) => {
 							if (typeof this.props.actionRender === "function") {
 								return this.props.actionRender(
 									text,

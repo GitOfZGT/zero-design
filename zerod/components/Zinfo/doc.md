@@ -16,6 +16,7 @@ class Myjavascript extends React.Component {
 			key: "serviceCode",
 			label: "服务编码",
 			render: () => {
+               //异步加载自定义项
 				return new Promise((resolve) => {
 					setTimeout(() => {
 						resolve((value, record) => {
@@ -23,6 +24,11 @@ class Myjavascript extends React.Component {
 						});
 					}, 5000);
 				});
+				//    return api.getOptions.then(re=>{
+				//         return (value,record)=>{
+				//               return 自定义内容
+				//         }
+				//     })
 			},
 		},
 		{
@@ -108,7 +114,7 @@ class Myjavascript extends React.Component {
 		</tr>
 		<tr>
 			<td>render</td>
-			<td>自定义value钩子。支持异步加载：必须return的是Promise对象。例如使用了后台接口：(form)=>api.getOptions.then(re=>{return 表单控件})</td>
+			<td>自定义value钩子。支持异步加载：必须return的是Promise对象。例如使用了后台接口：(form)=>api.getOptions.then(re=>{return (value,record)=>自定义内容)})</td>
 			<td>()=>{return function(value,record){return 自定义内容})}</td>
 			<td>--</td>
 		</tr>

@@ -2,6 +2,8 @@
 
 `ZsearchListHOC`是一个函数，传入`pageConfig`参数配置，返回一个有头有尾有查询列表的组件
 
+`ZsearchListHOC`内置了一个`ZlistPanel`组件，可以`import {ZlistPanel} from "zerod"`引入，`ZlistPanel`的props同 `pageConfig.list`
+
 1、基本使用
 
 <div class="z-demo-box" data-render="demo1" data-title="此demo结合ZeditSimpleFormHOC、ZdetailSimpleBaseHOC的完整示例"></div>
@@ -239,12 +241,6 @@ const pageConfig = {
 	</thead>
 	<tbody>
 		<tr>
-			<td>insertLocation</td>
-			<td>这个组件渲染在的位置，mainRoute:main子路由，mainModal:在main子路由区域打开的右边窗口，appModal:在最外层打开的右边窗口</td>
-			<td>mainRoute | mainModal | appModal</td>
-			<td>mainRoute</td>
-		</tr>
-		<tr>
 			<td>pageHeader</td>
 			<td>页头内容,除了show属性，其他属性同 组件/ZpageHeader的Props</td>
 			<td>object</td>
@@ -298,6 +294,12 @@ const pageConfig = {
 		</tr>
 	</thead>
 	<tbody>
+		<tr>
+			<td>insertLocation</td>
+			<td>这个组件渲染在的位置，mainRoute:main子路由，mainModal:在main子路由区域打开的右边窗口，appModal:在最外层打开的右边窗口</td>
+			<td>mainRoute | mainModal | appModal</td>
+			<td>mainRoute</td>
+		</tr>
 		<tr>
 			<td>listType</td>
 			<td>列表类型</td>

@@ -27,7 +27,7 @@ export const Zform = Form.create()(
 		state = {
 			items: [],
 		};
-
+		allAsync = [];
 		methods = {
 			onSubmit: (e) => {
 				e.preventDefault();
@@ -48,10 +48,12 @@ export const Zform = Form.create()(
 			},
 		};
 		setFormValues() {
-			this.props.formDefaultValues && this.props.form.setFieldsValue(this.props.formDefaultValues);
+			this.props.formDefaultValues &&
+				this.state.items.length &&
+				this.props.form.setFieldsValue(this.props.formDefaultValues);
 		}
 		execAsync(callback) {
-			const_initItems.call(this, this.props.items,<Input placeholder="加载中" disabled />,this.props.form);
+			const_initItems.call(this, this.props.items, <Input placeholder="加载中" disabled />, this.props.form);
 			const_execAsync.call(this, callback);
 		}
 		componentDidMount() {
@@ -67,6 +69,9 @@ export const Zform = Form.create()(
 			if (this.props.formDefaultValues !== prevProps.formDefaultValues && !this.allAsync.length) {
 				this.setFormValues();
 			}
+			if (this.props.items !== prevProps.items && !this.allAsync.length) {
+				this.execAsync(this.setFormValues.bind(this));
+			}
 		}
 		getFormItems() {
 			const { getFieldDecorator } = this.props.form;
@@ -77,13 +82,16 @@ export const Zform = Form.create()(
 				return (
 					<CSSTransition key={i} timeout={animateTimout.flipInTime} classNames="fadeIn-to-down">
 						<Col {...span} className={item.className}>
-							<ZpageLoading showLoading={item.loading} size="small" />
 							{isFormItem ? (
 								<Form.Item label={item.label}>
+									<ZpageLoading showLoading={item.loading} size="small" />
 									{getFieldDecorator(item.key, item.options)(control)}
 								</Form.Item>
 							) : (
-								control
+								<div>
+									<ZpageLoading showLoading={item.loading} size="small" />
+									{control}
+								</div>
 							)}
 						</Col>
 					</CSSTransition>

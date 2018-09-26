@@ -155,7 +155,7 @@ export function ZmainHOC(pageConfig) {
 			mainModalTransitionend: null,
 			appModalTransitionend: null,
 			//是否弹出右边窗口
-			showRightModal: (show, witch, content, scroll, onTransitionend) => {
+			showRightModal: function(show, witch, content, scroll, onTransitionend) {
 				// witch = witch ? witch : this.config.rightModalType;
 				let opt = null;
 				if (zTool.dataTypeTest(show) === "object") {
@@ -198,7 +198,7 @@ export function ZmainHOC(pageConfig) {
 				this.methods[witch + "_scroll"] = typeof scroll === "boolean" ? scroll : true;
 				this.methods.currentModalType = witch;
 				return show;
-			},
+			}.bind(this),
 			//右边窗口弹出过渡动画之后执行
 			afterModalTransitionend: (show) => {
 				switch (this.methods.currentModalType) {

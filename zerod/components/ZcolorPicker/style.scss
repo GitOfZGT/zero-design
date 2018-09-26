@@ -47,10 +47,14 @@ $--p: 2px;
 
 @include z("picker") {
 	position: absolute;
-	box-sizing: initial;
+	box-sizing: content-box;
 	:global{
 		div,input,span{
-			box-sizing: initial;
+			box-sizing: content-box;
+		}
+		.flexbox-fix{
+			display: flex;
+			flex-wrap: wrap;
 		}
 	}
 }

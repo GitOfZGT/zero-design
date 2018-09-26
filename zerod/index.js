@@ -27,6 +27,7 @@ export const ZlistPanel = panel;
 export { default as ZmainHOC } from "./components/ZmainHOC";
 export { default as ZappHOC } from "./components/ZappHOC";
 export { default as ZeditorTreeHOC } from "./components/ZeditorTreeHOC";
+export { default as ZtreePanel } from "./components/ZeditorTreeHOC/ZtreePanel";
 
 export { default as ZerodMainContext } from "./components/ZerodMainContext";
 export { default as ZerodRootContext } from "./components/ZerodRootContext";

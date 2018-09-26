@@ -31,6 +31,7 @@ class Zinfo extends React.Component {
 		items: [],
 		detailData: this.props.fieldValue,
 	};
+	allAsync=[];
 	execAsync(callback) {
 		const_initItems.call(
 			this,

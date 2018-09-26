@@ -64,7 +64,7 @@ class OpenModal extends React.Component {
 const OutPut = ZerodMainContext.setConsumer(OpenModal);
 ```
 
-## 显示路由区域: loading showRouteLoading()
+## 显示主页路由区域loading: showRouteLoading()
 
 showRouteLoading 函数有一个参数，`show`:是否显示
 
@@ -94,7 +94,7 @@ const OutPut = ZerodMainContext.setConsumer(MyScript);
 return <OutPut />;
 ```
 
-## 显示右边窗口: loading showModalLoading()
+## 显示右边窗口loading:  showModalLoading()
 
 showModalLoading 函数有两个参数，`show`:是否显示，`modal`: "mainModal" | "appModal"
 

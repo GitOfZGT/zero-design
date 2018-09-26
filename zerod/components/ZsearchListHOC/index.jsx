@@ -17,34 +17,7 @@ const PageWraper = ZpageWraperHOC();
 
 export function ZsearchListHOC(pageConfig) {
 	pageConfig = pageConfig ? pageConfig : {};
-	let defaultConfig = const_getListConfig("list", [
-		"listType",
-		"cardCoverRender",
-		"panelHeader",
-		"actionDataIndex",
-		"actionRender",
-		"tableParams",
-		"tableColumns",
-		"showAddBtn",
-		"addBtnPermCode",
-		"addPageRender",
-		"showDetailBtn",
-		"detailBtnPermCode",
-		"detailPageRender",
-		"showUpdateBtn",
-		"updateBtnPermCod",
-		"updatePageRender",
-		"showDeleteBtn",
-		"deleteBtnPermCod",
-		"moreBtnMap",
-		"onMoreBtnClick",
-		"listApiInterface",
-		"deleteApiInterface",
-		"exportSomething",
-		"showPagination",
-		"paginationType",
-		"getPageSize",
-	]);
+	let defaultConfig = const_getListConfig("list", "ZlistPanel");
 
 	defaultConfig = mergeConfig(defaultConfig, pageConfig);
 	class List extends React.Component {

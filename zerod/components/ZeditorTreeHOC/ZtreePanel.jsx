@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { const_showLoading, const_getModalType ,const_getPanleHeader} from "../constant";
+import { const_showLoading, const_getModalType ,const_getPanleHeader,const_getListConfig} from "../constant";
 import { Button, Tree, Modal, message } from "antd";
 const TreeNode = Tree.TreeNode;
 import { ZsearchForm } from "../ZsearchForm";
@@ -10,7 +10,7 @@ import ZerodMainContext from "../ZerodMainContext";
 import { dataTypeTest, deepCopy } from "../zTool";
 import { Zlayout } from "../Zlayout";
 import { Object } from "core-js";
-
+let defaultConfig = const_getListConfig("list", "ZtreePanel");
 class ZtreePanel extends React.Component {
 	static propTypes = {
 		treeDataKeys: PropTypes.object,
@@ -43,10 +43,7 @@ class ZtreePanel extends React.Component {
 		detailPageRender: PropTypes.func, // 详情页面渲染模板
 		insertLocation: PropTypes.string, //  mainRoute | mainModal | appModal
 	};
-	static defaultProps = {
-		treeDataKeys: {},
-		childApiInterface: false,
-	};
+	static defaultProps = defaultConfig.tree;
 	treeDataKeys = Object.assign({ name: "name", id: "id", children: "children" }, this.props.treeDataKeys);
 	state = {
 		treeData: [],

@@ -54,19 +54,19 @@ const pageHeader = {
 	<tbody>
 		<tr>
 			<td>pageHeader</td>
-			<td>页头内容,除了show属性，其他属性同 组件/ZpageHeader的Props</td>
+			<td>页头内容,除了show属性(默认true)，其他属性同 组件/ZpageHeader的Props</td>
 			<td>object</td>
 			<td>--</td>
 		</tr>
 		<tr>
 			<td>pageFooter</td>
-			<td>页尾内容,除了show属性，其他属性同 组件/ZpageFooter的Props</td>
+			<td>页尾内容,除了show属性(默认true)，其他属性同 组件/pageFooter的Props</td>
 			<td>object</td>
 			<td>--</td>
 		</tr>
 		<tr>
 			<td>hasBodyPadding</td>
-			<td>中间部分是否由padding值</td>
+			<td>中间部分是否有padding值</td>
 			<td>boolean</td>
 			<td>true</td>
 		</tr>

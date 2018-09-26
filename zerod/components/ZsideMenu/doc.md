@@ -55,7 +55,7 @@ const menus = [
 	<tbody>
 		<tr>
 			<td>menuData</td>
-			<td>菜单数据，每个对象的属性有iconClass、name、path、若有子菜单，则还有children属性</td>
+			<td>菜单数据，每个对象的属性有iconClass：小图标、name、path：路由地址、若有子菜单，则还有children属性</td>
 			<td>array[object]</td>
 			<td>-</td>
 		</tr>
@@ -68,6 +68,12 @@ const menus = [
         <tr>
 			<td>theme</td>
 			<td>菜单的主题 'light' | 'dark'</td>
+			<td>string</td>
+			<td>light</td>
+		</tr>
+        <tr>
+			<td>openAllSubmenu</td>
+			<td>是否展开所有二级菜单</td>
 			<td>string</td>
 			<td>light</td>
 		</tr>
