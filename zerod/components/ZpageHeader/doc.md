@@ -89,6 +89,8 @@ export default PageHeader;
 
 ## ZpageHeader 的 Props
 
+可追加`className`、`style`
+
 <table>
 	<thead>
 		<tr>

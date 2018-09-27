@@ -25,32 +25,38 @@ export class ZpageHeader extends React.Component {
 			content,
 			breadcrumbParams,
 			breadcrumbRoutes,
+			className,
+			...others
 		} = this.props;
 		const mb = "bottom-16";
 		return (
-			<section className={cssClass["z-page-header"]}>
+			<section className={`${cssClass["z-page-header"]} ${className ? className : ""}`} {...others}>
 				{breadcrumbRoutes && breadcrumbRoutes.length ? (
 					<div className={`z-padding-${mb}`}>
 						<Breadcrumb itemRender={itemRender} routes={breadcrumbRoutes} params={breadcrumbParams} />
 					</div>
 				) : null}
 				<div className="z-flex z-padding-left-30">
-					{trademark ? typeof trademark ==="function" ? trademark() : <div>{trademark}</div> : null}
+					{trademark ? typeof trademark === "function" ? trademark() : <div>{trademark}</div> : null}
 					<div className="z-flex-1">
-						{title?typeof title === "function" ? (
-							title()
-						) : (
-							<header className={`${cssClass["z-page-header-title"]}`}>{title}</header>
-						):null}
-						{content?typeof content === "function" ? (
-							content()
-						) : (
-							<p className={`z-margin-bottom-10 z-text-gray`}>{content}</p>
-						):null}
-						<ul className={`${cssClass['z-pillars']} z-clear-fix z-margin-bottom-20`}>
-							<li className={`z-float-left ${cssClass['blue']}`}></li>
-							<li className={`z-float-left ${cssClass['yellow']}`}></li>
-							<li className={`z-float-left ${cssClass['green']}`}></li>
+						{title ? (
+							typeof title === "function" ? (
+								title()
+							) : (
+								<header className={`${cssClass["z-page-header-title"]}`}>{title}</header>
+							)
+						) : null}
+						{content ? (
+							typeof content === "function" ? (
+								content()
+							) : (
+								<p className={`z-margin-bottom-10 z-text-gray`}>{content}</p>
+							)
+						) : null}
+						<ul className={`${cssClass["z-pillars"]} z-clear-fix z-margin-bottom-20`}>
+							<li className={`z-float-left ${cssClass["blue"]}`} />
+							<li className={`z-float-left ${cssClass["yellow"]}`} />
+							<li className={`z-float-left ${cssClass["green"]}`} />
 						</ul>
 					</div>
 					{typeof rightMoreContent === "function" ? rightMoreContent() : rightMoreContent}

@@ -38,7 +38,7 @@ export function ZpageWraperHOC() {
 			hasBodyPadding: PropTypes.bool,
 		};
 		static defaultProps = {
-			pageHeader: { show: true },
+			pageHeader: { show: false },
 			pageFooter: { show: true },
 			hasBodyPadding: true,
 		};
@@ -77,16 +77,14 @@ export function ZpageWraperHOC() {
 		}
 		render() {
 			const { className, pageFooter } = this.props;
-			const _footerLinks = pageFooter.links
-				? pageFooter.links
-				: this.props.footerLinks
-					? this.props.footerLinks
-					: footerLinks;
-			const _footerCopyright = pageFooter.copyright
-				? pageFooter.copyright
+			const { show,links, copyright,ref, ...footerOther } = pageFooter;
+			const _footerLinks = links ? links : this.props.footerLinks ? this.props.footerLinks : footerLinks;
+			const _footerCopyright = copyright
+				? copyright
 				: this.props.footerCopyright
 					? this.props.footerCopyright
 					: footerCopyright;
+
 			return (
 				<Zlayout.Template>
 					{this.props.pageHeader.show ? <ZpageHeader {...this.newPageHeader} /> : null}
@@ -103,6 +101,7 @@ export function ZpageWraperHOC() {
 							links={_footerLinks}
 							copyright={_footerCopyright}
 							ref={(el) => (this.footerWrapEl = el)}
+							{...footerOther}
 						/>
 					) : null}
 				</Zlayout.Template>

@@ -55,7 +55,7 @@ const menus = [
 	<tbody>
 		<tr>
 			<td>menuData</td>
-			<td>菜单数据，每个对象的属性有iconClass：小图标、name、path：路由地址、若有子菜单，则还有children属性</td>
+			<td>菜单数据，每个对象的属性有iconClass：小图标、name、path：路由地址必须以"/"开头的、若有子菜单，则还有children属性</td>
 			<td>array[object]</td>
 			<td>-</td>
 		</tr>
@@ -76,6 +76,18 @@ const menus = [
 			<td>是否展开所有二级菜单</td>
 			<td>string</td>
 			<td>light</td>
+		</tr>
+        <tr>
+			<td>onSelect</td>
+			<td>点击选中菜单项触发的函数，如果函数内return false 则不会跳转menuData中对应项的path路径</td>
+			<td>function({ item, key, selectedKeys }){}</td>
+			<td>--</td>
+		</tr>
+        <tr>
+			<td>onOpenChange</td>
+			<td>展开/折叠二级菜单触发的函数，并且是展开/折叠过渡动画完了才触发</td>
+			<td>function(keys){}</td>
+			<td>--</td>
 		</tr>
 	</tbody>
 </table>

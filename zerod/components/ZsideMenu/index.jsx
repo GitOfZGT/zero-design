@@ -58,7 +58,7 @@ class Com extends React.Component {
 		if (this.props.onOpenChange) {
 			clearTimeout(this.openTimer);
 			this.openTimer = setTimeout(() => {
-				this.props.onOpenChange();
+				this.props.onOpenChange(keys);
 			}, 300);
 		}
 		this.isOpenClick = true;
@@ -67,8 +67,9 @@ class Com extends React.Component {
 		});
 	};
 	onSelect = ({ item, key, selectedKeys }) => {
-		if (/^\/[A-Za-z0-9]*/.test(key)) this.props.history.push(key);
-		this.props.onSelect && this.props.onSelect({ item, key, selectedKeys });
+		let selected = true;
+		if (this.props.onSelect) selected = this.props.onSelect({ item, key, selectedKeys });
+		if (/^\/[A-Za-z0-9]*/.test(key) && selected!==false) this.props.history.push(key);
 	};
 	defaultOpenKeys = [];
 	findKeys = (arr, currentPath) => {

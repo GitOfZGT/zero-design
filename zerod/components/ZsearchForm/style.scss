@@ -3,6 +3,12 @@
 
 $--row-gutter: 12px;
 @include z("form-row") {
+	:global {
+		.ant-form-item-children,.ant-input-number{
+			width: 100%;
+			display: block;
+        }
+	}
 	margin-left: -$--row-gutter;
 	margin-right: -$--row-gutter;
 	& > div {

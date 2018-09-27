@@ -1,6 +1,6 @@
 # 查询表单：ZsearchForm
 
-`ZsearchForm`是有栅栏布局的横向排版的，将`antd`的`Form`、`Form.item` 的结构转成数据结构直接渲染的方式
+`ZsearchForm`是有栅栏布局的横向排版的，将`antd`的`Form`、`Form.item` 的结构转成数据结构直接渲染的方式，并且带有查询、重置、折叠按钮
 
 1、基本使用
 
@@ -17,7 +17,12 @@ class Myjavascript extends React.Component {
 			key: "serviceCode",
 			label: "服务编码",
 			render: (form) => {
-				return <Input placeholder="请输入服务编码" />;
+				//异步加载表单控件
+				return new Promise((resolve) => {
+					setTimeout(() => {
+						resolve(<Input placeholder="请输入服务编码" />);
+					}, 5000);
+				});
 			},
 			//antd的 form.getFieldDecorator的options
 			options: {
@@ -47,6 +52,23 @@ class Myjavascript extends React.Component {
 				],
 			},
 		},
+		{
+			key: "serviceRemark",
+			label: "服务说明",
+			render: (form) => {
+				return <Input.TextArea rows={2} placeholder="请输入服务说明" />;
+			},
+			//antd的 form.getFieldDecorator的options
+			options: {
+				//验证规则
+				rules: [
+					{
+						required: true,
+						message: "不能为空。",
+					},
+				],
+			},
+		},
 	];
 	render() {
 		return (
@@ -55,6 +77,7 @@ class Myjavascript extends React.Component {
 				onSearch={(values) => {
 					message.success("提交成功：" + JSON.stringify(values));
 				}}
+				collapseCount={2}
 			/>
 		);
 	}
@@ -117,7 +140,6 @@ class Myjavascript extends React.Component {
 		</tr>
 	</tbody>
 </table>
-
 
 ## items 结构
 
