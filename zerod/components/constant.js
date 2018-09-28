@@ -34,8 +34,10 @@ export const animateTimout = {
 	flipOutTime: 300,
 };
 //如在Zform中使用const_initItems.call(this,this.props.items,<Input placeholder="加载中" disabled />);
-export const const_initItems = function(items, disableControl, renderArgument = {}) {
+export const const_initItems = function(items, disableControl, renderArgument = {},callback) {
+	callback = typeof callback == "function" ? callback : function() {};
 	this.allAsync = [];
+	this.filedKeys=[];
 	const newItems = items.map((item, index) => {
 		let render = item.render;
 		if (render && typeof render !== "function") {
@@ -72,11 +74,15 @@ export const const_initItems = function(items, disableControl, renderArgument = 
 			control,
 			span,
 		};
+		this.filedKeys.push(item.key);
 		return newItem;
 	});
-	this.setState({
-		items: newItems,
-	});
+	this.setState(
+		{
+			items: newItems,
+		},
+		callback,
+	);
 };
 //如在Zform中使用 const_execAsync.call(this,callback);
 export const const_execAsync = function(callback) {
@@ -101,8 +107,6 @@ export const const_execAsync = function(callback) {
 				callback,
 			);
 		});
-	} else {
-		callback();
 	}
 };
 //ZtreePanel和ZlistPanel的heading,这里不能是箭头函数

@@ -31,8 +31,8 @@ class Zinfo extends React.Component {
 		items: [],
 		detailData: this.props.fieldValue,
 	};
-	allAsync=[];
-	execAsync(callback) {
+	allAsync = [];
+	execAsync() {
 		const_initItems.call(
 			this,
 			this.props.items,
@@ -41,7 +41,7 @@ class Zinfo extends React.Component {
 			},
 			this.props.fieldValue,
 		);
-		const_execAsync.call(this, callback);
+		const_execAsync.call(this);
 	}
 	setFieldValue() {
 		if (this.props.fieldValue)
@@ -50,10 +50,13 @@ class Zinfo extends React.Component {
 			});
 	}
 	componentDidMount() {
-		this.execAsync(this.setFieldValue.bind(this));
+		this.execAsync();
 	}
-	componentDidUpdate(prevProps) {
-		if (this.props.fieldValue !== prevProps.fieldValue && !this.allAsync.length) {
+	componentDidUpdate(prevProps, prevState) {
+		if (
+			(this.props.fieldValue !== prevProps.fieldValue || this.state.items !== prevState.items) &&
+			!this.allAsync.length
+		) {
 			this.setFieldValue();
 		}
 	}

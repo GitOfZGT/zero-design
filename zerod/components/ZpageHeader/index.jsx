@@ -26,6 +26,7 @@ export class ZpageHeader extends React.Component {
 			breadcrumbParams,
 			breadcrumbRoutes,
 			className,
+			show,
 			...others
 		} = this.props;
 		const mb = "bottom-16";

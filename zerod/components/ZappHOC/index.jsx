@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter as Router, Route, Redirect, Switch } from "react-router-dom";
+import { HashRouter as Router, Route, Redirect, Switch } from "react-router-dom";
 import { LocaleProvider } from "antd";
 import zh_CN from "antd/lib/locale-provider/zh_CN";
 import Zlayout from "../Zlayout";
@@ -10,6 +10,15 @@ function ZappHOC(pageConfig) {
 		rootRoutes: [],
 		footerLinks: null,
 		footerCopyright: null,
+		responseKeys: {
+			listType: {
+				list: "list",
+				pageSize: "pageSize",
+				pageNumber: "currPage",
+				totalCount: "totalCount",
+				totalPage: "totalPage",
+			},
+		},
 	};
 	defaultConfig = zTool.mergeConfig(defaultConfig, pageConfig);
 	class App extends React.Component {

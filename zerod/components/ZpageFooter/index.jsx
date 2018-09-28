@@ -7,7 +7,7 @@ class Com extends React.Component {
 		copyright: PropTypes.oneOfType([PropTypes.func, PropTypes.string]),
 	};
 	render() {
-		const { links, copyright,className,forwardRef,ref,...others } = this.props;
+		const {show, links, copyright,className,forwardRef,ref,...others } = this.props;
 		return (
 			<div
 				className={`${cssClass["z-page-footer"]} ${className ? className : ""}`}

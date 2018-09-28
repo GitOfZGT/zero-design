@@ -48,16 +48,21 @@ export const Zform = Form.create()(
 			},
 		};
 		setFormValues() {
-			this.props.formDefaultValues &&
-				this.state.items.length &&
-				this.props.form.setFieldsValue(this.props.formDefaultValues);
+			if (this.props.formDefaultValues && this.state.items.length) {
+				const newValues = {};
+				this.filedKeys.forEach((key) => {
+					const value = this.props.formDefaultValues[key];
+					if (value !== undefined) newValues[key] = value;
+				});
+				this.props.form.setFieldsValue(newValues);
+			}
 		}
-		execAsync(callback) {
+		execAsync() {
 			const_initItems.call(this, this.props.items, <Input placeholder="加载中" disabled />, this.props.form);
-			const_execAsync.call(this, callback);
+			const_execAsync.call(this);
 		}
 		componentDidMount() {
-			this.execAsync(this.setFormValues.bind(this));
+			this.execAsync();
 			this.props.getFormInstance && this.props.getFormInstance(this.props.form);
 			this.props.getInbuiltTool &&
 				this.props.getInbuiltTool({
@@ -65,12 +70,16 @@ export const Zform = Form.create()(
 					submit: this.methods.onSubmit,
 				});
 		}
-		componentDidUpdate(prevProps) {
-			if (this.props.formDefaultValues !== prevProps.formDefaultValues && !this.allAsync.length) {
+		componentDidUpdate(prevProps, prevState) {
+			if (
+				(this.props.formDefaultValues !== prevProps.formDefaultValues ||
+					this.state.items !== prevState.items) &&
+				!this.allAsync.length
+			) {
 				this.setFormValues();
 			}
 			if (this.props.items !== prevProps.items && !this.allAsync.length) {
-				this.execAsync(this.setFormValues.bind(this));
+				this.execAsync();
 			}
 		}
 		getFormItems() {

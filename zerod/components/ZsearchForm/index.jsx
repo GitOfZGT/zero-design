@@ -48,27 +48,36 @@ export const ZsearchForm = Form.create()(
 			collapseCount: this.props.collapseCount,
 		};
 		setFormValues() {
-			this.props.formDefaultValues &&
-				this.state.items.length &&
-				this.props.form.setFieldsValue(this.props.formDefaultValues);
+			if (this.props.formDefaultValues && this.state.items.length) {
+				const newValues = {};
+				this.filedKeys.forEach((key) => {
+					const value = this.props.formDefaultValues[key];
+					if (value !== undefined) newValues[key] = value;
+				});
+				this.props.form.setFieldsValue(newValues);
+			}
 		}
-		execAsync(callback) {
+		execAsync() {
 			const items = this.props.items ? this.props.items : this.props.colFormItems;
 			const_initItems.call(this, items, <Input placeholder="加载中" disabled />, this.props.form);
-			const_execAsync.call(this, callback);
+			const_execAsync.call(this);
 		}
 		componentDidMount() {
-			this.execAsync(this.setFormValues.bind(this));
+			this.execAsync();
 		}
-		componentDidUpdate(prevProps) {
-			if (this.props.formDefaultValues !== prevProps.formDefaultValues && !this.allAsync.length) {
+		componentDidUpdate(prevProps,prevState) {
+			if (
+				(this.props.formDefaultValues !== prevProps.formDefaultValues ||
+					this.state.items !== prevState.items) &&
+				!this.allAsync.length
+			) {
 				this.setFormValues();
 			}
 			if (
 				(this.props.items !== prevProps.items || this.props.colFormItems !== prevProps.colFormItems) &&
 				!this.allAsync.length
 			) {
-				this.execAsync(this.setFormValues.bind(this));
+				this.execAsync();
 			}
 		}
 		getFormItems() {
