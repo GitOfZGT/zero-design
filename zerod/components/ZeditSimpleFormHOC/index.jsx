@@ -167,6 +167,7 @@ export function ZeditSimpleFormHOC(pageConfig) {
 								submitBtnRender={this.config.form.submitBtnRender}
 								submitBtnName={this.config.form.showSubmitBtn ? this.config.form.submitBtnName : ""}
 								submitMsg={this.config.form.submitMsg}
+								formDefaultValues={this.config.form.formDefaultValues}
 							/>
 						</div>
 					</div>
