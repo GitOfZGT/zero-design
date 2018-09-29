@@ -21,7 +21,7 @@ class TreeTitle extends React.Component {
 
 	//更多操作按钮
 	moreMenu = (record, index) => {
-		const onClick = this.handleMenuClick(record);
+		const onClick = this.methods.handleMenuClick(record);
 		const items = [];
 		this.props.moreBtnMap.forEach((item) => {
 			const { show, name, ...others } = item;

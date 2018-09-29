@@ -56,15 +56,11 @@ class ZlistPanel extends React.Component {
 	};
 	static defaultProps = defaultConfig.list;
 
-	handleMenuClick = (record) => {
-		return (item) => {
-			this.props.onMoreBtnClick && this.props.onMoreBtnClick(item, record, this.getExportSomething());
-		};
-	};
+
 	hasMoreMenu = this.props.moreBtnMap && this.props.moreBtnMap.length;
 	//更多操作按钮
 	moreMenu = (record, index) => {
-		const onClick = this.handleMenuClick(record);
+		const onClick = this.methods.handleMenuClick(record);
 		const items = [];
 		this.props.moreBtnMap.forEach((item) => {
 			const { show, name, ...others } = item;
@@ -92,6 +88,11 @@ class ZlistPanel extends React.Component {
 	searchQuery = null;
 	sorter = {};
 	methods = {
+		handleMenuClick : (record) => {
+			return (item) => {
+				this.props.onMoreBtnClick && this.props.onMoreBtnClick(item, record, this.getExportSomething());
+			};
+		},
 		showLoading: (show) => {
 			const_showLoading(this.props.insertLocation, this.props)(show);
 		},
