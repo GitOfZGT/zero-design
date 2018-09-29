@@ -293,6 +293,18 @@ export default ZeditSimpleFormHOC(pageConfig);
 			<td>(detail,tool) =>{return;}</td>
 			<td>--</td>
 		</tr>
+		<tr>
+			<td>panelBeforeRender</td>
+			<td>列表面板上面的渲染函数</td>
+			<td>function(detail,tool){return ReacNode|Element;}</td>
+			<td>--</td>
+		</tr>
+		<tr>
+			<td>panelAfterRender</td>
+			<td>列表面板下面的渲染函数</td>
+			<td>function(detail,tool){return ReacNode|Element;}</td>
+			<td>--</td>
+		</tr>
 	</tbody>
 </table>
 
@@ -352,7 +364,7 @@ export default ZeditSimpleFormHOC(pageConfig);
 		</tr>
 		<tr>
 			<td>detailApiInterface</td>
-			<td>获取详细数据的后台接口函数,必须返回Promise,只有form.type="update"才自动调用,参数有 detailId : ZeditSimpleFormHOC(pageConfig)得到组件的detailId属性，props ：ZeditSimpleFormHOC(pageConfig)得到组件的其他属性</td>
+			<td>获取详细数据的后台接口函数,必须返回Promise,只有form.type="update"才自动调用,参数有 detailId : ZeditSimpleFormHOC(pageConfig)得到组件的detailId属性，props ：ZeditSimpleFormHOC(pageConfig)得到组件的其他属性。接口响应体的data属性必须 object类型</td>
 			<td>(detailId, props,tool) =>{return Promise;}</td>
 			<td>--</td>
 		</tr>

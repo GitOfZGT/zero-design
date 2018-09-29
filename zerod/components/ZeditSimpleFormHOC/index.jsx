@@ -74,6 +74,14 @@ export function ZeditSimpleFormHOC(pageConfig) {
 		moreContentRender: (detail, tool) => {
 			return null;
 		},
+		// 更多渲染内容函数
+		panelBeforeRender: (detail, tool) => {
+			return null;
+		},
+		// 更多渲染内容函数
+		panelAfterRender: (detail, tool) => {
+			return null;
+		},
 	};
 	defaultConfig = mergeConfig(defaultConfig, pageConfig);
 	class myForm extends React.Component {
@@ -147,6 +155,7 @@ export function ZeditSimpleFormHOC(pageConfig) {
 			showLoading: this.methods.showLoading,
 			closeRightModal: this.methods.closeRightModal,
 			showRightModal: this.props.showRightModal,
+			methods:this.methods,
 		};
 
 		componentDidMount() {
@@ -155,24 +164,37 @@ export function ZeditSimpleFormHOC(pageConfig) {
 			}
 		}
 		render() {
+			const {
+				type,
+				panelHeader,
+				detailApiInterface,
+				submitApiInterface,
+				showSubmitBtn,
+				afterSubmitSuccess,
+				getFormInstance,
+				onSubmit,
+				submitBtnName,
+				...formOthers
+			} = this.config.form;
 			return (
 				<PageWraper pageHeader={this.config.pageHeader}>
+					{typeof this.config.moreContentRender === "function" &&
+						this.config.panelBeforeRender(this.detailData, this.tool)}
 					<div className="z-panel">
 						{this.getPanleHeader()}
 						<div className="z-panel-body">
 							<Zform
+								{...formOthers}
 								onSubmit={this.methods.onSubmit}
-								items={this.config.form.items}
 								getFormInstance={this.getFormInstance}
-								submitBtnRender={this.config.form.submitBtnRender}
 								submitBtnName={this.config.form.showSubmitBtn ? this.config.form.submitBtnName : ""}
-								submitMsg={this.config.form.submitMsg}
-								formDefaultValues={this.config.form.formDefaultValues}
 							/>
+							{typeof this.config.moreContentRender === "function" &&
+								this.config.moreContentRender(this.detailData, this.tool)}
 						</div>
 					</div>
 					{typeof this.config.moreContentRender === "function" &&
-						this.config.moreContentRender(this.detailData, this.tool)}
+						this.config.panelAfterRender(this.detailData, this.tool)}
 				</PageWraper>
 			);
 		}

@@ -2,7 +2,7 @@
 
 `ZsearchListHOC`是一个函数，传入`pageConfig`参数配置，返回一个有头有尾有查询列表的组件
 
-`ZsearchListHOC`内置了一个`ZlistPanel`组件，可以`import {ZlistPanel} from "zerod"`引入，`ZlistPanel`的props同 `pageConfig.list`
+`ZsearchListHOC`内置了一个`ZlistPanel`组件，可以`import {ZlistPanel} from "zerod"`引入，`ZlistPanel`的 props 同 `pageConfig.list`
 
 1、基本使用
 
@@ -350,7 +350,7 @@ const pageConfig = {
 		</tr>
 		<tr>
 			<td>listApiInterface</td>
-			<td>获取列表数据的后台接口函数,其必须返回Promise,参数有query:查询表单相关值、分页数据、排序字段,sorter:更多排序数据</td>
+			<td>获取列表数据的后台接口函数,其必须返回Promise,参数有query:查询表单相关值、分页数据、排序字段,sorter:更多排序数据。接口响应体的data属性支持 array和object类型</td>
 			<td>(query,sorter) => Promise对象</td>
 			<td>--</td>
 		</tr>
@@ -446,7 +446,7 @@ const pageConfig = {
 		</tr>
 		<tr>
 			<td>moreBtnMap</td>
-			<td>更多操作按钮的map数据,[{key: "0",name: "默认的按钮",}]</td>
+			<td>更多操作按钮的map数据,[{key: "0",name: "默认的按钮",show: boolean | function(record,index,item){},disabled:boolean}]</td>
 			<td>array[object]</td>
 			<td>--</td>
 		</tr>

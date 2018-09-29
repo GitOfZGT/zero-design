@@ -1,12 +1,10 @@
 import React from "react";
 // import { withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
-import { const_showLoading, animateTimout } from "../constant";
-import { message, Row, Col } from "antd";
-import { CSSTransition, TransitionGroup } from "react-transition-group";
-import cssClass from "./style.scss";
+import { const_showLoading,  } from "../constant";
+import { message, } from "antd";
 // 工具
-import { dataTypeTest, mergeConfig } from "../zTool/";
+import { mergeConfig } from "../zTool/";
 // 上下文
 import ZerodMainContext from "../ZerodMainContext";
 import Zinfo from "../Zinfo";
@@ -58,6 +56,14 @@ export function ZdetailSimpleBaseHOC(pageConfig) {
 		moreContentRender: (detail) => {
 			return null;
 		},
+		// 更多渲染内容函数
+		panelBeforeRender: (detail, tool) => {
+			return null;
+		},
+		// 更多渲染内容函数
+		panelAfterRender: (detail, tool) => {
+			return null;
+		},
 	};
 	defaultConfig = mergeConfig(defaultConfig, pageConfig);
 	class myDetail extends React.Component {
@@ -97,6 +103,7 @@ export function ZdetailSimpleBaseHOC(pageConfig) {
 		}
 		tool = {
 			showLoading: this.methods.showLoading,
+			methods:this.methods,
 		};
 		componentDidMount() {
 			this.methods.getDetailData();
@@ -104,6 +111,8 @@ export function ZdetailSimpleBaseHOC(pageConfig) {
 		render() {
 			return (
 				<PageWraper pageHeader={this.config.pageHeader}>
+				{typeof this.config.moreContentRender === "function" &&
+						this.config.panelBeforeRender(this.state.detailData, this.tool)}
 					<div className="z-panel">
 						{this.getPanleHeader()}
 						<div className="z-panel-body">
@@ -112,10 +121,12 @@ export function ZdetailSimpleBaseHOC(pageConfig) {
 								fieldValue={this.state.detailData}
 								defaultSpan={this.config.detail.defaultSpan}
 							/>
+							{typeof this.config.moreContentRender === "function" &&
+						this.config.moreContentRender(this.state.detailData, this.tool)}
 						</div>
 					</div>
 					{typeof this.config.moreContentRender === "function" &&
-						this.config.moreContentRender(this.state.detailData, this.tool)}
+						this.config.panelAfterRender(this.state.detailData, this.tool)}
 				</PageWraper>
 			);
 		}

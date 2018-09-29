@@ -6,27 +6,30 @@ class TreeTitle extends React.Component {
 	static propTypes = {
 		name: PropTypes.string,
 		record: PropTypes.any,
+		index: PropTypes.number,
 		moreBtnMap: PropTypes.arrayOf(PropTypes.object),
 		onMoreBtnClick: PropTypes.func,
 		onDetailClick: PropTypes.func,
 		onUpdateClick: PropTypes.func,
 		onDeleteClick: PropTypes.func,
+		showDetailBtn: PropTypes.oneOfType([PropTypes.func, PropTypes.bool]), // 是否显示详情按钮
+		showUpdateBtn: PropTypes.oneOfType([PropTypes.func, PropTypes.bool]), // 是否显示修改按钮
+		showDeleteBtn: PropTypes.oneOfType([PropTypes.func, PropTypes.bool]), // 是否显示删除按钮
 	};
 
 	hasMoreMenu = this.props.moreBtnMap && this.props.moreBtnMap.length;
+
 	//更多操作按钮
-	moreMenu(record) {
-		const onClick = this.methods.handleMenuClick(record);
-		return this.hasMoreMenu ? (
-			<Menu onClick={onClick}>
-				{this.props.moreBtnMap.map((item) => {
-					return <Menu.Item key={item.key}>{item.name}</Menu.Item>;
-				})}
-			</Menu>
-		) : (
-			<span />
-		);
-	}
+	moreMenu = (record, index) => {
+		const onClick = this.handleMenuClick(record);
+		const items = [];
+		this.props.moreBtnMap.forEach((item) => {
+			const { show, name, ...others } = item;
+			const _show = typeof show == "function" ? show(record, index, item) : show === undefined ? true : show;
+			if (_show) items.push(<Menu.Item {...others}>{name}</Menu.Item>);
+		});
+		return this.hasMoreMenu ? <Menu onClick={onClick}>{items}</Menu> : <span />;
+	};
 	methods = {
 		handleMenuClick: (record) => {
 			return (item) => {
@@ -47,23 +50,33 @@ class TreeTitle extends React.Component {
 		},
 	};
 	render() {
+		const { showDetailBtn, showUpdateBtn, showDeleteBtn, record, index } = this.props;
+		const _showDetailBtn = typeof showDetailBtn == "function" ? showDetailBtn(record, index) : showDetailBtn;
+		const _showUpdateBtn = typeof showUpdateBtn == "function" ? showDetailBtn(record, index) : showUpdateBtn;
+		const _showDeleteBtn = typeof showDeleteBtn == "function" ? showDetailBtn(record, index) : showDeleteBtn;
 		return (
 			<span className="z-flex-space-between">
 				<span>{this.props.name}</span>
 				<span className={cssClass["z-tree-line"]} />
 				<span className={cssClass["z-tree-btns"]}>
-					<Button type="defualt" size="small" onClick={this.methods.detailBtnClick}>
-						详情
-					</Button>
-					<Button type="primary" size="small" onClick={this.methods.updateBtnClick}>
-						修改
-					</Button>
-					<Button type="danger" size="small" onClick={this.methods.deleteBtnClick}>
-						删除
-					</Button>
+					{_showDetailBtn ? (
+						<Button type="defualt" size="small" onClick={this.methods.detailBtnClick}>
+							详情
+						</Button>
+					) : null}
+					{_showUpdateBtn ? (
+						<Button type="primary" size="small" onClick={this.methods.updateBtnClick}>
+							修改
+						</Button>
+					) : null}
+					{_showDeleteBtn ? (
+						<Button type="danger" size="small" onClick={this.methods.deleteBtnClick}>
+							删除
+						</Button>
+					) : null}
 					<Dropdown
 						key="more"
-						overlay={this.moreMenu(this.props.record)}
+						overlay={this.moreMenu(record, index)}
 						trigger={["click"]}
 						placement="bottomRight"
 					>

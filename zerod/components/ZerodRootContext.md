@@ -11,3 +11,7 @@
 ## 页面的底部版权信息：footerCopyright
 
 对应`ZappHOC`的 pageConfig.footerCopyright
+
+## 用于转发后台接口响应体数据的key
+
+对应`ZappHOC`的 pageConfig.responseKeys

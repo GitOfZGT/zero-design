@@ -19,13 +19,13 @@ $--label-color:$heading-color;
 		border-right: 1px solid $border-color;
 	}
 	@at-root {
-		//z-info-left
+		$--p:10px;
 		@include z("info-left", $global: true) {
 			position: relative;
 			color: $--label-color;
 			margin: 0;
             width: 160px;
-			padding: 10px 16px 0px;
+			padding: $--p 16px 0px;
 			display: flex;
 			align-items: center;
 			align-self: auto;
@@ -37,7 +37,7 @@ $--label-color:$heading-color;
 		@include z("info-right", $global: true) {
 			position: relative;
 			margin: 0;
-			padding: 10px 16px 0px;
+			padding: $--p 16px 0px;
 			flex: 1;
 			display: flex;
 			flex-wrap: wrap;
@@ -45,6 +45,9 @@ $--label-color:$heading-color;
 			align-self: auto;
 			white-space:normal;
 			word-break: break-all;
+		}
+		@include z('span', $global: true){
+			margin-bottom: $--p;
 		}
 	}
 }

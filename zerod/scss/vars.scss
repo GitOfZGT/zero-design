@@ -2,18 +2,25 @@
 @import "../ant-theme-vars";
 
 :global {
-	.ant-btn-primary {
-        background-image: linear-gradient(90deg, $--blue-tint 0%, $--blue-deep 100%);
-    }
-    .ant-btn-danger{
-        background-image: linear-gradient(90deg, $--red-tint 0%, $--red-color 100%);
-        &:hover,&:focus{
-            background-color:$--red-tint;
-            border-color:$--red-tint;
+	body{
+        .ant-btn-primary:not([disabled]) {
+            background-image: linear-gradient(90deg, $--blue-tint 0%, $--blue-deep 100%);
+            &:hover,&:focus,&:active{
+                background-image:none;
+            }
         }
-        &:active{
-            background-color:$--red-color;
-            border-color:$--red-color;
+        .ant-btn-danger:not([disabled]){
+            background-image: linear-gradient(90deg, $--red-tint 0%, $--red-color 100%);
+            &:hover,&:focus{
+                background-image:none;
+                background-color:$--red-tint;
+                border-color:$--red-tint;
+            }
+            &:active{
+                background-image:none;
+                background-color:$--red-color;
+                border-color:$--red-color;
+            }
         }
     }
 }
