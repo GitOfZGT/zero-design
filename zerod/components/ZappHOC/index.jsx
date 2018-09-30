@@ -1,5 +1,5 @@
 import React from "react";
-import { HashRouter as Router, Route, Redirect, Switch } from "react-router-dom";
+import { BrowserRouter, HashRouter, Route, Redirect, Switch } from "react-router-dom";
 import { LocaleProvider } from "antd";
 import zh_CN from "antd/lib/locale-provider/zh_CN";
 import Zlayout from "../Zlayout";
@@ -10,6 +10,7 @@ function ZappHOC(pageConfig) {
 		rootRoutes: [],
 		footerLinks: null,
 		footerCopyright: null,
+		routerType:"history",
 		responseKeys: {
 			listType: {
 				list: "list",
@@ -29,6 +30,7 @@ function ZappHOC(pageConfig) {
 			);
 		});
 		render() {
+			const Router=this.config.routerType==="history"?BrowserRouter:HashRouter;
 			return (
 				<LocaleProvider locale={zh_CN}>
 					<ZerodRootContext.Provider

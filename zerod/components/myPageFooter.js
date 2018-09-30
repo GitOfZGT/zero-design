@@ -15,7 +15,7 @@ export const footerLinks = [
 		blankTarget: true,
 	},
 ];
-export const footerCopyright = (
+export const footerCopyright = () => (
 	<div>
 		Copyright <Icon type="copyright" /> 2018 华云中盛-政务事业部技术团队出品
 	</div>

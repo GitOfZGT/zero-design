@@ -62,12 +62,12 @@ class ZlistPanel extends React.Component {
 	moreMenu = (record, index) => {
 		const onClick = this.methods.handleMenuClick(record);
 		const items = [];
-		this.props.moreBtnMap.forEach((item) => {
+		this.hasMoreMenu &&this.props.moreBtnMap.forEach((item) => {
 			const { show, name, ...others } = item;
 			const _show = typeof show == "function" ? show(record, index, item) : show === undefined ? true : show;
 			if (_show) items.push(<Menu.Item {...others}>{name}</Menu.Item>);
 		});
-		return this.hasMoreMenu ? <Menu onClick={onClick}>{items}</Menu> : <span />;
+		return items.length ? <Menu onClick={onClick}>{items}</Menu> : <span />;
 	};
 	state = {
 		listData: [],

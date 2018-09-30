@@ -49,6 +49,12 @@ export default ZappHOC(pageConfig);
 	</thead>
 	<tbody>
 		<tr>
+			<td>routerType</td>
+			<td>路由模式</td>
+			<td>history | hash</td>
+			<td>history</td>
+		</tr>
+		<tr>
 			<td>rootRoutes</td>
 			<td>根路由配置,结构请看上面的代码</td>
 			<td>array[object]</td>

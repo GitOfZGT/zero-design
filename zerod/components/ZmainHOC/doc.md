@@ -228,7 +228,7 @@ export default ZmainHOC(pageConfig);
 		<tr>
 			<td>theme</td>
 			<td>主题</td>
-			<td>light | dark</td>
+			<td>light | dark | mazarine</td>
 			<td>light</td>
 		</tr>
 		<tr>
@@ -239,7 +239,7 @@ export default ZmainHOC(pageConfig);
 		</tr>
 		<tr>
 			<td>mainRoutes</td>
-			<td>路由配置,如[{path: "/start-doc",component: Start,exact:true}]</td>
+			<td>路由配置,如[{path: "/start-doc",component: 组件,exact:是否精准匹配默认true, redirect:false,to:"/redirect-path"}];  当重定向属性redirect为true时,component无效，to属性有效</td>
 			<td>array[object]</td>
 			<td>[]</td>
 		</tr>

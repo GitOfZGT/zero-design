@@ -1,5 +1,5 @@
 import React from "react";
-import { Route, Switch, withRouter } from "react-router-dom";
+import { Route, Switch, withRouter ,Redirect} from "react-router-dom";
 import { Icon } from "antd";
 // my component
 import { Zlayout } from "../Zlayout";
@@ -31,7 +31,7 @@ export function ZmainHOC(pageConfig) {
 	let defaultConfig = {
 		// 左侧边展开时的宽度
 		leftExpandWidth: 240,
-		// 主题有 light | dark
+		// 主题有 light | dark | mazarine
 		theme: "light",
 		logo: {
 			title: "",
@@ -49,6 +49,7 @@ export function ZmainHOC(pageConfig) {
 			topOtherMenu: [],
 			bottomOtherMenu: [],
 			mapKeys: { iconClass: "iconClass", path: "permUrl", name: "permName", children: "children" },
+			noParentPath: false,
 		},
 		// 顶部栏左边内容的渲染钩子
 		headerLeftRender: (main) => {
@@ -71,7 +72,21 @@ export function ZmainHOC(pageConfig) {
 	class Main extends React.Component {
 		config = defaultConfig;
 		navRoutes = this.config.mainRoutes.map((item, i) => {
-			return <Route exact={typeof item.exact=="boolean"?item.exact:true} key={i} path={this.props.match.url + item.path} component={item.component} />;
+			return item.redirect ? (
+				<Route
+					exact={typeof item.exact == "boolean" ? item.exact : true}
+					key={i}
+					path={this.props.match.url + item.path}
+					render={() => <Redirect to={this.props.match.url + item.to} />}
+				/>
+			) : (
+				<Route
+					exact={typeof item.exact == "boolean" ? item.exact : true}
+					key={i}
+					path={this.props.match.url + item.path}
+					component={item.component}
+				/>
+			);
 		});
 
 		state = {
@@ -96,7 +111,7 @@ export function ZmainHOC(pageConfig) {
 			this.sideMenuData = zTool.formatterMapKey(
 				[...topOtherMenu, ...menuData, ...bottomOtherMenu],
 				this.config.sideMenu.mapKeys,
-				`${this.props.match.url}/`,
+				this.config.sideMenu.noParentPath ? false : `${this.props.match.url}/`,
 			);
 		}
 		methods = {
@@ -251,12 +266,12 @@ export function ZmainHOC(pageConfig) {
 					this.setState({
 						hasLogin: true,
 					});
-				},this.$router);
+				}, this.$router);
 		}
-		$router={
-			history:this.props.history,
-			location:this.props.location,
-		}
+		$router = {
+			history: this.props.history,
+			location: this.props.location,
+		};
 		getTemplate() {
 			const leftWidth = this.state.isCollapse ? 80 : this.config.leftExpandWidth;
 			const collapseIcon = this.state.isCollapse ? "menu-unfold" : "menu-fold";
@@ -271,7 +286,7 @@ export function ZmainHOC(pageConfig) {
 						showRightModal: this.methods.showRightModal,
 						getTemporaryStorage: this.methods.getTemporaryStorage,
 						setTemporaryStorage: this.methods.setTemporaryStorage,
-						$router:this.$router,
+						$router: this.$router,
 					}}
 				>
 					<Zlayout flexRow className={`z-layout-${this.config.theme}`}>
@@ -280,10 +295,15 @@ export function ZmainHOC(pageConfig) {
 							width={leftWidth}
 							className={`${cssClass["z-main-left"]} ${cssClass[`is-${this.config.theme}`]}`}
 						>
-							<Zlayout.Zheader className={`${cssClass["z-main-logo"]} ${cssClass[`is-${this.config.theme}`]}`}>
+							<Zlayout.Zheader
+								className={`${cssClass["z-main-logo"]} ${cssClass[`is-${this.config.theme}`]}`}
+							>
 								{this.config.logo.render()}
 							</Zlayout.Zheader>
-							<Zlayout.Zbody className={`${cssClass["z-main-nav"]} ${cssClass[`is-${this.config.theme}`]}`} scroll>
+							<Zlayout.Zbody
+								className={`${cssClass["z-main-nav"]} ${cssClass[`is-${this.config.theme}`]}`}
+								scroll
+							>
 								<div className="z-padding-top-10">
 									<ZsideMenu
 										menuData={this.sideMenuData}

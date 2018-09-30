@@ -933,22 +933,23 @@ export function isUrl(path) {
 
 // 将从后台获取的导航数据转成route的需要的key
 export function formatterMapKey(data, mapKey = {}, parentPath = "/") {
+	const notParPath = typeof parentPath == "boolean" && !parentPath;
 	mapKey = Object.assign(
 		{ iconClass: "iconClass", path: "path", name: "name", children: "children" },
 		mapKey ? mapKey : {},
 	);
 	return data.map((item) => {
 		let path = item[mapKey.path];
-		path = parentPath + path.replace(/^\/*/, "");
+		if (!notParPath) path = parentPath + path.replace(/^\/*/, "");
 		const newData = {
 			...item,
 			iconClass: item[mapKey.iconClass] !== undefined ? item[mapKey.iconClass] : "smile-o",
 			path,
-			parPath: parentPath.replace(/\/$/, ""),
+			parPath:notParPath?path: parentPath.replace(/\/$/, ""),
 			name: item[mapKey.name],
 		};
 		if (Array.isArray(item[mapKey.children]) && item[mapKey.children].length) {
-			newData[mapKey.children] = formatterMapKey(item[mapKey.children], mapKey, `${path}/`);
+			newData[mapKey.children] = formatterMapKey(item[mapKey.children], mapKey, notParPath ? false : `${path}/`);
 		}
 		return newData;
 	});
@@ -969,8 +970,8 @@ export const mergeConfig = (defaultConfig, theConfig) => {
 				newConfig[key] = theConfig[key] !== undefined ? deepCopy(theConfig[key]) : defaultConfig[key];
 			}
 		});
-	else{
-		newConfig=defaultConfig;
+	else {
+		newConfig = defaultConfig;
 	}
 	return newConfig;
 };
