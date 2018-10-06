@@ -114,7 +114,7 @@ class Myjavascript extends React.Component {
 		</tr>
 		<tr>
 			<td>render</td>
-			<td>自定义value钩子。支持异步加载：必须return的是Promise对象。例如使用了后台接口：(form)=>api.getOptions.then(re=>{return (value,record)=>自定义内容)})</td>
+			<td>自定义value钩子,render函数必须return一个函数。如果异步加载自定义内容：必须return的是Promise对象。例如使用了后台接口：(form)=>api.getOptions.then(re=>{return (value,record)=>自定义内容)})</td>
 			<td>()=>{return function(value,record){return 自定义内容})}</td>
 			<td>--</td>
 		</tr>

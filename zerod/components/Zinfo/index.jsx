@@ -3,7 +3,7 @@ import { Row, Col } from "antd";
 import PropTypes from "prop-types";
 import cssClass from "./style.scss";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
-import { animateTimout, const_initItems, const_execAsync } from "../constant";
+import { animateTimout, const_initItems, const_execAsync, const_itemSpan } from "../constant";
 import ZpageLoading from "../ZpageLoading";
 
 class Zinfo extends React.Component {
@@ -63,8 +63,8 @@ class Zinfo extends React.Component {
 	getItems() {
 		const data = this.state.detailData;
 		return this.state.items.map((item, i) => {
-			const control = item.control;
-			const span = item.span;
+			const control = typeof item.control == "function" ? item.control(data[item.key], data) : data[item.key];
+			const span = const_itemSpan(control, item.span, item.defaultSpan);
 			return (
 				<CSSTransition key={i} timeout={animateTimout.flipInTime} classNames="flipX">
 					<Col {...span}>
@@ -77,7 +77,7 @@ class Zinfo extends React.Component {
 							</div>
 							<div className="z-info-right z-padding-bottom-10">
 								<ZpageLoading showLoading={item.loading} size="small" />
-								{typeof control == "function" ? control(data[item.key], data) : data[item.key]}
+								{control}
 							</div>
 						</div>
 					</Col>

@@ -89,7 +89,9 @@ export function ZeditSimpleFormHOC(pageConfig) {
 			detailId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 		};
 		config = defaultConfig;
-		detailData = {};
+		state = {
+			detailData: {},
+		};
 		methods = {
 			showLoading: (show) => {
 				const_showLoading(this.config.insertLocation, this.props)(show);
@@ -102,12 +104,19 @@ export function ZeditSimpleFormHOC(pageConfig) {
 				this.config.form
 					.detailApiInterface(this.props.detailId, this.props, this.tool)
 					.then((re) => {
-						this.detailData = re.data;
 						const valueData = {};
 						this.config.form.items.forEach((item) => {
 							valueData[item.key] = re.data[item.detailKey ? item.detailKey : item.key];
 						});
-						this.form.setFieldsValue(valueData);
+
+						this.setState(
+							{
+								detailData: re.data,
+							},
+							() => {
+								this.form.setFieldsValue(valueData);
+							},
+						);
 					})
 					.catch((re) => {
 						message.error(re && re.msg ? re.msg : "获取数据失败");
@@ -155,7 +164,7 @@ export function ZeditSimpleFormHOC(pageConfig) {
 			showLoading: this.methods.showLoading,
 			closeRightModal: this.methods.closeRightModal,
 			showRightModal: this.props.showRightModal,
-			methods:this.methods,
+			methods: this.methods,
 		};
 
 		componentDidMount() {
@@ -178,8 +187,8 @@ export function ZeditSimpleFormHOC(pageConfig) {
 			} = this.config.form;
 			return (
 				<PageWraper pageHeader={this.config.pageHeader}>
-					{typeof this.config.moreContentRender === "function" &&
-						this.config.panelBeforeRender(this.detailData, this.tool)}
+					{typeof this.config.panelBeforeRender === "function" &&
+						this.config.panelBeforeRender(this.state.detailData, this.tool)}
 					<div className="z-panel">
 						{this.getPanleHeader()}
 						<div className="z-panel-body">
@@ -190,11 +199,11 @@ export function ZeditSimpleFormHOC(pageConfig) {
 								submitBtnName={this.config.form.showSubmitBtn ? this.config.form.submitBtnName : ""}
 							/>
 							{typeof this.config.moreContentRender === "function" &&
-								this.config.moreContentRender(this.detailData, this.tool)}
+								this.config.moreContentRender(this.state.detailData, this.tool)}
 						</div>
 					</div>
-					{typeof this.config.moreContentRender === "function" &&
-						this.config.panelAfterRender(this.detailData, this.tool)}
+					{typeof this.config.panelAfterRender === "function" &&
+						this.config.panelAfterRender(this.state.detailData, this.tool)}
 				</PageWraper>
 			);
 		}

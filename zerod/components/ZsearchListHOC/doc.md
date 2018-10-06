@@ -296,20 +296,26 @@ const pageConfig = {
 	<tbody>
 		<tr>
 			<td>insertLocation</td>
-			<td>这个组件渲染在的位置，mainRoute:main子路由，mainModal:在main子路由区域打开的右边窗口，appModal:在最外层打开的右边窗口</td>
-			<td>mainRoute | mainModal | appModal</td>
+			<td>这个组件渲染在的位置，会影响内置事件对显示loading,打开/关闭rightModal的操作。例如：insertLocation="mainRoute"，点击新增按钮时会打开 mainModal。以此类推：mainRoute > mainModal > mainModal_top > appModal > appModal_top</td>
+			<td>mainRoute | mainModal | mainModal_top | appModal  | appModal_top</td>
 			<td>mainRoute</td>
 		</tr>
 		<tr>
 			<td>listType</td>
 			<td>列表类型</td>
-			<td>table | card</td>
+			<td>table | card | simple</td>
 			<td>table</td>
 		</tr>
 		<tr>
 			<td>cardCoverRender</td>
-			<td>listType="card"时，卡片的上部渲染函数</td>
+			<td>listType="card" | "simple"，卡片的上部渲染函数或者是自定义图标、图片等</td>
 			<td>function(record){return ;}</td>
+			<td>--</td>
+		</tr>
+		<tr>
+			<td>cardSpan</td>
+			<td>listType="card" | "simple"，栅栏占格,默认{ xxl:6,xl:8:lg:12:md:24}</td>
+			<td>number | object</td>
 			<td>--</td>
 		</tr>
 		<tr>
@@ -345,7 +351,7 @@ const pageConfig = {
 		<tr>
 			<td>actionRender</td>
 			<td>操作区的render,可以自定义操作按钮</td>
-			<td>(text, record,index,tool,isListCard)=>{}</td>
+			<td>(text, record,index,tool,isListCard)=>{return [按钮1,按钮2]}</td>
 			<td>--</td>
 		</tr>
 		<tr>

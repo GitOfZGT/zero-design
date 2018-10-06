@@ -11,11 +11,16 @@
 		font-size: 28px;
 		color: #333333;
 		letter-spacing: 0;
-	}
+    }
+    :global{
+        .ant-tabs-bar{
+            margin-bottom:0;
+        }
+    }
 }
 
 @include z("pillars") {
-	
+
 	&>li {
         list-style: none;
 		height: 6px;

@@ -77,9 +77,9 @@ let defaultConfig = {
 	<tbody>
 		<tr>
 			<td>insertLocation</td>
-			<td>这个组件渲染在的位置，mainRoute:main子路由，mainModal:在main子路由区域打开的右边窗口，appModal:在最外层打开的右边窗口</td>
-			<td>mainRoute | mainModal | appModal</td>
-			<td>mainRoute</td>
+			<td>这个组件渲染在的位置，会影响内置事件对显示loading,打开/关闭rightModal的操作。例如：insertLocation="mainRoute"，点击新增按钮时会打开 mainModal。以此类推：mainRoute > mainModal > mainModal_top > appModal > appModal_top</td>
+			<td>mainRoute | mainModal | mainModal_top | appModal  | appModal_top</td>
+			<td>mainModal</td>
 		</tr>
 		<tr>
 			<td>pageHeader</td>

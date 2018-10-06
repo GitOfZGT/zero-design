@@ -1,23 +1,42 @@
 @import "../../scssMixin/generateClassName";
 @import "../../scss/vars";
+$--card-gutter: 8px;
+@include z("card-row") {
+	margin-left: -$--card-gutter;
+	margin-right: -$--card-gutter;
+	& > div {
+		padding-left: $--card-gutter;
+		padding-right: $--card-gutter;
+	}
+}
+$--simple-gutter: 20px;
+@include z("simple-row") {
+	margin-left: -$--simple-gutter;
+	margin-right: -$--simple-gutter;
+	& > div {
+		padding-left: $--simple-gutter;
+		padding-right: $--simple-gutter;
+	}
+}
+
 $--card-title-color: $heading-color;
-@include z("list-table"){
+@include z("list-table") {
 	margin: 0 -24px 20px;
-	:global{
-		.ant-table-thead > tr > th{
+	:global {
+		.ant-table-thead > tr > th {
 			border-bottom: 0;
 		}
-		.ant-table-pagination{
-			margin-right:24px !important;
+		.ant-table-pagination {
+			margin-right: 24px !important;
 		}
 	}
-
 }
 @include z("list-card") {
+	// min-width: 376px;
 	:global {
-		.ant-card-actions{
+		.ant-card-actions {
 			background-color: transparent;
-			&>li{
+			& > li {
 				margin: 15px 0;
 				& > span {
 					display: block;
@@ -27,30 +46,35 @@ $--card-title-color: $heading-color;
 					height: 100%;
 				}
 			}
-		}
+        }
+        .ant-card-body{
+            overflow: hidden;
+        }
 	}
-	@include z("list-block-btn"){
+	@include z("list-block-btn") {
 		border-radius: $--card-radius;
 	}
-	@include z("card"){
+	@include z("card") {
 		border-radius: $--card-radius;
 	}
-
 }
 
 @include z("list-card-title") {
 	color: $--card-title-color;
 	font-size: 20px;
 	margin-top: 0;
-	margin-bottom: 8px;
-}
-@include z("list-card-sub") {
-	color: lighten($--card-title-color, 5%);
-	font-size: 14px;
-	margin-bottom: 12px;
+    margin-bottom:12px;
+    &:hover{
+        color:$primary-7;
+        cursor: pointer;
+    }
+    white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
 }
 @include z("list-card-content") {
-	margin-bottom: 10px;
+    margin-bottom: 12px;
+    font-size: 14px;
 	white-space: nowrap;
 	text-overflow: ellipsis;
 	overflow: hidden;
@@ -61,12 +85,45 @@ $--card-title-color: $heading-color;
 	width: 100%;
 	height: auto;
 }
-$--row-gutter: 8px;
-@include z("card-row") {
-	margin-left: -$--row-gutter;
-	margin-right: -$--row-gutter;
-	& > div {
-		padding-left: $--row-gutter;
-		padding-right: $--row-gutter;
+// @include z("list-simple-col"){
+//     min-width: 380px;
+// }
+$--sim-p: 13px;
+$--icon-w: 60px;
+@include z("list-simple") {
+	box-sizing: border-box;
+	display: flex;
+	@include z("list-simple-left") {
+		width: $--icon-w + $--sim-p*2;
+		padding: $--sim-p;
 	}
+	@include z("list-simple-right") {
+        overflow: hidden;
+		flex: 1;
+		padding: $--sim-p;
+	}
+
+	@include z("list-simple-icon") {
+		display: block;
+		text-align: center;
+		width: $--icon-w;
+		height: $--icon-w;
+		line-height: $--icon-w;
+        border-radius: $--icon-w/2;
+		// background-image: linear-gradient(-180deg, #00acff 0%, #0074ff 100%);
+		font-size: 24px;
+		color: #ffffff;
+        text-shadow: rgba(2, 38, 81, 0.5);
+        i{
+            font-size: 24px;
+        }
+    }
+    @include z("simple-link"){
+        font-size: 16px;
+        i{
+            font-size: 14px !important;
+            margin-left:8px;
+        }
+
+    }
 }

@@ -3,7 +3,7 @@ import { Form, Modal, Input, Button, Row, Col } from "antd";
 import PropTypes from "prop-types";
 import cssClass from "./style.scss";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
-import { animateTimout, const_initItems, const_execAsync } from "../constant";
+import { animateTimout, const_initItems, const_execAsync ,const_itemSpan} from "../constant";
 import ZpageLoading from "../ZpageLoading";
 export const Zform = Form.create()(
 	class extends React.Component {
@@ -85,8 +85,8 @@ export const Zform = Form.create()(
 		getFormItems() {
 			const { getFieldDecorator } = this.props.form;
 			return this.state.items.map((item, i) => {
-				const control = item.control;
-				let span = item.span;
+				const control = typeof item.control==="function"?item.control(this.props.form):item.control;
+				const span = const_itemSpan(control,item.span,item.defaultSpan) ;
 				const isFormItem = typeof item.isFormItem === "boolean" ? item.isFormItem : true;
 				return (
 					<CSSTransition key={i} timeout={animateTimout.flipInTime} classNames="fadeIn-to-down">

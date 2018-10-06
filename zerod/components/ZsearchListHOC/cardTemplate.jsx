@@ -5,13 +5,19 @@ import { CSSTransition, TransitionGroup } from "react-transition-group";
 // my component
 import { Zlayout } from "../Zlayout";
 import { ZsorterBtn } from "../ZsorterBtn";
+import { deepCopy } from "../zTool";
 
 import cssClass from "./style.scss";
 
 // 卡片类型
 export default function cardTemplate() {
-	const actionCol = this.tableColumns.slice(-1)[0];
-
+	const _cardSpan = this.props.cardSpan;
+	const _span = typeof _cardSpan == "number" ? { md: _cardSpan } : _cardSpan;
+	const contentColumns = deepCopy(this.tableColumns);
+	const actionCol = contentColumns[contentColumns.length - 1];
+	if (actionCol && actionCol.key == "actionBtns") {
+		contentColumns.pop();
+	}
 	let sorters = [];
 	this.tableColumns.forEach((col, index) => {
 		if (col.sorter) {
@@ -38,6 +44,8 @@ export default function cardTemplate() {
 			);
 		}
 	});
+	const { showAddBtn } = this.props;
+	const _showAddBtn = typeof showAddBtn == "function" ? showAddBtn() : showAddBtn;
 	return (
 		<Zlayout.Template>
 			{this.props.panelBeforeRender && this.props.panelBeforeRender(this.getExportSomething())}
@@ -49,8 +57,8 @@ export default function cardTemplate() {
 			</div>
 			{sorters.length ? <div className="z-margin-bottom-15">{sorters}</div> : null}
 			<Row type="flex" className={cssClass["z-card-row"]}>
-				{this.props.showAddBtn ? (
-					<Col span={8} className={`${cssClass["z-list-card"]} z-margin-bottom-15`}>
+				{_showAddBtn ? (
+					<Col {..._span} className={`${cssClass["z-list-card"]} z-margin-bottom-15`}>
 						<Button
 							type="dashed"
 							icon="plus"
@@ -66,55 +74,49 @@ export default function cardTemplate() {
 					{this.state.listData.map((item, i) => {
 						const cardActions =
 							actionCol && actionCol.key == "actionBtns"
-								? actionCol.render(item[actionCol.dataIndex], item)
+								? actionCol.render(
+										item[actionCol.dataIndex],
+										item,
+										i,
+										this.getExportSomething(),
+										this.state.isListCard,
+								  )
 								: [];
+						const getColContent = (col) => {
+                            if(!col)return null;
+							return typeof col.render === "function"
+								? col.render(item[col.dataIndex], item, i, this.getExportSomething())
+								: item[col.dataIndex];
+						};
+						let _title = getColContent(contentColumns[0]);
 						return (
 							<CSSTransition key={i} timeout={animateTimout.flipInTime} classNames="fadeIn-to-down">
-								<Col span={8} className={`${cssClass["z-list-card"]} z-margin-bottom-15`}>
+								<Col {..._span} className={`${cssClass["z-list-card"]} z-margin-bottom-15`}>
 									<Card
-										cover={this.props.cardCoverRender && this.props.cardCoverRender(item)}
+										cover={
+										 this.props.cardCoverRender &&
+											this.props.cardCoverRender(item, i, this.getExportSomething())
+										}
 										actions={cardActions}
 										className={cssClass["z-card"]}
 									>
-										{this.tableColumns.map((col, index) => {
-											const contentRender = () => {
-												return typeof col.render === "function"
-													? col.render(
-															item[col.dataIndex],
-															item,
-															i,
-															this.getExportSomething(),
-													  )
-													: item[col.dataIndex];
-											};
-											if (index === 0) {
-												return (
-													<h1
-														className={cssClass["z-list-card-title"]}
-														key={`${col.dataIndex}_${index}`}
-													>
-														{contentRender()}
-													</h1>
-												);
-											} else if (index === 1) {
-												return (
-													<h2
-														className={cssClass["z-list-card-sub"]}
-														key={`${col.dataIndex}_${index}`}
-													>
-														{contentRender()}
-													</h2>
-												);
-											} else if (index !== this.tableColumns.length - 1) {
-												return (
-													<div
-														className={cssClass["z-list-card-content"]}
-														key={`${col.dataIndex}_${index}`}
-													>
-														{contentRender()}
-													</div>
-												);
-											}
+										<h1
+											className={cssClass["z-list-card-title"]}
+											onClick={(e) => {
+												this.methods.onDetail(item);
+											}}
+										>
+											{_title}
+										</h1>
+										{contentColumns.slice(1).map((col, index) => {
+											return (
+												<div
+													className={`${cssClass["z-list-card-content"]} z-text-gray`}
+													key={`${i}_${index}`}
+												>
+													{getColContent(col)}
+												</div>
+											);
 										})}
 									</Card>
 								</Col>
@@ -128,7 +130,7 @@ export default function cardTemplate() {
 					</p>
 				) : null}
 			</Row>
-			{this.props.showPagination && !this.isInfinite ? (
+			{this.showPagination && !this.isInfinite ? (
 				<div className="z-panel is-radius-bottom">
 					<div className="z-panel-body z-clear-fix">
 						<Pagination

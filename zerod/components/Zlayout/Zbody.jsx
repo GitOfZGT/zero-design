@@ -34,12 +34,11 @@ class Zbody extends React.Component {
 		}
 	}
 	render() {
-		const { scroll, className, children, insertToScrollWraper, getScrollInstance, ...others } = this.props;
+		const { scroll, className, children, insertToScrollWraper,id, getScrollInstance, ...others } = this.props;
 		return (
-			<section className={cssClass["z-layout-body"]}>
+			<section {...others} className={`${cssClass["z-layout-body"]} ${className?className:""}`}>
 				<section
-					className={`${cssClass["z-body-scroll"]} z-scroll-color ${className?className:""}`}
-					{...others}
+					className={`${cssClass["z-body-scroll"]} z-scroll-color`}
 					ref={(el) => (this.bodyEl = el)}
 				>
 					{scroll ? (

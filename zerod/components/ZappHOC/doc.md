@@ -1,6 +1,8 @@
 # 根组件：ZappHOC
 
-`ZappHOC`是一个函数，是对`src/App.jsx`根组件内容封装，传入`pageConfig`参数配置，返回一个组件
+`ZappHOC`是一个函数，是对根组件内容封装，传入`pageConfig`参数配置，返回一个组件
+
+在`zerod-admin-webpack 脚手架`的`src/App.jsx`已经使用,只有使用了`ZappHOC`后，它内部的子孙组件才能使用`ZerodRootContext`的内容
 
 1、在`src/App.jsx`使用
 

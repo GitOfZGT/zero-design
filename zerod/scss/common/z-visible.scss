@@ -12,3 +12,10 @@
 @include z('display-none',$global:true){
     display: none;
 }
+
+@include z("text-ellipsis",$global:true){
+    white-space: nowrap;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}

@@ -4,9 +4,13 @@
 
 ## 打开右边窗口: showRightModal()
 
-showRightModal 函数有四个参数，`show`:是否显示，`modal`: "mainModal" | "appModal"，`content`：窗口的内容，`scroll`：窗口内是否启用滚动条,`onTransitionend`:打开关闭的过渡动画执行完后的回调
+showRightModal 函数有四个参数，`show`:是否显示，`modal`: "mainModal" | "appModal" | "mainModal_top" | "appModal_top"，`content`：窗口的内容，`scroll`：窗口内是否启用滚动条,`onTransitionend`:打开关闭的过渡动画执行完后的回调
 
-2018-08-22 新增 onTransitionend 属性，以后可能还会有其他参数，为了向下兼容，还可以这样
+`modal`属性层级："appModal_top" > "appModal" > "mainModal_top" > "mainModal"
+
+2018-10-01 `modal`属性新增 "mainModal_top"和"appModal_top"值
+
+2018-08-22 新增`onTransitionend `属性，以后可能还会有其他参数，为了向下兼容，还可以这样
 
 ```jsx
 this.props.showRightModal({
@@ -96,7 +100,7 @@ return <OutPut />;
 
 ## 显示右边窗口loading:  showModalLoading()
 
-showModalLoading 函数有两个参数，`show`:是否显示，`modal`: "mainModal" | "appModal"
+showModalLoading 函数有两个参数，`show`:是否显示，`modal`: "mainModal" | "appModal" | "mainModal_top" | "appModal_top"
 
 <div class="z-demo-box" data-render="modal-loading" data-title="this.props.showModalLoading(true, modal);"></div>
 
@@ -121,7 +125,16 @@ class MyScript extends React.Component {
 						this.methods.showModalLoading(e, "mainModal");
 					}}
 				>
-					显示mainModal的loading
+					显示 mainModal 的loading
+				</Button>
+				<Button
+					type="primary"
+					className="z-show-loading-btn"
+					onClick={(e) => {
+						this.methods.showModalLoading(e, "mainModal_top");
+					}}
+				>
+					显示 mainModal_top 的loading
 				</Button>
 				<Button
 					type="primary"
@@ -130,7 +143,16 @@ class MyScript extends React.Component {
 						this.methods.showModalLoading(e, "appModal");
 					}}
 				>
-					显示appModal的loading
+					显示 appModal 的loading
+				</Button>
+				<Button
+					type="primary"
+					className="z-show-loading-btn z-margin-left-20"
+					onClick={(e) => {
+						this.methods.showModalLoading(e, "appModal_top");
+					}}
+				>
+					显示 appModal_top 的loading
 				</Button>
 			</div>
 		);

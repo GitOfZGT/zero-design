@@ -3,7 +3,7 @@ import { Form, Row, Col, Input, Button, Icon } from "antd";
 import PropTypes from "prop-types";
 import cssClass from "./style.scss";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
-import { animateTimout, const_initItems, const_execAsync } from "../constant";
+import { animateTimout, const_initItems, const_execAsync ,const_itemSpan} from "../constant";
 import ZpageLoading from "../ZpageLoading";
 export const ZsearchForm = Form.create()(
 	class extends React.Component {
@@ -12,6 +12,7 @@ export const ZsearchForm = Form.create()(
 			items: PropTypes.arrayOf(PropTypes.object),
 			onSearch: PropTypes.func,
 			onReset: PropTypes.func,
+			getFormInstance: PropTypes.func,
 			noCollapse: PropTypes.bool,
 			defaultSpan: PropTypes.oneOfType([PropTypes.number, PropTypes.object]),
 			formDefaultValues: PropTypes.object,
@@ -63,7 +64,8 @@ export const ZsearchForm = Form.create()(
 			const_execAsync.call(this);
 		}
 		componentDidMount() {
-			this.execAsync();
+            this.execAsync();
+            this.props.getFormInstance&&this.props.getFormInstance(this.props.form);
 		}
 		componentDidUpdate(prevProps,prevState) {
 			if (
@@ -84,8 +86,8 @@ export const ZsearchForm = Form.create()(
 			const { getFieldDecorator } = this.props.form;
 			const items = this.state.expand ? this.state.items : this.state.items.slice(0, this.config.collapseCount);
 			return items.map((item, i) => {
-				const control = item.control;
-				let span = item.span;
+                const control = typeof item.control==="function"?item.control(this.props.form):item.control;
+				const span = const_itemSpan(control,item.span,item.defaultSpan) ;
 				const isFormItem = typeof item.isFormItem === "boolean" ? item.isFormItem : true;
 				return (
 					<CSSTransition key={i} timeout={animateTimout.flipInTime} classNames="fadeIn-to-down">

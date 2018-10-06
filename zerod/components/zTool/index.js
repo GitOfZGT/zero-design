@@ -945,7 +945,7 @@ export function formatterMapKey(data, mapKey = {}, parentPath = "/") {
 			...item,
 			iconClass: item[mapKey.iconClass] !== undefined ? item[mapKey.iconClass] : "smile-o",
 			path,
-			parPath:notParPath?path: parentPath.replace(/\/$/, ""),
+			parPath:notParPath?"": parentPath.replace(/\/$/, ""),
 			name: item[mapKey.name],
 		};
 		if (Array.isArray(item[mapKey.children]) && item[mapKey.children].length) {

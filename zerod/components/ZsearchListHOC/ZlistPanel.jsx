@@ -11,10 +11,12 @@ import { dataTypeTest, deepCopy } from "../zTool";
 
 import tableTemplate from "./tableTemplate";
 import cardTemplate from "./cardTemplate";
+import simpleTemplate from "./simpleTemplate";
 let defaultConfig = const_getListConfig("list", "ZlistPanel");
 class ZlistPanel extends React.Component {
 	static propTypes = {
 		listType: PropTypes.string, // table | card
+		cardSpan: PropTypes.oneOfType([PropTypes.object, PropTypes.number]),
 		cardCoverRender: PropTypes.func, // listType=="card"时的一个前置render,
 		panelBeforeRender: PropTypes.func,
 		panelAfterRender: PropTypes.func,
@@ -26,6 +28,7 @@ class ZlistPanel extends React.Component {
 			PropTypes.node,
 		]), //面板title,可以自定义
 		moreContentRender: PropTypes.func,
+		searchForm: PropTypes.object,
 		colFormItems: PropTypes.arrayOf(PropTypes.object), // 搜索表单列map数据数据
 		tableColumns: PropTypes.arrayOf(PropTypes.object), // 表格列map数据数据，同antd的表格 columns
 		moreBtnMap: PropTypes.arrayOf(PropTypes.object), //更多操作按钮的map数据
@@ -43,7 +46,7 @@ class ZlistPanel extends React.Component {
 		showAddBtn: PropTypes.oneOfType([PropTypes.func, PropTypes.bool]), // 是否显示新建按钮
 		listApiInterface: PropTypes.func, // 获取列表数据的后台接口函数，其必须内部返回Promise
 		deleteApiInterface: PropTypes.func, // 删除按钮的后台接口函数，其必须内部返回Promise
-		showPagination: PropTypes.bool, // 是否显示分页
+		showPagination: PropTypes.oneOfType([PropTypes.func, PropTypes.bool]), // 是否显示分页
 		getPageSize: PropTypes.func, // 每页显示的条数
 		addPageRender: PropTypes.func, // 新建页面渲染模板
 		updatePageRender: PropTypes.func, // 修改页面渲染模板
@@ -56,17 +59,17 @@ class ZlistPanel extends React.Component {
 	};
 	static defaultProps = defaultConfig.list;
 
-
 	hasMoreMenu = this.props.moreBtnMap && this.props.moreBtnMap.length;
 	//更多操作按钮
-	moreMenu = (record, index) => {
+	moreMenu = (record, index, otherItem) => {
 		const onClick = this.methods.handleMenuClick(record);
-		const items = [];
-		this.hasMoreMenu &&this.props.moreBtnMap.forEach((item) => {
-			const { show, name, ...others } = item;
-			const _show = typeof show == "function" ? show(record, index, item) : show === undefined ? true : show;
-			if (_show) items.push(<Menu.Item {...others}>{name}</Menu.Item>);
-		});
+		const items = otherItem ? [otherItem] : [];
+		this.hasMoreMenu &&
+			this.props.moreBtnMap.forEach((item) => {
+				const { show, name, ...others } = item;
+				const _show = typeof show == "function" ? show(record, index, item) : show === undefined ? true : show;
+				if (_show) items.push(<Menu.Item {...others}>{name}</Menu.Item>);
+			});
 		return items.length ? <Menu onClick={onClick}>{items}</Menu> : <span />;
 	};
 	state = {
@@ -88,9 +91,13 @@ class ZlistPanel extends React.Component {
 	searchQuery = null;
 	sorter = {};
 	methods = {
-		handleMenuClick : (record) => {
+		handleMenuClick: (record) => {
 			return (item) => {
-				this.props.onMoreBtnClick && this.props.onMoreBtnClick(item, record, this.getExportSomething());
+				if (item.key === "_delete") {
+					this.methods.onDelete(item.item.props.text, record);
+				} else {
+					this.props.onMoreBtnClick && this.props.onMoreBtnClick(item, record, this.getExportSomething());
+				}
 			};
 		},
 		showLoading: (show) => {
@@ -222,7 +229,7 @@ class ZlistPanel extends React.Component {
 		// 删除按钮触发
 		onDelete: (text, row) => {
 			Modal.confirm({
-				title: `确认删除[${text}]这条数据吗`,
+				title: `确认删除 [${text}] 这条数据吗`,
 				content: "将永久删除",
 				okText: "删除",
 				okType: "danger",
@@ -275,12 +282,37 @@ class ZlistPanel extends React.Component {
 			return deepCopy(this.state.listData);
 		},
 		setDataState: (data, merge) => {
+			const noMore = this.isInfinite && !data.length;
+			if (noMore && this.page.pageNumber > 1) {
+				this.page.pageNumber--;
+			}
 			this.setState({
 				listData: merge ? [...this.state.listData, ...data] : data,
-				noMore: this.isInfinite && !data.length,
+				noMore,
 			});
 		},
 	};
+	getDiffBtn(type, btnName, onClick) {
+		switch (this.props.listType) {
+			case "table":
+			case "card":
+				return (
+					<Button size="small" type={type} onClick={onClick}>
+						{btnName}
+					</Button>
+				);
+			case "simple":
+				return (
+					<a
+						className={`z-text-underline-hover z-text-blue ${cssClass["z-simple-link"]}`}
+						href="javascript:void(0)"
+						onClick={onClick}
+					>
+						{btnName}
+					</a>
+				);
+		}
+	}
 	actionBtns() {
 		const { showDetailBtn, showUpdateBtn, showDeleteBtn } = this.props;
 		return showDetailBtn || showUpdateBtn || showDeleteBtn || this.hasMoreMenu
@@ -303,101 +335,32 @@ class ZlistPanel extends React.Component {
 							const btnSize = "small";
 							const detailBtnName = "详情";
 							const detailBtn = (
-								// this.state.isListCard ? (
-								// 	<div
-								// 		className="z-list-card-btns"
-								// 		onClick={(e) => {
-								// 			this.methods.onDetail(record);
-								// 		}}
-								// 	>
-								// 		{detailBtnName}
-								// 	</div>
-								// ) : (
 								<span key="detail">
-									<Button
-										size={btnSize}
-										onClick={(e) => {
-											this.methods.onDetail(record);
-										}}
-									>
-										{detailBtnName}
-									</Button>
+									{this.getDiffBtn("default", detailBtnName, (e) => {
+										this.methods.onDetail(record);
+									})}
 									{!this.state.isListCard ? <Divider type="vertical" /> : null}
 								</span>
 							);
-							// );
 							const updateBtnName = "修改";
 							const updateBtn = (
-								// this.state.isListCard ? (
-								// 	<div
-								// 		className="z-list-card-btns"
-								// 		onClick={(e) => {
-								// 			this.methods.onUpdate(record);
-								// 		}}
-								// 	>
-								// 		{updateBtnName}
-								// 	</div>
-								// ) : (
 								<span key="update">
-									<Button
-										size={btnSize}
-										type="primary"
-										onClick={(e) => {
-											this.methods.onUpdate(record);
-										}}
-									>
-										{updateBtnName}
-									</Button>
+									{this.getDiffBtn("primary", updateBtnName, (e) => {
+										this.methods.onUpdate(record);
+									})}
 									{!this.state.isListCard ? <Divider type="vertical" /> : null}
 								</span>
 							);
-							// );
 							const deleteBtnName = "删除";
 							const deleteBtn = (
-								// this.state.isListCard ? (
-								// 	<div
-								// 		className="z-list-card-btns"
-								// 		onClick={(e) => {
-								// 			this.methods.onDelete(text, record);
-								// 		}}
-								// 	>
-								// 		{deleteBtnName}
-								// 	</div>
-								// ) : (
 								<span key="delete">
-									<Button
-										size={btnSize}
-										type="danger"
-										onClick={(e) => {
-											this.methods.onDelete(text, record);
-										}}
-									>
-										{deleteBtnName}
-									</Button>
+									{this.getDiffBtn("danger", deleteBtnName, (e) => {
+										this.methods.onDelete(text, record);
+									})}
 									{this.hasMoreMenu && !this.state.isListCard ? <Divider type="vertical" /> : null}
 								</span>
 							);
-							// );
-							const moreBtnName = "更多";
-							const moreBtn = (
-								<Dropdown
-									key="more"
-									overlay={this.moreMenu(record, index)}
-									trigger={["click"]}
-									placement="bottomRight"
-								>
-									{
-										// 	this.state.isListCard ? (
-										// 	<div className="z-list-card-btns">{moreBtnName}</div>
-										// ) : (
-										<Button size={btnSize}>
-											{moreBtnName}
-											<Icon type="down" />
-										</Button>
-										// )
-									}
-								</Dropdown>
-							);
+
 							const btns = [];
 							const _showDetailBtn =
 								typeof showDetailBtn == "function" ? showDetailBtn(record, index) : showDetailBtn;
@@ -408,7 +371,31 @@ class ZlistPanel extends React.Component {
 							_showDetailBtn && btns.push(detailBtn);
 							_showUpdateBtn && btns.push(updateBtn);
 							_showDeleteBtn && btns.push(deleteBtn);
-							this.hasMoreMenu && btns.push(moreBtn);
+							// const _otherItem =
+							// 	_showDeleteBtn && this.props.listType === "simple" ? (
+							// 		<Menu.Item key="_delete" text={text}>
+							// 			{deleteBtnName}
+							// 		</Menu.Item>
+							// 	) : null;
+							const moreBtnName = (
+								<span>
+									<span>更多</span>
+									<Icon type="down" />
+								</span>
+							);
+							const moreBtn = (
+								<Dropdown
+									key="more"
+									overlay={this.moreMenu(record, index)}
+									trigger={["click"]}
+									placement="bottomRight"
+								>
+									{this.getDiffBtn("default", moreBtnName)}
+								</Dropdown>
+							);
+							if (this.hasMoreMenu) {
+								btns.push(moreBtn);
+							}
 
 							return this.state.isListCard
 								? btns
@@ -444,8 +431,12 @@ class ZlistPanel extends React.Component {
 		this.props.exportSomething && this.props.exportSomething(this.getExportSomething());
 	}
 	render() {
+		this.showPagination =
+			typeof this.props.showPagination === "function"
+				? this.props.showPagination(this.getExportSomething())
+				: this.props.showPagination;
 		this.moreBtn =
-			this.isInfinite && this.props.showPagination && this.state.listData.length ? (
+			this.isInfinite && this.showPagination && this.state.listData.length ? (
 				<div>
 					<Button
 						type="dashed"
@@ -460,6 +451,9 @@ class ZlistPanel extends React.Component {
 			) : (
 				this.props.moreContentRender && this.props.moreContentRender(this.getExportSomething())
 			);
+		const { items, onSearch, onReset, noCollapse, ...formOthers } = this.props.searchForm
+			? this.props.searchForm
+			: {};
 		this.searchForm =
 			this.state.colFormItems && this.state.colFormItems.length ? (
 				<ZsearchForm
@@ -467,6 +461,7 @@ class ZlistPanel extends React.Component {
 					onSearch={this.methods.onSearch}
 					onReset={this.methods.onReset}
 					noCollapse={true}
+					{...formOthers}
 				/>
 			) : null;
 
@@ -480,7 +475,14 @@ class ZlistPanel extends React.Component {
 			// onChange: this.methods.paginationOnChange,
 			// onShowSizeChange: this.methods.paginationOnSizeChange,
 		};
-		return this.state.isListCard ? cardTemplate.call(this) : tableTemplate.call(this);
+		switch (this.props.listType) {
+			case "table":
+				return tableTemplate.call(this);
+			case "card":
+				return cardTemplate.call(this);
+			case "simple":
+				return simpleTemplate.call(this);
+		}
 	}
 }
 ZlistPanel.prototype.getPanleHeader = const_getPanleHeader;

@@ -5,7 +5,9 @@ import { dataTypeTest } from "./zTool";
 export const const_insertLocations = {
 	mainRoute: "mainRoute",
 	mainModal: "mainModal",
+	mainModal_top: "mainModal_top",
 	appModal: "appModal",
+	appModal_top: "appModal_top",
 };
 
 export const const_showLoading = (insertLocation, props) => {
@@ -23,8 +25,10 @@ export const const_getModalType = (insertLocation) => {
 		case const_insertLocations.mainRoute:
 			return const_insertLocations.mainModal;
 		case const_insertLocations.mainModal:
-			return const_insertLocations.appModal;
+			return const_insertLocations.mainModal_top;
 		case const_insertLocations.appModal:
+			return const_insertLocations.appModal_top;
+		case const_insertLocations.appModal_top:
 			return "noModal";
 	}
 };
@@ -34,10 +38,10 @@ export const animateTimout = {
 	flipOutTime: 300,
 };
 //如在Zform中使用const_initItems.call(this,this.props.items,<Input placeholder="加载中" disabled />);
-export const const_initItems = function(items, disableControl, renderArgument = {},callback) {
+export const const_initItems = function(items, disableControl, renderArgument = {}, callback) {
 	callback = typeof callback == "function" ? callback : function() {};
 	this.allAsync = [];
-	this.filedKeys=[];
+	this.filedKeys = [];
 	const newItems = items.map((item, index) => {
 		let render = item.render;
 		if (render && typeof render !== "function") {
@@ -47,32 +51,28 @@ export const const_initItems = function(items, disableControl, renderArgument = 
 		let loading = false;
 		let renderValue = null;
 		if (render) {
-			renderValue = render(renderArgument);
-			if (Object.prototype.toString.call(renderValue) === "[object Promise]") {
-				this.allAsync.push({ promise: renderValue, index });
+			const _return = render(renderArgument);
+			if (Object.prototype.toString.call(_return) === "[object Promise]") {
+				this.allAsync.push({ promise: _return, index });
 				renderValue = disableControl;
 				loading = true;
+			} else if (typeof _return === "function") {
+				renderValue = _return;
 			}
 		}
 		if (renderValue) {
 			control = renderValue;
+		} else {
+			control = render;
 		}
-		let span0 = this.props.defaultSpan;
-		span0 = typeof span0 === "number" ? { md: span0 } : span0;
-		let span1 =
-			dataTypeTest(control) == "object" &&
-			control.props &&
-			control.props.prefixCls == "ant-input" &&
-			control.type.TextArea == undefined
-				? { md: 24 }
-				: span0;
-		let span2 = typeof item.span === "number" ? { md: item.span } : item.span;
-		let span = item.span ? span2 : span1;
+		let defaultSpan = this.props.defaultSpan;
+		defaultSpan = typeof defaultSpan === "number" ? { md: defaultSpan } : defaultSpan;
+
 		const newItem = {
 			...item,
 			loading,
 			control,
-			span,
+			defaultSpan,
 		};
 		this.filedKeys.push(item.key);
 		return newItem;
@@ -84,6 +84,22 @@ export const const_initItems = function(items, disableControl, renderArgument = 
 		callback,
 	);
 };
+
+export const const_itemSpan = function(control, currentSpan, defaultSpan) {
+	let span = defaultSpan;
+	if (currentSpan !== undefined) {
+		span = typeof currentSpan === "number" ? { md: currentSpan } : currentSpan;
+	} else if (
+		dataTypeTest(control) == "object" &&
+		control.props &&
+		control.props.prefixCls == "ant-input" &&
+		control.type.TextArea == undefined
+	) {
+		span = { md: 24 };
+	}
+	return span;
+};
+
 //如在Zform中使用 const_execAsync.call(this,callback);
 export const const_execAsync = function(callback) {
 	callback = typeof callback == "function" ? callback : function() {};
@@ -111,15 +127,16 @@ export const const_execAsync = function(callback) {
 };
 //ZtreePanel和ZlistPanel的heading,这里不能是箭头函数
 export const const_getPanleHeader = function() {
-	const {showAddBtn}=this.props;
-	const _showAddBtn=typeof showAddBtn=="function"?showAddBtn():showAddBtn;
-	this.addBtn = _showAddBtn ? (
-		// <div className="z-margin-bottom-15">
-		<Button type="primary" icon="plus" className="z-margin-left-10" onClick={this.methods.onAdd}>
-			新增
-		</Button>
-	) : // </div>
-	null;
+	const { showAddBtn } = this.props;
+	const _showAddBtn = typeof showAddBtn == "function" ? showAddBtn() : showAddBtn;
+	this.addBtn =
+		_showAddBtn && !this.state.isListCard ? (
+			// <div className="z-margin-bottom-15">
+			<Button type="primary" icon="plus" className="z-margin-left-10" onClick={this.methods.onAdd}>
+				新增
+			</Button>
+		) : // </div>
+		null;
 	const heading = this.props.panelHeader;
 	return heading ? (
 		<div className="z-panel-heading z-flex-items-v-center z-flex-space-between">
@@ -180,6 +197,7 @@ const private_protos = {
 	ZlistPanel: {
 		// 列表类型 table | card
 		listType: "table",
+		cardSpan: { xxl: 6, xl: 8, lg: 12, md: 24 },
 		cardCoverRender: null, // listType=="card"时的一个前置render
 		// 表格操作列的字段key
 		actionDataIndex: "action",
@@ -198,7 +216,7 @@ const private_protos = {
 		getPageSize: function(listType, isListCard) {
 			return isListCard ? 8 : 10;
 		},
-		actionColumnWidth:360,
+		actionColumnWidth: 360,
 	},
 	ZtreePanel: {
 		treeDataKeys: { name: "name", id: "id", children: "children" },

@@ -64,7 +64,7 @@ export class Zviewer extends React.Component {
 		}
 	}
 	componentWillUnmount() {
-		this.viewer.destroy();
+		this.viewer&&this.viewer.destroy();
 	}
 	render() {
 		return (

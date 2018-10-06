@@ -8,27 +8,44 @@
 				.iScrollIndicator {
 					background-color: rgba($color: lighten($color: $nav-bg, $amount: 40%), $alpha: 0.7);
 				}
-			}
+            }
 		}
 	}
 
 	@include is($name) {
-		background-color: $nav-bg;
+        background-color: $nav-bg;
 		:global {
 			.ant-menu-dark .ant-menu-inline.ant-menu-sub {
 				box-shadow: none;
-			}
-			.ant-menu-dark .ant-menu-item-selected {
+            }
+
+
+            .ant-menu-dark .ant-menu-item:hover,
+            .ant-menu-dark.ant-menu-inline-collapsed .ant-menu-submenu-title:hover{
+                background-color: #1c3e5f;
+            }
+            .ant-menu.ant-menu-root.ant-menu-dark .ant-menu-item-selected {
 				color: lighten($color: $nav-bg, $amount: 90%);
 				background-color: $selected-bg;
 				&:after {
-					border-right: 4px solid $select-border;
+                    border-right: 4px solid $select-border;
+                    transform:scaleY(1);
+                    opacity: 1;
 				}
-			}
+            }
 			.ant-menu-dark .ant-menu-sub {
 				// background-color: lighten($color: $nav-bg, $amount: 4%);
 				background-color: $nav-bg;
 			}
+
+			.ant-menu-dark.ant-menu-inline-collapsed .ant-menu-submenu-selected {
+				background-color: #1c3e5f;
+			}
+
+			// .ant-menu-dark .ant-menu-item:hover,
+			// .ant-menu-dark .ant-menu-submenu-title:hover {
+			//     background-color: #1C4B76;
+			// }
 		}
 	}
 }

@@ -1,0 +1,33 @@
+@import "../../scssMixin/generateClassName";
+
+    @include z('side-menu'){
+        :global{
+            .ant-menu-submenu-title>span>i,.ant-menu-item>span>i{
+                min-width: 14px;
+                margin-right: 10px;
+                font-size: inherit;
+                transition: font-size .15s cubic-bezier(.215,.61,.355,1),margin .3s cubic-bezier(.645,.045,.355,1);
+                display: inline-block;
+                font-style: normal;
+                vertical-align: middle;
+                text-align: center;
+                text-transform: none;
+                line-height: 0;
+                text-rendering: optimizeLegibility;
+                -webkit-font-smoothing: antialiased;
+            }
+            .ant-menu-submenu-title>span>i+span,.ant-menu-item>span>i+span {
+                transition: opacity .3s cubic-bezier(.645,.045,.355,1),width .3s cubic-bezier(.645,.045,.355,1);
+                opacity: 1;
+                vertical-align: middle;
+            }
+            .ant-menu-inline-collapsed{
+                .ant-menu-submenu-title>span>i+span,.ant-menu-item>span>i+span{
+                    max-width: 0;
+                    display: inline-block;
+                    opacity: 0;
+                }
+            }
+        }
+
+    }

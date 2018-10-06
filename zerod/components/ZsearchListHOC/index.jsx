@@ -26,7 +26,8 @@ export function ZsearchListHOC(pageConfig) {
 			return (
 				<PageWraper pageHeader={this.config.pageHeader}>
 					<ZlistPanel
-						colFormItems={this.config.searchForm.items}
+                        colFormItems={this.config.searchForm.items}
+                        searchForm={this.config.searchForm}
 						{...this.config.list}
 						insertLocation={this.config.insertLocation}
 					/>

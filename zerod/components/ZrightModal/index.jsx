@@ -13,11 +13,15 @@ export class ZrightModal extends React.Component {
 		showLoading: PropTypes.bool,
 		scroll: PropTypes.bool,
 		getScrollInstance: PropTypes.func,
-		onTransitionend: PropTypes.func,
+        onTransitionend: PropTypes.func,
+        zIndex:PropTypes.number,
+        width:PropTypes.string,
 	};
 	static defaultProps = {
 		scroll: true,
-		show: false,
+        show: false,
+        zIndex:999,
+        width:"90%",
 	};
 	state = {
 		showCover: false,
@@ -54,7 +58,7 @@ export class ZrightModal extends React.Component {
 			<Zlayout.Template>
 				<div
 					className={cssClass["z-pop-cover"]}
-					style={{ display: this.state.showCover ? "block" : "none" }}
+					style={{ display: this.state.showCover ? "block" : "none",zIndex:this.props.zIndex-1 }}
 					onClick={this.closeModal}
 				/>
 				<div
@@ -62,7 +66,8 @@ export class ZrightModal extends React.Component {
 					onClick={(e) => {
 						e.nativeEvent.stopImmediatePropagation();
 					}}
-					className={`${cssClass["z-pop-content"]} app-body ${this.props.show ? "" : this.hideClass}`}
+                    className={`${cssClass["z-pop-content"]} app-body ${this.props.show ? "" : this.hideClass}`}
+                    style={{width:this.props.width,zIndex:this.props.zIndex}}
 				>
 					<Zlayout>
 						<Zlayout.Zbody scroll={this.props.scroll} getScrollInstance={this.props.getScrollInstance}>

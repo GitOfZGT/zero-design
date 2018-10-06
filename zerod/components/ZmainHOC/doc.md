@@ -2,6 +2,12 @@
 
 `ZmainHOC`是一个函数，传入`pageConfig`参数配置，返回一个主页布局结构的`路由组件`(我们这里称它为`main`组件)
 
+在`zerod-admin-webpack 脚手架`的`src/views/Main/index.jsx`已经使用。
+
+只有使用了`ZmainHOC`后，它内部的子孙组件才能使用`ZerodMainContext`的内容。
+
+且`ZsearchListHOC`、`ZeditSimpleFormHOC`、`ZdetailSimpleBaseHOC`、`ZeditorTreeHOC`就应该是`ZmainHOC`的子孙组件才能发挥所长
+
 1、基本使用
 
 <div class="z-demo-box" data-render="demo1" data-title="这个demo取zerod-design文档主页展示，所有代码如下"></div>
@@ -350,6 +356,12 @@ export default ZmainHOC(pageConfig);
 			<td>导航配置的map对象key的对应，默认{ iconClass: "iconClass", path: "path", name: "name", children: "children" }</td>
 			<td>object</td>
 			<td>--</td>
+		</tr>
+		<tr>
+			<td>noParentPath</td>
+			<td>为false时，菜单导航的path会取父路由的path拼接</td>
+			<td>boolean</td>
+			<td>false</td>
 		</tr>
 	</tbody>
 </table>

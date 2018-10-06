@@ -111,7 +111,7 @@ export function ZdetailSimpleBaseHOC(pageConfig) {
 		render() {
 			return (
 				<PageWraper pageHeader={this.config.pageHeader}>
-				{typeof this.config.moreContentRender === "function" &&
+				{typeof this.config.panelBeforeRender === "function" &&
 						this.config.panelBeforeRender(this.state.detailData, this.tool)}
 					<div className="z-panel">
 						{this.getPanleHeader()}
@@ -125,7 +125,7 @@ export function ZdetailSimpleBaseHOC(pageConfig) {
 						this.config.moreContentRender(this.state.detailData, this.tool)}
 						</div>
 					</div>
-					{typeof this.config.moreContentRender === "function" &&
+					{typeof this.config.panelAfterRender === "function" &&
 						this.config.panelAfterRender(this.state.detailData, this.tool)}
 				</PageWraper>
 			);

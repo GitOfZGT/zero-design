@@ -24,6 +24,7 @@ class ZtreePanel extends React.Component {
 			PropTypes.node,
 		]), //面板title,可以自定义
 		moreContentRender: PropTypes.func,
+		searchForm: PropTypes.object,
 		colFormItems: PropTypes.arrayOf(PropTypes.object), // 搜索表单列map数据数据
 		moreBtnMap: PropTypes.arrayOf(PropTypes.object), //更多操作按钮的map数据
 		onMoreBtnClick: PropTypes.func, // 更多按钮点击事件
@@ -125,7 +126,7 @@ class ZtreePanel extends React.Component {
 		// 删除按钮触发
 		onDelete: (record) => {
 			Modal.confirm({
-				title: `确认删除[${record[this.treeDataKeys.name]}]这条数据吗`,
+				title: `确认删除 [${record[this.treeDataKeys.name]}] 这条数据吗`,
 				content: "将永久删除",
 				okText: "删除",
 				okType: "danger",
@@ -223,13 +224,17 @@ class ZtreePanel extends React.Component {
 		this.methods.onSearch();
 	}
 	render() {
+        const { items, onSearch, onReset, noCollapse, ...formOthers } = this.props.searchForm
+			? this.props.searchForm
+			: {};
 		this.searchForm =
 			this.state.colFormItems && this.state.colFormItems.length ? (
 				<ZsearchForm
 					colFormItems={this.state.colFormItems}
 					onSearch={this.methods.onSearch}
 					onReset={this.methods.onReset}
-					noCollapse={true}
+                    noCollapse={true}
+                    {...formOthers}
 				/>
 			) : null;
 		return (

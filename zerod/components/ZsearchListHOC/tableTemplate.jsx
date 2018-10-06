@@ -18,7 +18,7 @@ export default function tableTemplate() {
 							columns={this.tableColumns}
 							rowKey="id"
 							dataSource={this.state.listData}
-							pagination={this.props.showPagination && !this.isInfinite ? this.paginationOpt : false}
+							pagination={this.showPagination && !this.isInfinite ? this.paginationOpt : false}
 							onChange={this.methods.onTableChange}
 							{...others}
 						/>

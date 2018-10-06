@@ -26,7 +26,8 @@ export function ZeditorTreeHOC(pageConfig) {
 			return (
 				<PageWraper pageHeader={this.config.pageHeader}>
 					<ZtreePanel
-						colFormItems={this.config.searchForm.items}
+                        colFormItems={this.config.searchForm.items}
+                        searchForm={this.config.searchForm}
 						{...this.config.tree}
 						insertLocation={this.config.insertLocation}
 					/>

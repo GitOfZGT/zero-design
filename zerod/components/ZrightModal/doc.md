@@ -62,6 +62,18 @@
 			<td>--</td>
 		</tr>
 		<tr>
+			<td>width</td>
+			<td>窗口宽度</td>
+			<td>string</td>
+			<td>90%</td>
+		</tr>
+		<tr>
+			<td>zIndex</td>
+			<td>层级</td>
+			<td>number</td>
+			<td>999</td>
+		</tr>
+		<tr>
 			<td>onClose</td>
 			<td>点击关闭按钮的事件，()=>{}</td>
 			<td>boolean</td>
