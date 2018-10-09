@@ -1,6 +1,7 @@
 import React from "react";
+import {withRouter} from 'react-router-dom';
 import PropTypes from "prop-types";
-import { const_showLoading, const_getModalType ,const_getPanleHeader,const_getListConfig} from "../constant";
+import { const_showLoading, const_getModalType ,const_getPanleHeader,const_getListConfig,const_getInsertLocation} from "../constant";
 import { Button, Tree, Modal, message } from "antd";
 const TreeNode = Tree.TreeNode;
 import { ZsearchForm } from "../ZsearchForm";
@@ -42,7 +43,9 @@ class ZtreePanel extends React.Component {
 		addPageRender: PropTypes.func, // 新建页面渲染模板
 		updatePageRender: PropTypes.func, // 修改页面渲染模板
 		detailPageRender: PropTypes.func, // 详情页面渲染模板
-		insertLocation: PropTypes.string, //  mainRoute | mainModal | appModal
+		treeProps:PropTypes.object,
+		responseKeys: PropTypes.object, //后台接口请求响应体的key处理
+		
 	};
 	static defaultProps = defaultConfig.tree;
 	treeDataKeys = Object.assign({ name: "name", id: "id", children: "children" }, this.props.treeDataKeys);
@@ -54,7 +57,7 @@ class ZtreePanel extends React.Component {
 	ayncChild = typeof this.props.childApiInterface === "function";
 	methods = {
 		showLoading: (show) => {
-			const_showLoading(this.props.insertLocation, this.props)(show);
+			const_showLoading(this.insertLocation, this.props)(show);
 		},
 		// 获取列表数据
 		loadTreeData: (moreQuery) => {
@@ -152,7 +155,7 @@ class ZtreePanel extends React.Component {
 			});
 		},
 		openModal: (content) => {
-			content && this.props.showRightModal(true, const_getModalType(this.props.insertLocation), content);
+			content && this.props.showRightModal(true, const_getModalType(this.insertLocation), content);
 		},
 		onAdd: () => {
 			const content = this.props.addPageRender(this.getExportSomething());
@@ -186,7 +189,11 @@ class ZtreePanel extends React.Component {
 		return {
 			showRightModal: this.props.showRightModal,
 			getSearchQuery: () => deepCopy(this.searchQuery),
-			methods: this.methods,
+            methods: this.methods,
+            $router:{
+                history:this.props.history,
+                location:this.props.location,
+            }
 		};
 	}
 	getTreeNode(tree) {
@@ -221,6 +228,7 @@ class ZtreePanel extends React.Component {
 		});
 	}
 	componentDidMount() {
+        const_getInsertLocation.call(this);
 		this.methods.onSearch();
 	}
 	render() {
@@ -237,8 +245,13 @@ class ZtreePanel extends React.Component {
                     {...formOthers}
 				/>
 			) : null;
+		const { showLine,loadData,...treeOthers} = this.props.treeProps;
 		return (
-			<Zlayout.Template>
+			<section
+					ref={(el) => {
+						this.hocWrapperEl = el;
+					}}
+				>
 				{this.props.panelBeforeRender && this.props.panelBeforeRender(this.getExportSomething())}
 				<div className="z-panel">
 					{this.getPanleHeader()}
@@ -249,6 +262,7 @@ class ZtreePanel extends React.Component {
 								<Tree
 									showLine
 									loadData={this.ayncChild ? this.methods.loadChildData : undefined}
+									{...treeOthers}
 								>
 									{this.getTreeNode(this.state.treeData)}
 								</Tree>
@@ -260,9 +274,9 @@ class ZtreePanel extends React.Component {
 					</div>
 				</div>
 				{this.props.panelAfterRender && this.props.panelAfterRender(this.getExportSomething())}
-			</Zlayout.Template>
+			</section>
 		);
 	}
 }
 ZtreePanel.prototype.getPanleHeader=const_getPanleHeader;
-export default ZerodMainContext.setConsumer(ZtreePanel);
+export default ZerodMainContext.setConsumer(withRouter(ZtreePanel));

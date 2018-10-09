@@ -19,7 +19,7 @@ export { default as ZcolorPicker } from "./components/ZcolorPicker";
 
 export { default as ZdetailSimpleBaseHOC } from "./components/ZdetailSimpleBaseHOC";
 export { default as ZeditSimpleFormHOC } from "./components/ZeditSimpleFormHOC";
-export { default as ZpageWraperHOC } from "./components/ZpageWraperHOC";
+export { default as ZpageWrapper,ZpageWraperHOC } from "./components/ZpageWrapper";
 export { default as ZsearchListHOC } from "./components/ZsearchListHOC";
 import panel from "./components/ZsearchListHOC/ZlistPanel";
 export const ListPanel = panel;

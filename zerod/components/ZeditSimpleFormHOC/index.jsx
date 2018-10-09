@@ -1,6 +1,6 @@
 import React from "react";
 import { withRouter } from "react-router-dom";
-import { const_showLoading, const_insertLocations } from "../constant";
+import { const_showLoading, const_insertLocations,const_getInsertLocation } from "../constant";
 import PropTypes from "prop-types";
 import { Zform } from "../Zform";
 import { Input, message } from "antd";
@@ -10,14 +10,12 @@ import { mergeConfig } from "../zTool";
 // 上下文
 import ZerodMainContext from "../ZerodMainContext";
 
-import ZpageWraperHOC from "../ZpageWraperHOC";
+import {ZpageWraperHOC} from "../ZpageWrapper";
 const PageWraper = ZpageWraperHOC();
 
 export function ZeditSimpleFormHOC(pageConfig) {
 	pageConfig = pageConfig ? pageConfig : {};
 	let defaultConfig = {
-		//视图显示的地方：  mainRoute | mainModal | appModal
-		insertLocation: "mainModal",
 		pageHeader: {
 			show: true,
 			// array>[object] | null,如果是null则不显示面包屑
@@ -94,7 +92,7 @@ export function ZeditSimpleFormHOC(pageConfig) {
 		};
 		methods = {
 			showLoading: (show) => {
-				const_showLoading(this.config.insertLocation, this.props)(show);
+				const_showLoading(this.insertLocation, this.props)(show);
 			},
 			getFormDetailData: () => {
 				if (this.props.detailId === undefined || this.props.detailId === null) {
@@ -126,8 +124,8 @@ export function ZeditSimpleFormHOC(pageConfig) {
 					});
 			},
 			closeRightModal: () => {
-				if (this.config.insertLocation !== const_insertLocations.mainRoute)
-					this.props.showRightModal && this.props.showRightModal(false, this.config.insertLocation);
+				if (this.insertLocation !== const_insertLocations.mainRoute)
+					this.props.showRightModal && this.props.showRightModal(false, this.insertLocation);
 			},
 			onSubmit: (values) => {
 				const afterSuccess = this.config.form.afterSubmitSuccess;
@@ -164,10 +162,15 @@ export function ZeditSimpleFormHOC(pageConfig) {
 			showLoading: this.methods.showLoading,
 			closeRightModal: this.methods.closeRightModal,
 			showRightModal: this.props.showRightModal,
-			methods: this.methods,
+            methods: this.methods,
+            $router:{
+                history:this.props.history,
+                location:this.props.location,
+            }
 		};
 
 		componentDidMount() {
+			const_getInsertLocation.call(this);
 			if (this.config.form.type === "update") {
 				this.methods.getFormDetailData();
 			}
@@ -186,25 +189,31 @@ export function ZeditSimpleFormHOC(pageConfig) {
 				...formOthers
 			} = this.config.form;
 			return (
-				<PageWraper pageHeader={this.config.pageHeader}>
-					{typeof this.config.panelBeforeRender === "function" &&
-						this.config.panelBeforeRender(this.state.detailData, this.tool)}
-					<div className="z-panel">
-						{this.getPanleHeader()}
-						<div className="z-panel-body">
-							<Zform
-								{...formOthers}
-								onSubmit={this.methods.onSubmit}
-								getFormInstance={this.getFormInstance}
-								submitBtnName={this.config.form.showSubmitBtn ? this.config.form.submitBtnName : ""}
-							/>
-							{typeof this.config.moreContentRender === "function" &&
-								this.config.moreContentRender(this.state.detailData, this.tool)}
+				<section
+					ref={(el) => {
+						this.hocWrapperEl = el;
+					}}
+				>
+					<PageWraper pageHeader={this.config.pageHeader}>
+						{typeof this.config.panelBeforeRender === "function" &&
+							this.config.panelBeforeRender(this.state.detailData, this.tool)}
+						<div className="z-panel">
+							{this.getPanleHeader()}
+							<div className="z-panel-body">
+								<Zform
+									{...formOthers}
+									onSubmit={this.methods.onSubmit}
+									getFormInstance={this.getFormInstance}
+									submitBtnName={this.config.form.showSubmitBtn ? this.config.form.submitBtnName : ""}
+								/>
+								{typeof this.config.moreContentRender === "function" &&
+									this.config.moreContentRender(this.state.detailData, this.tool)}
+							</div>
 						</div>
-					</div>
-					{typeof this.config.panelAfterRender === "function" &&
-						this.config.panelAfterRender(this.state.detailData, this.tool)}
-				</PageWraper>
+						{typeof this.config.panelAfterRender === "function" &&
+							this.config.panelAfterRender(this.state.detailData, this.tool)}
+					</PageWraper>
+				</section>
 			);
 		}
 	}

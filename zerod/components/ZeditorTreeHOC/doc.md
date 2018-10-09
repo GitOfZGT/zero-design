@@ -10,7 +10,6 @@
 
 ```jsx
 const config = {
-	insertLocation: "mainModal",
 	pageHeader: {
 		show: true,
 		...pageHeader,
@@ -198,12 +197,6 @@ export default ZeditorTreeHOC(pageConfig);
 		</tr>
 	</thead>
 	<tbody>
-		<tr>
-			<td>insertLocation</td>
-			<td>这个组件渲染在的位置，会影响内置事件对显示loading,打开/关闭rightModal的操作。例如：insertLocation="mainRoute"，点击新增按钮时会打开 mainModal。以此类推：mainRoute > mainModal > mainModal_top > appModal > appModal_top</td>
-			<td>mainRoute | mainModal | mainModal_top | appModal  | appModal_top</td>
-			<td>mainRoute</td>
-		</tr>
 		<tr>
 			<td>panelHeader</td>
 			<td>列表面板的头部内容,为null则不显示面板头部</td>

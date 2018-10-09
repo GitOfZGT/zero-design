@@ -8,7 +8,6 @@
 
 ```jsx
 let defaultConfig = {
-	insertLocation: "mainModal",
 	pageHeader: {
 		show: true,
 		// any
@@ -75,12 +74,6 @@ let defaultConfig = {
 		</tr>
 	</thead>
 	<tbody>
-		<tr>
-			<td>insertLocation</td>
-			<td>这个组件渲染在的位置，会影响内置事件对显示loading,打开/关闭rightModal的操作。例如：insertLocation="mainRoute"，点击新增按钮时会打开 mainModal。以此类推：mainRoute > mainModal > mainModal_top > appModal > appModal_top</td>
-			<td>mainRoute | mainModal | mainModal_top | appModal  | appModal_top</td>
-			<td>mainModal</td>
-		</tr>
 		<tr>
 			<td>pageHeader</td>
 			<td>页头内容,除了show属性，其他属性同 组件/ZpageHeader的Props</td>
@@ -157,6 +150,10 @@ let defaultConfig = {
 ## tool 参数
 
 pageConfig 中的一些函数如`moreContentRender`提供了`tool`参数出来，有如下内容：
+
+### tool.showRightModal
+
+就是上下文`ZerodMainContext`提供的 showRightModal 函数(用于打开/关闭 rightModal)
 
 ### tool.showLoading
 

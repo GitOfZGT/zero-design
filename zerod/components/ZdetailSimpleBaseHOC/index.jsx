@@ -1,7 +1,7 @@
 import React from "react";
-// import { withRouter } from "react-router-dom";
+import { withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
-import { const_showLoading,  } from "../constant";
+import { const_showLoading, const_getInsertLocation } from "../constant";
 import { message, } from "antd";
 // 工具
 import { mergeConfig } from "../zTool/";
@@ -9,14 +9,12 @@ import { mergeConfig } from "../zTool/";
 import ZerodMainContext from "../ZerodMainContext";
 import Zinfo from "../Zinfo";
 // 其他HOC
-import ZpageWraperHOC from "../ZpageWraperHOC/";
+import {ZpageWraperHOC} from "../ZpageWrapper";
 const PageWraper = ZpageWraperHOC();
 
 export function ZdetailSimpleBaseHOC(pageConfig) {
 	pageConfig = pageConfig ? pageConfig : {};
 	let defaultConfig = {
-		//视图显示的地方：  mainRoute | mainModal | appModal
-		insertLocation: "mainModal",
 		pageHeader: {
 			show: true,
 			// array>[object] | null,如果是null则不显示面包屑
@@ -76,7 +74,7 @@ export function ZdetailSimpleBaseHOC(pageConfig) {
 		};
 		methods = {
 			showLoading: (show) => {
-				const_showLoading(this.config.insertLocation, this.props)(show);
+				const_showLoading(this.insertLocation, this.props)(show);
 			},
 			getDetailData: () => {
 				this.methods.showLoading(true);
@@ -103,13 +101,24 @@ export function ZdetailSimpleBaseHOC(pageConfig) {
 		}
 		tool = {
 			showLoading: this.methods.showLoading,
-			methods:this.methods,
+			showRightModal: this.props.showRightModal,
+            methods: this.methods,
+            $router:{
+                history:this.props.history,
+                location:this.props.location,
+            }
 		};
 		componentDidMount() {
+            const_getInsertLocation.call(this);
 			this.methods.getDetailData();
 		}
 		render() {
 			return (
+                <section
+					ref={(el) => {
+						this.hocWrapperEl = el;
+					}}
+				>
 				<PageWraper pageHeader={this.config.pageHeader}>
 				{typeof this.config.panelBeforeRender === "function" &&
 						this.config.panelBeforeRender(this.state.detailData, this.tool)}
@@ -128,10 +137,11 @@ export function ZdetailSimpleBaseHOC(pageConfig) {
 					{typeof this.config.panelAfterRender === "function" &&
 						this.config.panelAfterRender(this.state.detailData, this.tool)}
 				</PageWraper>
+                </section>
 			);
 		}
 	}
-	return ZerodMainContext.setConsumer(myDetail);
+	return ZerodMainContext.setConsumer(withRouter(myDetail));
 }
 
 export default ZdetailSimpleBaseHOC;

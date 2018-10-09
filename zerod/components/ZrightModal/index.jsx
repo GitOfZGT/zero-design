@@ -16,6 +16,7 @@ export class ZrightModal extends React.Component {
         onTransitionend: PropTypes.func,
         zIndex:PropTypes.number,
         width:PropTypes.string,
+        name:PropTypes.string,
 	};
 	static defaultProps = {
 		scroll: true,
@@ -68,6 +69,7 @@ export class ZrightModal extends React.Component {
 					}}
                     className={`${cssClass["z-pop-content"]} app-body ${this.props.show ? "" : this.hideClass}`}
                     style={{width:this.props.width,zIndex:this.props.zIndex}}
+                    data-zgt_modal={this.props.name}
 				>
 					<Zlayout>
 						<Zlayout.Zbody scroll={this.props.scroll} getScrollInstance={this.props.getScrollInstance}>

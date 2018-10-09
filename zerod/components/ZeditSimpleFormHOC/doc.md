@@ -14,7 +14,6 @@ import defaultConfigData from "@/mock/serviceDefaultConfigData.js";
 // 后台接口
 import api from "@/App.api.js";
 const pageCofig = {
-	insertLocation: "mainModal",
 	pageHeader: {
 		show: true,
 		...pageHeader,
@@ -159,7 +158,6 @@ import defaultConfigData from "@/mock/serviceDefaultConfigData.js";
 // 后台接口
 import api from "@/App.api.js";
 const pageCofig = {
-	insertLocation: "mainModal",
 	pageHeader: {
 		show: true,
 		...pageHeader,
@@ -269,12 +267,6 @@ export default ZeditSimpleFormHOC(pageConfig);
 		</tr>
 	</thead>
 	<tbody>
-		<tr>
-			<td>insertLocation</td>
-			<td>这个组件渲染在的位置，会影响内置事件对显示loading,打开/关闭rightModal的操作。例如：insertLocation="mainRoute"，点击新增按钮时会打开 mainModal。以此类推：mainRoute > mainModal > mainModal_top > appModal > appModal_top</td>
-			<td>mainRoute | mainModal | mainModal_top | appModal  | appModal_top</td>
-			<td>mainModal</td>
-		</tr>
 		<tr>
 			<td>pageHeader</td>
 			<td>页头内容,除了show属性，其他属性同 组件/ZpageHeader的Props</td>

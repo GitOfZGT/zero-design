@@ -9,7 +9,15 @@ export const const_insertLocations = {
 	appModal: "appModal",
 	appModal_top: "appModal_top",
 };
-
+export const const_getInsertLocation = function() {
+	if (this.hocWrapperEl) {
+		let _parent = this.hocWrapperEl.parentElement;
+		while (!_parent.dataset.zgt_modal && _parent) {
+			_parent = _parent.parentElement;
+		}
+		this.insertLocation = _parent && _parent.dataset.zgt_modal ? _parent.dataset.zgt_modal : "mainRoute";
+	}
+};
 export const const_showLoading = (insertLocation, props) => {
 	return function(show) {
 		if (insertLocation === const_insertLocations.mainRoute) {
@@ -223,6 +231,7 @@ const private_protos = {
 		treeApiInterface: (query) => Promise.reject({ mag: "未提供后台接口" }),
 		// childApiInterface: (query) => Promise.reject({ mag: "未提供后台接口" }),
 		childApiInterface: false,
+		treeProps:{},
 	},
 };
 

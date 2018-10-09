@@ -284,6 +284,7 @@ export function ZmainHOC(pageConfig) {
 			const { content_name, show_name, scroll_name, loading_name, instance_name } = getConstNames(witch);
 			return (
 				<ZrightModal
+                    name={witch}
 					zIndex={zIndex}
 					width={width}
 					show={this.state[show_name]}

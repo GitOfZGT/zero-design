@@ -4,7 +4,7 @@ import React from "react";
 // 工具
 import { mergeConfig } from "../zTool";
 
-import ZpageWraperHOC from "../ZpageWraperHOC";
+import {ZpageWraperHOC} from "../ZpageWrapper";
 
 import { const_getListConfig } from "../constant";
 // childs

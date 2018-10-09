@@ -74,7 +74,7 @@ class TreeTitle extends React.Component {
 							删除
 						</Button>
 					) : null}
-					<Dropdown
+					{this.hasMoreMenu?<Dropdown
 						key="more"
 						overlay={this.moreMenu(record, index)}
 						trigger={["click"]}
@@ -84,7 +84,7 @@ class TreeTitle extends React.Component {
 							更多
 							<Icon type="down" />
 						</Button>
-					</Dropdown>
+					</Dropdown>:null}
 				</span>
 			</span>
 		);

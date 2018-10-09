@@ -1,6 +1,7 @@
 import React from "react";
+import {withRouter} from 'react-router-dom';
 import PropTypes from "prop-types";
-import { const_showLoading, const_getModalType, const_getPanleHeader, const_getListConfig } from "../constant";
+import { const_showLoading, const_getModalType, const_getPanleHeader, const_getListConfig,const_getInsertLocation } from "../constant";
 import { Button, Icon, Divider, Dropdown, Menu, Modal, message, Tooltip } from "antd";
 import { ZsearchForm } from "../ZsearchForm";
 import cssClass from "./style.scss";
@@ -54,7 +55,6 @@ class ZlistPanel extends React.Component {
 		exportSomething: PropTypes.func, // 用于提供一些东西出去
 		paginationType: PropTypes.string, // 分页类型， paging | infinite
 		tableParams: PropTypes.object, // 对应antd 的Table的参数
-		insertLocation: PropTypes.string, //  mainRoute | mainModal | appModal
 		responseKeys: PropTypes.object, //后台接口请求响应体的key处理
 	};
 	static defaultProps = defaultConfig.list;
@@ -101,7 +101,7 @@ class ZlistPanel extends React.Component {
 			};
 		},
 		showLoading: (show) => {
-			const_showLoading(this.props.insertLocation, this.props)(show);
+			const_showLoading(this.insertLocation, this.props)(show);
 		},
 		// 获取列表数据
 		getListData: (merge, moreQuery) => {
@@ -185,23 +185,33 @@ class ZlistPanel extends React.Component {
 			this.methods.getListData();
 		},
 		//递归获取列表中tableParams.rowKey对应的值等于value的那行数据，
-		findData: (value, list) => {
+		findData: (value, list, { isRemove, row }) => {
 			let key = this.props.tableParams.rowKey;
 			key = key ? key : "id";
 			list = list ? list : this.methods.currentListData();
 			let newData = null;
+			let hasRemove = false;
 			for (let i = 0; i < list.length; i++) {
 				let data = list[i];
-				if (data[key] === value) {
+				if (isRemove && data[key] === row[key]) {
+					list.splice(i, 1);
+					hasRemove = true;
+					break;
+				} else if (data[key] === value) {
 					newData = data;
 				} else if (data.children && data.children.length > 0) {
-					newData = this.methods.findData(value, data.children);
+					const returnValue = this.methods.findData(value, data.children, { isRemove, row });
+					typeof returnValue === "boolean" ? (hasRemove = returnValue) : (newData = returnValue);
+					if (data.children.length === 0) {
+						data.children = null;
+					}
 				}
+
 				if (newData) {
 					break;
 				}
 			}
-			return newData;
+			return hasRemove ? hasRemove : newData;
 		},
 		addChildrenData: (childs, value) => {
 			let list = this.methods.currentListData();
@@ -213,18 +223,24 @@ class ZlistPanel extends React.Component {
 		},
 		//移除一条数据
 		removeOneData: (row) => {
-			let key = this.props.tableParams.rowKey;
-			key = key ? key : "id";
+			// let key = this.props.tableParams.rowKey;
+			// key = key ? key : "id";
 			const list = this.methods.currentListData();
-			const index = list.findIndex((item) => {
-				return item[key] === row[key];
-			});
-			if (index >= 0) {
-				list.splice(index, 1);
+			const hasRemove = this.methods.findData(null, list, { isRemove: true, row });
+			if (typeof hasRemove === "boolean" && hasRemove) {
 				this.setState({
 					listData: list,
 				});
 			}
+			// const index = list.findIndex((item) => {
+			// 	return item[key] === row[key];
+			// });
+			// if (index >= 0) {
+			// 	list.splice(index, 1);
+			// 	this.setState({
+			// 		listData: list,
+			// 	});
+			// }
 		},
 		// 删除按钮触发
 		onDelete: (text, row) => {
@@ -254,7 +270,7 @@ class ZlistPanel extends React.Component {
 		openModal: (content) => {
 			content &&
 				this.props.showRightModal &&
-				this.props.showRightModal(true, const_getModalType(this.props.insertLocation), content);
+				this.props.showRightModal(true, const_getModalType(this.insertLocation), content);
 		},
 		onAdd: () => {
 			const content = this.props.addPageRender(this.getExportSomething());
@@ -365,9 +381,9 @@ class ZlistPanel extends React.Component {
 							const _showDetailBtn =
 								typeof showDetailBtn == "function" ? showDetailBtn(record, index) : showDetailBtn;
 							const _showUpdateBtn =
-								typeof showUpdateBtn == "function" ? showDetailBtn(record, index) : showUpdateBtn;
+								typeof showUpdateBtn == "function" ? showUpdateBtn(record, index) : showUpdateBtn;
 							const _showDeleteBtn =
-								typeof showDeleteBtn == "function" ? showDetailBtn(record, index) : showDeleteBtn;
+								typeof showDeleteBtn == "function" ? showDeleteBtn(record, index) : showDeleteBtn;
 							_showDetailBtn && btns.push(detailBtn);
 							_showUpdateBtn && btns.push(updateBtn);
 							_showDeleteBtn && btns.push(deleteBtn);
@@ -423,10 +439,16 @@ class ZlistPanel extends React.Component {
 			showLoading: this.methods.showLoading,
 			getPage: () => deepCopy(this.page),
 			getSearchQuery: () => deepCopy(this.searchQuery),
-			methods: this.methods,
+            methods: this.methods,
+            $router:{
+                history:this.props.history,
+                location:this.props.location,
+            }
 		};
-	}
+    }
+
 	componentDidMount() {
+        const_getInsertLocation.call(this);
 		this.methods.onSearch();
 		this.props.exportSomething && this.props.exportSomething(this.getExportSomething());
 	}
@@ -475,15 +497,20 @@ class ZlistPanel extends React.Component {
 			// onChange: this.methods.paginationOnChange,
 			// onShowSizeChange: this.methods.paginationOnSizeChange,
 		};
+		let content = "";
 		switch (this.props.listType) {
 			case "table":
-				return tableTemplate.call(this);
+                content = tableTemplate.call(this);
+                break;
 			case "card":
-				return cardTemplate.call(this);
+                content = cardTemplate.call(this);
+                break;
 			case "simple":
-				return simpleTemplate.call(this);
+                content = simpleTemplate.call(this);
+                break;
 		}
+		return <section ref={(el)=>{this.hocWrapperEl=el;}}>{content}</section>;
 	}
 }
 ZlistPanel.prototype.getPanleHeader = const_getPanleHeader;
-export default ZerodRootContext.setConsumer(ZerodMainContext.setConsumer(ZlistPanel));
+export default ZerodRootContext.setConsumer(ZerodMainContext.setConsumer(withRouter(ZlistPanel)));
