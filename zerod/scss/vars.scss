@@ -22,5 +22,15 @@
                 border-color:$--red-color;
             }
         }
+        $--ra:$btn-border-radius-base;
+        .ant-input-search{
+            border-top-right-radius: $--ra;
+            border-bottom-right-radius:$--ra;
+            .ant-input{
+              border-top-right-radius: $--ra;
+              border-bottom-right-radius: $--ra;
+            }
+        }
+  
     }
 }

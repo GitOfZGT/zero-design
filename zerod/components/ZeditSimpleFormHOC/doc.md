@@ -267,11 +267,23 @@ export default ZeditSimpleFormHOC(pageConfig);
 		</tr>
 	</thead>
 	<tbody>
-		<tr>
+	<tr>
 			<td>pageHeader</td>
-			<td>页头内容,除了show属性，其他属性同 组件/ZpageHeader的Props</td>
+			<td>页头内容,除了show属性(默认false)，其他属性同 组件/ZpageHeader的Props</td>
 			<td>object</td>
 			<td>--</td>
+		</tr>
+		<tr>
+			<td>pageFooter</td>
+			<td>页尾内容,除了show属性(默认true)，其他属性同 组件/pageFooter的Props</td>
+			<td>object</td>
+			<td>--</td>
+		</tr>
+		<tr>
+			<td>hasBodyPadding</td>
+			<td>中间部分是否有padding值</td>
+			<td>boolean</td>
+			<td>true</td>
 		</tr>
 		<tr>
 			<td>form</td>
@@ -389,18 +401,68 @@ pageConfig 中的一些函数如`moreContentRender`提供了`tool`参数出来�
 
 是一个函数，可以const myform=tool.getFormInstance()取得antd中经 Form.create() 包装过的组件自带的this.props.form 属性 ；<a href="https://ant.design/components/form-cn/" target="_blank"> 更多请查看antd的Form</a>
 
-### tool.submit
-
-ZeditSimpleFormHOC的submit方法，需参数values:表单的所有值的map对象，tool.submit(values)会触发submitApiInterface，异步回调后会触发afterSuccess
-
-### tool.showLoading
-
-用于显示/取消当前页的loading  :  tool.showLoading(true)
-
-### tool.closeRightModal
-
-如果ZeditSimpleFormHOC渲染在rightModal中，tool.closeRightModal()可以关闭当前rightModal
-
 ### tool.showRightModal
 
 就是上下文`ZerodMainContext`提供的 showRightModal 函数(用于打开/关闭 rightModal)
+
+### tool.methods
+
+tool.methods 是一个对象，内容如下：
+
+<table>
+	<thead>
+		<tr>
+			<th>方法</th>
+			<th>说明</th>
+			<th>使用方式</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>showLoading</td>
+			<td>用于 显示/取消 当前页的loading的方法，必需参数show：true|false</td>
+			<td>tool.methods.showLoading(true)</td>
+		</tr>
+		<tr>
+			<td>getFormDetailData</td>
+			<td>会触发pageConfig.form.detailApiInterface函数</td>
+			<td>tool.methods.getFormDetailData()</td>
+		</tr>
+		<tr>
+			<td>closeRightModal</td>
+			<td>如果ZeditSimpleFormHOC渲染在rightModal中，tool.closeRightModal()可以关闭当前rightModal</td>
+			<td>tool.methods.closeRightModal()</td>
+		</tr>
+		<tr>
+			<td>onSubmit</td>
+			<td>ZeditSimpleFormHOC的submit方法，需参数values:表单的所有值的map对象，tool.submit(values)会触发submitApiInterface，异步回调后会触发afterSuccess</td>
+			<td>tool.methods.onSubmit(values)</td>
+		</tr>
+	</tbody>
+</table>
+
+### tool.$router
+
+tool.$router是一个对象，内容如下：
+
+<table>
+	<thead>
+		<tr>
+			<th>属性</th>
+			<th>说明</th>
+			<th>使用方式</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>history</td>
+			<td>可以调用push、replace等跳转路由path得方法，<a href="https://reacttraining.com/react-router/web/api/history" target="_blank"> 更多请查看react-router的history</a></td>
+			<td>tool.$router.history.push("/login")</td>
+		</tr>
+		<tr>
+			<td>location</td>
+			<td>当前路由的相关信息,<a href="https://reacttraining.com/react-router/web/api/location" target="_blank"> 更多请查看react-router的location</a></td>
+			<td>tool.$router.location.pathname</td>
+		</tr>
+	</tbody>
+</table>

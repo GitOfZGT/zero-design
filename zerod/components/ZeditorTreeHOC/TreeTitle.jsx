@@ -52,8 +52,8 @@ class TreeTitle extends React.Component {
 	render() {
 		const { showDetailBtn, showUpdateBtn, showDeleteBtn, record, index } = this.props;
 		const _showDetailBtn = typeof showDetailBtn == "function" ? showDetailBtn(record, index) : showDetailBtn;
-		const _showUpdateBtn = typeof showUpdateBtn == "function" ? showDetailBtn(record, index) : showUpdateBtn;
-		const _showDeleteBtn = typeof showDeleteBtn == "function" ? showDetailBtn(record, index) : showDeleteBtn;
+		const _showUpdateBtn = typeof showUpdateBtn == "function" ? showUpdateBtn(record, index) : showUpdateBtn;
+		const _showDeleteBtn = typeof showDeleteBtn == "function" ? showDeleteBtn(record, index) : showDeleteBtn;
 		return (
 			<span className="z-flex-space-between">
 				<span>{this.props.name}</span>

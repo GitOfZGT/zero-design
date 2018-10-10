@@ -3,6 +3,7 @@ import IScroll from "iscroll";
 import Ajax from "./httpAjax";
 import debounce from "lodash.debounce";
 import ResizeSensor from "./ResizeSensor";
+import merge from "lodash.merge";
 export const httpAjax = Ajax;
 /*加载一批文件，_files:文件路径数组,可包括js,css,less文件,isSequence 是否按数组的顺序加载*/
 export const loadFileList = (function() {
@@ -945,7 +946,7 @@ export function formatterMapKey(data, mapKey = {}, parentPath = "/") {
 			...item,
 			iconClass: item[mapKey.iconClass] !== undefined ? item[mapKey.iconClass] : "smile-o",
 			path,
-			parPath:notParPath?"": parentPath.replace(/\/$/, ""),
+			parPath: notParPath ? "" : parentPath.replace(/\/$/, ""),
 			name: item[mapKey.name],
 		};
 		if (Array.isArray(item[mapKey.children]) && item[mapKey.children].length) {
@@ -957,23 +958,9 @@ export function formatterMapKey(data, mapKey = {}, parentPath = "/") {
 
 // 合并defaultConfig的属性生成新的config
 export const mergeConfig = (defaultConfig, theConfig) => {
-	let newConfig = {};
-	if (theConfig)
-		Object.keys(defaultConfig).forEach((key) => {
-			if (dataTypeTest(defaultConfig[key]) === "object") {
-				newConfig[key] = Object.assign(
-					{},
-					defaultConfig[key],
-					theConfig[key] !== undefined ? deepCopy(theConfig[key]) : {},
-				);
-			} else {
-				newConfig[key] = theConfig[key] !== undefined ? deepCopy(theConfig[key]) : defaultConfig[key];
-			}
-		});
-	else {
-		newConfig = defaultConfig;
+	if (dataTypeTest(defaultConfig) === "object" && dataTypeTest(theConfig) === "object") {
+		return merge(deepCopy(defaultConfig), theConfig);
 	}
-	return newConfig;
 };
 export const zTool = {
 	getStyle,

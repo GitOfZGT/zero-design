@@ -345,7 +345,7 @@ class ZlistPanel extends React.Component {
 									record,
 									index,
 									this.getExportSomething(),
-									this.state.isListCard,
+									this.props.listType,
 								);
 							}
 							const btnSize = "small";

@@ -158,7 +158,7 @@ export function ZeditSimpleFormHOC(pageConfig) {
 			getFormInstance: () => {
 				return this.form;
 			},
-			submit: this.methods.onSubmit,
+			submit: this.methods.onSubmit,//在methods属性中提供，为了向下兼容
 			showLoading: this.methods.showLoading,
 			closeRightModal: this.methods.closeRightModal,
 			showRightModal: this.props.showRightModal,
@@ -194,7 +194,7 @@ export function ZeditSimpleFormHOC(pageConfig) {
 						this.hocWrapperEl = el;
 					}}
 				>
-					<PageWraper pageHeader={this.config.pageHeader}>
+					<PageWraper pageHeader={this.config.pageHeader} pageFooter={this.config.pageFooter} hasBodyPadding={this.config.hasBodyPadding}>
 						{typeof this.config.panelBeforeRender === "function" &&
 							this.config.panelBeforeRender(this.state.detailData, this.tool)}
 						<div className="z-panel">

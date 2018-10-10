@@ -219,7 +219,7 @@
 
 ## Zlayout.ZheaderBtn
 
-可追加`className`、`style`
+可加`className`、`style`、`onClick`
 
 `Zlayout.ZheaderBtn`需在`Zlayout.Zheader`内部使用
 

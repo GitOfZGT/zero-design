@@ -24,7 +24,7 @@ export function ZeditorTreeHOC(pageConfig) {
 		config = defaultConfig;
 		render() {
 			return (
-				<PageWraper pageHeader={this.config.pageHeader}>
+				<PageWraper pageHeader={this.config.pageHeader} pageFooter={this.config.pageFooter}  hasBodyPadding={this.config.hasBodyPadding}>
 					<ZtreePanel
                         colFormItems={this.config.searchForm.items}
                         searchForm={this.config.searchForm}

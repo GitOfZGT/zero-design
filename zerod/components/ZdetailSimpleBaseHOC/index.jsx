@@ -100,7 +100,7 @@ export function ZdetailSimpleBaseHOC(pageConfig) {
 			) : null;
 		}
 		tool = {
-			showLoading: this.methods.showLoading,
+			showLoading: this.methods.showLoading,//在methods属性中提供，为了向下兼容
 			showRightModal: this.props.showRightModal,
             methods: this.methods,
             $router:{
@@ -119,7 +119,7 @@ export function ZdetailSimpleBaseHOC(pageConfig) {
 						this.hocWrapperEl = el;
 					}}
 				>
-				<PageWraper pageHeader={this.config.pageHeader}>
+				<PageWraper pageHeader={this.config.pageHeader} pageFooter={this.config.pageFooter} hasBodyPadding={this.config.hasBodyPadding}>
 				{typeof this.config.panelBeforeRender === "function" &&
 						this.config.panelBeforeRender(this.state.detailData, this.tool)}
 					<div className="z-panel">

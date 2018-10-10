@@ -22,7 +22,8 @@
 		"swiper": "^4.3.5",
 		"react-color": "^2.14.1",
 		"lodash.debounce": "^4.0.8",
-		"lodash.throttle": "^4.1.1"
+		"lodash.throttle": "^4.1.1",
+		"lodash.merge": "^4.6.1"
 	},
 	"peerDependencies": {
 		"react": ">=16.0.0",

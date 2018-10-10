@@ -12,7 +12,7 @@ export const const_insertLocations = {
 export const const_getInsertLocation = function() {
 	if (this.hocWrapperEl) {
 		let _parent = this.hocWrapperEl.parentElement;
-		while (!_parent.dataset.zgt_modal && _parent) {
+		while (_parent&&!_parent.dataset.zgt_modal) {
 			_parent = _parent.parentElement;
 		}
 		this.insertLocation = _parent && _parent.dataset.zgt_modal ? _parent.dataset.zgt_modal : "mainRoute";
@@ -238,8 +238,6 @@ const private_protos = {
 export const const_getListConfig = (name, componentName) => {
 	const list = Object.assign({}, common_protos, private_protos[componentName]);
 	return {
-		//视图显示的地方：  mainRoute | mainModal | appModal
-		insertLocation: "mainRoute",
 		pageHeader: {
 			show: true,
 			// array>[object] | null,如果是null则不显示面包屑
@@ -251,6 +249,8 @@ export const const_getListConfig = (name, componentName) => {
 			//element | node
 			rightMoreContent: null,
 		},
+		pageFooter:undefined,
+		hasBodyPadding:true,
 		searchForm: {
 			// array>[object] | null，如果是null则不显示搜索表单
 			items: [

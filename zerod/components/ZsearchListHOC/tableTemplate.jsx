@@ -15,6 +15,7 @@ export default function tableTemplate() {
 					{this.searchForm}
 					<div className={cssClass["z-list-table"]}>
 						<Table
+							expandRowByClick={true}
 							columns={this.tableColumns}
 							rowKey="id"
 							dataSource={this.state.listData}
