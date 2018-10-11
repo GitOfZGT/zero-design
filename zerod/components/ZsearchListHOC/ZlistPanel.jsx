@@ -360,6 +360,7 @@ class ZlistPanel extends React.Component {
 							const detailBtn = (
 								<span key="detail">
 									{this.getDiffBtn("default", detailBtnName, (e) => {
+										e.stopPropagation();
 										this.methods.onDetail(record);
 									})}
 									{!this.state.isListCard ? <Divider type="vertical" /> : null}
@@ -369,6 +370,7 @@ class ZlistPanel extends React.Component {
 							const updateBtn = (
 								<span key="update">
 									{this.getDiffBtn("primary", updateBtnName, (e) => {
+										e.stopPropagation();
 										this.methods.onUpdate(record);
 									})}
 									{!this.state.isListCard ? <Divider type="vertical" /> : null}
@@ -378,6 +380,7 @@ class ZlistPanel extends React.Component {
 							const deleteBtn = (
 								<span key="delete">
 									{this.getDiffBtn("danger", deleteBtnName, (e) => {
+										e.stopPropagation();
 										this.methods.onDelete(text, record);
 									})}
 									{this.hasMoreMenu && !this.state.isListCard ? <Divider type="vertical" /> : null}
