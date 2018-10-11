@@ -131,6 +131,8 @@ export const const_execAsync = function(callback) {
 				callback,
 			);
 		});
+	}else{
+		callback();
 	}
 };
 //ZtreePanel和ZlistPanel的heading,这里不能是箭头函数

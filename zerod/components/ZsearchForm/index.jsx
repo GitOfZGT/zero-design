@@ -17,6 +17,7 @@ export const ZsearchForm = Form.create()(
 			defaultSpan: PropTypes.oneOfType([PropTypes.number, PropTypes.object]),
 			formDefaultValues: PropTypes.object,
 			collapseCount: PropTypes.number,
+			afterItemsRendered:PropTypes.func,// 表单控件渲染完的回调
 		};
 		static defaultProps = {
 			defaultSpan: { xxl: 6, xl: 8, lg: 12, md: 24 },
@@ -61,7 +62,7 @@ export const ZsearchForm = Form.create()(
 		execAsync() {
 			const items = this.props.items ? this.props.items : this.props.colFormItems;
 			const_initItems.call(this, items, <Input placeholder="加载中" disabled />, this.props.form);
-			const_execAsync.call(this);
+			const_execAsync.call(this,this.props.afterItemsRendered);
 		}
 		componentDidMount() {
             this.execAsync();

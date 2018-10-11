@@ -31,9 +31,9 @@ export class ZsorterBtn extends React.Component {
 			<Tooltip placement="top" title={`排序字段：${this.props.children}`}>
 			<div className={cssClass["z-sorter-btn"]}>
 				{this.props.children}
-				<div className="ant-table-column-sorter">
+				<div className="btn-sorter">
 					<span
-						className={`ant-table-column-sorter-up ${
+						className={`btn-sorter-up ${
 							this.state.ascendOn && !this.state.descendOn ? "on" : "off"
 						}`}
 						title="↑"
@@ -42,7 +42,7 @@ export class ZsorterBtn extends React.Component {
 					<Icon  type="caret-up"></Icon>
 					</span>
 					<span
-						className={`ant-table-column-sorter-down ${
+						className={`btn-sorter-down ${
 							!this.state.ascendOn && this.state.descendOn ? "on" : "off"
 						}`}
 						title="↓"

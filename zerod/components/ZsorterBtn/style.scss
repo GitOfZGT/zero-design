@@ -1,17 +1,45 @@
-@import '../../scssMixin/generateClassName';
+@import "../../scssMixin/generateClassName";
 @include z("sorter-btn") {
-    display: inline-block;
-    border:1px dashed #d9d9d9;
-    background-color: white;
-    padding:0 15px;
-    height: 32px;
+	display: inline-block;
+	border: 1px dashed #d9d9d9;
+	background-color: white;
+	padding: 0 15px;
+	height: 32px;
     line-height: 32px;
-}
-.z-sorter-btn+.z-sorter-btn{
-    margin-left: 10px;
-}
-:global{
-    .ant-table-column-sorter{
-       vertical-align: text-top !important;
+    :global {
+        .btn-sorter {
+            position: relative;
+            margin-left: 8px;
+            display: inline-block;
+            top: -1.5px;
+            width: 14px;
+            height: 14px;
+            text-align: center;
+            font-weight: normal;
+            color: rgba(0, 0, 0, 0.45);
+            vertical-align: text-top !important;
+            .btn-sorter-up,.btn-sorter-down{
+                font-size: 12px;
+                font-size: 11px \9;
+                -webkit-transform: scale(0.91666667) rotate(0deg);
+                transform: scale(0.91666667) rotate(0deg);
+                line-height: 4px;
+                height: 4px;
+                -webkit-transition: all 0.3s;
+                transition: all 0.3s;
+                display: block;
+                cursor: pointer;
+                &.on{
+                    color: #0064cd;
+                }
+            }
+            .btn-sorter-down{
+                margin-top:4px;
+            }
+        }
     }
 }
+.z-sorter-btn + .z-sorter-btn {
+	margin-left: 10px;
+}
+

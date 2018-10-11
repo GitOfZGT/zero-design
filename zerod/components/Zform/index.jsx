@@ -17,6 +17,7 @@ export const Zform = Form.create()(
 			submitMsg: PropTypes.any,
 			defaultSpan: PropTypes.oneOfType([PropTypes.number, PropTypes.object]),
 			submitBtnRender: PropTypes.func,
+			afterItemsRendered:PropTypes.func,// 表单控件渲染完的回调
 		};
 		static defaultProps = {
 			items: [{ lable: "字段名", key: "name", options: {}, render: (form, panel) => <Input /> }],
@@ -59,7 +60,7 @@ export const Zform = Form.create()(
 		}
 		execAsync() {
 			const_initItems.call(this, this.props.items, <Input placeholder="加载中" disabled />, this.props.form);
-			const_execAsync.call(this);
+			const_execAsync.call(this,this.props.afterItemsRendered);
 		}
 		componentDidMount() {
 			this.execAsync();

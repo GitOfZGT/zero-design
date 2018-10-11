@@ -1,7 +1,13 @@
 import React from "react";
-import {withRouter} from 'react-router-dom';
+import { withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
-import { const_showLoading, const_getModalType, const_getPanleHeader, const_getListConfig,const_getInsertLocation } from "../constant";
+import {
+	const_showLoading,
+	const_getModalType,
+	const_getPanleHeader,
+	const_getListConfig,
+	const_getInsertLocation,
+} from "../constant";
 import { Button, Icon, Divider, Dropdown, Menu, Modal, message, Tooltip } from "antd";
 import { ZsearchForm } from "../ZsearchForm";
 import cssClass from "./style.scss";
@@ -185,7 +191,8 @@ class ZlistPanel extends React.Component {
 			this.methods.getListData();
 		},
 		//递归获取列表中tableParams.rowKey对应的值等于value的那行数据，
-		findData: (value, list, { isRemove, row }) => {
+		findData: (value, list, other) => {
+			const { isRemove, row } = typeof other == "object" ? other : {};
 			let key = this.props.tableParams.rowKey;
 			key = key ? key : "id";
 			list = list ? list : this.methods.currentListData();
@@ -439,16 +446,16 @@ class ZlistPanel extends React.Component {
 			showLoading: this.methods.showLoading,
 			getPage: () => deepCopy(this.page),
 			getSearchQuery: () => deepCopy(this.searchQuery),
-            methods: this.methods,
-            $router:{
-                history:this.props.history,
-                location:this.props.location,
-            }
+			methods: this.methods,
+			$router: {
+				history: this.props.history,
+				location: this.props.location,
+			},
 		};
-    }
+	}
 
 	componentDidMount() {
-        const_getInsertLocation.call(this);
+		const_getInsertLocation.call(this);
 		this.methods.onSearch();
 		this.props.exportSomething && this.props.exportSomething(this.getExportSomething());
 	}
@@ -500,16 +507,24 @@ class ZlistPanel extends React.Component {
 		let content = "";
 		switch (this.props.listType) {
 			case "table":
-                content = tableTemplate.call(this);
-                break;
+				content = tableTemplate.call(this);
+				break;
 			case "card":
-                content = cardTemplate.call(this);
-                break;
+				content = cardTemplate.call(this);
+				break;
 			case "simple":
-                content = simpleTemplate.call(this);
-                break;
+				content = simpleTemplate.call(this);
+				break;
 		}
-		return <section ref={(el)=>{this.hocWrapperEl=el;}}>{content}</section>;
+		return (
+			<section
+				ref={(el) => {
+					this.hocWrapperEl = el;
+				}}
+			>
+				{content}
+			</section>
+		);
 	}
 }
 ZlistPanel.prototype.getPanleHeader = const_getPanleHeader;
