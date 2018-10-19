@@ -163,9 +163,7 @@ let defaultConfig = {
 
 pageConfig 中的一些函数如`moreContentRender`提供了`tool`参数出来，有如下内容：
 
-### tool.showRightModal
-
-就是上下文`ZerodMainContext`提供的 showRightModal 函数(用于打开/关闭 rightModal)
+`tool`对象不但包含`ZerodMainContext`提供的东西（请查看 上下文/ ZerodMainContext ），比如 tool.showRightModal，还提供如下内容：
 
 ### tool.methods
 
@@ -189,6 +187,16 @@ tool.methods 是一个对象，内容如下：
 			<td>getDetailData</td>
 			<td>会触发pageConfig.detail.detailApiInterface函数</td>
 			<td>tool.methods.getDetailData()</td>
+		</tr>
+		<tr>
+			<td>openModal</td>
+			<td>根据当前位置打开下一级rightModal</td>
+			<td>tool.methods.openModal(content)</td>
+		</tr>
+		<tr>
+			<td>closeCurrentModal</td>
+			<td>关闭当前的rightModal</td>
+			<td>tool.methods.closeCurrentModal()</td>
 		</tr>
 	</tbody>
 </table>

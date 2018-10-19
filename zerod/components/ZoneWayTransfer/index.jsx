@@ -16,6 +16,19 @@ import {
 	hasClass,
 	once,
 } from "../zTool";
+
+function getTransferTarget(target) {
+	let el = target;
+	while (el && !el.className.includes(cssClass["z-transfer-li"])) {
+		if (el.parentElement) {
+			el = el.parentElement;
+		} else {
+			break;
+		}
+	}
+	return el;
+}
+
 class Template extends React.Component {
 	render() {
 		return this.props.children;
@@ -62,7 +75,7 @@ class ZTransfer extends React.Component {
 			}
 		},
 		expandNext: (e) => {
-			const el = e.target;
+			const el = getTransferTarget(e.target);
 			if (el.animating) {
 				return;
 			}
@@ -331,6 +344,7 @@ export class ZoneWayTransfer extends React.Component {
 				return target !== this.leftUl;
 			},
 			invalid: (el) => {
+				el = getTransferTarget(el);
 				return (
 					(typeof el.dataset.disabled === "boolean" ? el.dataset.disabled : el.dataset.disabled == "true") ||
 					(el.dataset.item && JSON.parse(el.dataset.item).isSub)
@@ -341,6 +355,7 @@ export class ZoneWayTransfer extends React.Component {
 		});
 		drager
 			.on("drop", (el, target, source, sibling) => {
+				el = getTransferTarget(el);
 				let newSibling = null;
 				if (
 					sibling &&
@@ -410,6 +425,7 @@ export class ZoneWayTransfer extends React.Component {
 			// 	// el.className = el.className.replace("ex-moved", "");
 			// })
 			.on("remove", (el, container, source) => {
+				el = getTransferTarget(el);
 				const oldData = this.state.rightTargetData;
 				const item = JSON.parse(el.dataset.item);
 				const seftIndex = oldData.findIndex((value, index, arr) => {

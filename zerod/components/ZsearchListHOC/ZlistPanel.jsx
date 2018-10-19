@@ -7,6 +7,8 @@ import {
 	const_getPanleHeader,
 	const_getListConfig,
 	const_getInsertLocation,
+	const_getMainTool,
+	const_insertLocations
 } from "../constant";
 import { Button, Icon, Divider, Dropdown, Menu, Modal, message, Tooltip } from "antd";
 import { ZsearchForm } from "../ZsearchForm";
@@ -130,6 +132,7 @@ class ZlistPanel extends React.Component {
 						querys,
 					),
 					this.sorter,
+					this.getExportSomething()
 				)
 				.then((re) => {
 					const data = re.data;
@@ -260,7 +263,7 @@ class ZlistPanel extends React.Component {
 				onOk: () => {
 					return new Promise((resolve, rejects) => {
 						this.props
-							.deleteApiInterface(row)
+							.deleteApiInterface(row,this.getExportSomething())
 							.then((re) => {
 								message.success("删除成功");
 								this.methods.removeOneData(row);
@@ -278,6 +281,10 @@ class ZlistPanel extends React.Component {
 			content &&
 				this.props.showRightModal &&
 				this.props.showRightModal(true, const_getModalType(this.insertLocation), content);
+		},
+		closeCurrentModal: () => {
+			if (this.insertLocation !== const_insertLocations.mainRoute)
+				this.props.showRightModal && this.props.showRightModal(false, this.insertLocation);
 		},
 		onAdd: () => {
 			const content = this.props.addPageRender(this.getExportSomething());
@@ -444,9 +451,9 @@ class ZlistPanel extends React.Component {
 	});
 	getExportSomething() {
 		return {
-			getListData: this.methods.getListData,
-			showRightModal: this.props.showRightModal,
-			showLoading: this.methods.showLoading,
+			...const_getMainTool.call(this),
+			getListData: this.methods.getListData,//同 methods.getListData,这为了版本兼容
+			showLoading: this.methods.showLoading,//
 			getPage: () => deepCopy(this.page),
 			getSearchQuery: () => deepCopy(this.searchQuery),
 			methods: this.methods,

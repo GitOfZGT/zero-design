@@ -21,7 +21,7 @@ $--z: 999;
 	z-index: $--z;
 	box-shadow: -2px 0 8px rgba(0, 0, 0, 0.15);
 	// border-left: 1px solid #e3e6ea;
-	background-color: white;
+	// background-color: white;
 	@include is("right-hide") {
 		transform: translateX(101%);
 	}

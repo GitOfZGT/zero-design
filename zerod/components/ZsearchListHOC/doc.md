@@ -398,13 +398,13 @@ const pageConfig = {
 		<tr>
 			<td>listApiInterface</td>
 			<td>获取列表数据的后台接口函数,其必须返回Promise,参数有query:查询表单相关值、分页数据、排序字段,sorter:更多排序数据。接口响应体的data属性支持 array和object类型</td>
-			<td>(query,sorter) => Promise对象</td>
+			<td>(query,sorter,tool) => Promise对象</td>
 			<td>--</td>
 		</tr>
 		<tr>
 			<td>deleteApiInterface</td>
 			<td>删除按钮后台接口函数,其必须返回Promise,参数有data:每一行数据</td>
-			<td>(data) => Promise对象</td>
+			<td>(data,tool) => Promise对象</td>
 			<td>--</td>
 		</tr>
 		<tr>
@@ -528,9 +528,7 @@ const pageConfig = {
 
 pageConfig.list 中的一些函数如`moreContentRender`提供了`tool`参数出来，有如下内容：
 
-### tool.showRightModal
-
-就是上下文`ZerodMainContext`提供的 showRightModal 函数(用于打开/关闭 rightModal)
+`tool`对象不但包含`ZerodMainContext`提供的东西（请查看 上下文/ ZerodMainContext ），比如 tool.showRightModal，还提供如下内容：
 
 ### tool.getPage
 
@@ -574,6 +572,11 @@ tool.methods 是一个对象，内容如下：
 			<td>tool.methods.openModal(<\div\>内容<\/div\>)</td>
 		</tr>
 		<tr>
+			<td>closeCurrentModal</td>
+			<td>关闭当前的rightModal</td>
+			<td>tool.methods.closeCurrentModal()</td>
+		</tr>
+		<tr>
 			<td>currentListData</td>
 			<td>获取当前列表的全部数据(数组)的方法</td>
 			<td>const listData=tool.methods.currentListData()</td>
@@ -602,32 +605,6 @@ tool.methods 是一个对象，内容如下：
 			<td>onDelete</td>
 			<td>删除按钮的点击事件，会触发pageConfig.list.deleteApiInterface函数</td>
 			<td>tool.methods.onDelete(text,record)</td>
-		</tr>
-	</tbody>
-</table>
-
-### tool.$router
-
-tool.$router是一个对象，内容如下：
-
-<table>
-	<thead>
-		<tr>
-			<th>属性</th>
-			<th>说明</th>
-			<th>使用方式</th>
-		</tr>
-	</thead>
-	<tbody>
-		<tr>
-			<td>history</td>
-			<td>可以调用push、replace等跳转路由path得方法，<a href="https://reacttraining.com/react-router/web/api/history" target="_blank"> 更多请查看react-router的history</a></td>
-			<td>tool.$router.history.push("/login")</td>
-		</tr>
-		<tr>
-			<td>location</td>
-			<td>当前路由的相关信息,<a href="https://reacttraining.com/react-router/web/api/location" target="_blank"> 更多请查看react-router的location</a></td>
-			<td>tool.$router.location.pathname</td>
 		</tr>
 	</tbody>
 </table>

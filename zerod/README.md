@@ -6,7 +6,7 @@
 
 # zerod-admin-webpack 脚手架 v1.0.0
 
-基于 `react + react-router + antd + zerod(我们的扩展组件) + scss` 的 webpack4 前端开发环境
+基于 `react + react-router + redux + react-redux + antd + zerod + scss` 的 webpack4 前端开发环境
 
 1、支持基本的图片文件 `png|jpe?g|gif|svg` 加载,转 base64 打包, 支持视频文件 `mp4|webm|ogg|mp3|wav|flac|aac`加载
 
@@ -23,6 +23,8 @@
 7、支持使用 `scss` 变量代替 `less` 变量自定义 `antd` 的主题
 
 8、支持跨项目共享代码发布到我们的私有服务器http://172.16.8.10:8081/repository/hosted-npm/
+
+9、支持状态管理，使用 `redux` + `react-redux`
 
 `git`地址：<a href="http://172.16.26.120/components/zerod-admin-webpack.git" target="_blank">http://172.16.26.120/components/zerod-admin-webpack.git</a>
 
@@ -48,9 +50,10 @@
 │ ├── /lazyLoad/
 │ │ ├── lazyLoad.js  # 这样使用const componet=lazyLoad(import('./componet.jsx'))实现异步组件
 │ │ └── Loading.jsx  #
-│ ├── /mock/         # 模拟数据mock（如果需要）
+│ ├── /mock/         # 数据模拟（建议使用 mockjs）
 │ ├── /scss/         # 通用样式文件夹
 │ │ └── index.scss   #
+│ ├── /store/        # 状态管理仓库，使用redux + react-redux
 │ ├── /views/        # 路由组件目录，应当按照路由结构创建
 │ ├── /zTool/        # 通用工具目录
 │ │ └── httpAjax.js  # ajax库：axios或fetch 的封装
@@ -76,15 +79,23 @@
 
 0、安装依赖包：
 
-由于我们的`zerod`存储在`npm私有服务器`中，执行`npm install`之前需要更改`registry`地址
+由于我们的`zerod`存储在`我们的npm私有服务器`中，请按如下顺序执行命令行：
 
-先`npm config get registry`查看当前的`registry`地址是哪个，如果不是`http://172.16.8.10:8081/repository/npm-all/`(公司深圳服务器，外地的需 VPN 访问)，请
+1、`npm install rimraf -g`  (如果已经执行过了，跳过此步)
 
-先`npm config set registry http://172.16.8.10:8081/repository/npm-all/`执行完后再`npm install`
+2、`rimraf node_modules`  (node_modules文件夹存在的情况下执行)
 
-1、启动`npm run dev 或 npm start`
+3、`npm run npm-zerod` (从私服安装zerod)
 
-2、打包`npm run build`
+4、`npm install` (安装其他依赖包，建议使用cnpm 代替npm)
 
-3、打包后显示依赖报告`npm run build --report`
+`注：如果第四步是用cnpm安装的，每次更新zerod包时(从私服安装依赖包)，需从第2步骤依次执行，这是因为私服和外网npm服务有差异，cnpm和npm混用导致某些包文件丢失，然后重新启动报错`
+
+## 完整安装依赖包后：
+
+1、启动服务：`npm run dev 或 npm start`
+
+2、打包：`npm run build`
+
+3、打包并显示依赖报告：`npm run build --report`
 

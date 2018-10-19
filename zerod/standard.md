@@ -1,10 +1,70 @@
+# 代码书写约定规范
+
+1、scss：className 的单词之间以“-”连接,如`z-panel-body`; 相同的样式值多次使用到请使用变量（scss 变量写法如：`$--border-color:#f0fef2`）;
+
+2、js : 变量名和普通函数名如果是多个单词,请使用骆驼峰形式如`myName`,构造函数名和 class 类名,请以首字母大写、多个单词骆驼峰形式如`MyComponent`;
+
+3、js : 声明函数参数超过 3 个时，请使用对象参数形式，如 `showMyDreams(show,isBox,byElement)`,`showMyDreams({show,isBox,byElement,allData})`;
+
+4、react : 禁用组件生命周期函数：`componentWillMount`、`componentWillReceiveProps`、`componentWillUpdate`,因为这些可能在以后 react 中被废弃的函数;
+
+5、react : ref 属性禁用字符串方式, 如禁用`<div ref="myBox"></div>`，推荐用法`<div ref={(el)=>{this.myBoxEl=el;}}></div>`;
+
+6、react : 组件内跟`setState`无关的属性，请不要写进 `state`中。
+
+7、react ：组件的基本写法：
+
+```jsx
+import React from "react";
+import PropTypes from "prop-types";
+
+class MyComponent extends React.Component {
+	// 定义props的类型(如果有props规定必须要写)
+	static propTypes = {
+		className: PropTypes.string,
+		children: PropTypes.any,
+	};
+	// props的默认值（如果需要）
+	static defaultProps = {
+		className: "z-body",
+	};
+	// 定义初始state
+	state = {
+		listData: [],
+	};
+	// 安装组件（插入树中）后
+	componentDidMount(){
+
+	},
+	// props更新或state更新后
+	componentDidUpdate(prevProps,prevState){
+
+	},
+	// 卸载和销毁组件之前
+	componentWillUnmount(){
+
+	}
+	render() {
+		const { className, children } = this.props;
+		return (
+			<div className={className}>
+				{this.state.listData.map((item) => {
+					return <p>{item.name}</p>;
+				})}
+				{children}
+			</div>
+		);
+	}
+}
+```
+
 # zerod-admin-webpack 开发约定规范
 
 以下看到的`@`符号，是开发目录 `src` 的别名（绝对路径）
 
 ## 后台接口 @/Api
 
-0、后台接口请求响应体应该这样的 ： {  code:状态码,data:数据 ,msg:"提示" }
+0、后台接口请求响应体应该这样的 ： { code:状态码,data:数据 ,msg:"提示" }
 
 1、`@/App.api.js` 会自动加载 `@/Api/`下的`.api.js`
 

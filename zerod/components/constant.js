@@ -1,7 +1,24 @@
 import React from "react";
 import { Button } from "antd";
 import { dataTypeTest } from "./zTool";
-//
+export const const_getMainTool = function() {
+	const tool = {};
+	[
+		"getSideMenuData",
+		"showRouteLoading",
+		"showModalLoading",
+		"setScrollToTop",
+		"getUserInfo",
+		"showRightModal",
+		"$router",
+		"getTemporaryStorage",
+		"setTemporaryStorage",
+	].forEach((key) => {
+		tool[key] = this.props[key];
+	});
+	return tool;
+};
+//定义HOC放置的位置类型
 export const const_insertLocations = {
 	mainRoute: "mainRoute",
 	mainModal: "mainModal",
@@ -9,15 +26,17 @@ export const const_insertLocations = {
 	appModal: "appModal",
 	appModal_top: "appModal_top",
 };
+//获取当前HOC的放置位置
 export const const_getInsertLocation = function() {
 	if (this.hocWrapperEl) {
 		let _parent = this.hocWrapperEl.parentElement;
-		while (_parent&&!_parent.dataset.zgt_modal) {
+		while (_parent && !_parent.dataset.zgt_modal) {
 			_parent = _parent.parentElement;
 		}
 		this.insertLocation = _parent && _parent.dataset.zgt_modal ? _parent.dataset.zgt_modal : "mainRoute";
 	}
 };
+//
 export const const_showLoading = (insertLocation, props) => {
 	return function(show) {
 		if (insertLocation === const_insertLocations.mainRoute) {
@@ -131,7 +150,7 @@ export const const_execAsync = function(callback) {
 				callback,
 			);
 		});
-	}else{
+	} else {
 		callback();
 	}
 };
@@ -233,7 +252,7 @@ const private_protos = {
 		treeApiInterface: (query) => Promise.reject({ mag: "未提供后台接口" }),
 		// childApiInterface: (query) => Promise.reject({ mag: "未提供后台接口" }),
 		childApiInterface: false,
-		treeProps:{},
+		treeProps: {},
 	},
 };
 
@@ -251,8 +270,8 @@ export const const_getListConfig = (name, componentName) => {
 			//element | node
 			rightMoreContent: null,
 		},
-		pageFooter:undefined,
-		hasBodyPadding:true,
+		pageFooter: undefined,
+		hasBodyPadding: true,
 		searchForm: {
 			// array>[object] | null，如果是null则不显示搜索表单
 			items: [

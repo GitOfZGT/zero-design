@@ -1,7 +1,7 @@
 import React from "react";
 import { withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
-import { const_showLoading, const_getInsertLocation } from "../constant";
+import { const_showLoading, const_getInsertLocation,const_getMainTool,const_getModalType,const_insertLocations } from "../constant";
 import { message, } from "antd";
 // 工具
 import { mergeConfig } from "../zTool/";
@@ -76,6 +76,15 @@ export function ZdetailSimpleBaseHOC(pageConfig) {
 			showLoading: (show) => {
 				const_showLoading(this.insertLocation, this.props)(show);
 			},
+			openModal: (content) => {
+				content &&
+					this.props.showRightModal &&
+					this.props.showRightModal(true, const_getModalType(this.insertLocation), content);
+			},
+			closeCurrentModal: () => {
+				if (this.insertLocation !== const_insertLocations.mainRoute)
+					this.props.showRightModal && this.props.showRightModal(false, this.insertLocation);
+			},
 			getDetailData: () => {
 				this.methods.showLoading(true);
 				this.config.detail
@@ -100,10 +109,10 @@ export function ZdetailSimpleBaseHOC(pageConfig) {
 			) : null;
 		}
 		tool = {
-			showLoading: this.methods.showLoading,//在methods属性中提供，为了向下兼容
-			showRightModal: this.props.showRightModal,
-            methods: this.methods,
-            $router:{
+			...const_getMainTool.call(this),
+			showLoading: this.methods.showLoading,//同 methods.showLoading,这为了版本兼容
+			methods: this.methods,
+			$router:{
                 history:this.props.history,
                 location:this.props.location,
             }

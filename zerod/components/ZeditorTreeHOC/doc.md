@@ -2,7 +2,7 @@
 
 `ZeditorTreeHOC`是一个函数，传入`pageConfig`参数配置，返回一个带按钮的树组件
 
-`ZeditorTreeHOC`内置了一个`ZtreePanel`组件，可以`import {ZtreePanel} from "zerod"`引入，`ZtreePanel`的props同 `pageConfig.tree`
+`ZeditorTreeHOC`内置了一个`ZtreePanel`组件，可以`import {ZtreePanel} from "zerod"`引入，`ZtreePanel`的 props 同 `pageConfig.tree`
 
 1、基本使用
 
@@ -224,19 +224,19 @@ export default ZeditorTreeHOC(pageConfig);
 		<tr>
 			<td>treeApiInterface</td>
 			<td>获取树列表数据的后台接口函数,其必须返回Promise,参数有query:查询表单相关值</td>
-			<td>(query) => Promise对象</td>
+			<td>(query,tool) => Promise对象</td>
 			<td>--</td>
 		</tr>
 		<tr>
 			<td>childApiInterface</td>
 			<td>异步加载子节点的接口函数，其必须返回Promise,参数有data:当前节点的数据。如果不需要异步加载，设为false即可</td>
-			<td>(data) => Promise对象</td>
+			<td>(data,tool) => Promise对象</td>
 			<td>false</td>
 		</tr>
 		<tr>
 			<td>deleteApiInterface</td>
 			<td>删除按钮后台接口函数,其必须返回Promise,参数有data:每一行数据</td>
-			<td>(data) => Promise对象</td>
+			<td>(data,tool) => Promise对象</td>
 			<td>--</td>
 		</tr>
 		<tr>
@@ -342,9 +342,7 @@ export default ZeditorTreeHOC(pageConfig);
 
 pageConfig.tree 中的一些函数如`moreContentRender`提供了`tool`参数出来，有如下内容：
 
-### tool.showRightModal
-
-就是上下文`ZerodMainContext`提供的 showRightModal 函数(用于打开/关闭 rightModal)
+`tool`对象不但包含`ZerodMainContext`提供的东西（请查看 上下文/ ZerodMainContext ），比如 tool.showRightModal，还提供如下内容：
 
 ### tool.getSearchQuery
 
@@ -384,6 +382,11 @@ tool.methods 是一个对象，内容如下：
 			<td>tool.methods.openModal(<\div\>内容<\/div\>)</td>
 		</tr>
 		<tr>
+			<td>closeCurrentModal</td>
+			<td>关闭当前的rightModal</td>
+			<td>tool.methods.closeCurrentModal()</td>
+		</tr>
+		<tr>
 			<td>currentTreeData</td>
 			<td>获取当前树列表的全部数据(数组)的方法</td>
 			<td>const treeData=tool.methods.currentTreeData()</td>
@@ -418,7 +421,7 @@ tool.methods 是一个对象，内容如下：
 
 ### tool.$router
 
-tool.$router是一个对象，内容如下：
+tool.$router 是一个对象，内容如下：
 
 <table>
 	<thead>

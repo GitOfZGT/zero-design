@@ -1,16 +1,15 @@
 import React from "react";
 import {withRouter} from 'react-router-dom';
 import PropTypes from "prop-types";
-import { const_showLoading, const_getModalType ,const_getPanleHeader,const_getListConfig,const_getInsertLocation} from "../constant";
-import { Button, Tree, Modal, message } from "antd";
+import { const_showLoading, const_getModalType ,const_getPanleHeader,const_getListConfig,const_getInsertLocation,const_insertLocations,const_getMainTool} from "../constant";
+import { Tree, Modal, message } from "antd";
 const TreeNode = Tree.TreeNode;
 import { ZsearchForm } from "../ZsearchForm";
 import cssClass from "./style.scss";
 import TreeTitle from "./TreeTitle";
 import ZerodMainContext from "../ZerodMainContext";
 import { dataTypeTest, deepCopy } from "../zTool";
-import { Zlayout } from "../Zlayout";
-import { Object } from "core-js";
+// import { Zlayout } from "../Zlayout";
 let defaultConfig = const_getListConfig("list", "ZtreePanel");
 class ZtreePanel extends React.Component {
 	static propTypes = {
@@ -68,7 +67,7 @@ class ZtreePanel extends React.Component {
 			this.methods.showLoading(true);
 			this.props.treeApiInterface &&
 				this.props
-					.treeApiInterface(querys)
+					.treeApiInterface(querys,this.getExportSomething())
 					.then((re) => {
 						this.setState({
 							treeData: re.data,
@@ -91,7 +90,7 @@ class ZtreePanel extends React.Component {
 				}
 				this.ayncChild &&
 					this.props
-						.childApiInterface(deepCopy(treeNode.props.dataRef))
+						.childApiInterface(deepCopy(treeNode.props.dataRef),this.getExportSomething())
 						.then((re) => {
 							treeNode.props.dataRef[childrenKey] = re.data;
 							this.setState({
@@ -137,7 +136,7 @@ class ZtreePanel extends React.Component {
 				onOk: () => {
 					return new Promise((resolve, rejects) => {
 						this.props
-							.deleteApiInterface(record)
+							.deleteApiInterface(record,this.getExportSomething())
 							.then((re) => {
 								message.success("删除成功");
 								this.methods.removeOneData(record, this.state.treeData);
@@ -155,7 +154,13 @@ class ZtreePanel extends React.Component {
 			});
 		},
 		openModal: (content) => {
-			content && this.props.showRightModal(true, const_getModalType(this.insertLocation), content);
+			content &&
+				this.props.showRightModal &&
+				this.props.showRightModal(true, const_getModalType(this.insertLocation), content);
+		},
+		closeCurrentModal: () => {
+			if (this.insertLocation !== const_insertLocations.mainRoute)
+				this.props.showRightModal && this.props.showRightModal(false, this.insertLocation);
 		},
 		onAdd: () => {
 			const content = this.props.addPageRender(this.getExportSomething());
@@ -187,7 +192,7 @@ class ZtreePanel extends React.Component {
 
 	getExportSomething() {
 		return {
-			showRightModal: this.props.showRightModal,
+			...const_getMainTool.call(this),
 			getSearchQuery: () => deepCopy(this.searchQuery),
             methods: this.methods,
             $router:{
