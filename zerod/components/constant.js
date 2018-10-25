@@ -156,12 +156,19 @@ export const const_execAsync = function(callback) {
 };
 //ZtreePanel和ZlistPanel的heading,这里不能是箭头函数
 export const const_getPanleHeader = function() {
-	const { showAddBtn } = this.props;
+	const { showAddBtn, addBtnDisabled } = this.props;
 	const _showAddBtn = typeof showAddBtn == "function" ? showAddBtn() : showAddBtn;
+	const _addBtnDisabled = typeof addBtnDisabled == "function" ? addBtnDisabled() : addBtnDisabled;
 	this.addBtn =
 		_showAddBtn && !this.state.isListCard ? (
 			// <div className="z-margin-bottom-15">
-			<Button type="primary" icon="plus" className="z-margin-left-10" onClick={this.methods.onAdd}>
+			<Button
+				disabled={_addBtnDisabled}
+				type="primary"
+				icon="plus"
+				className="z-margin-left-10"
+				onClick={this.methods.onAdd}
+			>
 				新增
 			</Button>
 		) : // </div>

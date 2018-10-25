@@ -1,7 +1,15 @@
 import React from "react";
-import {withRouter} from 'react-router-dom';
+import { withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
-import { const_showLoading, const_getModalType ,const_getPanleHeader,const_getListConfig,const_getInsertLocation,const_insertLocations,const_getMainTool} from "../constant";
+import {
+	const_showLoading,
+	const_getModalType,
+	const_getPanleHeader,
+	const_getListConfig,
+	const_getInsertLocation,
+	const_insertLocations,
+	const_getMainTool,
+} from "../constant";
 import { Tree, Modal, message } from "antd";
 const TreeNode = Tree.TreeNode;
 import { ZsearchForm } from "../ZsearchForm";
@@ -32,8 +40,8 @@ class ZtreePanel extends React.Component {
 		detailBtnPermCode: PropTypes.string, // 详情按钮权限控制代码
 		updateBtnPermCod: PropTypes.string, // 修改按钮权限控制代码
 		deleteBtnPermCod: PropTypes.string, // 删除按钮权限控制代码
-		showDetailBtn:PropTypes.oneOfType([PropTypes.func, PropTypes.bool]), // 是否显示详情按钮
-		showUpdateBtn:PropTypes.oneOfType([PropTypes.func, PropTypes.bool]), // 是否显示修改按钮
+		showDetailBtn: PropTypes.oneOfType([PropTypes.func, PropTypes.bool]), // 是否显示详情按钮
+		showUpdateBtn: PropTypes.oneOfType([PropTypes.func, PropTypes.bool]), // 是否显示修改按钮
 		showDeleteBtn: PropTypes.oneOfType([PropTypes.func, PropTypes.bool]), // 是否显示删除按钮
 		showAddBtn: PropTypes.oneOfType([PropTypes.func, PropTypes.bool]), // 是否显示新建按钮
 		treeApiInterface: PropTypes.func, // 获取tree的后台接口函数，其必须内部返回Promise
@@ -42,9 +50,8 @@ class ZtreePanel extends React.Component {
 		addPageRender: PropTypes.func, // 新建页面渲染模板
 		updatePageRender: PropTypes.func, // 修改页面渲染模板
 		detailPageRender: PropTypes.func, // 详情页面渲染模板
-		treeProps:PropTypes.object,
+		treeProps: PropTypes.object,
 		responseKeys: PropTypes.object, //后台接口请求响应体的key处理
-		
 	};
 	static defaultProps = defaultConfig.tree;
 	treeDataKeys = Object.assign({ name: "name", id: "id", children: "children" }, this.props.treeDataKeys);
@@ -67,7 +74,7 @@ class ZtreePanel extends React.Component {
 			this.methods.showLoading(true);
 			this.props.treeApiInterface &&
 				this.props
-					.treeApiInterface(querys,this.getExportSomething())
+					.treeApiInterface(querys, this.getExportSomething())
 					.then((re) => {
 						this.setState({
 							treeData: re.data,
@@ -90,7 +97,7 @@ class ZtreePanel extends React.Component {
 				}
 				this.ayncChild &&
 					this.props
-						.childApiInterface(deepCopy(treeNode.props.dataRef),this.getExportSomething())
+						.childApiInterface(deepCopy(treeNode.props.dataRef), this.getExportSomething())
 						.then((re) => {
 							treeNode.props.dataRef[childrenKey] = re.data;
 							this.setState({
@@ -136,7 +143,7 @@ class ZtreePanel extends React.Component {
 				onOk: () => {
 					return new Promise((resolve, rejects) => {
 						this.props
-							.deleteApiInterface(record,this.getExportSomething())
+							.deleteApiInterface(record, this.getExportSomething())
 							.then((re) => {
 								message.success("删除成功");
 								this.methods.removeOneData(record, this.state.treeData);
@@ -183,26 +190,26 @@ class ZtreePanel extends React.Component {
 		currentTreeData: () => {
 			return this.state.treeData;
 		},
-		setDataState:(data)=>{
+		setDataState: (data) => {
 			this.setState({
-				treeData:data,
-			})
-		}
+				treeData: data,
+			});
+		},
 	};
 
 	getExportSomething() {
 		return {
 			...const_getMainTool.call(this),
 			getSearchQuery: () => deepCopy(this.searchQuery),
-            methods: this.methods,
-            $router:{
-                history:this.props.history,
-                location:this.props.location,
-            }
+			methods: this.methods,
+			$router: {
+				history: this.props.history,
+				location: this.props.location,
+			},
 		};
 	}
 	getTreeNode(tree) {
-		return tree.map((node,index) => {
+		return tree.map((node, index) => {
 			const childrenKey = this.treeDataKeys.children;
 			const idKey = this.treeDataKeys.id;
 			const nameKey = this.treeDataKeys.name;
@@ -222,6 +229,9 @@ class ZtreePanel extends React.Component {
 							showDetailBtn={this.props.showDetailBtn}
 							showUpdateBtn={this.props.showUpdateBtn}
 							showDeleteBtn={this.props.showDeleteBtn}
+							detailBtnDisabled={this.props.detailBtnDisabled}
+							updateBtnDisabled={this.props.updateBtnDisabled}
+							deleteBtnDisabled={this.props.deleteBtnDisabled}
 						/>
 					}
 					key={node[idKey]}
@@ -233,11 +243,11 @@ class ZtreePanel extends React.Component {
 		});
 	}
 	componentDidMount() {
-        const_getInsertLocation.call(this);
+		const_getInsertLocation.call(this);
 		this.methods.onSearch();
 	}
 	render() {
-        const { items, onSearch, onReset, noCollapse, ...formOthers } = this.props.searchForm
+		const { items, onSearch, onReset, noCollapse, ...formOthers } = this.props.searchForm
 			? this.props.searchForm
 			: {};
 		this.searchForm =
@@ -246,17 +256,17 @@ class ZtreePanel extends React.Component {
 					colFormItems={this.state.colFormItems}
 					onSearch={this.methods.onSearch}
 					onReset={this.methods.onReset}
-                    noCollapse={true}
-                    {...formOthers}
+					noCollapse={true}
+					{...formOthers}
 				/>
 			) : null;
-		const { showLine,loadData,...treeOthers} = this.props.treeProps;
+		const { showLine, loadData, ...treeOthers } = this.props.treeProps;
 		return (
 			<section
-					ref={(el) => {
-						this.hocWrapperEl = el;
-					}}
-				>
+				ref={(el) => {
+					this.hocWrapperEl = el;
+				}}
+			>
 				{this.props.panelBeforeRender && this.props.panelBeforeRender(this.getExportSomething())}
 				<div className="z-panel">
 					{this.getPanleHeader()}
@@ -283,5 +293,5 @@ class ZtreePanel extends React.Component {
 		);
 	}
 }
-ZtreePanel.prototype.getPanleHeader=const_getPanleHeader;
+ZtreePanel.prototype.getPanleHeader = const_getPanleHeader;
 export default ZerodMainContext.setConsumer(withRouter(ZtreePanel));

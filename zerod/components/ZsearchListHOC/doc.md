@@ -1,3 +1,5 @@
+<div class="z-doc-titles"></div>
+
 # 列表展示：ZsearchListHOC
 
 `ZsearchListHOC`是一个函数，传入`pageConfig`参数配置，返回一个有头有尾有查询列表的组件
@@ -263,6 +265,8 @@ const pageConfig = {
 };
 ```
 
+<div class="z-doc-titles"></div>
+
 ## pageConfig
 
 <table>
@@ -308,6 +312,8 @@ const pageConfig = {
 	</tbody>
 </table>
 
+<div class="z-doc-titles"></div>
+
 ## pageConfig.searchForm
 
 <table>
@@ -328,6 +334,8 @@ const pageConfig = {
 		</tr>
 	</tbody>
 </table>
+
+<div class="z-doc-titles"></div>
 
 ## pageConfig.list
 
@@ -428,7 +436,7 @@ const pageConfig = {
 		<tr>
 			<td>showAddBtn</td>
 			<td>是否显示新增按钮</td>
-			<td>boolean</td>
+			<td>boolean | function</td>
 			<td>true</td>
 		</tr>
 		<tr>
@@ -446,7 +454,7 @@ const pageConfig = {
 		<tr>
 			<td>showDetailBtn</td>
 			<td>是否显示详情按钮</td>
-			<td>boolean</td>
+			<td>boolean | function</td>
 			<td>true</td>
 		</tr>
 		<tr>
@@ -464,7 +472,7 @@ const pageConfig = {
 		<tr>
 			<td>showUpdateBtn</td>
 			<td>是否显示修改按钮</td>
-			<td>boolean</td>
+			<td>boolean | function</td>
 			<td>true</td>
 		</tr>
 		<tr>
@@ -482,7 +490,7 @@ const pageConfig = {
 		<tr>
 			<td>showDeleteBtn</td>
 			<td>是否显示删除按钮</td>
-			<td>boolean</td>
+			<td>boolean | function</td>
 			<td>true</td>
 		</tr>
 		<tr>
@@ -521,8 +529,34 @@ const pageConfig = {
 			<td>function(tool){return ReacNode|Element;}</td>
 			<td>--</td>
 		</tr>
+			<tr>
+			<td>addBtnDisabled</td>
+			<td>是否禁用新建按钮</td>
+			<td>boolean | function</td>
+			<td>false</td>
+		</tr>
+		<tr>
+			<td>detailBtnDisabled</td>
+			<td>是否禁用详情按钮</td>
+			<td>boolean | function</td>
+			<td>false</td>
+		</tr>
+		<tr>
+			<td>updateBtnDisabled</td>
+			<td>是否禁用修改按钮</td>
+			<td>boolean | function</td>
+			<td>false</td>
+		</tr>
+		<tr>
+			<td>deleteBtnDisabled</td>
+			<td>是否禁用删除按钮</td>
+			<td>boolean | function</td>
+			<td>false</td>
+		</tr>
 	</tbody>
 </table>
+
+<div class="z-doc-titles"></div>
 
 ## tool 参数
 
@@ -605,6 +639,34 @@ tool.methods 是一个对象，内容如下：
 			<td>onDelete</td>
 			<td>删除按钮的点击事件，会触发pageConfig.list.deleteApiInterface函数</td>
 			<td>tool.methods.onDelete(text,record)</td>
+		</tr>
+	</tbody>
+</table>
+
+<div class="z-doc-titles"></div>
+
+### tool.$router
+
+tool.$router 是一个对象，内容如下：
+
+<table>
+	<thead>
+		<tr>
+			<th>属性</th>
+			<th>说明</th>
+			<th>使用方式</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>history</td>
+			<td>可以调用push、replace等跳转路由path得方法，<a href="https://reacttraining.com/react-router/web/api/history" target="_blank"> 更多请查看react-router的history</a></td>
+			<td>tool.$router.history.push("/login")</td>
+		</tr>
+		<tr>
+			<td>location</td>
+			<td>当前路由的相关信息,<a href="https://reacttraining.com/react-router/web/api/location" target="_blank"> 更多请查看react-router的location</a></td>
+			<td>tool.$router.location.pathname</td>
 		</tr>
 	</tbody>
 </table>

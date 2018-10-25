@@ -8,7 +8,7 @@ import {
 	const_getListConfig,
 	const_getInsertLocation,
 	const_getMainTool,
-	const_insertLocations
+	const_insertLocations,
 } from "../constant";
 import { Button, Icon, Divider, Dropdown, Menu, Modal, message, Tooltip } from "antd";
 import { ZsearchForm } from "../ZsearchForm";
@@ -53,6 +53,10 @@ class ZlistPanel extends React.Component {
 		showUpdateBtn: PropTypes.oneOfType([PropTypes.func, PropTypes.bool]), // 是否显示修改按钮
 		showDeleteBtn: PropTypes.oneOfType([PropTypes.func, PropTypes.bool]), // 是否显示删除按钮
 		showAddBtn: PropTypes.oneOfType([PropTypes.func, PropTypes.bool]), // 是否显示新建按钮
+		detailBtnDisabled: PropTypes.oneOfType([PropTypes.func, PropTypes.bool]), // 是否禁用详情按钮
+		updateBtnDisabled: PropTypes.oneOfType([PropTypes.func, PropTypes.bool]), // 是否禁用修改按钮
+		deleteBtnDisabled: PropTypes.oneOfType([PropTypes.func, PropTypes.bool]), // 是否禁用删除按钮
+		addBtnDisabled: PropTypes.oneOfType([PropTypes.func, PropTypes.bool]), // 是否禁用新建按钮
 		listApiInterface: PropTypes.func, // 获取列表数据的后台接口函数，其必须内部返回Promise
 		deleteApiInterface: PropTypes.func, // 删除按钮的后台接口函数，其必须内部返回Promise
 		showPagination: PropTypes.oneOfType([PropTypes.func, PropTypes.bool]), // 是否显示分页
@@ -132,7 +136,7 @@ class ZlistPanel extends React.Component {
 						querys,
 					),
 					this.sorter,
-					this.getExportSomething()
+					this.getExportSomething(),
 				)
 				.then((re) => {
 					const data = re.data;
@@ -263,7 +267,7 @@ class ZlistPanel extends React.Component {
 				onOk: () => {
 					return new Promise((resolve, rejects) => {
 						this.props
-							.deleteApiInterface(row,this.getExportSomething())
+							.deleteApiInterface(row, this.getExportSomething())
 							.then((re) => {
 								message.success("删除成功");
 								this.methods.removeOneData(row);
@@ -322,21 +326,23 @@ class ZlistPanel extends React.Component {
 			});
 		},
 	};
-	getDiffBtn(type, btnName, onClick) {
+	getDiffBtn(type, btnName, onClick, disabled) {
 		switch (this.props.listType) {
 			case "table":
 			case "card":
 				return (
-					<Button size="small" type={type} onClick={onClick}>
+					<Button disabled={disabled} size="small" type={type} onClick={onClick}>
 						{btnName}
 					</Button>
 				);
 			case "simple":
 				return (
 					<a
-						className={`z-text-underline-hover z-text-blue ${cssClass["z-simple-link"]}`}
+						className={`z-text-underline-hover ${!disabled ? "z-text-blue" : "z-text-gray"} ${
+							cssClass["z-simple-link"]
+						}`}
 						href="javascript:void(0)"
-						onClick={onClick}
+						onClick={!disabled ? onClick : () => {}}
 					>
 						{btnName}
 					</a>
@@ -344,7 +350,14 @@ class ZlistPanel extends React.Component {
 		}
 	}
 	actionBtns() {
-		const { showDetailBtn, showUpdateBtn, showDeleteBtn } = this.props;
+		const {
+			showDetailBtn,
+			showUpdateBtn,
+			showDeleteBtn,
+			detailBtnDisabled,
+			updateBtnDisabled,
+			deleteBtnDisabled,
+		} = this.props;
 		return showDetailBtn || showUpdateBtn || showDeleteBtn || this.hasMoreMenu
 			? [
 					{
@@ -362,45 +375,74 @@ class ZlistPanel extends React.Component {
 									this.props.listType,
 								);
 							}
-							const btnSize = "small";
-							const detailBtnName = "详情";
-							const detailBtn = (
-								<span key="detail">
-									{this.getDiffBtn("default", detailBtnName, (e) => {
-										e.stopPropagation();
-										this.methods.onDetail(record);
-									})}
-									{!this.state.isListCard ? <Divider type="vertical" /> : null}
-								</span>
-							);
-							const updateBtnName = "修改";
-							const updateBtn = (
-								<span key="update">
-									{this.getDiffBtn("primary", updateBtnName, (e) => {
-										e.stopPropagation();
-										this.methods.onUpdate(record);
-									})}
-									{!this.state.isListCard ? <Divider type="vertical" /> : null}
-								</span>
-							);
-							const deleteBtnName = "删除";
-							const deleteBtn = (
-								<span key="delete">
-									{this.getDiffBtn("danger", deleteBtnName, (e) => {
-										e.stopPropagation();
-										this.methods.onDelete(text, record);
-									})}
-									{this.hasMoreMenu && !this.state.isListCard ? <Divider type="vertical" /> : null}
-								</span>
-							);
-
-							const btns = [];
 							const _showDetailBtn =
 								typeof showDetailBtn == "function" ? showDetailBtn(record, index) : showDetailBtn;
 							const _showUpdateBtn =
 								typeof showUpdateBtn == "function" ? showUpdateBtn(record, index) : showUpdateBtn;
 							const _showDeleteBtn =
 								typeof showDeleteBtn == "function" ? showDeleteBtn(record, index) : showDeleteBtn;
+
+							const _detailBtnDisabled =
+								typeof detailBtnDisabled == "function"
+									? detailBtnDisabled(record, index)
+									: detailBtnDisabled;
+							const _updateBtnDisabled =
+								typeof updateBtnDisabled == "function"
+									? updateBtnDisabled(record, index)
+									: updateBtnDisabled;
+							const _deleteBtnDisabled =
+								typeof deleteBtnDisabled == "function"
+									? deleteBtnDisabled(record, index)
+									: deleteBtnDisabled;
+
+							const detailBtnName = "详情";
+							const detailBtn = (
+								<span key="detail">
+									{this.getDiffBtn(
+										"default",
+										detailBtnName,
+										(e) => {
+											e.stopPropagation();
+											this.methods.onDetail(record);
+										},
+										_detailBtnDisabled,
+									)}
+									{_showUpdateBtn && !this.state.isListCard ? <Divider type="vertical" /> : null}
+								</span>
+							);
+							const updateBtnName = "修改";
+							const updateBtn = (
+								<span key="update">
+									{this.getDiffBtn(
+										"primary",
+										updateBtnName,
+										(e) => {
+											e.stopPropagation();
+											this.methods.onUpdate(record);
+										},
+										_updateBtnDisabled,
+									)}
+									{_showDeleteBtn && !this.state.isListCard ? <Divider type="vertical" /> : null}
+								</span>
+							);
+							const deleteBtnName = "删除";
+							const deleteBtn = (
+								<span key="delete">
+									{this.getDiffBtn(
+										"danger",
+										deleteBtnName,
+										(e) => {
+											e.stopPropagation();
+											this.methods.onDelete(text, record);
+										},
+										_deleteBtnDisabled,
+									)}
+									{this.hasMoreMenu && !this.state.isListCard ? <Divider type="vertical" /> : null}
+								</span>
+							);
+
+							const btns = [];
+
 							_showDetailBtn && btns.push(detailBtn);
 							_showUpdateBtn && btns.push(updateBtn);
 							_showDeleteBtn && btns.push(deleteBtn);
@@ -452,8 +494,8 @@ class ZlistPanel extends React.Component {
 	getExportSomething() {
 		return {
 			...const_getMainTool.call(this),
-			getListData: this.methods.getListData,//同 methods.getListData,这为了版本兼容
-			showLoading: this.methods.showLoading,//
+			getListData: this.methods.getListData, //同 methods.getListData,这为了版本兼容
+			showLoading: this.methods.showLoading, //
 			getPage: () => deepCopy(this.page),
 			getSearchQuery: () => deepCopy(this.searchQuery),
 			methods: this.methods,

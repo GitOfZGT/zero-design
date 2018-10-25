@@ -990,5 +990,6 @@ export const zTool = {
 	formatterMapKey,
 	httpAjax,
 	isUrl,
+	checkDevices
 };
 export default zTool;

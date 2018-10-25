@@ -1,6 +1,6 @@
 import React from "react";
 import { Route, Switch, withRouter, Redirect } from "react-router-dom";
-import { Icon,message } from "antd";
+import { Icon, message } from "antd";
 // my component
 import { Zlayout } from "../Zlayout";
 import { ZsideMenu } from "../ZsideMenu";
@@ -187,10 +187,10 @@ export function ZmainHOC(pageConfig) {
 			appModal_top_Transitionend: null,
 			//是否弹出右边窗口
 			showRightModal: function(show, witch, content, scroll, onTransitionend) {
-				if(witch=="noModal"){
-                    message.warning("已经没有更高级的modal了");
-                    return;
-                }
+				if (witch == "noModal") {
+					message.warning("已经没有更高级的modal了");
+					return;
+				}
 				let opt = null;
 				if (zTool.dataTypeTest(show) === "object") {
 					opt = show;
@@ -228,9 +228,12 @@ export function ZmainHOC(pageConfig) {
 			},
 			// 下次滚动条更新的时候，让滚动条回到顶部
 			setScrollToTop: (witch) => {
-				const { instance_name } = getConstNames(witch);
-				let scrollInstance = this[instance_name];
+				let scrollInstance = this.methods.getScrollInstance(witch);
 				scrollInstance && (scrollInstance.nextScrollToTop = true);
+			},
+			getScrollInstance: (witch) => {
+				const { instance_name } = getConstNames(witch);
+				return this[instance_name];
 			},
 		};
 		$router = {
@@ -241,6 +244,7 @@ export function ZmainHOC(pageConfig) {
 			getSideMenuData: this.methods.getSideMenuData,
 			showRouteLoading: this.methods.showRouteLoading,
 			showModalLoading: this.methods.showModalLoading,
+			getScrollInstance:this.methods.getScrollInstance,
 			setScrollToTop: this.methods.setScrollToTop,
 			getUserInfo: this.methods.getUserInfo,
 			showRightModal: this.methods.showRightModal,
@@ -284,7 +288,7 @@ export function ZmainHOC(pageConfig) {
 			const { content_name, show_name, scroll_name, loading_name, instance_name } = getConstNames(witch);
 			return (
 				<ZrightModal
-                    name={witch}
+					name={witch}
 					zIndex={zIndex}
 					width={width}
 					show={this.state[show_name]}
@@ -329,8 +333,8 @@ export function ZmainHOC(pageConfig) {
 										menuData={this.sideMenuData}
 										collapsed={this.state.isCollapse}
 										theme={this.config.theme}
-                                        openAllSubmenu={this.config.sideMenu.openAllSubmenu}
-                                        iconTheme={this.config.sideMenu.iconTheme}
+										openAllSubmenu={this.config.sideMenu.openAllSubmenu}
+										iconTheme={this.config.sideMenu.iconTheme}
 									/>
 								</div>
 							</Zlayout.Zbody>

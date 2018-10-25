@@ -44,8 +44,9 @@ export default function cardTemplate() {
 			);
 		}
 	});
-	const { showAddBtn } = this.props;
+	const { showAddBtn, addBtnDisabled } = this.props;
 	const _showAddBtn = typeof showAddBtn == "function" ? showAddBtn() : showAddBtn;
+	const _addBtnDisabled = typeof addBtnDisabled == "function" ? addBtnDisabled() : addBtnDisabled;
 	return (
 		<Zlayout.Template>
 			{this.props.panelBeforeRender && this.props.panelBeforeRender(this.getExportSomething())}
@@ -60,6 +61,7 @@ export default function cardTemplate() {
 				{_showAddBtn ? (
 					<Col {..._span} className={`${cssClass["z-list-card"]} z-margin-bottom-15`}>
 						<Button
+							disabled={_addBtnDisabled}
 							type="dashed"
 							icon="plus"
 							className={cssClass["z-list-block-btn"]}
@@ -83,7 +85,7 @@ export default function cardTemplate() {
 								  )
 								: [];
 						const getColContent = (col) => {
-                            if(!col)return null;
+							if (!col) return null;
 							return typeof col.render === "function"
 								? col.render(item[col.dataIndex], item, i, this.getExportSomething())
 								: item[col.dataIndex];
@@ -94,7 +96,7 @@ export default function cardTemplate() {
 								<Col {..._span} className={`${cssClass["z-list-card"]} z-margin-bottom-15`}>
 									<Card
 										cover={
-										 this.props.cardCoverRender &&
+											this.props.cardCoverRender &&
 											this.props.cardCoverRender(item, i, this.getExportSomething())
 										}
 										actions={cardActions}

@@ -1,3 +1,5 @@
+<div class="z-doc-titles"></div>
+
 # 信息展示：Zinfo
 
 `Zinfo` 用于展示一组 label 和 value 的组件
@@ -48,6 +50,8 @@ class Myjavascript extends React.Component {
 }
 ```
 
+<div class="z-doc-titles"></div>
+
 ## Zinfo 的 props
 
 <table>
@@ -81,6 +85,8 @@ class Myjavascript extends React.Component {
 		</tr>
 	</tbody>
 </table>
+
+<div class="z-doc-titles"></div>
 
 ## items 结构
 

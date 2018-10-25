@@ -1,3 +1,5 @@
+<div class="z-doc-titles"></div>
+
 # 树列表页：ZeditorTreeHOC
 
 `ZeditorTreeHOC`是一个函数，传入`pageConfig`参数配置，返回一个带按钮的树组件
@@ -131,6 +133,8 @@ const config = {
 export default ZeditorTreeHOC(pageConfig);
 ```
 
+<div class="z-doc-titles"></div>
+
 ## pageConfig
 
 <table>
@@ -176,6 +180,8 @@ export default ZeditorTreeHOC(pageConfig);
 	</tbody>
 </table>
 
+<div class="z-doc-titles"></div>
+
 ## pageConfig.searchForm
 
 <table>
@@ -196,6 +202,8 @@ export default ZeditorTreeHOC(pageConfig);
 		</tr>
 	</tbody>
 </table>
+
+<div class="z-doc-titles"></div>
 
 ## pageConfig.tree
 
@@ -242,7 +250,7 @@ export default ZeditorTreeHOC(pageConfig);
 		<tr>
 			<td>showAddBtn</td>
 			<td>是否显示新增按钮</td>
-			<td>boolean</td>
+			<td>boolean | function</td>
 			<td>true</td>
 		</tr>
 		<tr>
@@ -260,7 +268,7 @@ export default ZeditorTreeHOC(pageConfig);
 		<tr>
 			<td>showDetailBtn</td>
 			<td>是否显示详情按钮</td>
-			<td>boolean</td>
+			<td>boolean | function</td>
 			<td>true</td>
 		</tr>
 		<tr>
@@ -278,7 +286,7 @@ export default ZeditorTreeHOC(pageConfig);
 		<tr>
 			<td>showUpdateBtn</td>
 			<td>是否显示修改按钮</td>
-			<td>boolean</td>
+			<td>boolean | function</td>
 			<td>true</td>
 		</tr>
 		<tr>
@@ -296,7 +304,7 @@ export default ZeditorTreeHOC(pageConfig);
 		<tr>
 			<td>showDeleteBtn</td>
 			<td>是否显示删除按钮</td>
-			<td>boolean</td>
+			<td>boolean | function</td>
 			<td>true</td>
 		</tr>
 		<tr>
@@ -335,8 +343,34 @@ export default ZeditorTreeHOC(pageConfig);
 			<td>function(tool){return ReacNode|Element;}</td>
 			<td>--</td>
 		</tr>
+		<tr>
+			<td>addBtnDisabled</td>
+			<td>是否禁用新建按钮</td>
+			<td>boolean | function</td>
+			<td>false</td>
+		</tr>
+		<tr>
+			<td>detailBtnDisabled</td>
+			<td>是否禁用详情按钮</td>
+			<td>boolean | function</td>
+			<td>false</td>
+		</tr>
+		<tr>
+			<td>updateBtnDisabled</td>
+			<td>是否禁用修改按钮</td>
+			<td>boolean | function</td>
+			<td>false</td>
+		</tr>
+		<tr>
+			<td>deleteBtnDisabled</td>
+			<td>是否禁用删除按钮</td>
+			<td>boolean | function</td>
+			<td>false</td>
+		</tr>
 	</tbody>
 </table>
+
+<div class="z-doc-titles"></div>
 
 ## tool 参数
 
@@ -418,6 +452,8 @@ tool.methods 是一个对象，内容如下：
 		</tr>
 	</tbody>
 </table>
+
+<div class="z-doc-titles"></div>
 
 ### tool.$router
 

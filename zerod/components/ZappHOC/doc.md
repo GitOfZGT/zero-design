@@ -1,3 +1,5 @@
+<div class="z-doc-titles"></div>
+
 # 根组件：ZappHOC
 
 `ZappHOC`是一个函数，是对根组件内容封装，传入`pageConfig`参数配置，返回一个组件
@@ -37,6 +39,8 @@ const pageConfig = {
 };
 export default ZappHOC(pageConfig);
 ```
+
+<div class="z-doc-titles"></div>
 
 ## pageConfig
 
@@ -82,6 +86,9 @@ export default ZappHOC(pageConfig);
 		</tr>
 	</tbody>
 </table>
+
+
+<div class="z-doc-titles"></div>
 
 ## pageConfig.responseKeys
 

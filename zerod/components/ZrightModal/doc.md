@@ -1,4 +1,4 @@
-# 右边窗口：ZrightModal
+# 右抽屉窗口：ZrightModal
 
 `ZrightModal`是从右边弹出的一种窗口模式，可以减少多层路由跳转的一种交互方式
 

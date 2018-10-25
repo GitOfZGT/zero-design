@@ -1,3 +1,5 @@
+<div class="z-doc-titles"></div>
+
 # 详情页面：ZdetailSimpleBaseHOC
 
 `ZdetailSimpleBaseHOC`是一个函数，传入`pageConfig`参数配置，返回一个展示详细内容结构的组件
@@ -62,6 +64,8 @@ let defaultConfig = {
 };
 ```
 
+<div class="z-doc-titles"></div>
+
 ## pageConfig
 
 <table>
@@ -119,6 +123,8 @@ let defaultConfig = {
 	</tbody>
 </table>
 
+<div class="z-doc-titles"></div>
+
 ## pageConfig.detail
 
 <table>
@@ -158,6 +164,7 @@ let defaultConfig = {
 	</tbody>
 </table>
 
+<div class="z-doc-titles"></div>
 
 ## tool 参数
 
@@ -200,6 +207,8 @@ tool.methods 是一个对象，内容如下：
 		</tr>
 	</tbody>
 </table>
+
+<div class="z-doc-titles"></div>
 
 ### tool.$router
 

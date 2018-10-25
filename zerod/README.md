@@ -1,10 +1,12 @@
+<div class="z-doc-titles"></div>
+
 # Zero-design 简称 zerod
 
 `zerod` 是基于`react + antd`的扩展组件库，主要包括`通用小组件`、`快速开发页面的多风格模板(HOC高阶组件)`、`通用工具函数`、`通用样式类`
 
 `zerod` 需要搭配`zerod-admin-webpack`脚手架使用
 
-# zerod-admin-webpack 脚手架 v1.0.0
+# zerod-admin-webpack 脚手架 v1.0.2
 
 基于 `react + react-router + redux + react-redux + antd + zerod + scss` 的 webpack4 前端开发环境
 
@@ -27,6 +29,8 @@
 9、支持状态管理，使用 `redux` + `react-redux`
 
 `git`地址：<a href="http://172.16.26.120/components/zerod-admin-webpack.git" target="_blank">http://172.16.26.120/components/zerod-admin-webpack.git</a>
+
+<div class="z-doc-titles"></div>
 
 ## 脚手架目录结构
 
@@ -73,6 +77,8 @@
 └── package.json
 ```
 
+<div class="z-doc-titles"></div>
+
 ## 脚手架命令
 
 -1、请电脑已安装 nodejs
@@ -90,6 +96,8 @@
 4、`npm install` (安装其他依赖包，建议使用cnpm 代替npm)
 
 `注：如果第四步是用cnpm安装的，每次更新zerod包时(从私服安装依赖包)，需从第2步骤依次执行，这是因为私服和外网npm服务有差异，cnpm和npm混用导致某些包文件丢失，然后重新启动报错`
+
+<div class="z-doc-titles"></div>
 
 ## 完整安装依赖包后：
 

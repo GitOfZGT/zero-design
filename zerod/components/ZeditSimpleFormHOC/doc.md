@@ -1,3 +1,5 @@
+<div class="z-doc-titles"></div>
+
 # 编辑页面：ZeditSimpleFormHOC
 
 `ZeditSimpleFormHOC`是一个函数，传入`pageConfig`参数配置，返回一个表单编辑结构的组件
@@ -255,6 +257,8 @@ const pageCofig = {
 export default ZeditSimpleFormHOC(pageConfig);
 ```
 
+<div class="z-doc-titles"></div>
+
 ## pageConfig
 
 <table>
@@ -311,6 +315,8 @@ export default ZeditSimpleFormHOC(pageConfig);
 		</tr>
 	</tbody>
 </table>
+
+<div class="z-doc-titles"></div>
 
 ## pageConfig.form
 
@@ -393,6 +399,8 @@ export default ZeditSimpleFormHOC(pageConfig);
 	</tbody>
 </table>
 
+<div class="z-doc-titles"></div>
+
 ## tool 参数
 
 pageConfig 中的一些函数如`moreContentRender`提供了`tool`参数出来，有如下内容：
@@ -443,6 +451,8 @@ tool.methods 是一个对象，内容如下：
 		</tr>
 	</tbody>
 </table>
+
+<div class="z-doc-titles"></div>
 
 ### tool.$router
 

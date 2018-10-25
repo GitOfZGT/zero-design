@@ -1,3 +1,5 @@
+<div class="z-doc-titles"></div>
+
 # 主页布局：ZmainHOC
 
 `ZmainHOC`是一个函数，传入`pageConfig`参数配置，返回一个主页布局结构的`路由组件`(我们这里称它为`main`组件)
@@ -213,6 +215,8 @@ export default ZmainHOC(pageConfig);
 
 在主页中定义了两种打开右边窗口的模式，如需调用打开右边窗口和调用显示 loading 的方法请<a href="/main/context-doc/ZerodMainContext-doc">查看上下文 ZerodMainContext</a>
 
+<div class="z-doc-titles"></div>
+
 ## pageConfig
 
 <table>
@@ -264,13 +268,13 @@ export default ZmainHOC(pageConfig);
 		<tr>
 			<td>headerLeftRender</td>
 			<td>右侧顶部栏左边内容的渲染钩子,参数有main组件的实例对象</td>
-			<td>function(main){return ;}</td>
+			<td>function(tool){return ;}</td>
 			<td>--</td>
 		</tr>
 		<tr>
 			<td>headerRightRender</td>
 			<td>右侧顶部栏右边内容的渲染钩子,参数有main组件的实例对象</td>
-			<td>function(main){return ;}</td>
+			<td>function(tool){return ;}</td>
 			<td>--</td>
 		</tr>
 		<tr>
@@ -293,6 +297,8 @@ export default ZmainHOC(pageConfig);
 		</tr>
 	</tbody>
 </table>
+
+<div class="z-doc-titles"></div>
 
 ## pageConfig.logo
 
@@ -320,6 +326,8 @@ export default ZmainHOC(pageConfig);
 		</tr>
 	</tbody>
 </table>
+
+<div class="z-doc-titles"></div>
 
 ## pageConfig.sideMenu
 
@@ -365,3 +373,9 @@ export default ZmainHOC(pageConfig);
 		</tr>
 	</tbody>
 </table>
+
+<div class="z-doc-titles"></div>
+
+## tool参数
+
+`tool`是一个对象，里面的属性同 上下文/ZerodMainContext 提供的内容

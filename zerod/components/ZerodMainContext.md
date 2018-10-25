@@ -2,6 +2,8 @@
 
 在`ZmainHOC`中启用了`ZerodMainContext`的上文，通过`ZerodMainContext.setConsumer(组件)`包装的组件，可以使用`this.props`调用以下东西：
 
+<div class="z-doc-titles"></div>
+
 ## 打开右边窗口: showRightModal()
 
 showRightModal 函数有四个参数，`show`:是否显示，`modal`: "mainModal" | "appModal" | "mainModal_top" | "appModal_top"，`content`：窗口的内容，`scroll`：窗口内是否启用滚动条,`onTransitionend`:打开关闭的过渡动画执行完后的回调
@@ -68,6 +70,8 @@ class OpenModal extends React.Component {
 const OutPut = ZerodMainContext.setConsumer(OpenModal);
 ```
 
+<div class="z-doc-titles"></div>
+
 ## 显示主页路由区域loading: showRouteLoading()
 
 showRouteLoading 函数有一个参数，`show`:是否显示
@@ -97,6 +101,8 @@ class MyScript extends React.Component {
 const OutPut = ZerodMainContext.setConsumer(MyScript);
 return <OutPut />;
 ```
+
+<div class="z-doc-titles"></div>
 
 ## 显示右边窗口loading:  showModalLoading()
 
@@ -162,13 +168,19 @@ const OutPut = ZerodMainContext.setConsumer(MyScript);
 return <OutPut />;
 ```
 
+<div class="z-doc-titles"></div>
+
 ## 获取左边导航栏数据: getSideMenuData()
 
 getSideMenuData()返回的是一个数组
 
-## 下次滚动条更新的时候，让滚动条回到顶部: setScrollToTop()
+## 获取滚动条的实例：getScrollInstance(witch)
 
-setScrollToTop 函数有一个参数，`witch`:哪个地方滚动条更新: "mainRoute" | "mainModal" | "appModal"
+getScrollInstance 函数有一个参数，`witch`:哪个地方的滚动条: "mainRoute" | "mainModal" | "mainModal_top" | "appModal" | "appModal_top"
+
+## 下次滚动条更新的时候，让滚动条回到顶部: setScrollToTop(witch)
+
+setScrollToTop 函数有一个参数，`witch`:哪个地方滚动条更新: "mainRoute" | "mainModal" | "mainModal_top" | "appModal" | "appModal_top"
 
 ## 获取用户登录信息: getUserInfo()
 

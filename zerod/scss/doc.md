@@ -4,6 +4,8 @@
 
 `zerod-admin-webpack` 脚手架中的`src/app.scss`已经全部引入 `@import '~zerod/index.scss';`，所以可以直接使用如下的所有的样式类名
 
+<div class="z-doc-titles"></div>
+
 ## 字体颜色
 
 <div class="z-demo-box" data-render="text-color" data-title="定义了一些字体颜色"></div>
@@ -11,6 +13,8 @@
 ```html
 <div className="z-text-blue">z-text-blue</div>
 ```
+
+<div class="z-doc-titles"></div>
 
 ## 面板
 
@@ -56,6 +60,8 @@
 </div>
 ```
 
+<div class="z-doc-titles"></div>
+
 ## z-info
 
 <div class="z-demo-box" data-render="default-info" data-title="信息面板"></div>
@@ -75,6 +81,8 @@
 </div>
 ```
 
+<div class="z-doc-titles"></div>
+
 ## 元素浮动
 
 单独引入：`@import '~zerod/scss/cmomon/z-float.scss';`
@@ -86,6 +94,8 @@
 </div>
 ```
 
+<div class="z-doc-titles"></div>
+
 ## 字体大小
 
 定义了 12-100px 的字体大小
@@ -96,6 +106,8 @@
 <div className="z-font-size-16">16像素大小</div>
 <div className="z-font-size-16-important">权重优先</div>
 ```
+
+<div class="z-doc-titles"></div>
 
 ## 文本对齐
 
@@ -113,6 +125,8 @@
 <div className="z-vertical-middle">文字中间对齐</div>
 <div className="z-vertical-bottom">文字底部对齐</div>
 ```
+
+<div class="z-doc-titles"></div>
 
 ## margin 和 padding 值
 
@@ -137,6 +151,10 @@
 同理`padding`值 ：
 
 `z-padding-10` : 四个方位 padding 值为 10px
+
+
+
+<div class="z-doc-titles"></div>
 
 ## flex 盒子(更多请了解弹性布局)
 
@@ -190,6 +208,8 @@
     <div className="z-flex-self-center"只有我是垂直居中</div>
 </div>
 ```
+
+<div class="z-doc-titles"></div>
 
 ## 定义了 em 单位的字体缩进
 
