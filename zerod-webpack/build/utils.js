@@ -40,7 +40,7 @@ exports.cssLoaders = function(options) {
 			cssLoader.options = Object.assign({}, cssLoader.options, {
 				modules: true,
 				importLoaders: 1,
-				localIdentName: "[path][name]_[local]_[hash:base64:5]",
+				localIdentName: "[local]_[hash:base64:6]",
 			});
 		}
 		const loaders = options.usePostCSS ? [cssLoader, postcssLoader] : [cssLoader];

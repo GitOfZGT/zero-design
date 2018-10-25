@@ -30,7 +30,7 @@ components.keys().forEach((key) => {
 	} else {
 		names.push(name);
 	}
-	//如果组件内没有写name,就取文件名
+	//如果组件命名以A开头
 	const mat = name.match(/^(A)/);
 	if (mat && mat.index === 0) {
 		loadCompoents[name] = defines.component;

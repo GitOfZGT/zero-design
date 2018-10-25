@@ -22,8 +22,8 @@ const pageConfig = {
     rightModalType:"appModal",
 	 // 左侧边展开时的宽度
      leftExpandWidth:240,
-    // 主页的主题 light | dark
-	theme: "light",
+    // 主页的主题 light | dark | mazarine
+	theme: "mazarine",
 	// logt区域
 	logo: {
 		title: "",
@@ -116,7 +116,7 @@ class Logo extends React.Component {
 				<img src={logo} alt="" width="32" className="z-margin-left-24" />
 				{this.state.showTitle ? (
 					<span className="z-margin-left-12 z-font-size-20" style={{ fontWeight: 600 }}>
-						运维管理中心
+						Zerod-webpack
 					</span>
 				) : null}
 			</div>
