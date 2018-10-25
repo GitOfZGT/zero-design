@@ -22,7 +22,7 @@ export default function tableTemplate() {
 	const _onExpandedRowsChange =
 		typeof onExpandedRowsChange == "function"
 			? (expandedRows) => {
-					onExpandedRowsChange(expandedRows, this.getExportSomeSomething());
+					onExpandedRowsChange(expandedRows, this.getExportSomething());
 			  }
 			: () => {};
 	return (

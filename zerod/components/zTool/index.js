@@ -976,6 +976,7 @@ export const zTool = {
 	deepCopyArray,
 	deepCopy,
 	formatDate,
+	BuildScroll,
 	IScrollInstance,
 	scrollDisableWheel,
 	GenNonDuplicateID,

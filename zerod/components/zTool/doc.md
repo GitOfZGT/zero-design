@@ -278,10 +278,13 @@ zTool.on(document.querySelector("#id"), "click", (e) => {
 });
 ```
 
+<div class="z-doc-titles"></div>
+
 ## zTool.off
 
 移除事件，同 `element.removeEventListener(event,handle,false)`，参数同`zTool.on`
 
+<div class="z-doc-titles"></div>
 
 ## zTool.once
 
@@ -354,6 +357,8 @@ import { zTool } from "zerod";
 //例：
 const height = zTool.getStyle(document.querySelector("#id"), "height"); // 100px
 ```
+
+<div class="z-doc-titles"></div>
 
 ## zTool.setStyle
 
