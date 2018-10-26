@@ -243,7 +243,7 @@ class ZtreePanel extends React.Component {
 		});
 	}
 	componentDidMount() {
-		const_getInsertLocation.call(this);
+		this.insertLocation=const_getInsertLocation(this.hocWrapperEl);
 		this.methods.onSearch();
 	}
 	render() {

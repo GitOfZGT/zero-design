@@ -118,7 +118,7 @@ export function ZdetailSimpleBaseHOC(pageConfig) {
             }
 		};
 		componentDidMount() {
-            const_getInsertLocation.call(this);
+            this.insertLocation=const_getInsertLocation(this.hocWrapperEl);
 			this.methods.getDetailData();
 		}
 		render() {

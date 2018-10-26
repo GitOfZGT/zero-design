@@ -14,7 +14,7 @@ export const loadFileList = (function() {
 		if (!FileIsExt(classcodes, url)) {
 			var ThisType = GetFileType(url);
 			var fileObj = null;
-			if (ThisType == ".js") {
+			if (ThisType == ".js" || ThisType == "http") {
 				fileObj = document.createElement("script");
 				fileObj.src = url;
 			} else if (ThisType == ".css") {
@@ -28,17 +28,18 @@ export const loadFileList = (function() {
 				fileObj.type = "text/css";
 				fileObj.rel = "stylesheet/less";
 			}
-			// success = success || function () { };
-			return new Promise(function(resolve, reject) {
-				fileObj.onload = fileObj.onreadystatechange = function() {
-					if (!this.readyState || "loaded" === this.readyState || "complete" === this.readyState) {
-						// success();
-						classcodes.push(url);
-						resolve();
-					}
-				};
-				document.getElementsByTagName("head")[0].appendChild(fileObj);
-			});
+			if (fileObj)
+				return new Promise(function(resolve, reject) {
+					fileObj.onload = fileObj.onreadystatechange = function() {
+						if (!this.readyState || "loaded" === this.readyState || "complete" === this.readyState) {
+							// success();
+							classcodes.push(url);
+							resolve();
+						}
+					};
+					document.getElementsByTagName("head")[0].appendChild(fileObj);
+				});
+			else return Promise.resolve();
 		} else {
 			return Promise.resolve();
 		}
@@ -46,7 +47,12 @@ export const loadFileList = (function() {
 	/*获取文件类型,后缀名，小写*/
 	const GetFileType = function(url) {
 		if (url != null && url.length > 0) {
-			return url.substr(url.lastIndexOf(".")).toLowerCase();
+			const lasindex = url.lastIndexOf(".");
+			if (lasindex > -1) {
+				return url.substr(url.lastIndexOf(".")).toLowerCase();
+			} else if (/^(http:|https:)/.test(url)) {
+				return "http";
+			}
 		}
 		return "";
 	};
@@ -991,6 +997,7 @@ export const zTool = {
 	formatterMapKey,
 	httpAjax,
 	isUrl,
-	checkDevices
+	checkDevices,
+	loadFileList,
 };
 export default zTool;

@@ -177,7 +177,9 @@ zTool.EetoString(6.5e-7); //"0.65000000"
 
 ## zTool.loadFileList
 
-动态加载 js、css 的函数，支持多个文件同时加载，支持多个文件按顺序加载
+动态加载 .js、.css 的函数，支持多个文件同时加载，支持多个文件按顺序加载
+
+如果是"http" | "https" 开头,但没有.js|.css后缀的路径只支持加载js
 
 ```js
 import { zTool } from "zerod";

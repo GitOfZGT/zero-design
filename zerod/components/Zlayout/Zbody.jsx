@@ -8,7 +8,12 @@ class Zbody extends React.Component {
 		className: PropTypes.string,
 		scroll: PropTypes.bool,
 		getScrollInstance: PropTypes.func,
+		getWrapperEl: PropTypes.func, //获取最外层包裹元素
 		insertToScrollWraper: PropTypes.any,
+	};
+	state = {
+		scrollAreaStyle: {},
+		scrollAreaClassName: "",
 	};
 	createScroll = () => {
 		if (this.scroollInstance) {
@@ -25,8 +30,29 @@ class Zbody extends React.Component {
 			this.props.getScrollInstance && this.props.getScrollInstance(this.scroollInstance);
 		}
 	};
+	metods = {
+		setScrollAreaStyle: (style) => {
+			if (typeof style !== "object") return;
+			this.setState({
+				scrollAreaStyle: style,
+			});
+		},
+		setScrollAreaClassName: (className) => {
+			if (typeof className !== "string") return;
+			this.setState({
+				scrollAreaClassName: className,
+			});
+		},
+		resetScrollArea: () => {
+			this.setState({
+				scrollAreaStyle: {},
+				scrollAreaClassName: "",
+			});
+		},
+	};
 	componentDidMount() {
 		this.createScroll();
+		this.props.getWrapperEl && this.props.getWrapperEl(this.wrapperEl, this.metods);
 	}
 	componentDidUpdate(prevProps) {
 		if (prevProps.scroll != this.props.scroll) {
@@ -34,18 +60,30 @@ class Zbody extends React.Component {
 		}
 	}
 	render() {
-		const { scroll, className, children, insertToScrollWraper,id, getScrollInstance, ...others } = this.props;
+		const {
+			scroll,
+			className,
+			children,
+			insertToScrollWraper,
+			getScrollInstance,
+			getWrapperEl,
+			...others
+		} = this.props;
+		console.log("render", this.state.scrollAreaStyle);
 		return (
-			<section {...others} className={`${cssClass["z-layout-body"]} ${className?className:""}`}>
+			<section
+				{...others}
+				className={`${cssClass["z-layout-body"]} ${className ? className : ""}`}
+				ref={(el) => (this.wrapperEl = el)}
+			>
 				<section
-					className={`${cssClass["z-body-scroll"]} z-scroll-color`}
+					style={this.state.scrollAreaStyle}
+					className={`${cssClass["z-body-scroll"]} z-scroll-color ${this.state.scrollAreaClassName}`}
 					ref={(el) => (this.bodyEl = el)}
 				>
 					{scroll ? (
 						<div ref={(el) => (this._contentEl = el)}>
-							<section>
-								{children}
-							</section>
+							<section>{children}</section>
 						</div>
 					) : (
 						children

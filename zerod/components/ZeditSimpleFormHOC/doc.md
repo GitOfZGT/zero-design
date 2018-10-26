@@ -144,6 +144,24 @@ const pageCofig = {
 			return api.config.addService(Object.assign({}, values, { environment: "default" }));
 		},
 	},
+		moreContentRender: function() {
+			return (
+				<div className="z-panel z-margin-top-20">
+					<div className="z-panel-body">moreContentRender</div>
+				</div>
+			);
+		},
+		panelBeforeRender: function() {
+			return (
+				<div className="z-panel z-margin-bottom-20">
+					<div className="z-panel-body">panelBeforeRender</div>
+				</div>
+			);
+		},
+		panelAfterRender: function() {
+			// MoreContent 的代码请查看 ZerodMainContext 的 getScrollAreaWrapperEl 中例子的代码
+			return <MoreContent />;
+		},
 };
 export default ZeditSimpleFormHOC(pageConfig);
 ```
@@ -246,13 +264,24 @@ const pageCofig = {
 			return api.config.updateService(Object.assign({}, values, { serviceId: props.detailId }));
 		},
 	},
-	moreContentRender: function(detail, panel) {
-		return (
-			<div className="z-panel z-margin-top-20">
-				<div className="z-panel-body">更多内容</div>
-			</div>
-		);
-	},
+		moreContentRender: function() {
+			return (
+				<div className="z-panel z-margin-top-20">
+					<div className="z-panel-body">moreContentRender</div>
+				</div>
+			);
+		},
+		panelBeforeRender: function() {
+			return (
+				<div className="z-panel z-margin-bottom-20">
+					<div className="z-panel-body">panelBeforeRender</div>
+				</div>
+			);
+		},
+		panelAfterRender: function() {
+			// MoreContent 的代码请查看 ZerodMainContext 的 getScrollAreaWrapperEl 中例子的代码
+			return <MoreContent />;
+		},
 };
 export default ZeditSimpleFormHOC(pageConfig);
 ```

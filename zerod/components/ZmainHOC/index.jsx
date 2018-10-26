@@ -6,7 +6,7 @@ import { Zlayout } from "../Zlayout";
 import { ZsideMenu } from "../ZsideMenu";
 import { ZpageLoading } from "../ZpageLoading";
 import { ZrightModal } from "../ZrightModal";
-
+import { const_getInsertLocation } from "../constant";
 import ZerodMainContext from "../ZerodMainContext";
 
 import zTool from "../zTool/";
@@ -21,6 +21,8 @@ function getConstNames(witch) {
 		instance_name: `${witch}_ScrollInstance`,
 		loading_name: `show_${witch}_Loading`,
 		trans_name: `${witch}_Transitionend`,
+		wrapper_name: `${witch}_OutsideScrollWrapper`,
+		wrapperMethods_name: `${witch}_OutsideScrollWrapperMethods`,
 	};
 }
 
@@ -235,6 +237,10 @@ export function ZmainHOC(pageConfig) {
 				const { instance_name } = getConstNames(witch);
 				return this[instance_name];
 			},
+			getScrollAreaWrapperEl: (witch) => {
+				const { wrapper_name, wrapperMethods_name } = getConstNames(witch);
+				return { wrapperEl: this[wrapper_name], methods: this[wrapperMethods_name] };
+			},
 		};
 		$router = {
 			history: this.props.history,
@@ -244,12 +250,14 @@ export function ZmainHOC(pageConfig) {
 			getSideMenuData: this.methods.getSideMenuData,
 			showRouteLoading: this.methods.showRouteLoading,
 			showModalLoading: this.methods.showModalLoading,
-			getScrollInstance:this.methods.getScrollInstance,
+			getScrollInstance: this.methods.getScrollInstance,
+			getScrollAreaWrapperEl: this.methods.getScrollAreaWrapperEl,
 			setScrollToTop: this.methods.setScrollToTop,
 			getUserInfo: this.methods.getUserInfo,
 			showRightModal: this.methods.showRightModal,
 			getTemporaryStorage: this.methods.getTemporaryStorage,
 			setTemporaryStorage: this.methods.setTemporaryStorage,
+			getInsertLocation:const_getInsertLocation,
 			$router: this.$router,
 		};
 		closeRightModal = (witch) => {
@@ -285,7 +293,15 @@ export function ZmainHOC(pageConfig) {
 				);
 		}
 		modalTemplate(witch, zIndex, width) {
-			const { content_name, show_name, scroll_name, loading_name, instance_name } = getConstNames(witch);
+			const {
+				content_name,
+				show_name,
+				scroll_name,
+				loading_name,
+				instance_name,
+				wrapper_name,
+				wrapperMethods_name,
+			} = getConstNames(witch);
 			return (
 				<ZrightModal
 					name={witch}
@@ -299,6 +315,10 @@ export function ZmainHOC(pageConfig) {
 						this.methods.showRightModal(false, witch, null);
 					}}
 					onTransitionend={this.methods.afterModalTransitionend}
+					getWrapperEl={(el, method) => {
+						this[wrapper_name] = el;
+						this[wrapperMethods_name] = method;
+					}}
 				>
 					{this.state[content_name]}
 				</ZrightModal>
@@ -360,7 +380,14 @@ export function ZmainHOC(pageConfig) {
 								id={this.config.mainBodyId}
 								className={`${cssClass["z-main-body"]} app-body`}
 								scroll
-								getScrollInstance={(instance) => (this.mainRoute_ScrollInstance = instance)}
+								getScrollInstance={(instance) =>
+									(this[getConstNames("mainRoute").instance_name] = instance)
+								}
+								getWrapperEl={(el, method) => {
+									const { wrapper_name, wrapperMethods_name } = getConstNames("mainRoute");
+									this[wrapper_name] = el;
+									this[wrapperMethods_name] = method;
+								}}
 								insertToScrollWraper={
 									<Zlayout.Template>
 										<ZpageLoading showLoading={this.state.show_mainRoute_Loading} />

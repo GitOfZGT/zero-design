@@ -10,6 +10,7 @@ export class ZrightModal extends React.Component {
 	static propTypes = {
 		show: PropTypes.bool,
 		onClose: PropTypes.func,
+		getWrapperEl: PropTypes.func,//
 		showLoading: PropTypes.bool,
 		scroll: PropTypes.bool,
 		getScrollInstance: PropTypes.func,
@@ -72,7 +73,7 @@ export class ZrightModal extends React.Component {
                     data-zgt_modal={this.props.name}
 				>
 					<Zlayout>
-						<Zlayout.Zbody scroll={this.props.scroll} getScrollInstance={this.props.getScrollInstance}>
+						<Zlayout.Zbody getWrapperEl={this.props.getWrapperEl} scroll={this.props.scroll} getScrollInstance={this.props.getScrollInstance}>
 							{this.props.children}
 						</Zlayout.Zbody>
 					</Zlayout>

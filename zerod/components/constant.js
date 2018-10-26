@@ -13,6 +13,8 @@ export const const_getMainTool = function() {
 		"$router",
 		"getTemporaryStorage",
 		"setTemporaryStorage",
+		"getScrollAreaWrapperEl",
+		"getInsertLocation"
 	].forEach((key) => {
 		tool[key] = this.props[key];
 	});
@@ -27,14 +29,15 @@ export const const_insertLocations = {
 	appModal_top: "appModal_top",
 };
 //获取当前HOC的放置位置
-export const const_getInsertLocation = function() {
-	if (this.hocWrapperEl) {
-		let _parent = this.hocWrapperEl.parentElement;
+export const const_getInsertLocation = function(el) {
+	if (el) {
+		let _parent =el.parentElement;
 		while (_parent && !_parent.dataset.zgt_modal) {
 			_parent = _parent.parentElement;
 		}
-		this.insertLocation = _parent && _parent.dataset.zgt_modal ? _parent.dataset.zgt_modal : "mainRoute";
+		return _parent && _parent.dataset.zgt_modal ? _parent.dataset.zgt_modal : "mainRoute";
 	}
+	return null;
 };
 //
 export const const_showLoading = (insertLocation, props) => {

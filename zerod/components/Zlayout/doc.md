@@ -189,6 +189,12 @@
 			<td>any</td>
 			<td>--</td>
 		</tr>
+        <tr>
+			<td>getWrapperEl</td>
+			<td>获取最外层包裹元素,(el,metods)=>{}</td>
+			<td>function</td>
+			<td>--</td>
+		</tr>
 	</tbody>
 </table>
 

@@ -31,85 +31,89 @@ const getBreadcrumbsFromMenu = function(arr, path, rootArr) {
 	return newArr;
 };
 class Page extends React.Component {
-    static propTypes = {
-        pageHeader: PropTypes.object,
-        pageFooter: PropTypes.object,
-        hasBodyPadding: PropTypes.bool,
-    };
-    static defaultProps = {
-        pageHeader: { show: false },
-        pageFooter: { show: true },
-        hasBodyPadding: true,
-    };
-    breadcrumbsFromMenu = getBreadcrumbsFromMenu(
-        this.props.getSideMenuData ? this.props.getSideMenuData() : [],
-        this.props.location.pathname,
-    );
-    newPageHeader = Object.assign({}, this.props.pageHeader, {
-        breadcrumbRoutes: this.props.pageHeader.breadcrumbRoutes
-            ? [
-                    ...this.breadcrumbsFromMenu, // 由侧边导航和当前路由地址获取面包屑数据
-                    ...this.props.pageHeader.breadcrumbRoutes,
-              ]
-            : this.breadcrumbsFromMenu,
-    });
-    initDoms = () => {
-        if (this.footerWrapEl) {
-            const pos = this.wrapEl.getBoundingClientRect();
-            const fpos = this.footerWrapEl.getBoundingClientRect();
-            let H = document.documentElement.clientHeight - pos.top - fpos.height;
-            this.wrapEl.style.minHeight = H + "px";
-        }
-    };
+	static propTypes = {
+		pageHeader: PropTypes.object,
+		pageFooter: PropTypes.object,
+		hasBodyPadding: PropTypes.bool,
+	};
+	static defaultProps = {
+		pageHeader: { show: false },
+		pageFooter: { show: true },
+		hasBodyPadding: true,
+	};
+	breadcrumbsFromMenu = getBreadcrumbsFromMenu(
+		this.props.getSideMenuData ? this.props.getSideMenuData() : [],
+		this.props.location.pathname,
+	);
+	newPageHeader = Object.assign({}, this.props.pageHeader, {
+		breadcrumbRoutes: this.props.pageHeader.breadcrumbRoutes
+			? [
+					...this.breadcrumbsFromMenu, // 由侧边导航和当前路由地址获取面包屑数据
+					...this.props.pageHeader.breadcrumbRoutes,
+			  ]
+			: this.breadcrumbsFromMenu,
+	});
+	initDoms = (e) => {
+		if (e && (e.target.localName == "input" || e.target.localName == "textarea" || e.target.localName == "button"))
+			return;
+		if (this.footerWrapEl) {
+			const pos = this.wrapEl.getBoundingClientRect();
+			const fpos = this.footerWrapEl.getBoundingClientRect();
+			if (pos.top >= 0) {
+				let H = document.documentElement.clientHeight - pos.top - fpos.height;
+				this.wrapEl.style.minHeight = H + "px";
+			}
+		}
+	};
 
-    componentDidMount() {
-        document.addEventListener("transitionend", this.initDoms, false);
-        setTimeout(() => {
-            this.initDoms();
-        }, 100);
-        window.addEventListener("resize", this.initDoms, false);
-        // console.log(this.props.location.pathname)
-    }
-    componentWillUnmount() {
-        window.removeEventListener("resize", this.initDoms, false);
-        document.removeEventListener("transitionend", this.initDoms, false);
-    }
-    render() {
-        const { className, pageFooter } = this.props;
-        const { show,links, copyright,ref, ...footerOther } = pageFooter;
-        const _footerLinks = links ? links : this.props.footerLinks ? this.props.footerLinks : footerLinks;
-        const _footerCopyright = copyright
-            ? copyright
-            : this.props.footerCopyright
-                ? this.props.footerCopyright
-                : footerCopyright;
+	componentDidMount() {
+		document.addEventListener("transitionend", this.initDoms, false);
+		setTimeout(() => {
+			this.initDoms();
+		}, 100);
+		window.addEventListener("resize", this.initDoms, false);
+		// console.log(this.props.location.pathname)
+	}
+	componentWillUnmount() {
+		window.removeEventListener("resize", this.initDoms, false);
+		document.removeEventListener("transitionend", this.initDoms, false);
+	}
+	render() {
+		const { className, pageFooter } = this.props;
+		const { show, links, copyright, ref, ...footerOther } = pageFooter;
+		const _footerLinks = links ? links : this.props.footerLinks ? this.props.footerLinks : footerLinks;
+		const _footerCopyright = copyright
+			? copyright
+			: this.props.footerCopyright
+				? this.props.footerCopyright
+				: footerCopyright;
 
-        return (
-            <Zlayout.Template>
-                {this.props.pageHeader.show ? <ZpageHeader {...this.newPageHeader} /> : null}
-                <div
-                    className={`${this.props.hasBodyPadding ? cssClass["z-wraper-body"] : ""} ${
-                        className ? className : ""
-                    }`}
-                    ref={(el) => (this.wrapEl = el)}
-                >
-                    {this.props.children}
-                </div>
-                {pageFooter.show ? (
-                    <ZpageFooter
-                        links={_footerLinks}
-                        copyright={_footerCopyright}
-                        ref={(el) => (this.footerWrapEl = el)}
-                        {...footerOther}
-                    />
-                ) : null}
-            </Zlayout.Template>
-        );
-    }
+		return (
+			<Zlayout.Template>
+				{this.props.pageHeader.show ? <ZpageHeader {...this.newPageHeader} /> : null}
+				<div
+					className={`${this.props.hasBodyPadding ? cssClass["z-wraper-body"] : ""} ${
+						className ? className : ""
+					}`}
+					ref={(el) => (this.wrapEl = el)}
+				>
+					{this.props.children}
+				</div>
+				{pageFooter.show ? (
+					<ZpageFooter
+						links={_footerLinks}
+						copyright={_footerCopyright}
+						ref={(el) => (this.footerWrapEl = el)}
+						{...footerOther}
+					/>
+				) : null}
+			</Zlayout.Template>
+		);
+	}
 }
-export  const ZpageWrapper= ZerodRootContext.setConsumer(ZerodMainContext.setConsumer(withRouter(Page)));
+export const ZpageWrapper = ZerodRootContext.setConsumer(ZerodMainContext.setConsumer(withRouter(Page)));
 export function ZpageWraperHOC() {
-    return ZpageWrapper;
+	return ZpageWrapper;
 }
 
 export default ZpageWrapper;
