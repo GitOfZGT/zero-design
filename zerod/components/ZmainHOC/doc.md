@@ -230,6 +230,12 @@ export default ZmainHOC(pageConfig);
 	</thead>
 	<tbody>
 		<tr>
+			<td>noticeType</td>
+			<td>用于配置操作提示通告的方式</td>
+			<td>notification | message</td>
+			<td>message</td>
+		</tr>
+		<tr>
 			<td>leftExpandWidth</td>
 			<td>左侧栏展开时的宽度</td>
 			<td>string | number</td>

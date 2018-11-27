@@ -8,7 +8,7 @@
 		float: left;
 		overflow: hidden;
 		width: 180px;
-		height: 120px;
+		height: 140px;
 		&:not(:last-child) {
 			margin-right: 8px;
 			margin-bottom:8px;
@@ -25,6 +25,18 @@
 			border-style: none;
 			cursor: zoom-in;
 		}
+	}
+	$--alt-h:30px;
+	@include z('viewer-thumb'){
+		height: calc(100% - 30px);
+	}
+	@include z("viewer-alt"){
+		height: $--alt-h;
+		line-height: $--alt-h;
+		text-align: center;
+		border:1px dashed #eaeaea;
+		border-top: 0;
+		font-size: 14px;
 	}
 }
 $--btn-h: 100px;

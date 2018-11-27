@@ -2,15 +2,13 @@ import React from "react";
 import { withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
 import {
-	const_showLoading,
-	const_getModalType,
 	const_getPanleHeader,
 	const_getListConfig,
 	const_getInsertLocation,
-	const_insertLocations,
 	const_getMainTool,
+	const_getMethods
 } from "../constant";
-import { Tree, Modal, message } from "antd";
+import { Tree, Modal } from "antd";
 const TreeNode = Tree.TreeNode;
 import { ZsearchForm } from "../ZsearchForm";
 import cssClass from "./style.scss";
@@ -62,9 +60,7 @@ class ZtreePanel extends React.Component {
 	searchQuery = null;
 	ayncChild = typeof this.props.childApiInterface === "function";
 	methods = {
-		showLoading: (show) => {
-			const_showLoading(this.insertLocation, this.props)(show);
-		},
+		...const_getMethods.call(this),
 		// 获取列表数据
 		loadTreeData: (moreQuery) => {
 			let querys = this.searchQuery ? this.searchQuery : {};
@@ -81,7 +77,7 @@ class ZtreePanel extends React.Component {
 						});
 					})
 					.catch((re) => {
-						message.error(re && re.msg ? re.msg : "获取数据失败");
+						this.methods.notice.error(re && re.msg ? re.msg : "获取数据失败");
 					})
 					.finally((re) => {
 						this.methods.showLoading(false);
@@ -134,8 +130,9 @@ class ZtreePanel extends React.Component {
 		},
 		// 删除按钮触发
 		onDelete: (record) => {
+			const text=record[this.treeDataKeys.name];
 			Modal.confirm({
-				title: `确认删除 [${record[this.treeDataKeys.name]}] 这条数据吗`,
+				title: `确认删除 ${text?`[${text}]`:""} 这条数据吗`,
 				content: "将永久删除",
 				okText: "删除",
 				okType: "danger",
@@ -145,7 +142,7 @@ class ZtreePanel extends React.Component {
 						this.props
 							.deleteApiInterface(record, this.getExportSomething())
 							.then((re) => {
-								message.success("删除成功");
+								this.methods.notice.success("删除成功");
 								this.methods.removeOneData(record, this.state.treeData);
 								this.setState({
 									treeData: [...this.state.treeData],
@@ -153,21 +150,12 @@ class ZtreePanel extends React.Component {
 								resolve();
 							})
 							.catch((re) => {
-								message.error(re && re.msg ? re.msg : "删除失败");
+								this.methods.notice.error(re && re.msg ? re.msg : "删除失败");
 								rejects();
 							});
 					});
 				},
 			});
-		},
-		openModal: (content) => {
-			content &&
-				this.props.showRightModal &&
-				this.props.showRightModal(true, const_getModalType(this.insertLocation), content);
-		},
-		closeCurrentModal: () => {
-			if (this.insertLocation !== const_insertLocations.mainRoute)
-				this.props.showRightModal && this.props.showRightModal(false, this.insertLocation);
 		},
 		onAdd: () => {
 			const content = this.props.addPageRender(this.getExportSomething());

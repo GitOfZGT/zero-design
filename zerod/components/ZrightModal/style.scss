@@ -35,7 +35,7 @@ $--z: 999;
             cursor: pointer;
             @include z('btn'){
                 padding: 20px 0;
-                background-color: $primary-5;
+                background-color: $--primary-5;
                 color: white;
                 border-top-right-radius: 8px;
                 border-bottom-right-radius: 8px;

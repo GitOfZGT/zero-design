@@ -19,7 +19,7 @@
 			"import",
 			{
 				"libraryName": "antd",
-				"style": true,
+				"style":false,
 				"libraryDirectory": "es"
 			}
 		],

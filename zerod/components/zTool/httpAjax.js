@@ -38,41 +38,42 @@ function httpAjax(method, url, query, config, noCallback) {
 			break;
 	}
 
-	let promise = new Promise((resolve, reject) => {
-		let P = null;
-		switch (method) {
-			case "get":
-				P = axios[method](url, config);
-				break;
-			case "delete":
-				P = axios[method](url, config);
-				break;
-			default:
-				P = axios[method](url, query, config);
-		}
-		P &&
-			!noCallback &&
-			P.then((result) => {
-				// 后台请求返回的code=0是操作成功
-				result.data.code === 0 ? resolve(result.data) : reject(result.data);
-			}).catch((result) => {
-				// if (result.response.data.status === 499) {
-				// 	if (window.rootVue) {
-				// 		window.rootVue.$message.error("您的账号在别的地方登录");
-				// 		window.rootVue.$router.replace({ name: "login" });
-				// 	}
-				// 	return;
-				// }
-				// if (result.response.data.status === 403) {
-				// 	if (window.rootVue) {
-				// 		window.rootVue.$message.error("登录过期，重新登录");
-				// 		window.rootVue.$router.replace({ name: "login" });
-				// 	}
-				// 	return;
-				// }
-				reject(result.data);
-			});
-	});
+	let promise = noCallback
+		? P
+		: new Promise((resolve, reject) => {
+				let P = null;
+				switch (method) {
+					case "get":
+						P = axios[method](url, config);
+						break;
+					case "delete":
+						P = axios[method](url, config);
+						break;
+					default:
+						P = axios[method](url, query, config);
+				}
+				P &&
+					P.then((result) => {
+						// 后台请求返回的code=0是操作成功
+						result.data.code === 0 ? resolve(result.data) : reject(result.data);
+					}).catch((result) => {
+						// if (result.response.data.status === 499) {
+						// 	if (window.rootVue) {
+						// 		window.rootVue.$message.error("您的账号在别的地方登录");
+						// 		window.rootVue.$router.replace({ name: "login" });
+						// 	}
+						// 	return;
+						// }
+						// if (result.response.data.status === 403) {
+						// 	if (window.rootVue) {
+						// 		window.rootVue.$message.error("登录过期，重新登录");
+						// 		window.rootVue.$router.replace({ name: "login" });
+						// 	}
+						// 	return;
+						// }
+						reject(result.data);
+					});
+		  });
 	return promise;
 }
 export default httpAjax;

@@ -69,7 +69,6 @@ class Zbody extends React.Component {
 			getWrapperEl,
 			...others
 		} = this.props;
-		console.log("render", this.state.scrollAreaStyle);
 		return (
 			<section
 				{...others}

@@ -4,7 +4,7 @@
 
 `zerod` 需要配合`zerod-admin-webpack`脚手架使用开发
 
-# zerod-admin-webpack 脚手架 v1.0.0
+# zerod-admin-webpack 脚手架 v1.1.0
 
 基于 `react + react-router + antd + zerod(我们的扩展组件) + scss` 的 webpack4 前端开发环境
 

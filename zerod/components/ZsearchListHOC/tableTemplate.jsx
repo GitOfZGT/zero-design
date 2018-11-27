@@ -13,18 +13,23 @@ export default function tableTemplate() {
 		onExpandedRowsChange,
 		...others
 	} = this.props.tableParams;
+
 	const _expandedRowKeys =
 		typeof expandedRowKeys == "function"
 			? expandedRowKeys()
 			: Array.isArray(expandedRowKeys)
 				? expandedRowKeys
-				: [];
+				: this.state.expandedRowKeys;
 	const _onExpandedRowsChange =
 		typeof onExpandedRowsChange == "function"
 			? (expandedRows) => {
 					onExpandedRowsChange(expandedRows, this.getExportSomething());
 			  }
-			: () => {};
+			: (expandedRows) => {
+                this.setState({
+                    expandedRowKeys: expandedRows,
+                });
+            };
 	return (
 		<Zlayout.Template>
 			{this.props.panelBeforeRender && this.props.panelBeforeRender(this.getExportSomething())}

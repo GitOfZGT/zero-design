@@ -65,7 +65,7 @@ $--card-title-color: $heading-color;
 	margin-top: 0;
     margin-bottom:12px;
     &:hover{
-        color:$primary-7;
+        color:$--primary-7;
         cursor: pointer;
     }
     white-space: nowrap;

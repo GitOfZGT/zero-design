@@ -1,6 +1,14 @@
-
 @import "../ant-theme-vars";
-
+$--primary-color:$primary-color;
+$--primary-1:lighten($--primary-color,55%);
+$--primary-2:lighten($--primary-color,40%);
+$--primary-3:lighten($--primary-color,30%);
+$--primary-4:lighten($--primary-color,20%);
+$--primary-5:lighten($--primary-color,10%);
+$--primary-6:lighten($--primary-color,8%);
+$--primary-7:lighten($--primary-color,6%);
+$--primary-8:lighten($--primary-color,4%);
+$--primary-9:lighten($--primary-color,2%);
 :global {
 	body{
         .ant-btn-primary:not([disabled]) {

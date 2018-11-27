@@ -1,7 +1,7 @@
 "use strict";
 const path = require("path");
 const config = require("../config");
-const AntdScssThemePlugin = require("antd-scss-theme-plugin");
+// const AntdScssThemePlugin = require("antd-scss-theme-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const packageConfig = require("../package.json");
 function resolve(dir) {
@@ -53,10 +53,19 @@ exports.cssLoaders = function(options) {
 					javascriptEnabled: loader == "less",
 				}),
 			};
-			if ((loader == "less" || loader == "sass") && config["ant.design"]) {
-				loaderObj = AntdScssThemePlugin.themify(loaderObj);
-			}
+			// if ((loader == "less" || loader == "sass") && config["ant.design"]) {
+			// 	loaderObj = AntdScssThemePlugin.themify(loaderObj);
+			// }
 			loaders.push(loaderObj);
+			if (loader == "sass") {
+				loaders.push({
+					loader: "sass-resources-loader",
+					options: {
+						// 多个文件时用数组的形式传入，单个文件时可以直接使用 path.resolve(__dirname, '../static/style/common.scss'
+						resources: config.scssVars,
+					},
+				});
+			}
 		}
 
 		// Extract CSS when that option is specified
@@ -77,7 +86,7 @@ exports.cssLoaders = function(options) {
 		css: generateLoaders(),
 		postcss: generateLoaders(),
 		less: generateLoaders("less"),
-		sass: generateLoaders("sass", { indentedSyntax: true }),
+		// sass: generateLoaders("sass", { indentedSyntax: true }),
 		scss: generateLoaders("sass"),
 		stylus: generateLoaders("stylus"),
 		styl: generateLoaders("stylus"),
@@ -91,12 +100,24 @@ exports.styleLoaders = function(options) {
 
 	for (const extension in loaders) {
 		const loader = loaders[extension];
-		output.push({
+		const opt = {
 			test: new RegExp("\\." + extension + "$"),
 			use: loader,
-		});
+		};
+		if (extension == "scss") {
+			opt.issuer = {
+				exclude: /\.less$/,
+			};
+		}
+		output.push(opt);
 	}
-
+	output.push({
+		test: /\.scss$/,
+		issuer: /\.less$/,
+		use: {
+			loader: require.resolve('./sassVarsToLess'), // Change path if necessary
+		},
+	});
 	return output;
 };
 

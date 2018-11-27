@@ -22,6 +22,8 @@ const config = {
 	//微信页面开发授权域名验证的文件，如： path.resolve(__dirname, '../MP_verify_P7fns4NGi17lbM0R.txt')
 	MP_verify: "",
 	favicon: path.resolve(__dirname, "../src/assets/images/logo.png"),
+	//scss变量提升
+	scssVars:[path.resolve(__dirname,"../node_modules/zerod/ant-theme-vars.scss")],
 	//开发模式配置
 	dev: {
 		// Paths
@@ -67,7 +69,7 @@ const config = {
 		},
 
 		// Various Dev Server settings
-		host: "localhost", // can be overwritten by process.env.HOST
+		host: "0.0.0.0", // can be overwritten by process.env.HOST
 		port: 33000, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
 		autoOpenBrowser: false,
 		errorOverlay: true,

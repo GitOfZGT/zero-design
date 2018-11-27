@@ -42,6 +42,7 @@ class CollapseBtn extends React.Component {
 export function ZmainHOC(pageConfig) {
 	pageConfig = pageConfig ? pageConfig : {};
 	let defaultConfig = {
+		noticeType:"notification", //notification | message
 		// 左侧边展开时的宽度
 		leftExpandWidth: 240,
 		showCollapseBtn: true, //boolean | function
@@ -259,6 +260,7 @@ export function ZmainHOC(pageConfig) {
 			setTemporaryStorage: this.methods.setTemporaryStorage,
 			getInsertLocation:const_getInsertLocation,
 			$router: this.$router,
+			noticeType:this.config.noticeType,
 		};
 		closeRightModal = (witch) => {
 			const { show_name } = getConstNames(witch);

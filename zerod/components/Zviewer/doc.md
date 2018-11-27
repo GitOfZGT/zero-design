@@ -46,5 +46,11 @@ class Myjavascript extends React.Component {
 			<td>array[string] | array[object]</td>
 			<td>--</td>
 		</tr>
+		<tr>
+			<td>showThumbAlt</td>
+			<td>是否在缩略图下显示图片的alt</td>
+			<td>Boolean</td>
+			<td>true</td>
+		</tr>
 	</tbody>
 </table>

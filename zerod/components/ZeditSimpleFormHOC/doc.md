@@ -478,6 +478,11 @@ tool.methods 是一个对象，内容如下：
 			<td>ZeditSimpleFormHOC的submit方法，需参数values:表单的所有值的map对象，tool.submit(values)会触发submitApiInterface，异步回调后会触发afterSuccess</td>
 			<td>tool.methods.onSubmit(values)</td>
 		</tr>
+		<tr>
+			<td>notice</td>
+			<td>是一个对象，弹出提示通告的方式，跟ZmainHOC中的noticeType有关，属性函数有success、error、info、warning，它们的参数有 content:提示内容，config:同antd的 notification 和 message 参数</td>
+			<td>tool.methods.notice.success("操作成功" [,config])</td>
+		</tr>
 	</tbody>
 </table>
 

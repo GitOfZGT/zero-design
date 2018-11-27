@@ -2,15 +2,13 @@ import React from "react";
 import { withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
 import {
-	const_showLoading,
-	const_getModalType,
 	const_getPanleHeader,
 	const_getListConfig,
 	const_getInsertLocation,
 	const_getMainTool,
-	const_insertLocations,
+	const_getMethods
 } from "../constant";
-import { Button, Icon, Divider, Dropdown, Menu, Modal, message, Tooltip } from "antd";
+import { Button, Icon, Divider, Dropdown, Menu, Modal } from "antd";
 import { ZsearchForm } from "../ZsearchForm";
 import cssClass from "./style.scss";
 // 上下文
@@ -88,7 +86,8 @@ class ZlistPanel extends React.Component {
 		listData: [],
 		noMore: false,
 		isListCard: this.props.listType === "card",
-		colFormItems: [],
+        colFormItems: [],
+        expandedRowKeys:[],
 	};
 	isInfinite = this.props.paginationType === "infinite";
 	getPageSize = () => {
@@ -98,11 +97,13 @@ class ZlistPanel extends React.Component {
 		pageNumber: 1,
 		pageSize: this.getPageSize(),
 		totalCount: 0,
-		totalPage: 1,
+        totalPage: 1,
+
 	};
 	searchQuery = null;
 	sorter = {};
 	methods = {
+		...const_getMethods.call(this),
 		handleMenuClick: (record) => {
 			return (item) => {
 				if (item.key === "_delete") {
@@ -111,9 +112,6 @@ class ZlistPanel extends React.Component {
 					this.props.onMoreBtnClick && this.props.onMoreBtnClick(item, record, this.getExportSomething());
 				}
 			};
-		},
-		showLoading: (show) => {
-			const_showLoading(this.insertLocation, this.props)(show);
 		},
 		// 获取列表数据
 		getListData: (merge, moreQuery) => {
@@ -159,7 +157,7 @@ class ZlistPanel extends React.Component {
 					this.methods.setDataState(list, merge);
 				})
 				.catch((re) => {
-					message.error(re && re.msg ? re.msg : "获取数据失败");
+					this.methods.notice.error(re && re.msg ? re.msg : "获取数据失败");
 				})
 				.finally((re) => {
 					this.methods.showLoading(false);
@@ -259,7 +257,7 @@ class ZlistPanel extends React.Component {
 		// 删除按钮触发
 		onDelete: (text, row) => {
 			Modal.confirm({
-				title: `确认删除 [${text}] 这条数据吗`,
+				title: `确认删除 ${text?`[${text}]`:""} 这条数据吗`,
 				content: "将永久删除",
 				okText: "删除",
 				okType: "danger",
@@ -269,26 +267,17 @@ class ZlistPanel extends React.Component {
 						this.props
 							.deleteApiInterface(row, this.getExportSomething())
 							.then((re) => {
-								message.success("删除成功");
+								this.methods.notice.success("删除成功");
 								this.methods.removeOneData(row);
 								resolve();
 							})
 							.catch((re) => {
-								message.error(re && re.msg ? re.msg : "删除失败");
+								this.methods.notice.error(re && re.msg ? re.msg : "删除失败");
 								rejects();
 							});
 					});
 				},
 			});
-		},
-		openModal: (content) => {
-			content &&
-				this.props.showRightModal &&
-				this.props.showRightModal(true, const_getModalType(this.insertLocation), content);
-		},
-		closeCurrentModal: () => {
-			if (this.insertLocation !== const_insertLocations.mainRoute)
-				this.props.showRightModal && this.props.showRightModal(false, this.insertLocation);
 		},
 		onAdd: () => {
 			const content = this.props.addPageRender(this.getExportSomething());

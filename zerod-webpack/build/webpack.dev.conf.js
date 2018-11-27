@@ -1,11 +1,12 @@
 "use strict";
+const address = require("address");
 const utils = require("./utils");
 const webpack = require("webpack");
 const config = require("../config");
 const merge = require("webpack-merge");
 const path = require("path");
 const baseWebpackConfig = require("./webpack.base.conf");
-const HtmlWebpackPlugin = require("html-webpack-plugin");
+// const HtmlWebpackPlugin = require("html-webpack-plugin");
 const FriendlyErrorsPlugin = require("friendly-errors-webpack-plugin");
 const portfinder = require("portfinder");
 const progress = require("./compiler-progress");
@@ -38,7 +39,14 @@ const devWebpackConfig = merge(baseWebpackConfig, {
 		quiet: true, // necessary for FriendlyErrorsPlugin
 		watchOptions: {
 			poll: config.dev.poll,
+			aggregateTimeout: 1000,
+			ignored: [config.build.assetsRoot, path.resolve(__dirname, "../config"), __dirname],
 		},
+		disableHostCheck: false,
+		public: address.ip(),
+	},
+	optimization: {
+		minimize: false,
 	},
 	plugins: [
 		new webpack.DefinePlugin({
@@ -47,15 +55,6 @@ const devWebpackConfig = merge(baseWebpackConfig, {
 		new webpack.HotModuleReplacementPlugin(),
 		new webpack.NamedModulesPlugin(), // HMR shows correct file names in console on update.
 		new webpack.NoEmitOnErrorsPlugin(),
-		// https://github.com/ampedandwired/html-webpack-plugin
-		new HtmlWebpackPlugin({
-			filename: "index.html",
-			template: "index.html",
-			inject: true,
-			chunksSortMode: "dependency",
-			favicon: config.favicon,
-		}),
-
 	],
 });
 
@@ -74,9 +73,19 @@ module.exports = new Promise((resolve, reject) => {
 			devWebpackConfig.plugins.push(
 				new FriendlyErrorsPlugin({
 					compilationSuccessInfo: {
-						messages: [
-							`Your application is running here: http://${devWebpackConfig.devServer.host}:${port}`,
-						],
+						messages:
+							devWebpackConfig.devServer.host === "0.0.0.0"
+								? [
+										`Your application is running here: http://${
+											devWebpackConfig.devServer.public
+										}:${port}`,
+										`Your application is running here: http://localhost:${port}`,
+								  ]
+								: [
+										`Your application is running here: http://${
+											devWebpackConfig.devServer.host
+										}:${port}`,
+								  ],
 					},
 					onErrors: config.dev.notifyOnErrors ? utils.createNotifierCallback() : undefined,
 				}),

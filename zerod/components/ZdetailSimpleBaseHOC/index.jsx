@@ -1,8 +1,7 @@
 import React from "react";
 import { withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
-import { const_showLoading, const_getInsertLocation,const_getMainTool,const_getModalType,const_insertLocations } from "../constant";
-import { message, } from "antd";
+import {  const_getInsertLocation,const_getMainTool,const_getMethods} from "../constant";
 // 工具
 import { mergeConfig } from "../zTool/";
 // 上下文
@@ -24,31 +23,31 @@ export function ZdetailSimpleBaseHOC(pageConfig) {
 			//any
 			content: "描述",
 			//element | node
-			rightMoreContent: <div>右边</div>,
+			rightMoreContent: null,
 		},
 		detail: {
 			panelHeader: "基础信息",
 			defaultSpan: undefined,
 			items: [
-				{
-					key: "serviceCode",
-					label: "名称",
-					span: 8,
-					render: () => {
-						return (value, record)=>value;
-					},
-				},
-				{
-					key: "serviceName",
-					label: "描述",
-					span: 8,
-					render: () => {
-						return (value, record)=>value;
-					},
-				},
+				// {
+				// 	key: "serviceCode",
+				// 	label: "名称",
+				// 	span: 8,
+				// 	render: () => {
+				// 		return (value, record)=>value;
+				// 	},
+				// },
+				// {
+				// 	key: "serviceName",
+				// 	label: "描述",
+				// 	span: 8,
+				// 	render: () => {
+				// 		return (value, record)=>value;
+				// 	},
+				// },
 			],
 			// 获取详情数据的后台接口函数，必须返回 Promise
-			detailApiInterface: () => Promise.reject({ mag: "未提供后台接口" }),
+			detailApiInterface: () => Promise.resolve({ data: {} }),
 		},
 		// 更多渲染内容
 		moreContentRender: (detail) => {
@@ -73,18 +72,7 @@ export function ZdetailSimpleBaseHOC(pageConfig) {
 			detailData: {},
 		};
 		methods = {
-			showLoading: (show) => {
-				const_showLoading(this.insertLocation, this.props)(show);
-			},
-			openModal: (content) => {
-				content &&
-					this.props.showRightModal &&
-					this.props.showRightModal(true, const_getModalType(this.insertLocation), content);
-			},
-			closeCurrentModal: () => {
-				if (this.insertLocation !== const_insertLocations.mainRoute)
-					this.props.showRightModal && this.props.showRightModal(false, this.insertLocation);
-			},
+			...const_getMethods.call(this),
 			getDetailData: () => {
 				this.methods.showLoading(true);
 				this.config.detail
@@ -95,7 +83,7 @@ export function ZdetailSimpleBaseHOC(pageConfig) {
 						});
 					})
 					.catch((re) => {
-						message.error(re && re.msg ? re.msg : "获取数据失败");
+						this.methods.notice.error(re && re.msg ? re.msg : "获取数据失败");
 					})
 					.finally(() => {
 						this.methods.showLoading(false);

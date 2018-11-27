@@ -322,32 +322,42 @@ export function setStyle(element, styleName, value) {
 		}
 	}
 }
+//首字母大写
+export const firstWordToUpperCase = function(str) {
+	return str.toLowerCase().replace(/( |^)[a-z]/g, (L) => L.toUpperCase());
+};
+const data_types = {
+	array: "[object Array]",
+	object: "[object Object]",
+	string: "[object String]",
+	number: "[object Number]",
+	boolean: "[object Boolean]",
+	null: "[object Null]",
+	undefined: "[object Undefined]",
+	function: "[object Function]",
+	date: "[object Date]",
+	symbol: "[object Symbol]",
+	set: "[object Set]",
+	Map: "[object Map]",
+	regExp: "[object RegExp]",
+	json: "[object JSON]", //JSON对象
+	promise: "[object Promise]", //Promise对象
+};
+// 包含isArray,isObject,isString,isPromise等等
+export const dataType = {};
+Object.keys(data_types).forEach((key) => {
+	dataType["is" + firstWordToUpperCase(key)] = function(item) {
+		return dataTypeTest(item) === key;
+	};
+});
 //检测数据类型 ，返回对应数据类型的名称
 export const dataTypeTest = function(item) {
-	if (Array.isArray(item)) {
-		return "array";
-	} else if (Object.prototype.toString.call(item) === "[object Object]") {
-		return "object";
-	} else if (Object.prototype.toString.call(item) === "[object Date]") {
-		return "date";
-	} else if (typeof item === "string") {
-		return "string";
-	} else if (typeof item === "boolean") {
-		return "boolean";
-	} else if (typeof item === "undefined") {
-		return "undefined";
-	} else if (typeof item === "number") {
-		return "number";
-	} else if (item === null) {
-		return "null";
-	} else if (Object.prototype.toString.call(item) === "[object Function]") {
-		return "function";
-	} else if (Object.prototype.toString.call(item) === "[object Symbol]") {
-		return "symbol";
-	} else if (Object.prototype.toString.call(item) === "[object Set]") {
-		return "set";
-	} else if (Object.prototype.toString.call(item) === "[object Map]") {
-		return "map";
+	const types = Object.keys(data_types);
+	for (let index = 0; index < types.length; index++) {
+		const key = types[index];
+		if (Object.prototype.toString.call(item) === data_types[key]) {
+			return key;
+		}
 	}
 };
 //深度复制对象
@@ -367,6 +377,9 @@ export const deepCopyObject = function(obj) {
 			case "symbol":
 			case "set":
 			case "map":
+			case "json":
+			case "promise":
+			case "regExp":
 				newobj[key] = obj[key];
 				break;
 			case "date":
@@ -401,6 +414,9 @@ export const deepCopyArray = function(array) {
 			case "symbol":
 			case "set":
 			case "map":
+			case "json":
+			case "promise":
+			case "regExp":
 				newarray.push(item);
 				break;
 			case "date":
@@ -421,10 +437,8 @@ export const deepCopy = function(value) {
 	switch (dataTypeTest(value)) {
 		case "object":
 			return deepCopyObject(value);
-			break;
 		case "array":
 			return deepCopyArray(value);
-			break;
 		default:
 			return value;
 	}
@@ -999,5 +1013,7 @@ export const zTool = {
 	isUrl,
 	checkDevices,
 	loadFileList,
+	dataType,
+	firstWordToUpperCase,
 };
 export default zTool;

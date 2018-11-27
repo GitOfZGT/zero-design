@@ -1,6 +1,64 @@
 import React from "react";
-import { Button } from "antd";
-import { dataTypeTest } from "./zTool";
+import { Button, notification, message } from "antd";
+import { dataType } from "./zTool";
+const noticeMethod = {
+	notification,
+	message,
+};
+// 相同的methods ,调用 const_getMethods.call(this)
+export const const_getMethods = function() {
+	return {
+		notice: const_notification(this.props.noticeType),
+		showLoading: (show) => {
+			const_showLoading(this.insertLocation, this.props)(show);
+		},
+		openModal: (content) => {
+			content &&
+				this.props.showRightModal &&
+				this.props.showRightModal(true, const_getModalType(this.insertLocation), content);
+		},
+		closeCurrentModal: () => {
+			if (this.insertLocation !== const_insertLocations.mainRoute)
+				this.props.showRightModal && this.props.showRightModal(false, this.insertLocation);
+		},
+	};
+};
+
+//通知方式：
+const notice_config = {
+	notification: {
+		duration: 3,
+		placement: "topRight",
+		message: "提示信息",
+	},
+	message: {
+		duration: 3,
+		onClose: undefined,
+	},
+};
+const notice_names = ["success", "error", "info", "warning"];
+// const_notification("notification").success("内容")
+export const const_notification = function(noticeType = "message") {
+	const notice = {};
+	notice_names.forEach((name) => {
+		notice[name] = function(content, newConfig = {}) {
+			const agur = {
+				...notice_config[noticeType],
+				...newConfig,
+				description: content,
+			};
+			const type = agur.noticeType ? agur.noticeType : noticeType;
+			if (type == "notification") {
+				noticeMethod[type][name](agur);
+			} else if (type == "message") {
+				noticeMethod[type][name](content, agur.duration, agur.onClose);
+			}
+		};
+	});
+	return notice;
+};
+
+// 获取mainHOC提供的tool , const_getMainTool.call(this);
 export const const_getMainTool = function() {
 	const tool = {};
 	[
@@ -14,7 +72,7 @@ export const const_getMainTool = function() {
 		"getTemporaryStorage",
 		"setTemporaryStorage",
 		"getScrollAreaWrapperEl",
-		"getInsertLocation"
+		"getInsertLocation",
 	].forEach((key) => {
 		tool[key] = this.props[key];
 	});
@@ -31,7 +89,7 @@ export const const_insertLocations = {
 //获取当前HOC的放置位置
 export const const_getInsertLocation = function(el) {
 	if (el) {
-		let _parent =el.parentElement;
+		let _parent = el.parentElement;
 		while (_parent && !_parent.dataset.zgt_modal) {
 			_parent = _parent.parentElement;
 		}
@@ -69,12 +127,12 @@ export const animateTimout = {
 };
 //如在Zform中使用const_initItems.call(this,this.props.items,<Input placeholder="加载中" disabled />);
 export const const_initItems = function(items, disableControl, renderArgument = {}, callback) {
-	callback = typeof callback == "function" ? callback : function() {};
+	callback = dataType.isFunction(callback) ? callback : function() {};
 	this.allAsync = [];
 	this.filedKeys = [];
 	const newItems = items.map((item, index) => {
 		let render = item.render;
-		if (render && typeof render !== "function") {
+		if (render && !dataType.isFunction(render)) {
 			throw Error("render属性必须是函数");
 		}
 		let control = (value) => value;
@@ -82,11 +140,11 @@ export const const_initItems = function(items, disableControl, renderArgument = 
 		let renderValue = null;
 		if (render) {
 			const _return = render(renderArgument);
-			if (Object.prototype.toString.call(_return) === "[object Promise]") {
+			if (dataType.isPromise(_return)) {
 				this.allAsync.push({ promise: _return, index });
 				renderValue = disableControl;
 				loading = true;
-			} else if (typeof _return === "function") {
+			} else if (dataType.isFunction(_return)) {
 				renderValue = _return;
 			}
 		}
@@ -96,7 +154,7 @@ export const const_initItems = function(items, disableControl, renderArgument = 
 			control = render;
 		}
 		let defaultSpan = this.props.defaultSpan;
-		defaultSpan = typeof defaultSpan === "number" ? { md: defaultSpan } : defaultSpan;
+		defaultSpan = dataType.isNumber(defaultSpan) ? { md: defaultSpan } : defaultSpan;
 
 		const newItem = {
 			...item,
@@ -117,13 +175,13 @@ export const const_initItems = function(items, disableControl, renderArgument = 
 
 export const const_itemSpan = function(control, currentSpan, defaultSpan) {
 	let span = defaultSpan;
-	if (currentSpan !== undefined) {
-		span = typeof currentSpan === "number" ? { md: currentSpan } : currentSpan;
+	if (currentSpan !== undefined&&currentSpan !== null) {
+		span = dataType.isNumber(currentSpan) ? { md: currentSpan } : currentSpan;
 	} else if (
-		dataTypeTest(control) == "object" &&
+		dataType.isObject(control) &&
 		control.props &&
 		control.props.prefixCls == "ant-input" &&
-		control.type.TextArea == undefined
+		dataType.isUndefined(control.type.TextArea)
 	) {
 		span = { md: 24 };
 	}
@@ -132,7 +190,7 @@ export const const_itemSpan = function(control, currentSpan, defaultSpan) {
 
 //如在Zform中使用 const_execAsync.call(this,callback);
 export const const_execAsync = function(callback) {
-	callback = typeof callback == "function" ? callback : function() {};
+	callback = dataType.isFunction(callback) ? callback : function() {};
 	if (this.allAsync.length) {
 		this.allAsync.forEach((asy) => {
 			asy.promise.then((control) => {
@@ -225,7 +283,7 @@ const common_protos = {
 	moreBtnMap: null,
 	onMoreBtnClick: (item, record) => {},
 	// 删除按钮后台接口函数，其必须内部返回Promise
-	deleteApiInterface: (data) => Promise.reject({ mag: "未提供后台接口" }),
+	deleteApiInterface: (data) => Promise.resolve({ data: {} }),
 	//用于接收列表内部一些东西的钩子 (obj)=>{}
 	exportSomething: null,
 	panelBeforeRender: null,
@@ -246,7 +304,7 @@ const private_protos = {
 		// 表格列map数据，同antd的表格 columns
 		tableColumns: [],
 		// 获取列表数据的后台接口函数，其必须内部返回Promise
-		listApiInterface: (query, sorter) => Promise.reject({ mag: "未提供后台接口" }),
+		listApiInterface: (query, sorter) => Promise.resolve({ data: [] }),
 		// 分页
 		showPagination: true,
 		// 分页类型 paging | infinite
@@ -259,7 +317,7 @@ const private_protos = {
 	},
 	ZtreePanel: {
 		treeDataKeys: { name: "name", id: "id", children: "children" },
-		treeApiInterface: (query) => Promise.reject({ mag: "未提供后台接口" }),
+		treeApiInterface: (query) => Promise.resolve({ data: [] }),
 		// childApiInterface: (query) => Promise.reject({ mag: "未提供后台接口" }),
 		childApiInterface: false,
 		treeProps: {},

@@ -4,6 +4,7 @@ import { Provider } from "react-redux";
 import store from "./store";
 
 import App from "./App";
+import "./antd-vars.less";
 import "./app.scss";
 function didRoot(App) {
 	render(
