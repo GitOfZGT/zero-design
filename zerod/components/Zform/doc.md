@@ -187,6 +187,12 @@ class Myjavascript extends React.Component {
 			<td>function</td>
 			<td>--</td>
 		</tr>
+		<tr>
+			<td>afterItemsRendered</td>
+			<td>所有表单控件渲染完的回调，包括异步渲染控件</a></td>
+			<td>function</td>
+			<td>--</td>
+		</tr>
 	</tbody>
 </table>
 

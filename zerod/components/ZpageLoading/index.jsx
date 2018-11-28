@@ -6,14 +6,14 @@ import cssClass from "./style.scss";
 export class ZpageLoading extends React.Component {
 	static propTypes = {
 		showLoading: PropTypes.bool,
-		size:PropTypes.string,
+		size: PropTypes.string,
 	};
 	render() {
-		const {size} =this.props;
+		const { size, showLoading, ...others } = this.props;
 		return (
-			<div className={cssClass["z-page-loading-cover"]} style={{display:this.props.showLoading?'block':'none'}}>
+			<div className={cssClass["z-page-loading-cover"]} style={{ display: showLoading ? "block" : "none" }}>
 				<div className={cssClass["z-page-loading"]}>
-					<Spin spinning={this.props.showLoading} size={size?size:"large"}/>
+					<Spin spinning={showLoading} size={size ? size : "large"} {...others} />
 				</div>
 			</div>
 		);

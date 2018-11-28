@@ -8,8 +8,6 @@ yarn-error.log*
 /test/e2e/reports/
 selenium-debug.log
 package-lock.json
-*.manifest.json
-*.dll.js
 # Editor directories and files
 .idea
 .vscode

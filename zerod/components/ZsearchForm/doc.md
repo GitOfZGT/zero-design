@@ -142,6 +142,18 @@ class Myjavascript extends React.Component {
 			<td>object</td>
 			<td>--</td>
 		</tr>
+		  <tr>
+			<td>getFormInstance</td>
+			<td>获取Form实例的钩子，外部通过(form)=>{this.formIstance=form;}获得form实例对象,通过this.formInstance.调用antd<a href="https://ant.design/components/form-cn/" target="_blank">表单相关方法</a></td>
+			<td>function</td>
+			<td>--</td>
+		</tr>
+		  <tr>
+			<td>afterItemsRendered</td>
+			<td>所有表单控件渲染完的回调，包括异步渲染控件</a></td>
+			<td>function</td>
+			<td>--</td>
+		</tr>
 	</tbody>
 </table>
 

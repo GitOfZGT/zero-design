@@ -8,7 +8,7 @@ import ZpageLoading from "../ZpageLoading";
 export const ZsearchForm = Form.create()(
 	class extends React.Component {
 		static propTypes = {
-			colFormItems: PropTypes.arrayOf(PropTypes.object),
+			colFormItems: PropTypes.arrayOf(PropTypes.object),//兼容旧版本，现由items替代
 			items: PropTypes.arrayOf(PropTypes.object),
 			onSearch: PropTypes.func,
 			onReset: PropTypes.func,

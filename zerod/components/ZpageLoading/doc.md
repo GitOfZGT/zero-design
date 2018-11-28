@@ -39,6 +39,8 @@ class Myjavascript extends React.Component {
 
 ## ZpageLoading 的 Props
 
+除了如下属性，还支持 <a href="https://ant.design/components/spin-cn/">Antd 的 Spin组件的属性</a>
+
 <table>
 	<thead>
 		<tr>

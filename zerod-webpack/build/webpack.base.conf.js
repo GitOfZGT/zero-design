@@ -102,7 +102,7 @@ module.exports = {
 			favicon: config.favicon,
 		}),
 		new HtmlIncludeAssetsPlugin({
-			assets: ["static/vendor.dll.js"], // 添加的资源相对html的路径
+			assets: [{ path: "static", glob: "vendor.dll.*.js", globPath: "static/" }], // 添加的资源相对html的路径
 			append: false, // false 在其他资源的之前添加 true 在其他资源之后添加
 		}),
 	],

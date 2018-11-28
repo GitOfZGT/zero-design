@@ -8,7 +8,7 @@
     "init": "rimraf node_modules&npm run npm-zerod&cnpm install&npm run dll",
     "dev": "webpack-dev-server --inline --config build/webpack.dev.conf.js",
     "start": "npm run dev",
-    "build": "npm run dll&node build/build.js",
+    "build": "node build/build.js",
     "install-zerod": "cnpm --registry http://172.16.8.10:8081/repository/npm-all/ install zerod@* --no-save",
     "npm-zerod": "npm --registry http://172.16.8.10:8081/repository/npm-all/ install zerod@* --no-save",
     "cnpm-zerod": "npm run install-zerod",

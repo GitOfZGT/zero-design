@@ -6,7 +6,7 @@
 
 `ZsearchListHOC`内置了一个`ZlistPanel`组件，可以`import {ZlistPanel} from "zerod"`引入，`ZlistPanel`的 props 同 `pageConfig.list`
 
-1、table类型
+1、table 类型
 
 <div class="z-demo-box" data-render="demo1" data-title="此demo结合ZeditSimpleFormHOC、ZdetailSimpleBaseHOC的完整示例"></div>
 
@@ -96,12 +96,12 @@ const pageConfig = {
 			{
 				title: "服务名称",
 				dataIndex: "serviceName",
-				sorter:true, //启用排序字段
+				sorter: true, //启用排序字段
 			},
 			{
 				title: "服务编码",
 				dataIndex: "serviceCode",
-				sorter:true, //启用排序字段
+				sorter: true, //启用排序字段
 			},
 			{
 				title: "约定端口号",
@@ -189,17 +189,17 @@ const pageConfig = {
 export default ZsearchListHOC(pageConfig);
 ```
 
-2、card类型 + 按字段排序 + 无限追加的分页类型
+2、card 类型 + 按字段排序 + 无限追加的分页类型
 
 <div class="z-demo-box" data-render="demo2" data-title="关键代码如下"></div>
 
 ```jsx
 const pageConfig = {
 	list: {
-		listType:"card",
+		listType: "card",
 		// 分页类型
 		paginationType: "infinite",
-		getPageSize: (listType) =>2,
+		getPageSize: (listType) => 2,
 		tableColumns: [
 			{
 				title: "服务名称",
@@ -227,14 +227,14 @@ const pageConfig = {
 };
 ```
 
-2、simple类型
+2、simple 类型
 
 <div class="z-demo-box" data-render="demo3" data-title="关键代码如下"></div>
 
 ```jsx
 const pageConfig = {
 	list: {
-		listType:"simple",
+		listType: "simple",
 		// 分页类型
 		paginationType: "infinite",
 		getPageSize: (listType) => 3,
@@ -299,7 +299,7 @@ const pageConfig = {
 		</tr>
 		<tr>
 			<td>searchForm</td>
-			<td>查询表单，请看下面的pageConfig.searchForm</td>
+			<td>请查看 ZsearchForm 组件的 props  (除了onSearch, onReset, noCollapse 其他都有效)</td>
 			<td>object</td>
 			<td>--</td>
 		</tr>
@@ -307,29 +307,6 @@ const pageConfig = {
 			<td>list</td>
 			<td>列表展示，请看下面的pageConfig.list</td>
 			<td>object</td>
-			<td>--</td>
-		</tr>
-	</tbody>
-</table>
-
-<div class="z-doc-titles"></div>
-
-## pageConfig.searchForm
-
-<table>
-	<thead>
-		<tr>
-			<th>参数</th>
-			<th>说明</th>
-			<th>类型</th>
-			<th>默认值</th>
-		</tr>
-	</thead>
-	<tbody>
-		<tr>
-			<td>items</td>
-			<td>表单的渲染项，如果为null则不显示查询表单，map结构：{key:表单控件value对应的字段名,lable:表单控件名称,render:渲染表单控件的函数(form,panel)=>{return;},options:<a href="https://ant.design/components/form-cn/" target="_blank">Antd的表单中getFieldDecorator函数的options参数</a>}</td>
-			<td>array[object] | null</td>
 			<td>--</td>
 		</tr>
 	</tbody>
@@ -553,6 +530,12 @@ const pageConfig = {
 			<td>boolean | function</td>
 			<td>false</td>
 		</tr>
+		<tr>
+			<td>exportSomething</td>
+			<td>是一个获取tool的钩子，相当于组件的componentDidMount</td>
+			<td>function(tool){ myTool=tool }</td>
+			<td>--</td>
+		</tr>
 	</tbody>
 </table>
 
@@ -650,9 +633,9 @@ tool.methods 是一个对象，内容如下：
 
 <div class="z-doc-titles"></div>
 
-### tool.$router
+### tool.\$router
 
-tool.$router 是一个对象，内容如下：
+tool.\$router 是一个对象，内容如下：
 
 <table>
 	<thead>

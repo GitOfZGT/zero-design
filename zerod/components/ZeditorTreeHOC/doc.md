@@ -165,9 +165,9 @@ export default ZeditorTreeHOC(pageConfig);
 			<td>boolean</td>
 			<td>true</td>
 		</tr>
-		<tr>
+			<tr>
 			<td>searchForm</td>
-			<td>查询表单，请看下面的pageConfig.searchForm</td>
+			<td>请查看 ZsearchForm 组件的 props  (除了onSearch, onReset, noCollapse 其他都有效)</td>
 			<td>object</td>
 			<td>--</td>
 		</tr>
@@ -175,29 +175,6 @@ export default ZeditorTreeHOC(pageConfig);
 			<td>tree</td>
 			<td>列表展示，请看下面的pageConfig.tree</td>
 			<td>object</td>
-			<td>--</td>
-		</tr>
-	</tbody>
-</table>
-
-<div class="z-doc-titles"></div>
-
-## pageConfig.searchForm
-
-<table>
-	<thead>
-		<tr>
-			<th>参数</th>
-			<th>说明</th>
-			<th>类型</th>
-			<th>默认值</th>
-		</tr>
-	</thead>
-	<tbody>
-		<tr>
-			<td>items</td>
-			<td>表单的渲染项，如果为null则不显示查询表单，map结构：{key:表单控件value对应的字段名,lable:表单控件名称,render:渲染表单控件的函数(form,panel)=>{return;},options:<a href="https://ant.design/components/form-cn/" target="_blank">Antd的表单中getFieldDecorator函数的options参数</a>}</td>
-			<td>array[object] | null</td>
 			<td>--</td>
 		</tr>
 	</tbody>
@@ -460,9 +437,9 @@ tool.methods 是一个对象，内容如下：
 
 <div class="z-doc-titles"></div>
 
-### tool.$router
+### tool.\$router
 
-tool.$router 是一个对象，内容如下：
+tool.\$router 是一个对象，内容如下：
 
 <table>
 	<thead>
