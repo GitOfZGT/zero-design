@@ -61,6 +61,7 @@ export function ZdetailSimpleBaseHOC(pageConfig) {
 		panelAfterRender: (detail, tool) => {
 			return null;
 		},
+		exportSomething:null,
 	};
 	defaultConfig = mergeConfig(defaultConfig, pageConfig);
 	class myDetail extends React.Component {
@@ -106,6 +107,7 @@ export function ZdetailSimpleBaseHOC(pageConfig) {
             }
 		};
 		componentDidMount() {
+			typeof this.config.exportSomething=='function'&&this.config.exportSomething(this.tool);
             this.insertLocation=const_getInsertLocation(this.hocWrapperEl);
 			this.methods.getDetailData();
 		}

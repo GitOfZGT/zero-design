@@ -24,6 +24,12 @@ const config = {
 	favicon: path.resolve(__dirname, "../src/assets/images/logo.png"),
 	//scss变量提升
 	scssVars:[path.resolve(__dirname,"../node_modules/zerod/ant-theme-vars.scss")],
+	dll: {
+		//除了package.json的dependencies，还需包含
+		include: ["moment"],
+		//打包dll时从package.json的dependencies中不包含
+		exclude: ["antd", "uuid"],
+	},
 	//开发模式配置
 	dev: {
 		// Paths

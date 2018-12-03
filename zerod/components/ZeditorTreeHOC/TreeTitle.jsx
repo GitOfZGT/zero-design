@@ -10,13 +10,16 @@ class TreeTitle extends React.Component {
 		moreBtnMap: PropTypes.arrayOf(PropTypes.object),
 		onMoreBtnClick: PropTypes.func,
 		onDetailClick: PropTypes.func,
+		onAddChildClick: PropTypes.func,
 		onUpdateClick: PropTypes.func,
 		onDeleteClick: PropTypes.func,
 		showDetailBtn: PropTypes.oneOfType([PropTypes.func, PropTypes.bool]), // 是否显示详情按钮
+		showAddChildBtn: PropTypes.oneOfType([PropTypes.func, PropTypes.bool]), // 是否显示新增子节点按钮
 		showUpdateBtn: PropTypes.oneOfType([PropTypes.func, PropTypes.bool]), // 是否显示修改按钮
 		showDeleteBtn: PropTypes.oneOfType([PropTypes.func, PropTypes.bool]), // 是否显示删除按钮
 
 		detailBtnDisabled: PropTypes.oneOfType([PropTypes.func, PropTypes.bool]), // 是否禁用详情按钮
+		addChildBtnDisabled: PropTypes.oneOfType([PropTypes.func, PropTypes.bool]), // 是否禁用新增子节点按钮
 		updateBtnDisabled: PropTypes.oneOfType([PropTypes.func, PropTypes.bool]), // 是否禁用修改按钮
 		deleteBtnDisabled: PropTypes.oneOfType([PropTypes.func, PropTypes.bool]), // 是否禁用删除按钮
 	};
@@ -41,8 +44,13 @@ class TreeTitle extends React.Component {
 				this.props.onMoreBtnClick && this.props.onMoreBtnClick(item, record);
 			};
 		},
+
 		detailBtnClick: (e) => {
 			this.props.onDetailClick && this.props.onDetailClick(this.props.record);
+			e.stopPropagation();
+		},
+		addChildBtnClick: (e) => {
+			this.props.onAddChildClick && this.props.onAddChildClick(this.props.record);
 			e.stopPropagation();
 		},
 		updateBtnClick: (e) => {
@@ -62,14 +70,17 @@ class TreeTitle extends React.Component {
 		) : null;
 	};
 	render() {
-		const { showDetailBtn, showUpdateBtn, showDeleteBtn,detailBtnDisabled,updateBtnDisabled,deleteBtnDisabled, record, index } = this.props;
+		const { showDetailBtn, showUpdateBtn,showAddChildBtn, showDeleteBtn,detailBtnDisabled,updateBtnDisabled,addChildBtnDisabled,deleteBtnDisabled, record, index } = this.props;
 		const _showDetailBtn = typeof showDetailBtn == "function" ? showDetailBtn(record, index) : showDetailBtn;
 		const _showUpdateBtn = typeof showUpdateBtn == "function" ? showUpdateBtn(record, index) : showUpdateBtn;
+		const _showAddChildBtn = typeof showUpdateBtn == "function" ? showAddChildBtn(record, index) : showAddChildBtn;
 		const _showDeleteBtn = typeof showDeleteBtn == "function" ? showDeleteBtn(record, index) : showDeleteBtn;
 		const _detailBtnDisabled =
 			typeof detailBtnDisabled == "function" ? detailBtnDisabled(record, index) : detailBtnDisabled;
 		const _updateBtnDisabled =
 			typeof updateBtnDisabled == "function" ? updateBtnDisabled(record, index) : updateBtnDisabled;
+		const _addChildBtnDisabled =
+			typeof addChildBtnDisabled == "function" ? addChildBtnDisabled(record, index) : addChildBtnDisabled;
 		const _deleteBtnDisabled =
 			typeof deleteBtnDisabled == "function" ? deleteBtnDisabled(record, index) : deleteBtnDisabled;
 		return (
@@ -78,6 +89,7 @@ class TreeTitle extends React.Component {
 				<span className={cssClass["z-tree-line"]} />
 				<span className={cssClass["z-tree-btns"]}>
 					{this.getBtn("default", "详情", this.methods.detailBtnClick, _showDetailBtn,_detailBtnDisabled)}
+					{this.getBtn("primary", "新增子节点", this.methods.addChildBtnClick, _showAddChildBtn,_addChildBtnDisabled)}
 					{this.getBtn("primary", "修改", this.methods.updateBtnClick, _showUpdateBtn,_updateBtnDisabled)}
 					{this.getBtn("danger", "删除", this.methods.deleteBtnClick, _showDeleteBtn,_deleteBtnDisabled)}
 					{this.hasMoreMenu ? (

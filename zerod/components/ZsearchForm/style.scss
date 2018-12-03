@@ -7,7 +7,10 @@ $--row-gutter: 12px;
 		.ant-form-item-children,.ant-input-number{
 			width: 100%;
 			display: block;
-        }
+		}
+		.ant-calendar-picker{
+			width:100% !important;
+		}
 	}
 	margin-left: -$--row-gutter;
 	margin-right: -$--row-gutter;

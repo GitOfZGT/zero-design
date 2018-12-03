@@ -120,6 +120,12 @@ let defaultConfig = {
 			<td>function(detail,tool){return ReacNode|Element;}</td>
 			<td>--</td>
 		</tr>
+			<tr>
+			<td>exportSomething</td>
+			<td>是一个获取tool的钩子，相当于组件的componentDidMount</td>
+			<td>function(tool){ myTool=tool }</td>
+			<td>--</td>
+		</tr>
 	</tbody>
 </table>
 
@@ -157,7 +163,7 @@ let defaultConfig = {
 		</tr>
 		<tr>
 			<td>detailApiInterface</td>
-			<td>获取详细数据的后台接口函数,必须返回Promise,参数有 detailId : ZeditSimpleFormHOC(pageConfig)得到组件的detailId属性，props ：ZeditSimpleFormHOC(pageConfig)得到组件的其他属性。接口响应体的data属性必须 object类型</td>
+			<td>获取详细数据的后台接口函数,必须返回Promise,参数有 detailId : ZeditSimpleFormHOC(pageConfig)得到组件的detailId属性，props ：ZeditSimpleFormHOC(pageConfig)得到组件的其他属性。then((re)=>{})的回调中re结构须：{ data:{} }</td>
 			<td>(detailId, props,tool) =>{return Promise;}</td>
 			<td>--</td>
 		</tr>

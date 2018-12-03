@@ -224,8 +224,8 @@ class Myjavascript extends React.Component {
 		</tr>
 		<tr>
 			<td>render</td>
-			<td>渲染表单控件的钩子。支持异步加载：必须return的是Promise对象。例如使用了后台接口：(form)=>api.getOptions.then(re=>{return 表单控件})</td>
-			<td>(form)=>{return ReactNode | Element | Promise}</td>
+			<td>渲染表单控件的钩子。支持异步加载：必须return的是Promise对象。例如使用了后台接口：(form,changeFormItems)=>api.getOptions.then(re=>{return 表单控件})</td>
+			<td>(form,changeFormItems)=>{return ReactNode | Element | Promise}</td>
 			<td>--</td>
 		</tr>
 		<tr>

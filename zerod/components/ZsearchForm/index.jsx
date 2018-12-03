@@ -3,12 +3,12 @@ import { Form, Row, Col, Input, Button, Icon } from "antd";
 import PropTypes from "prop-types";
 import cssClass from "./style.scss";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
-import { animateTimout, const_initItems, const_execAsync ,const_itemSpan} from "../constant";
+import { animateTimout, const_initItems, const_execAsync, const_itemSpan } from "../constant";
 import ZpageLoading from "../ZpageLoading";
 export const ZsearchForm = Form.create()(
 	class extends React.Component {
 		static propTypes = {
-			colFormItems: PropTypes.arrayOf(PropTypes.object),//兼容旧版本，现由items替代
+			colFormItems: PropTypes.arrayOf(PropTypes.object), //兼容旧版本，现由items替代
 			items: PropTypes.arrayOf(PropTypes.object),
 			onSearch: PropTypes.func,
 			onReset: PropTypes.func,
@@ -17,7 +17,7 @@ export const ZsearchForm = Form.create()(
 			defaultSpan: PropTypes.oneOfType([PropTypes.number, PropTypes.object]),
 			formDefaultValues: PropTypes.object,
 			collapseCount: PropTypes.number,
-			afterItemsRendered:PropTypes.func,// 表单控件渲染完的回调
+			afterItemsRendered: PropTypes.func, // 表单控件渲染完的回调
 		};
 		static defaultProps = {
 			defaultSpan: { xxl: 6, xl: 8, lg: 12, md: 24 },
@@ -45,6 +45,9 @@ export const ZsearchForm = Form.create()(
 			expandToggle: () => {
 				this.setState({ expand: !this.state.expand });
 			},
+			changeFormItems: (newItems) => {
+				this.execAsync(newItems);
+			},
 		};
 		config = {
 			collapseCount: this.props.collapseCount,
@@ -59,16 +62,22 @@ export const ZsearchForm = Form.create()(
 				this.props.form.setFieldsValue(newValues);
 			}
 		}
-		execAsync() {
+		execAsync(newItems) {
 			const items = this.props.items ? this.props.items : this.props.colFormItems;
-			const_initItems.call(this, items, <Input placeholder="加载中" disabled />, this.props.form);
-			const_execAsync.call(this,this.props.afterItemsRendered);
+			const_initItems.call(
+				this,
+				Array.isArray(newItems) ? newItems : items,
+				<Input placeholder="加载中" disabled />,
+				this.props.form,
+				this.methods.changeFormItems,
+			);
+			const_execAsync.call(this, this.props.afterItemsRendered);
 		}
 		componentDidMount() {
-            this.execAsync();
-            this.props.getFormInstance&&this.props.getFormInstance(this.props.form);
+			this.execAsync();
+			this.props.getFormInstance && this.props.getFormInstance(this.props.form);
 		}
-		componentDidUpdate(prevProps,prevState) {
+		componentDidUpdate(prevProps, prevState) {
 			if (
 				(this.props.formDefaultValues !== prevProps.formDefaultValues ||
 					this.state.items !== prevState.items) &&
@@ -87,8 +96,8 @@ export const ZsearchForm = Form.create()(
 			const { getFieldDecorator } = this.props.form;
 			const items = this.state.expand ? this.state.items : this.state.items.slice(0, this.config.collapseCount);
 			return items.map((item, i) => {
-                const control = typeof item.control==="function"?item.control(this.props.form):item.control;
-				const span = const_itemSpan(control,item.span,item.defaultSpan) ;
+				const control = typeof item.control === "function" ? item.control(this.props.form,this.methods.changeFormItems) : item.control;
+				const span = const_itemSpan(control, item.span, item.defaultSpan);
 				const isFormItem = typeof item.isFormItem === "boolean" ? item.isFormItem : true;
 				return (
 					<CSSTransition key={i} timeout={animateTimout.flipInTime} classNames="fadeIn-to-down">

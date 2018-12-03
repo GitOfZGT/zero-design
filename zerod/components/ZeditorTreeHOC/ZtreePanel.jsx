@@ -22,6 +22,7 @@ class ZtreePanel extends React.Component {
 		treeDataKeys: PropTypes.object,
 		panelBeforeRender: PropTypes.func,
 		panelAfterRender: PropTypes.func,
+		exportSomething: PropTypes.func,
 		panelHeader: PropTypes.oneOfType([
 			PropTypes.string,
 			PropTypes.number,
@@ -39,13 +40,19 @@ class ZtreePanel extends React.Component {
 		updateBtnPermCod: PropTypes.string, // 修改按钮权限控制代码
 		deleteBtnPermCod: PropTypes.string, // 删除按钮权限控制代码
 		showDetailBtn: PropTypes.oneOfType([PropTypes.func, PropTypes.bool]), // 是否显示详情按钮
+		showAddChildBtn: PropTypes.oneOfType([PropTypes.func, PropTypes.bool]), // 是否显示新增子节点按钮
 		showUpdateBtn: PropTypes.oneOfType([PropTypes.func, PropTypes.bool]), // 是否显示修改按钮
 		showDeleteBtn: PropTypes.oneOfType([PropTypes.func, PropTypes.bool]), // 是否显示删除按钮
 		showAddBtn: PropTypes.oneOfType([PropTypes.func, PropTypes.bool]), // 是否显示新建按钮
+		detailBtnDisabled: PropTypes.oneOfType([PropTypes.func, PropTypes.bool]), // 是否禁用详情按钮
+		addChildBtnDisabled: PropTypes.oneOfType([PropTypes.func, PropTypes.bool]), // 是否禁用新增子节点按钮
+		updateBtnDisabled: PropTypes.oneOfType([PropTypes.func, PropTypes.bool]), // 是否禁用修改按钮
+		deleteBtnDisabled: PropTypes.oneOfType([PropTypes.func, PropTypes.bool]), // 是否禁用删除按钮
 		treeApiInterface: PropTypes.func, // 获取tree的后台接口函数，其必须内部返回Promise
 		childApiInterface: PropTypes.oneOfType([PropTypes.func, PropTypes.bool]), // 异步加载子节点的后台接口函数，其必须内部返回Promise
 		deleteApiInterface: PropTypes.func, // 删除按钮的后台接口函数，其必须内部返回Promise
 		addPageRender: PropTypes.func, // 新建页面渲染模板
+		addChildPageRender: PropTypes.func, // 新增子节点页面渲染模板
 		updatePageRender: PropTypes.func, // 修改页面渲染模板
 		detailPageRender: PropTypes.func, // 详情页面渲染模板
 		treeProps: PropTypes.object,
@@ -161,6 +168,10 @@ class ZtreePanel extends React.Component {
 			const content = this.props.addPageRender(this.getExportSomething());
 			this.methods.openModal(content);
 		},
+		onAddChild: (record) => {
+			const content = this.props.addChildPageRender(record, this.getExportSomething());
+			this.methods.openModal(content);
+		},
 		onUpdate: (record) => {
 			const content = this.props.updatePageRender(record, this.getExportSomething());
 			this.methods.openModal(content);
@@ -212,12 +223,15 @@ class ZtreePanel extends React.Component {
 							moreBtnMap={this.props.moreBtnMap}
 							onMoreBtnClick={this.props.onMoreBtnClick}
 							onDetailClick={this.methods.onDetail}
+							onAddChildClick={this.methods.onAddChild}
 							onUpdateClick={this.methods.onUpdate}
 							onDeleteClick={this.methods.onDelete}
 							showDetailBtn={this.props.showDetailBtn}
+							showAddChildBtn={this.props.showAddChildBtn}
 							showUpdateBtn={this.props.showUpdateBtn}
 							showDeleteBtn={this.props.showDeleteBtn}
 							detailBtnDisabled={this.props.detailBtnDisabled}
+							addChildBtnDisabled={this.props.addChildBtnDisabled}
 							updateBtnDisabled={this.props.updateBtnDisabled}
 							deleteBtnDisabled={this.props.deleteBtnDisabled}
 						/>
@@ -231,6 +245,7 @@ class ZtreePanel extends React.Component {
 		});
 	}
 	componentDidMount() {
+		typeof this.props.exportSomething=='function'&&this.props.exportSomething(this.getExportSomething());
 		this.insertLocation=const_getInsertLocation(this.hocWrapperEl);
 		this.methods.onSearch();
 	}

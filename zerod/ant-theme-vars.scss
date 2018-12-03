@@ -3,7 +3,7 @@
 //--颜色
 $--default-color: rgba(57,61,73, 1);
 
-$--blue-color:#0064CD;
+$--blue-color:#1A71C6;
 $--blue-tint:#009DE8;
 $--blue-deep:#2F6BAA;
 
@@ -36,7 +36,7 @@ $--main-nav-mazarine-bg: #242c47;
 //--------------------------------antd 的变量-------------------------
 
 //--基础
-$blue-6:$--blue-color;
+$blue-6:$--blue-deep;
 $heading-color:#000000;
 $text-color:#333333;
 $border-color-base:hsl(0,0,85%);

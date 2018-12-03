@@ -5,25 +5,26 @@ import { Icon } from "antd";
 import cssClass from "./style.scss";
 import Zlayout from "../Zlayout";
 import ZpageLoading from "../ZpageLoading";
+import { once } from "../zTool";
 
 export class ZrightModal extends React.Component {
 	static propTypes = {
 		show: PropTypes.bool,
 		onClose: PropTypes.func,
-		getWrapperEl: PropTypes.func,//
+		getWrapperEl: PropTypes.func, //
 		showLoading: PropTypes.bool,
 		scroll: PropTypes.bool,
 		getScrollInstance: PropTypes.func,
-        onTransitionend: PropTypes.func,
-        zIndex:PropTypes.number,
-        width:PropTypes.string,
-        name:PropTypes.string,
+		onTransitionend: PropTypes.func,
+		zIndex: PropTypes.number,
+		width: PropTypes.string,
+		name: PropTypes.string,
 	};
 	static defaultProps = {
 		scroll: true,
-        show: false,
-        zIndex:999,
-        width:"90%",
+		show: false,
+		zIndex: 999,
+		width: "90%",
 	};
 	state = {
 		showCover: false,
@@ -42,25 +43,17 @@ export class ZrightModal extends React.Component {
 		this.props.onTransitionend && this.props.onTransitionend(this.props.show);
 	};
 	componentDidUpdate(prevProps) {
-		if (this.props.show !== prevProps.show && this.props.show) {
-			this.setState({ showCover: true });
+		if (this.props.show !== prevProps.show) {
+			if (this.props.show) this.setState({ showCover: true });
+			once(this.boxEl, "transitionend", this.showAfter);
 		}
 	}
-	componentDidMount() {
-		// document.addEventListener("click", this.closeModal, false);
-		this.boxEl.addEventListener("transitionend", this.showAfter, false);
-	}
-	componentWillUnmount() {
-		// document.removeEventListener("click", this.closeModal, false);
-		this.boxEl.removeEventListener("transitionend", this.showAfter, false);
-	}
-
 	render() {
 		return (
 			<Zlayout.Template>
 				<div
 					className={cssClass["z-pop-cover"]}
-					style={{ display: this.state.showCover ? "block" : "none",zIndex:this.props.zIndex-1 }}
+					style={{ display: this.state.showCover ? "block" : "none", zIndex: this.props.zIndex - 1 }}
 					onClick={this.closeModal}
 				/>
 				<div
@@ -68,12 +61,16 @@ export class ZrightModal extends React.Component {
 					onClick={(e) => {
 						e.nativeEvent.stopImmediatePropagation();
 					}}
-                    className={`${cssClass["z-pop-content"]} app-body ${this.props.show ? "" : this.hideClass}`}
-                    style={{width:this.props.width,zIndex:this.props.zIndex}}
-                    data-zgt_modal={this.props.name}
+					className={`${cssClass["z-pop-content"]} app-body ${this.props.show ? "" : this.hideClass}`}
+					style={{ width: this.props.width, zIndex: this.props.zIndex }}
+					data-zgt_modal={this.props.name}
 				>
 					<Zlayout>
-						<Zlayout.Zbody getWrapperEl={this.props.getWrapperEl} scroll={this.props.scroll} getScrollInstance={this.props.getScrollInstance}>
+						<Zlayout.Zbody
+							getWrapperEl={this.props.getWrapperEl}
+							scroll={this.props.scroll}
+							getScrollInstance={this.props.getScrollInstance}
+						>
 							{this.props.children}
 						</Zlayout.Zbody>
 					</Zlayout>

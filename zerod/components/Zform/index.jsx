@@ -3,7 +3,7 @@ import { Form, Modal, Input, Button, Row, Col } from "antd";
 import PropTypes from "prop-types";
 import cssClass from "./style.scss";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
-import { animateTimout, const_initItems, const_execAsync ,const_itemSpan} from "../constant";
+import { animateTimout, const_initItems, const_execAsync, const_itemSpan } from "../constant";
 import ZpageLoading from "../ZpageLoading";
 export const Zform = Form.create()(
 	class extends React.Component {
@@ -17,7 +17,7 @@ export const Zform = Form.create()(
 			submitMsg: PropTypes.any,
 			defaultSpan: PropTypes.oneOfType([PropTypes.number, PropTypes.object]),
 			submitBtnRender: PropTypes.func,
-			afterItemsRendered:PropTypes.func,// 表单控件渲染完的回调
+			afterItemsRendered: PropTypes.func, // 表单控件渲染完的回调
 		};
 		static defaultProps = {
 			items: [{ lable: "字段名", key: "name", options: {}, render: (form, panel) => <Input /> }],
@@ -47,6 +47,9 @@ export const Zform = Form.create()(
 					}
 				});
 			},
+			changeFormItems: (newItems) => {
+				this.execAsync(newItems);
+			},
 		};
 		setFormValues() {
 			if (this.props.formDefaultValues && this.state.items.length) {
@@ -58,9 +61,15 @@ export const Zform = Form.create()(
 				this.props.form.setFieldsValue(newValues);
 			}
 		}
-		execAsync() {
-			const_initItems.call(this, this.props.items, <Input placeholder="加载中" disabled />, this.props.form);
-			const_execAsync.call(this,this.props.afterItemsRendered);
+		execAsync(newItems) {
+			const_initItems.call(
+				this,
+				Array.isArray(newItems) ? newItems : this.props.items,
+				<Input placeholder="加载中" disabled />,
+				this.props.form,
+				this.methods.changeFormItems,
+			);
+			const_execAsync.call(this, this.props.afterItemsRendered);
 		}
 		componentDidMount() {
 			this.execAsync();
@@ -69,6 +78,7 @@ export const Zform = Form.create()(
 				this.props.getInbuiltTool({
 					form: this.props.form,
 					submit: this.methods.onSubmit,
+					...this.methods,
 				});
 		}
 		componentDidUpdate(prevProps, prevState) {
@@ -86,8 +96,8 @@ export const Zform = Form.create()(
 		getFormItems() {
 			const { getFieldDecorator } = this.props.form;
 			return this.state.items.map((item, i) => {
-				const control = typeof item.control==="function"?item.control(this.props.form):item.control;
-				const span = const_itemSpan(control,item.span,item.defaultSpan) ;
+				const control = typeof item.control === "function" ? item.control(this.props.form,this.methods.changeFormItems) : item.control;
+				const span = const_itemSpan(control, item.span, item.defaultSpan);
 				const isFormItem = typeof item.isFormItem === "boolean" ? item.isFormItem : true;
 				return (
 					<CSSTransition key={i} timeout={animateTimout.flipInTime} classNames="fadeIn-to-down">

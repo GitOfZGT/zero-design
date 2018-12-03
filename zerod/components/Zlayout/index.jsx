@@ -6,7 +6,7 @@ import Zbody from "./Zbody";
 import Zfooter from "./Zfooter";
 import ZheaderBtn from "./ZheaderBtn";
 import { getStyle } from "../zTool";
-import { listenDivSizeChange } from "../zTool";
+import { listenDivSizeChange, once } from "../zTool";
 export class Zlayout extends React.Component {
 	static propTypes = {
 		flexRow: PropTypes.bool,
@@ -55,15 +55,12 @@ export class Zlayout extends React.Component {
 			listenDivSizeChange(this.layoutEl, this.setHeight);
 		}
 		this.setHeight();
-		// window.addEventListener("resize", this.setHeight, false);
-		if (this.props.onTransitionend) this.layoutEl.addEventListener("transitionend", this.onTransitionend, false);
 	}
-
-	componentWillUnmount() {
-		// window.removeEventListener("resize", this.setHeight, false);
-		if (this.props.onTransitionend) this.layoutEl.removeEventListener("transitionend", this.onTransitionend, false);
+	componentDidUpdate(prevProps) {
+		if (this.props.width !== prevProps.width || this.props.height !== prevProps.height) {
+			once(this.layoutEl, "transitionend", this.onTransitionend);
+		}
 	}
-
 	render() {
 		let classNames = `${this.layoutClassName} ${this.props.flexRow ? cssClass["is-flex"] : ""} ${
 			this.props.className ? this.props.className : ""

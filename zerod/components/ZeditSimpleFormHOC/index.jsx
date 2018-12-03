@@ -80,6 +80,7 @@ export function ZeditSimpleFormHOC(pageConfig) {
 		panelAfterRender: (detail, tool) => {
 			return null;
 		},
+		exportSomething:null,
 	};
 	defaultConfig = mergeConfig(defaultConfig, pageConfig);
 	class myForm extends React.Component {
@@ -171,6 +172,7 @@ export function ZeditSimpleFormHOC(pageConfig) {
 			}
 		};
 		componentDidMount() {
+			typeof this.config.exportSomething=='function'&&this.config.exportSomething(this.tool);
 			this.insertLocation = const_getInsertLocation(this.hocWrapperEl);
 		}
 		render() {

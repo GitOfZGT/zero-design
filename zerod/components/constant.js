@@ -126,8 +126,8 @@ export const animateTimout = {
 	flipOutTime: 300,
 };
 //如在Zform中使用const_initItems.call(this,this.props.items,<Input placeholder="加载中" disabled />);
-export const const_initItems = function(items, disableControl, renderArgument = {}, callback) {
-	callback = dataType.isFunction(callback) ? callback : function() {};
+export const const_initItems = function(items, disableControl, renderArgument = {}, changeItems = function() {}) {
+	// callback = dataType.isFunction(callback) ? callback : function() {};
 	this.allAsync = [];
 	this.filedKeys = [];
 	const newItems = items.map((item, index) => {
@@ -139,7 +139,7 @@ export const const_initItems = function(items, disableControl, renderArgument = 
 		let loading = false;
 		let renderValue = null;
 		if (render) {
-			const _return = render(renderArgument);
+			const _return = render(renderArgument, changeItems);
 			if (dataType.isPromise(_return)) {
 				this.allAsync.push({ promise: _return, index });
 				renderValue = disableControl;
@@ -165,17 +165,14 @@ export const const_initItems = function(items, disableControl, renderArgument = 
 		this.filedKeys.push(item.key);
 		return newItem;
 	});
-	this.setState(
-		{
-			items: newItems,
-		},
-		callback,
-	);
+	this.setState({
+		items: newItems,
+	});
 };
 
 export const const_itemSpan = function(control, currentSpan, defaultSpan) {
 	let span = defaultSpan;
-	if (currentSpan !== undefined&&currentSpan !== null) {
+	if (currentSpan !== undefined && currentSpan !== null) {
 		span = dataType.isNumber(currentSpan) ? { md: currentSpan } : currentSpan;
 	} else if (
 		dataType.isObject(control) &&
@@ -321,6 +318,12 @@ const private_protos = {
 		// childApiInterface: (query) => Promise.reject({ mag: "未提供后台接口" }),
 		childApiInterface: false,
 		treeProps: {},
+		//是否显示新增子节点按钮
+		showAddChildBtn: true,
+		// 是否禁用新增子节点按钮
+		addChildBtnDisabled: false,
+		// 新增子节点页面渲染模板
+		addChildPageRender: null,
 	},
 };
 

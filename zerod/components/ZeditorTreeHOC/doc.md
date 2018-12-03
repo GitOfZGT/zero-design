@@ -40,8 +40,6 @@ const config = {
 		panelHeader: "树",
 		// 是否显示新建按钮
 		showAddBtn: true,
-		// 新建按钮权限控制代码
-		addBtnPermCode: "",
 		addPageRender: (panel) => {
 			return (
 				<div className="z-panel z-text-center z-margin-bottom-20">
@@ -51,8 +49,6 @@ const config = {
 		},
 		// 是否显示详情按钮
 		showDetailBtn: true,
-		// 详情按钮权限控制代码
-		detailBtnPermCode: "",
 		detailPageRender: (record) => {
 			return (
 				<div className="z-panel z-text-center z-margin-bottom-20">
@@ -208,7 +204,7 @@ export default ZeditorTreeHOC(pageConfig);
 		</tr>
 		<tr>
 			<td>treeApiInterface</td>
-			<td>获取树列表数据的后台接口函数,其必须返回Promise,参数有query:查询表单相关值</td>
+			<td>获取树列表数据的后台接口函数,其必须返回Promise,参数有query:查询表单相关值。</td>
 			<td>(query,tool) => Promise对象</td>
 			<td>--</td>
 		</tr>
@@ -227,14 +223,8 @@ export default ZeditorTreeHOC(pageConfig);
 		<tr>
 			<td>showAddBtn</td>
 			<td>是否显示新增按钮</td>
-			<td>boolean | function</td>
+			<td>boolean | function(record,index){return false}</td>
 			<td>true</td>
-		</tr>
-		<tr>
-			<td>addBtnPermCode</td>
-			<td>新增按钮权限控制代码</td>
-			<td>string</td>
-			<td>--</td>
 		</tr>
 		<tr>
 			<td>addPageRender</td>
@@ -243,16 +233,22 @@ export default ZeditorTreeHOC(pageConfig);
 			<td>--</td>
 		</tr>
 		<tr>
-			<td>showDetailBtn</td>
-			<td>是否显示详情按钮</td>
-			<td>boolean | function</td>
+			<td>showAddChildBtn</td>
+			<td>是否显示新增子节点按钮</td>
+			<td>boolean | function(record,index){return false}</td>
 			<td>true</td>
 		</tr>
 		<tr>
-			<td>detailBtnPermCode</td>
-			<td>详情按钮权限控制代码</td>
-			<td>string</td>
+			<td>addChildPageRender</td>
+			<td>新增子节点按钮打开的页面渲染函数,如果函数return false,此函数相当于按钮点击事件的回调；tool参数是列表组件的内部提供的一些工具方法</td>
+			<td>function(tool){return ReacNode|Element}</td>
 			<td>--</td>
+		</tr>
+		<tr>
+			<td>showDetailBtn</td>
+			<td>是否显示详情按钮</td>
+			<td>boolean | function(record,index){return false}</td>
+			<td>true</td>
 		</tr>
 		<tr>
 			<td>detailPageRender</td>
@@ -263,14 +259,8 @@ export default ZeditorTreeHOC(pageConfig);
 		<tr>
 			<td>showUpdateBtn</td>
 			<td>是否显示修改按钮</td>
-			<td>boolean | function</td>
+			<td>boolean | function(record,index){return false}</td>
 			<td>true</td>
-		</tr>
-		<tr>
-			<td>updateBtnPermCode</td>
-			<td>修改按钮权限控制代码</td>
-			<td>string</td>
-			<td>--</td>
 		</tr>
 		<tr>
 			<td>updatePageRender</td>
@@ -281,14 +271,8 @@ export default ZeditorTreeHOC(pageConfig);
 		<tr>
 			<td>showDeleteBtn</td>
 			<td>是否显示删除按钮</td>
-			<td>boolean | function</td>
+			<td>boolean | function(record,index){return false}</td>
 			<td>true</td>
-		</tr>
-		<tr>
-			<td>deleteBtnPermCode</td>
-			<td>删除按钮权限控制代码</td>
-			<td>string</td>
-			<td>--</td>
 		</tr>
 		<tr>
 			<td>moreBtnMap</td>
@@ -323,26 +307,38 @@ export default ZeditorTreeHOC(pageConfig);
 		<tr>
 			<td>addBtnDisabled</td>
 			<td>是否禁用新建按钮</td>
-			<td>boolean | function</td>
+			<td>boolean | function(record,index){return false}</td>
+			<td>false</td>
+		</tr>
+		<tr>
+			<td>addChildBtnDisabled</td>
+			<td>是否禁用新建按钮</td>
+			<td>boolean | function(record,index){return false}</td>
 			<td>false</td>
 		</tr>
 		<tr>
 			<td>detailBtnDisabled</td>
 			<td>是否禁用详情按钮</td>
-			<td>boolean | function</td>
+			<td>boolean | function(record,index){return false}</td>
 			<td>false</td>
 		</tr>
 		<tr>
 			<td>updateBtnDisabled</td>
 			<td>是否禁用修改按钮</td>
-			<td>boolean | function</td>
+			<td>boolean | function(record,index){return false}</td>
 			<td>false</td>
 		</tr>
 		<tr>
 			<td>deleteBtnDisabled</td>
 			<td>是否禁用删除按钮</td>
-			<td>boolean | function</td>
+			<td>boolean | function(record,index){return false}</td>
 			<td>false</td>
+		</tr>
+		<tr>
+			<td>exportSomething</td>
+			<td>是一个获取tool的钩子，相当于组件的componentDidMount</td>
+			<td>function(tool){ myTool=tool }</td>
+			<td>--</td>
 		</tr>
 	</tbody>
 </table>
@@ -411,6 +407,12 @@ tool.methods 是一个对象，内容如下：
 			<td>onAdd</td>
 			<td>新增按钮的点击事件，会触发pageConfig.tree.addPageRender函数</td>
 			<td>tool.methods.onAdd()</td>
+		</tr>
+		</tr>
+			<tr>
+			<td>onAddChild</td>
+			<td>新增子节点按钮的点击事件，会触发pageConfig.tree.addChildPageRender函数</td>
+			<td>tool.methods.onAddChild()</td>
 		</tr>
 		<tr>
 			<td>onUpdate</td>

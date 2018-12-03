@@ -496,9 +496,9 @@ class ZlistPanel extends React.Component {
 	}
 
 	componentDidMount() {
+		this.props.exportSomething && this.props.exportSomething(this.getExportSomething());
 		this.insertLocation=const_getInsertLocation(this.hocWrapperEl);
 		this.methods.onSearch();
-		this.props.exportSomething && this.props.exportSomething(this.getExportSomething());
 	}
 	render() {
 		this.showPagination =

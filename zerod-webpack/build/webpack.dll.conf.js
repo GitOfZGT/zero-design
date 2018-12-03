@@ -10,9 +10,9 @@ const webpackConfig = {
 	entry: {
 		vendor: Object.keys(package.dependencies)
 			.filter((key) => {
-				return !["antd", "uuid"].includes(key);
+				return !config.dll.exclude.includes(key);
 			})
-			.concat(["moment"]),
+			.concat(config.dll.include),
 	},
 	output: {
 		path: path.join(__dirname, "../static"),

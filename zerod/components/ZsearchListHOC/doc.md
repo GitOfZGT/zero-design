@@ -117,8 +117,6 @@ const pageConfig = {
 		],
 		// 是否显示新建按钮
 		showAddBtn: true,
-		// 新建按钮权限控制代码
-		addBtnPermCode: "",
 		addPageRender: (panel) => {
 			const AddPage = getEditPage({
 				pageType: "add",
@@ -136,8 +134,6 @@ const pageConfig = {
 		},
 		// 是否显示详情按钮
 		showDetailBtn: true,
-		// 详情按钮权限控制代码
-		detailBtnPermCode: "",
 		detailPageRender: (record) => {
 			const DetailPage = getDetailPage({ headerTitle: record.serviceName, headerContent: record.remark });
 			return <DetailPage detailId={record.id} />;
@@ -413,14 +409,8 @@ const pageConfig = {
 		<tr>
 			<td>showAddBtn</td>
 			<td>是否显示新增按钮</td>
-			<td>boolean | function</td>
+			<td>boolean | function(record,index){return false}</td>
 			<td>true</td>
-		</tr>
-		<tr>
-			<td>addBtnPermCode</td>
-			<td>新增按钮权限控制代码</td>
-			<td>string</td>
-			<td>--</td>
 		</tr>
 		<tr>
 			<td>addPageRender</td>
@@ -431,14 +421,8 @@ const pageConfig = {
 		<tr>
 			<td>showDetailBtn</td>
 			<td>是否显示详情按钮</td>
-			<td>boolean | function</td>
+			<td>boolean | function(record,index){return false}</td>
 			<td>true</td>
-		</tr>
-		<tr>
-			<td>detailBtnPermCode</td>
-			<td>详情按钮权限控制代码</td>
-			<td>string</td>
-			<td>--</td>
 		</tr>
 		<tr>
 			<td>detailPageRender</td>
@@ -449,14 +433,8 @@ const pageConfig = {
 		<tr>
 			<td>showUpdateBtn</td>
 			<td>是否显示修改按钮</td>
-			<td>boolean | function</td>
+			<td>boolean | function(record,index){return false}</td>
 			<td>true</td>
-		</tr>
-		<tr>
-			<td>updateBtnPermCode</td>
-			<td>修改按钮权限控制代码</td>
-			<td>string</td>
-			<td>--</td>
 		</tr>
 		<tr>
 			<td>updatePageRender</td>
@@ -467,14 +445,8 @@ const pageConfig = {
 		<tr>
 			<td>showDeleteBtn</td>
 			<td>是否显示删除按钮</td>
-			<td>boolean | function</td>
+			<td>boolean | function(record,index){return false}</td>
 			<td>true</td>
-		</tr>
-		<tr>
-			<td>deleteBtnPermCode</td>
-			<td>删除按钮权限控制代码</td>
-			<td>string</td>
-			<td>--</td>
 		</tr>
 		<tr>
 			<td>moreBtnMap</td>
@@ -509,25 +481,25 @@ const pageConfig = {
 			<tr>
 			<td>addBtnDisabled</td>
 			<td>是否禁用新建按钮</td>
-			<td>boolean | function</td>
+			<td>boolean | function(record,index){return false}</td>
 			<td>false</td>
 		</tr>
 		<tr>
 			<td>detailBtnDisabled</td>
 			<td>是否禁用详情按钮</td>
-			<td>boolean | function</td>
+			<td>boolean | function(record,index){return false}</td>
 			<td>false</td>
 		</tr>
 		<tr>
 			<td>updateBtnDisabled</td>
 			<td>是否禁用修改按钮</td>
-			<td>boolean | function</td>
+			<td>boolean | function(record,index){return false}</td>
 			<td>false</td>
 		</tr>
 		<tr>
 			<td>deleteBtnDisabled</td>
 			<td>是否禁用删除按钮</td>
-			<td>boolean | function</td>
+			<td>boolean | function(record,index){return false}</td>
 			<td>false</td>
 		</tr>
 		<tr>
