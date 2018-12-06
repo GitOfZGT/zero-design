@@ -75,7 +75,7 @@ export const ZsearchForm = Form.create()(
 		}
 		componentDidMount() {
 			this.execAsync();
-			this.props.getFormInstance && this.props.getFormInstance(this.props.form);
+			this.props.getFormInstance && this.props.getFormInstance(this.props.form,this.methods);
 		}
 		componentDidUpdate(prevProps, prevState) {
 			if (

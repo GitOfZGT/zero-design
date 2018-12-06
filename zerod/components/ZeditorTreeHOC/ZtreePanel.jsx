@@ -61,11 +61,19 @@ class ZtreePanel extends React.Component {
 	static defaultProps = defaultConfig.tree;
 	treeDataKeys = Object.assign({ name: "name", id: "id", children: "children" }, this.props.treeDataKeys);
 	getDefaultFormItems = () => {
-		return this.props.colFormItems
-			? this.props.colFormItems
-			: this.props.searchForm
-			? this.props.searchForm.items
-			: [];
+		const formItems=this.props.colFormItems
+		? this.props.colFormItems
+		: this.props.searchForm
+		? this.props.searchForm.items
+		: []
+		return formItems.map(item=>{
+			return {
+				...item,
+				render:(form,changeFormItems)=>{
+					return typeof item.render=='function'&&item.render(form,changeFormItems,this.getExportSomething())
+				}
+			}
+		});
 	};
 	state = {
 		treeData: [],

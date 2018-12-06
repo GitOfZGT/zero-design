@@ -147,7 +147,7 @@ export default ZeditorTreeHOC(pageConfig);
 	<tbody>
 	    <tr>
 			<td>searchForm</td>
-			<td>searchForm.defaultExpanded 是否默认展开(false)，其他属性 请查看 <span class="z-history-href" data-path="/main/component-doc/ZsearchForm-doc">组件/ZsearchForm</span> 的 props  (除了onSearch, onReset, noCollapse 其他都有效)</td>
+			<td>searchForm.defaultExpanded 是否默认展开(false)，其他属性 请查看 <span class="z-history-href" data-path="/main/component-doc/ZsearchForm-doc">组件/ZsearchForm</span> 的 props  (除了onSearch, onReset, noCollapse 其他都有效),其中searchForm.items的render函数参数在这里多加tool,如：items:[{render:(form,changeFormItems,tool)=>{},key:"myKey"}]</td>
 			<td>object</td>
 			<td>--</td>
 		</tr>

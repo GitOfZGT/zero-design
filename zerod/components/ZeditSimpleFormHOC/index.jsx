@@ -176,6 +176,19 @@ export function ZeditSimpleFormHOC(pageConfig) {
 			this.insertLocation = const_getInsertLocation(this.hocWrapperEl);
 		}
 		pageWraper = const_getPageWrapperProps(this.config);
+		getDefaultFormItems = () => {
+			const formItems=this.config.form.items? this.config.form.items
+			: []
+			return formItems.map(item=>{
+				return {
+					...item,
+					render:(form,changeFormItems)=>{
+						return typeof item.render=='function'&&item.render(form,changeFormItems,this.tool)
+					}
+				}
+			});
+		};
+		formItems=this.getDefaultFormItems();
 		render() {
 			const {
 				type,
@@ -187,6 +200,7 @@ export function ZeditSimpleFormHOC(pageConfig) {
 				getFormInstance,
 				onSubmit,
 				submitBtnName,
+				items,
 				...formOthers
 			} = this.config.form;
 			return (
@@ -205,6 +219,7 @@ export function ZeditSimpleFormHOC(pageConfig) {
 							<div className="z-panel-body">
 								<Zform
 									{...formOthers}
+									items={this.formItems}
 									onSubmit={this.methods.onSubmit}
 									getFormInstance={this.getFormInstance}
 									submitBtnName={this.config.form.showSubmitBtn ? this.config.form.submitBtnName : ""}

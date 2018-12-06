@@ -73,7 +73,8 @@ export const Zform = Form.create()(
 		}
 		componentDidMount() {
 			this.execAsync();
-			this.props.getFormInstance && this.props.getFormInstance(this.props.form);
+			this.props.getFormInstance && this.props.getFormInstance(this.props.form,this.methods);
+			
 			this.props.getInbuiltTool &&
 				this.props.getInbuiltTool({
 					form: this.props.form,

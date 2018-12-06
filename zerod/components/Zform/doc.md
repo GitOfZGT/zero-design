@@ -184,13 +184,13 @@ class Myjavascript extends React.Component {
         <tr>
 			<td>getFormInstance</td>
 			<td>获取Form实例的钩子，外部通过(form)=>{this.formIstance=form;}获得form实例对象,通过this.formInstance.调用antd<a href="https://ant.design/components/form-cn/" target="_blank">表单相关方法</a></td>
-			<td>function(form){}</td>
+			<td>function(form,methods){}</td>
 			<td>--</td>
 		</tr>
 		<tr>
 			<td>afterItemsRendered</td>
 			<td>所有表单控件渲染完的回调，包括异步渲染控件</a></td>
-			<td>function(form){}</td>
+			<td>function(form,methods){}</td>
 			<td>--</td>
 		</tr>
 	</tbody>
@@ -224,7 +224,7 @@ class Myjavascript extends React.Component {
 		</tr>
 		<tr>
 			<td><i class="zero-icon zerod-shengchangzhouqi"></i> render</td>
-			<td>渲染表单控件的钩子。支持异步加载：必须return的是Promise对象。例如使用了后台接口：(form,changeFormItems)=>api.getOptions.then(re=>{return 表单控件})</td>
+			<td>渲染表单控件的钩子。支持异步加载：必须return的是Promise对象。例如使用了后台接口：(form,changeFormItems)=>api.getOptions.then(re=>{return 表单控件})。changeFormItems是一个方法，可用于改变items,可选参数有newItems：changeFormItems(newItems)，但不能直接在render函数中使用，应在控件的事件当中</td>
 			<td>(form,changeFormItems)=>{return ReactNode | Element | Promise}</td>
 			<td>--</td>
 		</tr>

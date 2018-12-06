@@ -209,7 +209,7 @@ export const const_execAsync = function(callback) {
 			);
 		});
 	} else {
-		callback(this.props.form);
+		callback(this.props.form,this.methods);
 	}
 };
 //ZtreePanel和ZlistPanel的heading,这里不能是箭头函数

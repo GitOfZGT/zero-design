@@ -83,11 +83,19 @@ class ZlistPanel extends React.Component {
 		return items.length ? <Menu onClick={onClick}>{items}</Menu> : <span />;
 	};
 	getDefaultFormItems = () => {
-		return this.props.colFormItems
-			? this.props.colFormItems
-			: this.props.searchForm
-			? this.props.searchForm.items
-			: [];
+		const formItems=this.props.colFormItems
+		? this.props.colFormItems
+		: this.props.searchForm
+		? this.props.searchForm.items
+		: []
+		return formItems.map(item=>{
+			return {
+				...item,
+				render:(form,changeFormItems)=>{
+					return typeof item.render=='function'&&item.render(form,changeFormItems,this.getExportSomething())
+				}
+			}
+		});
 	};
 	state = {
 		listData: [],

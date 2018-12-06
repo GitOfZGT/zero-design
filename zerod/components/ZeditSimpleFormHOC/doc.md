@@ -357,7 +357,7 @@ export default ZeditSimpleFormHOC(pageConfig);
 		</tr>
 		<tr>
 			<td>items</td>
-			<td>生成表单的json数组，结构：同 <span class="z-history-href" data-path="/main/component-doc/Zform-doc">组件/Zform</span> 的items结构</td>
+			<td>生成表单的json数组，结构：同 <span class="z-history-href" data-path="/main/component-doc/Zform-doc">组件/Zform</span> 的items结构,render函数参数在这里多加tool,如：items:[{render:(form,changeFormItems,tool)=>{}}]</td>
 			<td>array[object] | null</td>
 			<td>--</td>
 		</tr>
