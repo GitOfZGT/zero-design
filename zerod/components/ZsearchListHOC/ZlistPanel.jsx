@@ -6,7 +6,7 @@ import {
 	const_getListConfig,
 	const_getInsertLocation,
 	const_getMainTool,
-	const_getMethods
+	const_getMethods,
 } from "../constant";
 import { Button, Icon, Divider, Dropdown, Menu, Modal } from "antd";
 import { ZsearchForm } from "../ZsearchForm";
@@ -36,7 +36,7 @@ class ZlistPanel extends React.Component {
 		]), //面板title,可以自定义
 		moreContentRender: PropTypes.func,
 		searchForm: PropTypes.object,
-		colFormItems: PropTypes.arrayOf(PropTypes.object), // 搜索表单列map数据数据
+		colFormItems: PropTypes.arrayOf(PropTypes.object), // 搜索表单列map数据数据,同searchForm.items （版本兼容）
 		tableColumns: PropTypes.arrayOf(PropTypes.object), // 表格列map数据数据，同antd的表格 columns
 		moreBtnMap: PropTypes.arrayOf(PropTypes.object), //更多操作按钮的map数据
 		onMoreBtnClick: PropTypes.func, // 更多按钮点击事件
@@ -82,12 +82,19 @@ class ZlistPanel extends React.Component {
 			});
 		return items.length ? <Menu onClick={onClick}>{items}</Menu> : <span />;
 	};
+	getDefaultFormItems = () => {
+		return this.props.colFormItems
+			? this.props.colFormItems
+			: this.props.searchForm
+			? this.props.searchForm.items
+			: [];
+	};
 	state = {
 		listData: [],
 		noMore: false,
 		isListCard: this.props.listType === "card",
-        colFormItems: [],
-        expandedRowKeys:[],
+		colFormItems: this.props.searchForm && this.props.searchForm.defaultExpanded ? this.getDefaultFormItems() : [],
+		expandedRowKeys: [],
 	};
 	isInfinite = this.props.paginationType === "infinite";
 	getPageSize = () => {
@@ -97,8 +104,7 @@ class ZlistPanel extends React.Component {
 		pageNumber: 1,
 		pageSize: this.getPageSize(),
 		totalCount: 0,
-        totalPage: 1,
-
+		totalPage: 1,
 	};
 	searchQuery = null;
 	sorter = {};
@@ -257,7 +263,7 @@ class ZlistPanel extends React.Component {
 		// 删除按钮触发
 		onDelete: (text, row) => {
 			Modal.confirm({
-				title: `确认删除 ${text?`[${text}]`:""} 这条数据吗`,
+				title: `确认删除 ${text ? `[${text}]` : ""} 这条数据吗`,
 				content: "将永久删除",
 				okText: "删除",
 				okType: "danger",
@@ -497,7 +503,7 @@ class ZlistPanel extends React.Component {
 
 	componentDidMount() {
 		this.props.exportSomething && this.props.exportSomething(this.getExportSomething());
-		this.insertLocation=const_getInsertLocation(this.hocWrapperEl);
+		this.insertLocation = const_getInsertLocation(this.hocWrapperEl);
 		this.methods.onSearch();
 	}
 	render() {
@@ -521,7 +527,7 @@ class ZlistPanel extends React.Component {
 			) : (
 				this.props.moreContentRender && this.props.moreContentRender(this.getExportSomething())
 			);
-		const { items, onSearch, onReset, noCollapse, ...formOthers } = this.props.searchForm
+		const { items, onSearch, onReset, noCollapse, defaultExpanded, ...formOthers } = this.props.searchForm
 			? this.props.searchForm
 			: {};
 		this.searchForm =

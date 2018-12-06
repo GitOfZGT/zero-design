@@ -57,7 +57,7 @@ export default PageFooter;
 			<td>--</td>
 		</tr>
 		<tr>
-			<td>copyright</td>
+			<td><i class="zero-icon zerod-shengchangzhouqi"></i> copyright</td>
 			<td>版权信息</td>
 			<td>string | function</td>
 			<td>--</td>

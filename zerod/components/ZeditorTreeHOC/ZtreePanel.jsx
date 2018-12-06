@@ -6,7 +6,7 @@ import {
 	const_getListConfig,
 	const_getInsertLocation,
 	const_getMainTool,
-	const_getMethods
+	const_getMethods,
 } from "../constant";
 import { Tree, Modal } from "antd";
 const TreeNode = Tree.TreeNode;
@@ -14,7 +14,7 @@ import { ZsearchForm } from "../ZsearchForm";
 import cssClass from "./style.scss";
 import TreeTitle from "./TreeTitle";
 import ZerodMainContext from "../ZerodMainContext";
-import { dataTypeTest, deepCopy } from "../zTool";
+import { dataTypeTest, deepCopy, removeItemFromTree, addItemToTree, replaceItemFromTree } from "../zTool";
 // import { Zlayout } from "../Zlayout";
 let defaultConfig = const_getListConfig("list", "ZtreePanel");
 class ZtreePanel extends React.Component {
@@ -60,9 +60,16 @@ class ZtreePanel extends React.Component {
 	};
 	static defaultProps = defaultConfig.tree;
 	treeDataKeys = Object.assign({ name: "name", id: "id", children: "children" }, this.props.treeDataKeys);
+	getDefaultFormItems = () => {
+		return this.props.colFormItems
+			? this.props.colFormItems
+			: this.props.searchForm
+			? this.props.searchForm.items
+			: [];
+	};
 	state = {
 		treeData: [],
-		colFormItems: [],
+		colFormItems: this.props.searchForm && this.props.searchForm.defaultExpanded ? this.getDefaultFormItems() : [],
 	};
 	searchQuery = null;
 	ayncChild = typeof this.props.childApiInterface === "function";
@@ -121,25 +128,47 @@ class ZtreePanel extends React.Component {
 		onReset: () => {
 			this.methods.onSearch();
 		},
-		removeOneData: (record, arr) => {
-			let deleted = false;
-			for (let index = 0; index < arr.length; index++) {
-				const element = arr[index];
-				if (element[this.treeDataKeys.id] === record[this.treeDataKeys.id]) {
-					arr.splice(index, 1);
-					break;
-				} else if (Array.isArray(element[this.treeDataKeys.children])) {
-					deleted = this.methods.removeOneData(record, element[this.treeDataKeys.children]);
-				}
-				if (deleted) break;
+		commonActionArr: ({ tree, record, data, action }) => {
+			const _tree = Array.isArray(tree) ? tree : this.state.treeData.slice(0);
+			const newTree = action({ tree: _tree, sourceItem: record, item: data, keyObj: this.treeDataKeys });
+			if (newTree && !Array.isArray(tree)) {
+				this.setState({
+					treeData: newTree,
+				});
 			}
-			return deleted;
+			return newTree;
+		},
+		//移除tree中的一条数据
+		removeOneData: (record, tree) => {
+			return this.methods.commonActionArr({
+				tree,
+				record,
+				action: removeItemFromTree,
+			});
+		},
+		//在record的children中添加一条数据
+		addOneChildData: (record, data, tree) => {
+			return this.methods.commonActionArr({
+				tree,
+				record,
+				data,
+				action: addItemToTree,
+			});
+		},
+		//在tree中替换一条数据
+		replaceOneData: (record, data, tree) => {
+			return this.methods.commonActionArr({
+				tree,
+				record,
+				data,
+				action: replaceItemFromTree,
+			});
 		},
 		// 删除按钮触发
 		onDelete: (record) => {
-			const text=record[this.treeDataKeys.name];
+			const text = record[this.treeDataKeys.name];
 			Modal.confirm({
-				title: `确认删除 ${text?`[${text}]`:""} 这条数据吗`,
+				title: `确认删除 ${text ? `[${text}]` : ""} 这条数据吗`,
 				content: "将永久删除",
 				okText: "删除",
 				okType: "danger",
@@ -150,10 +179,7 @@ class ZtreePanel extends React.Component {
 							.deleteApiInterface(record, this.getExportSomething())
 							.then((re) => {
 								this.methods.notice.success("删除成功");
-								this.methods.removeOneData(record, this.state.treeData);
-								this.setState({
-									treeData: [...this.state.treeData],
-								});
+								this.methods.removeOneData(record);
 								resolve();
 							})
 							.catch((re) => {
@@ -245,12 +271,12 @@ class ZtreePanel extends React.Component {
 		});
 	}
 	componentDidMount() {
-		typeof this.props.exportSomething=='function'&&this.props.exportSomething(this.getExportSomething());
-		this.insertLocation=const_getInsertLocation(this.hocWrapperEl);
+		typeof this.props.exportSomething == "function" && this.props.exportSomething(this.getExportSomething());
+		this.insertLocation = const_getInsertLocation(this.hocWrapperEl);
 		this.methods.onSearch();
 	}
 	render() {
-		const { items, onSearch, onReset, noCollapse, ...formOthers } = this.props.searchForm
+		const { items, onSearch, onReset,defaultExpanded, noCollapse, ...formOthers } = this.props.searchForm
 			? this.props.searchForm
 			: {};
 		this.searchForm =

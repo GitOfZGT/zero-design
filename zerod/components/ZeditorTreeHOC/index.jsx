@@ -6,7 +6,7 @@ import { mergeConfig } from "../zTool";
 
 import {ZpageWraperHOC} from "../ZpageWrapper";
 
-import { const_getListConfig } from "../constant";
+import { const_getListConfig,const_getPageWrapperProps } from "../constant";
 // childs
 import ZtreePanel from "./ZtreePanel";
 
@@ -22,9 +22,10 @@ export function ZeditorTreeHOC(pageConfig) {
 	defaultConfig = mergeConfig(defaultConfig, pageConfig);
 	class List extends React.Component {
 		config = defaultConfig;
+		pageWraper = const_getPageWrapperProps(this.config);
 		render() {
 			return (
-				<PageWraper pageHeader={this.config.pageHeader} pageFooter={this.config.pageFooter}  hasBodyPadding={this.config.hasBodyPadding}>
+				<PageWraper {...this.pageWraper}>
 					<ZtreePanel
                         colFormItems={this.config.searchForm.items}
                         searchForm={this.config.searchForm}

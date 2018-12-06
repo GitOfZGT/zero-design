@@ -1,14 +1,14 @@
 import React from "react";
 import { withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
-import {  const_getInsertLocation,const_getMainTool,const_getMethods} from "../constant";
+import { const_getInsertLocation, const_getMainTool, const_getMethods,const_getPageWrapperProps } from "../constant";
 // 工具
 import { mergeConfig } from "../zTool/";
 // 上下文
 import ZerodMainContext from "../ZerodMainContext";
 import Zinfo from "../Zinfo";
 // 其他HOC
-import {ZpageWraperHOC} from "../ZpageWrapper";
+import { ZpageWraperHOC } from "../ZpageWrapper";
 const PageWraper = ZpageWraperHOC();
 
 export function ZdetailSimpleBaseHOC(pageConfig) {
@@ -61,7 +61,7 @@ export function ZdetailSimpleBaseHOC(pageConfig) {
 		panelAfterRender: (detail, tool) => {
 			return null;
 		},
-		exportSomething:null,
+		exportSomething: null,
 	};
 	defaultConfig = mergeConfig(defaultConfig, pageConfig);
 	class myDetail extends React.Component {
@@ -99,44 +99,45 @@ export function ZdetailSimpleBaseHOC(pageConfig) {
 		}
 		tool = {
 			...const_getMainTool.call(this),
-			showLoading: this.methods.showLoading,//同 methods.showLoading,这为了版本兼容
+			showLoading: this.methods.showLoading, //同 methods.showLoading,这为了版本兼容
 			methods: this.methods,
-			$router:{
-                history:this.props.history,
-                location:this.props.location,
-            }
+			$router: {
+				history: this.props.history,
+				location: this.props.location,
+			},
 		};
 		componentDidMount() {
-			typeof this.config.exportSomething=='function'&&this.config.exportSomething(this.tool);
-            this.insertLocation=const_getInsertLocation(this.hocWrapperEl);
+			typeof this.config.exportSomething == "function" && this.config.exportSomething(this.tool);
+			this.insertLocation = const_getInsertLocation(this.hocWrapperEl);
 			this.methods.getDetailData();
 		}
+		pageWraper = const_getPageWrapperProps(this.config);
 		render() {
 			return (
-                <section
+				<section
 					ref={(el) => {
 						this.hocWrapperEl = el;
 					}}
 				>
-				<PageWraper pageHeader={this.config.pageHeader} pageFooter={this.config.pageFooter} hasBodyPadding={this.config.hasBodyPadding}>
-				{typeof this.config.panelBeforeRender === "function" &&
-						this.config.panelBeforeRender(this.state.detailData, this.tool)}
-					<div className="z-panel">
-						{this.getPanleHeader()}
-						<div className="z-panel-body">
-							<Zinfo
-								items={this.config.detail.items}
-								fieldValue={this.state.detailData}
-								defaultSpan={this.config.detail.defaultSpan}
-							/>
-							{typeof this.config.moreContentRender === "function" &&
-						this.config.moreContentRender(this.state.detailData, this.tool)}
+					<PageWraper {...this.pageWraper}>
+						{typeof this.config.panelBeforeRender === "function" &&
+							this.config.panelBeforeRender(this.state.detailData, this.tool)}
+						<div className="z-panel">
+							{this.getPanleHeader()}
+							<div className="z-panel-body">
+								<Zinfo
+									items={this.config.detail.items}
+									fieldValue={this.state.detailData}
+									defaultSpan={this.config.detail.defaultSpan}
+								/>
+								{typeof this.config.moreContentRender === "function" &&
+									this.config.moreContentRender(this.state.detailData, this.tool)}
+							</div>
 						</div>
-					</div>
-					{typeof this.config.panelAfterRender === "function" &&
-						this.config.panelAfterRender(this.state.detailData, this.tool)}
-				</PageWraper>
-                </section>
+						{typeof this.config.panelAfterRender === "function" &&
+							this.config.panelAfterRender(this.state.detailData, this.tool)}
+					</PageWraper>
+				</section>
 			);
 		}
 	}

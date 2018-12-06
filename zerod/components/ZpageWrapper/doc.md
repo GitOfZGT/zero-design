@@ -54,13 +54,13 @@ const pageHeader = {
 	<tbody>
 		<tr>
 			<td>pageHeader</td>
-			<td>页头内容,除了show属性(默认false)，其他属性同 组件/ZpageHeader的Props</td>
+			<td>页头内容,除了show属性(默认false)，其他属性同 <span class="z-history-href" data-path="/main/component-doc/ZpageHeader-doc">组件/ZpageHeader</span> 的Props</td>
 			<td>object</td>
 			<td>--</td>
 		</tr>
 		<tr>
 			<td>pageFooter</td>
-			<td>页尾内容,除了show属性(默认true)，其他属性同 组件/pageFooter的Props</td>
+			<td>页尾内容,除了show属性(默认true)，其他属性同 <span class="z-history-href" data-path="/main/component-doc/ZpageFooter-doc">组件/pageFooter</span> 的Props</td>
 			<td>object</td>
 			<td>--</td>
 		</tr>
@@ -69,6 +69,18 @@ const pageHeader = {
 			<td>中间部分是否有padding值</td>
 			<td>boolean</td>
 			<td>true</td>
+		</tr>
+		<tr>
+			<td>showBreadcrumb</td>
+			<td>是否显示pageHeader面包屑</td>
+			<td>boolean</td>
+			<td>true</td>
+		</tr>
+		<tr>
+			<td>titleFromLasterBreadcrumb</td>
+			<td>pageHeader的title是否来自面包屑的最后一个名称</td>
+			<td>boolean</td>
+			<td>false</td>
 		</tr>
 	</tbody>
 </table>

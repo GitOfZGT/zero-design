@@ -982,6 +982,73 @@ export const mergeConfig = (defaultConfig, theConfig) => {
 		return merge(deepCopy(defaultConfig), theConfig);
 	}
 };
+
+function itemsFromTree({ tree, sourceItem, item, keyObj, action }) {
+	let finished = false;
+	for (let index = 0; index < tree.length; index++) {
+		const currentItem = tree[index];
+		if (currentItem[keyObj.id] === sourceItem[keyObj.id]) {
+			action({ tree, sourceItem, currentItem, item, index, keyObj });
+			finished = true;
+		} else if (Array.isArray(currentItem[keyObj.children])) {
+			finished = itemsFromTree({ tree: currentItem[keyObj.children], sourceItem, item, keyObj, action });
+		}
+		if (finished) break;
+	}
+	return finished;
+}
+/**
+ *用于移除json中一项数据
+ *
+ * @export
+ * @param {object} obj { tree:array, sourceItem:object, keyObj:{id:"id",children:"children"} }
+ * @returns
+ */
+export function removeItemFromTree(obj) {
+	// { tree, sourceItem, keyObj }
+	const newobj = deepCopy(obj);
+	newobj.action = function({ tree, sourceItem, currentItem, index, keyObj }) {
+		tree.splice(index, 1);
+	};
+	if (itemsFromTree(newobj)) {
+		return newobj.tree;
+	}
+}
+/**
+ *用于替换json中一项数据
+ *
+ * @export
+ * @param {object} obj { tree:array, sourceItem:object,item:object, keyObj:{id:"id",children:"children"} }
+ * @returns
+ */
+export function replaceItemFromTree(obj) {
+	const newobj = deepCopy(obj);
+	newobj.action = function({ tree, sourceItem, currentItem, item, index, keyObj }) {
+		tree.splice(index, 1, item);
+	};
+	if (itemsFromTree(newobj)) {
+		return newobj.tree;
+	}
+}
+/**
+ *用于json中某项数据的children添加一项数据
+ *
+ * @export
+ * @param {object} obj { tree:array, sourceItem:object,item:object, keyObj:{id:"id",children:"children"} }
+ * @returns
+ */
+export function addItemToTree(obj) {
+	const newobj = deepCopy(obj);
+	newobj.action = function({ tree, sourceItem, currentItem, item, index, keyObj }) {
+		if (!Array.isArray(currentItem[keyObj.children])) {
+			currentItem[keyObj.children] = [];
+		}
+		currentItem[keyObj.children].push(item);
+	};
+	if (itemsFromTree(newobj)) {
+		return newobj.tree;
+	}
+}
 export const zTool = {
 	getStyle,
 	setStyle,
@@ -1015,5 +1082,8 @@ export const zTool = {
 	loadFileList,
 	dataType,
 	firstWordToUpperCase,
+	removeItemFromTree,
+	replaceItemFromTree,
+	addItemToTree,
 };
 export default zTool;

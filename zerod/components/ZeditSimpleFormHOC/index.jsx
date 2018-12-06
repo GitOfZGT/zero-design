@@ -1,9 +1,9 @@
 import React from "react";
 import { withRouter } from "react-router-dom";
-import { const_getInsertLocation, const_getMainTool, const_getMethods } from "../constant";
+import { const_getInsertLocation, const_getMainTool, const_getMethods ,const_getPageWrapperProps} from "../constant";
 import PropTypes from "prop-types";
 import { Zform } from "../Zform";
-import { Input } from "antd";
+// import { Input } from "antd";
 // import cssClass from "./style.scss";
 // 工具
 import { mergeConfig } from "../zTool";
@@ -175,6 +175,7 @@ export function ZeditSimpleFormHOC(pageConfig) {
 			typeof this.config.exportSomething=='function'&&this.config.exportSomething(this.tool);
 			this.insertLocation = const_getInsertLocation(this.hocWrapperEl);
 		}
+		pageWraper = const_getPageWrapperProps(this.config);
 		render() {
 			const {
 				type,
@@ -195,9 +196,7 @@ export function ZeditSimpleFormHOC(pageConfig) {
 					}}
 				>
 					<PageWraper
-						pageHeader={this.config.pageHeader}
-						pageFooter={this.config.pageFooter}
-						hasBodyPadding={this.config.hasBodyPadding}
+						{...this.pageWraper}
 					>
 						{typeof this.config.panelBeforeRender === "function" &&
 							this.config.panelBeforeRender(this.state.detailData, this.tool)}

@@ -108,19 +108,19 @@ export default PageHeader;
 			<td>--</td>
 		</tr>
 		<tr>
-			<td>title</td>
+			<td><i class="zero-icon zerod-shengchangzhouqi"></i> title</td>
 			<td>头部标题</td>
 			<td>any</td>
 			<td>--</td>
 		</tr>
         <tr>
-			<td>content</td>
+			<td><i class="zero-icon zerod-shengchangzhouqi"></i> content</td>
 			<td>头部描述说明</td>
 			<td>any</td>
 			<td>--</td>
 		</tr>
         <tr>
-			<td>rightMoreContent</td>
+			<td><i class="zero-icon zerod-shengchangzhouqi"></i> rightMoreContent</td>
 			<td>标题列的右边可添加更多内容</td>
 			<td>React.element | function | ReactNode</td>
 			<td>--</td>
@@ -138,7 +138,7 @@ export default PageHeader;
 			<td>--</td>
 		</tr>
         <tr>
-			<td>children</td>
+			<td><i class="zero-icon zerod-shengchangzhouqi"></i> children</td>
 			<td>更多内容</td>
 			<td>any | function(){return 内容}</td>
 			<td>--</td>

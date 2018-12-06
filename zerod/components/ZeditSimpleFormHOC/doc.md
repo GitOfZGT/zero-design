@@ -290,6 +290,8 @@ export default ZeditSimpleFormHOC(pageConfig);
 
 ## pageConfig
 
+除了如下的属性，pageConfig还包含 <span class="z-history-href" data-path="/main/HOC-doc/ZpageWraperHOC-doc">HOC/页面头尾结构：ZpageWrapper</span> 的props
+
 <table>
 	<thead>
 		<tr>
@@ -300,24 +302,6 @@ export default ZeditSimpleFormHOC(pageConfig);
 		</tr>
 	</thead>
 	<tbody>
-	<tr>
-			<td>pageHeader</td>
-			<td>页头内容,除了show属性(默认false)，其他属性同 组件/ZpageHeader的Props</td>
-			<td>object</td>
-			<td>--</td>
-		</tr>
-		<tr>
-			<td>pageFooter</td>
-			<td>页尾内容,除了show属性(默认true)，其他属性同 组件/pageFooter的Props</td>
-			<td>object</td>
-			<td>--</td>
-		</tr>
-		<tr>
-			<td>hasBodyPadding</td>
-			<td>中间部分是否有padding值</td>
-			<td>boolean</td>
-			<td>true</td>
-		</tr>
 		<tr>
 			<td>form</td>
 			<td>表单配置，请看下面的pageConfig.form</td>
@@ -325,19 +309,19 @@ export default ZeditSimpleFormHOC(pageConfig);
 			<td>--</td>
 		</tr>
 		<tr>
-			<td>moreContentRender</td>
+			<td><i class="zero-icon zerod-shengchangzhouqi"></i> moreContentRender</td>
 			<td>在表单之后添加更多内容的渲染函数,有两个参数detail：detailApiInterface接口获取的详情数据、panel:组件的实例对象</td>
 			<td>(detail,tool) =>{return;}</td>
 			<td>--</td>
 		</tr>
 		<tr>
-			<td>panelBeforeRender</td>
+			<td><i class="zero-icon zerod-shengchangzhouqi"></i> panelBeforeRender</td>
 			<td>列表面板上面的渲染函数</td>
 			<td>function(detail,tool){return ReacNode|Element;}</td>
 			<td>--</td>
 		</tr>
 		<tr>
-			<td>panelAfterRender</td>
+			<td><i class="zero-icon zerod-shengchangzhouqi"></i> panelAfterRender</td>
 			<td>列表面板下面的渲染函数</td>
 			<td>function(detail,tool){return ReacNode|Element;}</td>
 			<td>--</td>
@@ -366,38 +350,38 @@ export default ZeditSimpleFormHOC(pageConfig);
 			<td>mainRoute</td>
 		</tr>
 		<tr>
-			<td>panelHeader</td>
+			<td><i class="zero-icon zerod-shengchangzhouqi"></i> panelHeader</td>
 			<td>列表面板的头部内容,为null则不显示面板头部</td>
 			<td>string | function(){return ;}</td>
 			<td>列表</td>
 		</tr>
 		<tr>
 			<td>items</td>
-			<td>生成表单的json数组，结构：同 组件/Zform 的items结构</td>
+			<td>生成表单的json数组，结构：同 <span class="z-history-href" data-path="/main/component-doc/Zform-doc">组件/Zform</span> 的items结构</td>
 			<td>array[object] | null</td>
 			<td>--</td>
 		</tr>
 		<tr>
 			<td>defaultSpan</td>
-			<td>同 组件/Zform 的defaultSpan属性</td>
+			<td>同 <span class="z-history-href" data-path="/main/component-doc/Zform-doc">组件/Zform</span> 的defaultSpan属性</td>
 			<td>number | object</td>
 			<td>--</td>
 		</tr>
 		<tr>
 			<td>submitBtnName</td>
-			<td>同 组件/Zform 的submitBtnName属性</td>
+			<td>同 <span class="z-history-href" data-path="/main/component-doc/Zform-doc">组件/Zform</span> 的submitBtnName属性</td>
 			<td>string</td>
 			<td>保存</td>
 		</tr>
         <tr>
 			<td>submitMsg</td>
-			<td>同 组件/Zform 的submitMsg属性</td>
+			<td>同 <span class="z-history-href" data-path="/main/component-doc/Zform-doc">组件/Zform</span> 的submitMsg属性</td>
 			<td>string</td>
 			<td>点击确定按钮提交数据</td>
 		</tr>
         <tr>
-			<td>submitBtnRender</td>
-			<td>同 组件/Zform 的submitBtnRender属性</td>
+			<td><i class="zero-icon zerod-shengchangzhouqi"></i> submitBtnRender</td>
+			<td>同 <span class="z-history-href" data-path="/main/component-doc/Zform-doc">组件/Zform</span> 的submitBtnRender属性</td>
 			<td>funtion(onSubmit,props){return ReactNode | Element;}</td>
 			<td>--</td>
 		</tr>
@@ -440,7 +424,7 @@ export default ZeditSimpleFormHOC(pageConfig);
 
 pageConfig 中的一些函数如`moreContentRender`提供了`tool`参数出来，有如下内容：
 
-`tool`对象不但包含`ZerodMainContext`提供的东西（请查看 上下文/ ZerodMainContext ），比如 tool.showRightModal，还提供如下内容：
+`tool`对象不但包含`ZerodMainContext`提供的东西（请 <span class="z-history-href" data-path="/main/context-doc/ZerodMainContext-doc">查看 上下文/ZerodMainContext</span> ），比如 tool.showRightModal，还提供如下内容：
 
 ### tool.getFormInstance
 

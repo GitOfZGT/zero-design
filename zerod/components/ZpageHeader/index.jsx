@@ -38,18 +38,18 @@ export class ZpageHeader extends React.Component {
 					</div>
 				) : null}
 				<div className="z-flex z-padding-left-30">
-					{trademark ? typeof trademark === "function" ? trademark() : <div>{trademark}</div> : null}
+					{trademark ? typeof trademark === "function" ? trademark(this.props) : <div>{trademark}</div> : null}
 					<div className="z-flex-1">
 						{title ? (
 							typeof title === "function" ? (
-								title()
+								title(this.props)
 							) : (
 								<header className={`${cssClass["z-page-header-title"]}`}>{title}</header>
 							)
 						) : null}
 						{content ? (
 							typeof content === "function" ? (
-								content()
+								content(this.props)
 							) : (
 								<p className={`z-margin-bottom-10 z-text-gray`}>{content}</p>
 							)
@@ -60,9 +60,9 @@ export class ZpageHeader extends React.Component {
 							<li className={`z-float-left ${cssClass["green"]}`} />
 						</ul>
 					</div>
-					{typeof rightMoreContent === "function" ? rightMoreContent() : rightMoreContent}
+					{typeof rightMoreContent === "function" ? rightMoreContent(this.props) : rightMoreContent}
 				</div>
-				{typeof children == "function" ? children() : children}
+				{typeof children == "function" ? children(this.props) : children}
 			</section>
 		);
 	}

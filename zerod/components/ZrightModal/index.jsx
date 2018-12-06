@@ -34,7 +34,7 @@ export class ZrightModal extends React.Component {
 		this.props.onClose && this.props.onClose();
 	};
 	showAfter = (e) => {
-		if (e.target !== e.currentTarget) return;
+		// if (e.target !== e.currentTarget) return;
 		if (!this.props.show) {
 			this.setState({
 				showCover: false,

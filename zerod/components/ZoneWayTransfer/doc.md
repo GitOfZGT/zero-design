@@ -90,25 +90,25 @@ class Myjavascript extends React.Component {
 			<td>true</td>
 		</tr>
         <tr>
-			<td>leftTitle</td>
+			<td><i class="zero-icon zerod-shengchangzhouqi"></i> leftTitle</td>
 			<td>左框标题</td>
 			<td>string | function(){}</td>
 			<td>--</td>
 		</tr>
         <tr>
-			<td>rightTitle</td>
+			<td><i class="zero-icon zerod-shengchangzhouqi"></i> rightTitle</td>
 			<td>右框标题</td>
 			<td>string | function(){}</td>
 			<td>--</td>
 		</tr>
         <tr>
-			<td>leftItemRender</td>
+			<td><i class="zero-icon zerod-shengchangzhouqi"></i> leftItemRender</td>
 			<td>左框选择项的渲染函数</td>
 			<td>function(item,index){}</td>
 			<td>--</td>
 		</tr>
         <tr>
-			<td>rightItemRender</td>
+			<td><i class="zero-icon zerod-shengchangzhouqi"></i> rightItemRender</td>
 			<td>右框选择项的渲染函数</td>
 			<td>function(item,index){}</td>
 			<td>--</td>

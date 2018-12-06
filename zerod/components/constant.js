@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, notification, message } from "antd";
+import { Button, notification, message,Icon } from "antd";
 import { dataType } from "./zTool";
 const noticeMethod = {
 	notification,
@@ -209,7 +209,7 @@ export const const_execAsync = function(callback) {
 			);
 		});
 	} else {
-		callback();
+		callback(this.props.form);
 	}
 };
 //ZtreePanel和ZlistPanel的heading,这里不能是箭头函数
@@ -232,13 +232,15 @@ export const const_getPanleHeader = function() {
 		) : // </div>
 		null;
 	const heading = this.props.panelHeader;
+	const items=this.getDefaultFormItems();
 	return heading ? (
 		<div className="z-panel-heading z-flex-items-v-center z-flex-space-between">
 			<span>{typeof heading == "function" ? heading(this) : <span>{heading}</span>}</span>
 			<span>
-				{this.props.colFormItems && this.props.colFormItems.length ? (
+				{items.length ? (
 					<Button type="dashed" icon="search" className="z-margin-left-10" onClick={this.methods.openSearch}>
 						条件查询
+						<Icon type={this.state.colFormItems.length?"caret-up":"caret-down"} theme="filled" />
 					</Button>
 				) : null}
 				{this.addBtn}
@@ -367,4 +369,14 @@ export const const_getListConfig = (name, componentName) => {
 		},
 		[name]: list,
 	};
+};
+import {ZpageWrapperProps} from './ZpageWrapper';
+export const const_getPageWrapperProps = function(config) {
+	const newProps = {};
+	Object.keys(ZpageWrapperProps).forEach((key) => {
+		if (config[key] != undefined) {
+			newProps[key] = config[key];
+		}
+	});
+	return newProps;
 };

@@ -69,11 +69,11 @@ const pageConfig = {
 		mapKeys: { iconClass: "iconClass", path: "permUrl", name: "permName", children: "children" },
 	},
 	// 顶部栏左边内容的渲染钩子
-	headerLeftRender: (main) => {
+	headerLeftRender: (tool) => {
 		return <img className="z-margin-left-20" src={flower} height="60" />;
 	},
 	// 顶部栏右边内容的渲染钩子
-	// headerRightRender: (main) => {
+	// headerRightRender: (tool) => {
 	// 	return ;
 	// },
 	// 侧边栏折叠按钮触发后，过渡动画之前
@@ -145,11 +145,11 @@ const pageConfig = {
 	// 主页的主题 light | dark
 	theme: "dark",
 	// 顶部栏左边内容的渲染钩子
-	headerLeftRender: (main) => {
+	headerLeftRender: (tool) => {
 		return <Zlayout.ZheaderBtn className="z-margin-right-15">左边</Zlayout.ZheaderBtn>;
 	},
 	// 顶部栏右边内容的渲染钩子
-	headerRightRender: (main) => {
+	headerRightRender: (tool) => {
 		return (
 			<Zlayout.Template>
 				<Zlayout.ZheaderBtn className="z-margin-right-15">按钮1</Zlayout.ZheaderBtn>
@@ -213,7 +213,7 @@ export default ZmainHOC(pageConfig);
 
 ## 重点
 
-在主页中定义了两种打开右边窗口的模式，如需调用打开右边窗口和调用显示 loading 的方法请<a href="/main/context-doc/ZerodMainContext-doc">查看上下文 ZerodMainContext</a>
+在主页中定义了两种打开右边窗口的模式，如需调用打开右边窗口和调用显示 loading 的方法请 <span class="z-history-href" data-path="/main/context-doc/ZerodMainContext-doc">查看 上下文/ZerodMainContext</span>
 
 <div class="z-doc-titles"></div>
 
@@ -260,7 +260,7 @@ export default ZmainHOC(pageConfig);
 			<td>[]</td>
 		</tr>
 		<tr>
-			<td>globalLoading</td>
+			<td><i class="zero-icon zerod-shengchangzhouqi"></i> globalLoading</td>
 			<td>加载前要显示的一个全局loading</td>
 			<td>Element | ReactNode | function(){return ;}</td>
 			<td>--</td>
@@ -272,13 +272,13 @@ export default ZmainHOC(pageConfig);
 			<td>{}</td>
 		</tr>
 		<tr>
-			<td>headerLeftRender</td>
+			<td><i class="zero-icon zerod-shengchangzhouqi"></i> headerLeftRender</td>
 			<td>右侧顶部栏左边内容的渲染钩子,参数有main组件的实例对象</td>
 			<td>function(tool){return ;}</td>
 			<td>--</td>
 		</tr>
 		<tr>
-			<td>headerRightRender</td>
+			<td><i class="zero-icon zerod-shengchangzhouqi"></i> headerRightRender</td>
 			<td>右侧顶部栏右边内容的渲染钩子,参数有main组件的实例对象</td>
 			<td>function(tool){return ;}</td>
 			<td>--</td>
@@ -325,7 +325,7 @@ export default ZmainHOC(pageConfig);
 			<td>--</td>
 		</tr>
 		<tr>
-			<td>render</td>
+			<td><i class="zero-icon zerod-shengchangzhouqi"></i> render</td>
 			<td>渲染logo的钩子</td>
 			<td>function(){return ;}</td>
 			<td>--</td>

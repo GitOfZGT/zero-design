@@ -376,3 +376,87 @@ import { zTool } from "zerod";
 //例：
 zTool.setStyle(document.querySelector("#id"), "height", "500px");
 ```
+
+<div class="z-doc-titles"></div>
+
+## zTool.removeItemFromTree
+
+用于移除json数组中一项数据(不会造成原json的变异)，返回新的json数组
+
+```js
+import { zTool } from "zerod";
+/**
+ *
+ * @param {object} obj 以对象方式传参：
+ * { 
+ *   tree:array (json数组), 
+ *   sourceItem:object (要移除的数据，匹配keyObj的id属性),
+ *   keyObj:{id:"id",children:"children"
+ * }
+ */
+//例：
+const tree=[{id:2,name:"苹果"},{id:5,name:"蔬菜",children:[{id:9,name:"豆芽"}]}]
+//移除{id:9}的那一条数据
+const newTree zTool.removeItemFromTree({
+	tree:tree,
+	sourceItem:{id:9}
+});
+// 返回 [{id:2,name:"苹果"},{id:5,name:"蔬菜",children:[]}]
+```
+<div class="z-doc-titles"></div>
+
+## zTool.replaceItemFromTree
+
+用于替换json数组中一项数据(不会造成原json的变异)，返回新的json数组
+
+```js
+import { zTool } from "zerod";
+/**
+ *
+ * @param {object} obj 以对象方式传参：
+ * { 
+ *   tree:array (json数组), 
+ *   sourceItem:object (要被替换的数据，匹配keyObj的id属性),
+ *   item: object (新数据)
+ *   keyObj:{id:"id",children:"children"
+ * }
+ */
+//例：
+const tree=[{id:2,name:"苹果"},{id:5,name:"蔬菜",children:[{id:9,name:"豆芽"}]}]
+//替换{id:9}的那一条数据
+const newTree= zTool.replaceItemFromTree({
+	tree:tree,
+	sourceItem:{id:9},
+	item:{id:18,name:"莴笋"}
+});
+//返回 [{id:2,name:"苹果"},{id:5,name:"蔬菜",children:[{id:18,name:"莴笋"}]}]
+```
+
+<div class="z-doc-titles"></div>
+
+## zTool.addItemToTree
+
+在json数组中一项数据的children新增一条子数据(不会造成原json的变异)，返回新的json数组
+
+```js
+import { zTool } from "zerod";
+/**
+ *
+ * @param {object} obj 以对象方式传参：
+ * { 
+ *   tree:array (json数组), 
+ *   sourceItem:object (要被新增子数据的数据，匹配keyObj的id属性),
+ *   item: object (新数据)
+ *   keyObj:{id:"id",children:"children"
+ * }
+ */
+//例：
+const tree=[{id:2,name:"苹果"},{id:5,name:"蔬菜",children:[{id:9,name:"豆芽"}]}]
+//在{id:9}的那一条数据新增
+const newTree= zTool.addItemToTree({
+	tree:tree,
+	sourceItem:{id:5},
+	item:{id:18,name:"莴笋"}
+});
+//返回 [{id:2,name:"苹果"},{id:5,name:"蔬菜",children:[{id:9,name:"豆芽"},{id:18,name:"莴笋"}]}]
+```

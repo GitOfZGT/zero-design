@@ -13,7 +13,10 @@ $--row-gutter: 12px;
         }
         .ant-form-item-children .ant-btn{
             float: left;
-        }
+		}
+		.ant-calendar-picker{
+			width:100% !important;
+		}
 	}
 	margin-left: -$--row-gutter;
 	margin-right: -$--row-gutter;

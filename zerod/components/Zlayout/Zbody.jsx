@@ -53,6 +53,11 @@ class Zbody extends React.Component {
 	componentDidMount() {
 		this.createScroll();
 		this.props.getWrapperEl && this.props.getWrapperEl(this.wrapperEl, this.metods);
+		this.bodyEl.onscroll=()=>{
+			if(this.bodyEl.scrollTop>0){
+				this.bodyEl.scrollTop=0;
+			}
+		}
 	}
 	componentDidUpdate(prevProps) {
 		if (prevProps.scroll != this.props.scroll) {

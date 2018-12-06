@@ -156,7 +156,7 @@ class Myjavascript extends React.Component {
 			<td>--</td>
 		</tr>
         <tr>
-			<td>submitBtnName</td>
+			<td><i class="zero-icon zerod-shengchangzhouqi"></i> submitBtnName</td>
 			<td>提交按钮的名称，如果为空则不显示默认的提交按钮</td>
 			<td>string | furnction(){
 				return ReactNode | Element;
@@ -170,7 +170,7 @@ class Myjavascript extends React.Component {
 			<td>点击确定按钮提交数据</td>
 		</tr>
         <tr>
-			<td>submitBtnRender</td>
+			<td><i class="zero-icon zerod-shengchangzhouqi"></i> submitBtnRender</td>
 			<td>渲染提交按钮的函数，可以用自定义内容替换默认的提交按钮;参数有onSubmit：内置的提交按钮的方法，props:Zform组件的props,可以取得props.form</td>
 			<td>funtion(onSubmit,props){return ReactNode | Element;}</td>
 			<td>--</td>
@@ -184,13 +184,13 @@ class Myjavascript extends React.Component {
         <tr>
 			<td>getFormInstance</td>
 			<td>获取Form实例的钩子，外部通过(form)=>{this.formIstance=form;}获得form实例对象,通过this.formInstance.调用antd<a href="https://ant.design/components/form-cn/" target="_blank">表单相关方法</a></td>
-			<td>function</td>
+			<td>function(form){}</td>
 			<td>--</td>
 		</tr>
 		<tr>
 			<td>afterItemsRendered</td>
 			<td>所有表单控件渲染完的回调，包括异步渲染控件</a></td>
-			<td>function</td>
+			<td>function(form){}</td>
 			<td>--</td>
 		</tr>
 	</tbody>
@@ -223,7 +223,7 @@ class Myjavascript extends React.Component {
 			<td>--</td>
 		</tr>
 		<tr>
-			<td>render</td>
+			<td><i class="zero-icon zerod-shengchangzhouqi"></i> render</td>
 			<td>渲染表单控件的钩子。支持异步加载：必须return的是Promise对象。例如使用了后台接口：(form,changeFormItems)=>api.getOptions.then(re=>{return 表单控件})</td>
 			<td>(form,changeFormItems)=>{return ReactNode | Element | Promise}</td>
 			<td>--</td>

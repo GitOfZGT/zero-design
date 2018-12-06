@@ -12,6 +12,7 @@ import { footerLinks, footerCopyright } from "../myPageFooter.js";
 // 上下文
 import ZerodRootContext from "../ZerodRootContext";
 import ZerodMainContext from "../ZerodMainContext";
+import { dataType } from "../zTool";
 // 递归获取面包屑数据
 const getBreadcrumbsFromMenu = function(arr, path, rootArr) {
 	let newArr = [];
@@ -30,29 +31,53 @@ const getBreadcrumbsFromMenu = function(arr, path, rootArr) {
 	}
 	return newArr;
 };
+
+export const ZpageWrapperProps = {
+	pageHeader: PropTypes.object,
+	pageFooter: PropTypes.object,
+	hasBodyPadding: PropTypes.bool, //中间部分是否又padding
+	showBreadcrumb: PropTypes.bool, //是否显示pageHeader面包屑
+	titleFromLasterBreadcrumb: PropTypes.bool, //pageHeader的title是否来自面包屑的最后一个名称
+};
+
 class Page extends React.Component {
-	static propTypes = {
-		pageHeader: PropTypes.object,
-		pageFooter: PropTypes.object,
-		hasBodyPadding: PropTypes.bool,
-	};
+	static propTypes = ZpageWrapperProps;
 	static defaultProps = {
 		pageHeader: { show: false },
 		pageFooter: { show: true },
 		hasBodyPadding: true,
+		showBreadcrumb: true,
+		titleFromLasterBreadcrumb: false,
 	};
 	breadcrumbsFromMenu = getBreadcrumbsFromMenu(
 		this.props.getSideMenuData ? this.props.getSideMenuData() : [],
 		this.props.location.pathname,
 	);
-	newPageHeader = Object.assign({}, this.props.pageHeader, {
-		breadcrumbRoutes: this.props.pageHeader.breadcrumbRoutes
+	getNewPageHeader = () => {
+		const newBreadcrumbRoutes = this.props.pageHeader.breadcrumbRoutes
 			? [
 					...this.breadcrumbsFromMenu, // 由侧边导航和当前路由地址获取面包屑数据
 					...this.props.pageHeader.breadcrumbRoutes,
 			  ]
-			: this.breadcrumbsFromMenu,
-	});
+			: this.breadcrumbsFromMenu;
+		const newTitle = this.props.pageHeader.title ? this.props.pageHeader.title : "";
+		const _newTitleFromBreadcrumb = newBreadcrumbRoutes.length ? newBreadcrumbRoutes.slice(-1)[0].name : "";
+		const header = Object.assign({}, this.props.pageHeader, {
+			breadcrumbRoutes: this.props.showBreadcrumb ? newBreadcrumbRoutes : [],
+			title: this.props.titleFromLasterBreadcrumb ? _newTitleFromBreadcrumb : newTitle,
+		});
+		const obj = Object.assign({}, header, { breadcrumbRoutes: newBreadcrumbRoutes });
+		Object.keys(header).forEach((key) => {
+			const proto = header[key];
+			if (typeof proto == "function") {
+				header[key] = obj[key] = function(o) {
+					return  proto(dataType.isObject(o) ? Object.assign({}, o, obj) : obj);
+				};
+			}
+		});
+		return header;
+	};
+	newPageHeader = this.getNewPageHeader();
 	initDoms = (e) => {
 		if (e && (e.target.localName == "input" || e.target.localName == "textarea" || e.target.localName == "button"))
 			return;
@@ -85,8 +110,8 @@ class Page extends React.Component {
 		const _footerCopyright = copyright
 			? copyright
 			: this.props.footerCopyright
-				? this.props.footerCopyright
-				: footerCopyright;
+			? this.props.footerCopyright
+			: footerCopyright;
 
 		return (
 			<Zlayout.Template>
