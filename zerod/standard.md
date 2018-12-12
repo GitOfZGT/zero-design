@@ -208,7 +208,7 @@ const NewComponent = AshowDemoHOC(config);
 //例如：Home页面有 index.jsx、style.scss和Home.route.js
 // A.route.js写法：
 import lazyLoad from "@/lazyLoad/lazyLoad";
-const Home = lazyLoad(import("./"));
+const Home = lazyLoad(()=>import("./"));
 export default [
 	{
 		path: "/Home",

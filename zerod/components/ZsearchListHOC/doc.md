@@ -278,9 +278,13 @@ const pageConfig = {
 		</tr>
 	</thead>
 	<tbody>
-		  <tr>
+		 <tr>
 			<td>searchForm</td>
-			<td>searchForm.defaultExpanded 是否默认展开(false)，其他属性 请查看 <span class="z-history-href" data-path="/main/component-doc/ZsearchForm-doc">组件/ZsearchForm</span> 的 props  (除了onSearch, onReset, noCollapse 其他都有效),其中searchForm.items的render函数参数在这里多加tool,如：items:[{render:(form,changeFormItems,tool)=>{},key:"myKey"}]</td>
+			<td>
+				<p>searchForm.defaultExpanded 是否默认展开表单(默认值false)，其他属性还包含： 请查看 <span class="z-history-href" data-path="/main/component-doc/ZsearchForm-doc">组件/ZsearchForm</span> 的 props  (除了onSearch, onReset, noCollapse 其他都有效)。</p>
+				<p>其中searchForm.items的render函数参数在这里多加tool,如：items:[{render:(form,changeFormItems,tool)=>{},key:"myKey"}]。</p>
+				<p>还有searchForm的其他函数属性除了原有的参数，还多加tool，如 searchForm.afterItemsRendered:(form,methods,tool)=>{}</p>
+			</td>
 			<td>object</td>
 			<td>--</td>
 		</tr>
@@ -327,8 +331,8 @@ const pageConfig = {
 		</tr>
 		<tr>
 			<td><i class="zero-icon zerod-shengchangzhouqi"></i> panelHeader</td>
-			<td>列表面板的头部内容,为null则不显示面板头部</td>
-			<td>string | function(){return ;}</td>
+			<td>列表面板的头部内容,为null则不显示面板头部。也可以是一个对象：{left:(tool)=>span,center:(tool)=>span,right:(tool)=>span,}</td>
+			<td>string | (tool)=>span | object</td>
 			<td>列表</td>
 		</tr>
 		<tr>
@@ -389,12 +393,12 @@ const pageConfig = {
 			<td>getPageSize</td>
 			<td>设置pageSize的钩子 (listType, isListCard)=>isListCard ? 8 : 10</td>
 			<td>function</td>
-			<td>(listType, isListCard)=>isListCard ? 8 : 10</td>
+			<td>(listType, isListCard,tool)=>isListCard ? 8 : 10</td>
 		</tr>
 		<tr>
 			<td><i class="zero-icon zerod-shengchangzhouqi"></i> showAddBtn</td>
 			<td>是否显示新增按钮</td>
-			<td>boolean | function(record,index){return false}</td>
+			<td>boolean | function(tool){return false}</td>
 			<td>true</td>
 		</tr>
 		<tr>
@@ -406,7 +410,7 @@ const pageConfig = {
 		<tr>
 			<td><i class="zero-icon zerod-shengchangzhouqi"></i> showDetailBtn</td>
 			<td>是否显示详情按钮</td>
-			<td>boolean | function(record,index){return false}</td>
+			<td>boolean | function(record,index,tool){return false}</td>
 			<td>true</td>
 		</tr>
 		<tr>
@@ -418,7 +422,7 @@ const pageConfig = {
 		<tr>
 			<td><i class="zero-icon zerod-shengchangzhouqi"></i> showUpdateBtn</td>
 			<td>是否显示修改按钮</td>
-			<td>boolean | function(record,index){return false}</td>
+			<td>boolean | function(record,index,tool){return false}</td>
 			<td>true</td>
 		</tr>
 		<tr>
@@ -430,7 +434,7 @@ const pageConfig = {
 		<tr>
 			<td><i class="zero-icon zerod-shengchangzhouqi"></i> showDeleteBtn</td>
 			<td>是否显示删除按钮</td>
-			<td>boolean | function(record,index){return false}</td>
+			<td>boolean | function(record,index,tool){return false}</td>
 			<td>true</td>
 		</tr>
 		<tr>
@@ -442,7 +446,7 @@ const pageConfig = {
 		<tr>
 			<td>onMoreBtnClick</td>
 			<td>更多操作按钮点击事件，参数有item:当前按钮的map对象，record:当前行的数据</td>
-			<td>function(item, record){}</td>
+			<td>function(item, record,tool){}</td>
 			<td>--</td>
 		</tr>
 		<tr>
@@ -466,25 +470,25 @@ const pageConfig = {
 			<tr>
 			<td><i class="zero-icon zerod-shengchangzhouqi"></i> addBtnDisabled</td>
 			<td>是否禁用新建按钮</td>
-			<td>boolean | function(record,index){return false}</td>
+			<td>boolean | function(tool){return false}</td>
 			<td>false</td>
 		</tr>
 		<tr>
 			<td><i class="zero-icon zerod-shengchangzhouqi"></i> detailBtnDisabled</td>
 			<td>是否禁用详情按钮</td>
-			<td>boolean | function(record,index){return false}</td>
+			<td>boolean | function(record,index,tool){return false}</td>
 			<td>false</td>
 		</tr>
 		<tr>
 			<td><i class="zero-icon zerod-shengchangzhouqi"></i> updateBtnDisabled</td>
 			<td>是否禁用修改按钮</td>
-			<td>boolean | function(record,index){return false}</td>
+			<td>boolean | function(record,index,tool){return false}</td>
 			<td>false</td>
 		</tr>
 		<tr>
 			<td><i class="zero-icon zerod-shengchangzhouqi"></i> deleteBtnDisabled</td>
 			<td>是否禁用删除按钮</td>
-			<td>boolean | function(record,index){return false}</td>
+			<td>boolean | function(record,index,tool){return false}</td>
 			<td>false</td>
 		</tr>
 		<tr>

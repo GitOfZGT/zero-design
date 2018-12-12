@@ -17,8 +17,5 @@ function didRoot(App) {
 didRoot(App);
 
 if (module.hot) {
-	module.hot.accept("./App", () => {
-		const App = require("./App");
-		didRoot(App);
-	});
+	module.hot.accept();
 }

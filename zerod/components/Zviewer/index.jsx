@@ -27,7 +27,7 @@ export class Zviewer extends React.Component {
 					return img.dataset.url;
 				},
 				ready() {
-					const _container = this.viewer.body ? this.viewer.body.querySelector(".viewer-container") : null;
+					const _container = this.viewer.viewer ? this.viewer.viewer: null;
 					if (!_container || _container.querySelector(`.${cssClass["z-next"]}`) !== null) {
 						return;
 					}

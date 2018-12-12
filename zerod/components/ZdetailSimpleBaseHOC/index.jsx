@@ -94,7 +94,7 @@ export function ZdetailSimpleBaseHOC(pageConfig) {
 		getPanleHeader() {
 			const heading = this.config.detail.panelHeader;
 			return heading ? (
-				<div className="z-panel-heading">{typeof heading == "function" ? heading(this) : heading}</div>
+				<div className="z-panel-heading">{typeof heading == "function" ? heading(this.tool) : heading}</div>
 			) : null;
 		}
 		tool = {

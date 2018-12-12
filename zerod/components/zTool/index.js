@@ -983,12 +983,12 @@ export const mergeConfig = (defaultConfig, theConfig) => {
 	}
 };
 
-function itemsFromTree({ tree, sourceItem, item, keyObj, action }) {
+export function itemsFromTree({ tree, sourceItem, item, keyObj, action }) {
 	let finished = false;
 	for (let index = 0; index < tree.length; index++) {
 		const currentItem = tree[index];
 		if (currentItem[keyObj.id] === sourceItem[keyObj.id]) {
-			action({ tree, sourceItem, currentItem, item, index, keyObj });
+			action({ tree, currentItem, item, index, keyObj });
 			finished = true;
 		} else if (Array.isArray(currentItem[keyObj.children])) {
 			finished = itemsFromTree({ tree: currentItem[keyObj.children], sourceItem, item, keyObj, action });
@@ -1007,7 +1007,7 @@ function itemsFromTree({ tree, sourceItem, item, keyObj, action }) {
 export function removeItemFromTree(obj) {
 	// { tree, sourceItem, keyObj }
 	const newobj = deepCopy(obj);
-	newobj.action = function({ tree, sourceItem, currentItem, index, keyObj }) {
+	newobj.action = function({ tree, currentItem, index, keyObj }) {
 		tree.splice(index, 1);
 	};
 	if (itemsFromTree(newobj)) {
@@ -1015,7 +1015,7 @@ export function removeItemFromTree(obj) {
 	}
 }
 /**
- *用于替换json中一项数据
+ *用item数据替换json中一项sourceItem数据
  *
  * @export
  * @param {object} obj { tree:array, sourceItem:object,item:object, keyObj:{id:"id",children:"children"} }
@@ -1023,7 +1023,7 @@ export function removeItemFromTree(obj) {
  */
 export function replaceItemFromTree(obj) {
 	const newobj = deepCopy(obj);
-	newobj.action = function({ tree, sourceItem, currentItem, item, index, keyObj }) {
+	newobj.action = function({ tree, currentItem, item, index, keyObj }) {
 		tree.splice(index, 1, item);
 	};
 	if (itemsFromTree(newobj)) {
@@ -1031,19 +1031,70 @@ export function replaceItemFromTree(obj) {
 	}
 }
 /**
- *用于json中某项数据的children添加一项数据
+ *用于json中某项sourceItem数据的children添加一项item数据
  *
  * @export
  * @param {object} obj { tree:array, sourceItem:object,item:object, keyObj:{id:"id",children:"children"} }
  * @returns
  */
-export function addItemToTree(obj) {
+export function pushItemToTree(obj) {
 	const newobj = deepCopy(obj);
-	newobj.action = function({ tree, sourceItem, currentItem, item, index, keyObj }) {
+	newobj.action = function({ tree, currentItem, item, index, keyObj }) {
 		if (!Array.isArray(currentItem[keyObj.children])) {
 			currentItem[keyObj.children] = [];
 		}
 		currentItem[keyObj.children].push(item);
+	};
+	if (itemsFromTree(newobj)) {
+		return newobj.tree;
+	}
+}
+/**
+ *用于json中某项sourceItem数据的children添加一项item数据
+ *
+ * @export
+ * @param {object} obj { tree:array, sourceItem:object,item:object, keyObj:{id:"id",children:"children"} }
+ * @returns
+ */
+export function unshiftItemToTree(obj) {
+	const newobj = deepCopy(obj);
+	newobj.action = function({ tree, currentItem, item, index, keyObj }) {
+		if (!Array.isArray(currentItem[keyObj.children])) {
+			currentItem[keyObj.children] = [];
+		}
+		currentItem[keyObj.children].unshift(item);
+	};
+	if (itemsFromTree(newobj)) {
+		return newobj.tree;
+	}
+}
+/**
+ *用于将一项item数据插入在json中某项sourceItem数据之前
+ *
+ * @export
+ * @param {object} obj { tree:array, sourceItem:object,item:object, keyObj:{id:"id",children:"children"} }
+ * @returns
+ */
+export function insertBeforeItemFromTree(obj) {
+	const newobj = deepCopy(obj);
+	newobj.action = function({ tree, currentItem, item, index, keyObj }) {
+		tree.splice(index, 0, item);
+	};
+	if (itemsFromTree(newobj)) {
+		return newobj.tree;
+	}
+}
+/**
+ *用于将一项item数据插入在json中某项sourceItem数据之后
+ *
+ * @export
+ * @param {object} obj { tree:array, sourceItem:object,item:object, keyObj:{id:"id",children:"children"} }
+ * @returns
+ */
+export function insertAfterItemFromTree(obj) {
+	const newobj = deepCopy(obj);
+	newobj.action = function({ tree, currentItem, item, index, keyObj }) {
+		tree.splice(index+1, 0, item);
 	};
 	if (itemsFromTree(newobj)) {
 		return newobj.tree;
@@ -1084,6 +1135,7 @@ export const zTool = {
 	firstWordToUpperCase,
 	removeItemFromTree,
 	replaceItemFromTree,
-	addItemToTree,
+	pushItemToTree,
+	itemsFromTree,
 };
 export default zTool;

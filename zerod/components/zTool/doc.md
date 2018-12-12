@@ -434,7 +434,7 @@ const newTree= zTool.replaceItemFromTree({
 
 <div class="z-doc-titles"></div>
 
-## zTool.addItemToTree
+## zTool.pushItemToTree
 
 在json数组中一项数据的children新增一条子数据(不会造成原json的变异)，返回新的json数组
 
@@ -453,7 +453,7 @@ import { zTool } from "zerod";
 //例：
 const tree=[{id:2,name:"苹果"},{id:5,name:"蔬菜",children:[{id:9,name:"豆芽"}]}]
 //在{id:9}的那一条数据新增
-const newTree= zTool.addItemToTree({
+const newTree= zTool.pushItemToTree({
 	tree:tree,
 	sourceItem:{id:5},
 	item:{id:18,name:"莴笋"}

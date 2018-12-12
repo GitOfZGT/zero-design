@@ -3,7 +3,7 @@ import React from "react";
 import PropTypes from "prop-types";
 // zerod
 import { Zlayout, ZmainHOC } from "zerod";
-import GlobalLoading from "@/lazyLoad/Loading.jsx";
+// import GlobalLoading from "@/lazyLoad/Loading.jsx";
 // 路由组件
 import mainRoutes from "./load-child-routes.js";
 // ant ui
@@ -34,7 +34,7 @@ const pageConfig = {
 	// 路由配置信息
 	mainRoutes: mainRoutes,
 	// 加载前要显示一个全局loading
-	globalLoading: () => <GlobalLoading />,
+	// globalLoading: () => <GlobalLoading />,
 	// 侧边导航设置
 	sideMenu: {
 		//追加在上面的menu

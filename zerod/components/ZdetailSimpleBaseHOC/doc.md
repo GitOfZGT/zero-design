@@ -130,7 +130,7 @@ let defaultConfig = {
 		<tr>
 			<td>panelHeader</td>
 			<td>列表面板的头部内容,为null则不显示面板头部</td>
-			<td>string | function(){return ;}</td>
+			<td>string | function(tool){return ;}</td>
 			<td>列表</td>
 		</tr>
 		<tr>

@@ -154,11 +154,11 @@ export function ZmainHOC(pageConfig) {
 				return zTool.deepCopy(this.userInfoStorage);
 			},
 			collapseToggleEnd: () => {
-				this.config.beforeToggleCollapse && this.config.afterToggleCollapse(this.state.isCollapse);
+				this.config.afterToggleCollapse && this.config.afterToggleCollapse(this.state.isCollapse,this.tool);
 			},
 			//折叠按钮点击触发
 			collapseBtnClick: () => {
-				this.config.beforeToggleCollapse && this.config.beforeToggleCollapse(this.state.isCollapse);
+				this.config.beforeToggleCollapse && this.config.beforeToggleCollapse(this.state.isCollapse,this.tool);
 				this.setState({
 					isCollapse: !this.state.isCollapse,
 				});

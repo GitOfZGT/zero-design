@@ -46,7 +46,7 @@
 │ ├── /context/      # react “动态上下文” 文件
 │ ├── /HOC/          # 高阶组件，用于封装多次共用逻辑代码
 │ ├── /lazyLoad/
-│ │ ├── lazyLoad.js  # 这样使用const componet=lazyLoad(import('./componet.jsx'))实现异步组件
+│ │ ├── lazyLoad.js  # 这样使用const componet=lazyLoad(()=>import('./componet.jsx'))实现异步组件
 │ │ └── Loading.jsx  #
 │ ├── /mock/         # 模拟数据mock（如果需要）
 │ ├── /scss/         # 通用样式文件夹
@@ -171,7 +171,7 @@ const { AtabBar, ApageTitle } = components;
 //例如：Home页面有 index.jsx、style.scss和Home.route.js
 // A.route.js写法：
 import lazyLoad from "@/lazyLoad/lazyLoad";
-const Home = lazyLoad(import("./"));
+const Home = lazyLoad(()=>import("./"));
 export default [
 	{
 		path: "/Home",

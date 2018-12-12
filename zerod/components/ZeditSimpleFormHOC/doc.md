@@ -352,7 +352,7 @@ export default ZeditSimpleFormHOC(pageConfig);
 		<tr>
 			<td><i class="zero-icon zerod-shengchangzhouqi"></i> panelHeader</td>
 			<td>列表面板的头部内容,为null则不显示面板头部</td>
-			<td>string | function(){return ;}</td>
+			<td>string | function(tool){return ;}</td>
 			<td>列表</td>
 		</tr>
 		<tr>
@@ -382,7 +382,7 @@ export default ZeditSimpleFormHOC(pageConfig);
         <tr>
 			<td><i class="zero-icon zerod-shengchangzhouqi"></i> submitBtnRender</td>
 			<td>同 <span class="z-history-href" data-path="/main/component-doc/Zform-doc">组件/Zform</span> 的submitBtnRender属性</td>
-			<td>funtion(onSubmit,props){return ReactNode | Element;}</td>
+			<td>funtion(onSubmit,props,tool){return ReactNode | Element;}</td>
 			<td>--</td>
 		</tr>
 		<tr>

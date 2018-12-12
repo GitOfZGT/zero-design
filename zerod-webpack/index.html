@@ -1,97 +1,17 @@
 <!DOCTYPE html>
 <html>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width,initial-scale=1.0" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+		<meta name="renderer" content="webkit" />
+    <title>zerod-webpack</title>
+    <link rel="stylesheet" href="/static/pace/pace-theme-flash.css">
+    <script src="/static/pace/pace.min.js"></script>
+	</head>
 
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  <meta name="renderer" content="webkit">
-  <title>zerod-webpack</title>
-  <style>
-    .global-loading {
-      background-color: rgba(255, 255, 255, 1);
-      position: fixed;
-      z-index: 99999;
-      margin-top: 0px;
-      top: 0px;
-      left: 0;
-      right: 0;
-      bottom: 0;
-    }
-
-    .global-loading-center-absolute {
-      position: absolute;
-      left: 50%;
-      top: 50%;
-      height: 60px;
-      width: 60px;
-      margin-top: -30px;
-      margin-left: -30px;
-      -webkit-animation: global-loading-center-absolute 2s infinite;
-      animation: global-loading-center-absolute 2s infinite;
-
-    }
-    .object {
-      width: 20px;
-      height: 20px;
-      float: left;
-      -moz-border-radius: 50% 50% 50% 50%;
-      -webkit-border-radius: 50% 50% 50% 50%;
-      border-radius: 50% 50% 50% 50%;
-      margin-right: 20px;
-      margin-bottom: 20px;
-    }
-    .object:nth-child(2n+0) {
-      margin-right: 0px;
-
-    }
-    .object_one {
-      background-color: rgba(60, 161, 255, 1);
-    }
-
-    .object_two {
-      background-color: rgba(60, 161, 255, 0.8);
-    }
-
-    .object_three {
-      background-color: rgba(60, 161, 255, 0.7);
-    }
-
-    .object_four {
-      background-color: rgba(60, 161, 255, 0.3);
-    }
-
-    @-webkit-keyframes global-loading-center-absolute {
-      100% {
-        -ms-transform: rotate(360deg);
-        -webkit-transform: rotate(360deg);
-        transform: rotate(360deg);
-      }
-
-    }
-
-    @keyframes global-loading-center-absolute {
-      100% {
-        -ms-transform: rotate(360deg);
-        -webkit-transform: rotate(360deg);
-        transform: rotate(360deg);
-      }
-    }
-  </style>
-</head>
-
-<body>
-  <div id="app" class="app-content">
-    <div class="global-loading">
-      <div class="global-loading-center-absolute">
-        <div class="object object_one"></div>
-        <div class="object object_two"></div>
-        <div class="object object_three"></div>
-        <div class="object object_four"></div>
-      </div>
-    </div>
-  </div>
-  <!-- built files will be auto injected -->
-</body>
-
+	<body>
+		<div id="app" class="app-content"></div>
+		<!-- built files will be auto injected -->
+	</body>
 </html>

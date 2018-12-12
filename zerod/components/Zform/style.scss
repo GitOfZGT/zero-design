@@ -2,7 +2,7 @@
 
 @include z("form"){
     width:80%;
-    margin: 0 auto !important;
+	margin: 0 auto !important;
 }
 $--row-gutter: 12px;
 @include z("form-row") {

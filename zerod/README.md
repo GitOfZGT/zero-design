@@ -6,7 +6,7 @@
 
 `zerod` 需要搭配`zerod-admin-webpack`脚手架使用
 
-# zerod-admin-webpack 脚手架 v1.1.0
+# zerod-admin-webpack 脚手架 v1.1.3
 
 基于 `react + react-router + redux + react-redux + antd + zerod + scss` 的 webpack4 前端开发环境
 
@@ -30,7 +30,8 @@
 
 `git`地址：<a href="http://172.16.26.120/components/zerod-admin-webpack.git" target="_blank">http://172.16.26.120/components/zerod-admin-webpack.git</a>
 
-2018-11-22 更新1.1.0 去掉antd-scss-theme-plugin插件，添加happypack多线程插件，提高编译速度，添加DllPlugin和DllReferencePlugin
+2018-11-22 v1.1.0 去掉antd-scss-theme-plugin插件，添加happypack多线程插件，提高编译速度，添加DllPlugin和DllReferencePlugin  
+2018-12-11 v1.1.3 修复只分割代码未按需加载的问题，新增pace来显示加载loading
 
 
 <div class="z-doc-titles"></div>
@@ -55,7 +56,7 @@
 │ ├── /context/      # react “动态上下文” 文件
 │ ├── /HOC/          # 高阶组件，用于封装多次共用逻辑代码
 │ ├── /lazyLoad/
-│ │ ├── lazyLoad.js  # 这样使用const componet=lazyLoad(import('./componet.jsx'))实现异步组件
+│ │ ├── lazyLoad.js  # 这样使用const componet=lazyLoad(()=>import('./componet.jsx'))实现异步组件
 │ │ └── Loading.jsx  #
 │ ├── /mock/         # 数据模拟（建议使用 mockjs）
 │ ├── /scss/         # 通用样式文件夹

@@ -7,6 +7,9 @@ import {
 	const_getInsertLocation,
 	const_getMainTool,
 	const_getMethods,
+	const_extendArguments,
+	const_getPanelDefaultFormItems,
+	const_extendPanelFormConfig,
 } from "../constant";
 import { Tree, Modal } from "antd";
 const TreeNode = Tree.TreeNode;
@@ -14,7 +17,18 @@ import { ZsearchForm } from "../ZsearchForm";
 import cssClass from "./style.scss";
 import TreeTitle from "./TreeTitle";
 import ZerodMainContext from "../ZerodMainContext";
-import { dataTypeTest, deepCopy, removeItemFromTree, addItemToTree, replaceItemFromTree } from "../zTool";
+import {
+	unshiftItemToTree,
+	dataTypeTest,
+	deepCopy,
+	removeItemFromTree,
+	pushItemToTree,
+	replaceItemFromTree,
+	insertBeforeItemFromTree,
+	insertAfterItemFromTree,
+	itemsFromTree,
+	dataType,
+} from "../zTool";
 // import { Zlayout } from "../Zlayout";
 let defaultConfig = const_getListConfig("list", "ZtreePanel");
 class ZtreePanel extends React.Component {
@@ -60,27 +74,7 @@ class ZtreePanel extends React.Component {
 	};
 	static defaultProps = defaultConfig.tree;
 	treeDataKeys = Object.assign({ name: "name", id: "id", children: "children" }, this.props.treeDataKeys);
-	getDefaultFormItems = () => {
-		const formItems=this.props.colFormItems
-		? this.props.colFormItems
-		: this.props.searchForm
-		? this.props.searchForm.items
-		: []
-		return formItems.map(item=>{
-			return {
-				...item,
-				render:(form,changeFormItems)=>{
-					return typeof item.render=='function'&&item.render(form,changeFormItems,this.getExportSomething())
-				}
-			}
-		});
-	};
-	state = {
-		treeData: [],
-		colFormItems: this.props.searchForm && this.props.searchForm.defaultExpanded ? this.getDefaultFormItems() : [],
-	};
-	searchQuery = null;
-	ayncChild = typeof this.props.childApiInterface === "function";
+
 	methods = {
 		...const_getMethods.call(this),
 		// 获取列表数据
@@ -160,7 +154,7 @@ class ZtreePanel extends React.Component {
 				tree,
 				record,
 				data,
-				action: addItemToTree,
+				action: pushItemToTree,
 			});
 		},
 		//在tree中替换一条数据
@@ -171,6 +165,121 @@ class ZtreePanel extends React.Component {
 				data,
 				action: replaceItemFromTree,
 			});
+		},
+		getDropType: (info) => {
+			const dropKey = info.node.props.eventKey; //拖入的源key
+			const dragKey = info.dragNode.props.eventKey; //拖动对象的key
+			const dropPos = info.node.props.pos.split("-");
+			const dropPosition = info.dropPosition - Number(dropPos[dropPos.length - 1]);
+			let dropData = null;
+			let dragData = null;
+			const dropItem = { [this.treeDataKeys.id]: dropKey };
+			const dragItem = { [this.treeDataKeys.id]: dragKey };
+			let newTree = this.state.treeData;
+			itemsFromTree({
+				tree: newTree,
+				sourceItem: dropItem,
+				keyObj: this.treeDataKeys,
+				action: ({ tree, currentItem, index, keyObj }) => {
+					dropData = currentItem;
+				},
+			});
+			itemsFromTree({
+				tree: newTree,
+				sourceItem: dragItem,
+				keyObj: this.treeDataKeys,
+				action: ({ tree, currentItem, index, keyObj }) => {
+					dragData = currentItem;
+				},
+			});
+			if (!dragData || !dropData) return;
+			if (!info.dropToGap) {
+				return {
+					type: "inLast",
+					msg: `确认将 [${dragData[this.treeDataKeys.name]}] 放入到 [${
+						dropData[this.treeDataKeys.name]
+					}] 里面最后一个吗？`,
+					dropData,
+					dragData,
+				};
+			} else if ((info.node.props.children || []).length > 0 && info.node.props.expanded && dropPosition === 1) {
+				return {
+					type: "inFirst",
+					msg: `确认将 [${dragData[this.treeDataKeys.name]}] 放入到 [${
+						dropData[this.treeDataKeys.name]
+					}] 里面最前一个吗？`,
+					dropData,
+					dragData,
+				};
+			} else if (dropPosition === -1) {
+				return {
+					type: "insertBefore",
+					msg: `确认将 [${dragData[this.treeDataKeys.name]}] 移动到 [${
+						dropData[this.treeDataKeys.name]
+					}] 的前面吗？`,
+					dropData,
+					dragData,
+				};
+			} else {
+				return {
+					type: "insertAfter",
+					msg: `确认将[${dragData[this.treeDataKeys.name]}]移动到[${
+						dropData[this.treeDataKeys.name]
+					}]的后面吗？`,
+					dropData,
+					dragData,
+				};
+			}
+		},
+		dropDone: () => {
+			let newTree = [...this.state.treeData];
+			const { type, dropData, dragData } = this.methods.droped;
+			if (!type) return;
+			newTree = removeItemFromTree({
+				tree: newTree,
+				sourceItem: dragData,
+				keyObj: this.treeDataKeys,
+			});
+			newTree = this.methods.dropAction[type]({
+				tree: newTree,
+				sourceItem: dropData,
+				item: dragData,
+				keyObj: this.treeDataKeys,
+			});
+			this.setState({
+				treeData: newTree,
+			});
+		},
+		droped: {},
+		dropAction: {
+			inLast: pushItemToTree,
+			inFirst: unshiftItemToTree,
+			insertBefore: insertBeforeItemFromTree,
+			insertAfter: insertAfterItemFromTree,
+		},
+		onDrop: (info) => {
+			let { onDrop } = this.props.treeProps || {};
+			if (typeof onDrop == "function") {
+				const hasDrop = this.methods.getDropType(info);
+				if (hasDrop) {
+					this.methods.droped = hasDrop;
+					Modal.confirm({
+						title: this.methods.droped.msg,
+						content: "",
+						okText: "确定",
+						okType: "primary",
+						cancelText: "取消",
+						onOk: () => {
+							return onDrop(
+								info,
+								deepCopy(this.methods.droped),
+								this.methods.dropDone,
+								this.getExportSomething(),
+							);
+						},
+					});
+				}
+			}
 		},
 		// 删除按钮触发
 		onDelete: (record) => {
@@ -216,7 +325,7 @@ class ZtreePanel extends React.Component {
 		},
 		openSearch: () => {
 			this.setState({
-				colFormItems: this.state.colFormItems.length ? [] : this.props.colFormItems,
+				expandedSearch: !this.state.expandedSearch,
 			});
 		},
 		//外部可以通过这个函数获取当前列表中的数据，
@@ -241,18 +350,28 @@ class ZtreePanel extends React.Component {
 			},
 		};
 	}
+	searchFormConfig = const_extendPanelFormConfig.call(this);
+	colFormItems = const_getPanelDefaultFormItems.call(this);
+	state = {
+		treeData: [],
+		expandedSearch: this.searchFormConfig && this.searchFormConfig.defaultExpanded,
+	};
+	searchQuery = null;
+	ayncChild = typeof this.props.childApiInterface === "function";
 	getTreeNode(tree) {
-		return tree.map((node, index) => {
+		return tree.map((data, index) => {
 			const childrenKey = this.treeDataKeys.children;
 			const idKey = this.treeDataKeys.id;
 			const nameKey = this.treeDataKeys.name;
-			const cilds = Array.isArray(node[childrenKey]) ? node[childrenKey] : [];
+
+			const cilds = Array.isArray(data[childrenKey]) ? data[childrenKey] : [];
+			const { title, key, dataRef, ...otherData } = data;
 			return (
 				<TreeNode
 					title={
 						<TreeTitle
-							name={node[nameKey]}
-							record={node}
+							name={data[nameKey]}
+							record={data}
 							index={index}
 							moreBtnMap={this.props.moreBtnMap}
 							onMoreBtnClick={this.props.onMoreBtnClick}
@@ -270,8 +389,9 @@ class ZtreePanel extends React.Component {
 							deleteBtnDisabled={this.props.deleteBtnDisabled}
 						/>
 					}
-					key={node[idKey]}
-					dataRef={node}
+					key={data[idKey]}
+					dataRef={data}
+					{...otherData}
 				>
 					{cilds.length ? this.getTreeNode(cilds) : null}
 				</TreeNode>
@@ -284,20 +404,21 @@ class ZtreePanel extends React.Component {
 		this.methods.onSearch();
 	}
 	render() {
-		const { items, onSearch, onReset,defaultExpanded, noCollapse, ...formOthers } = this.props.searchForm
-			? this.props.searchForm
+		const { items, onSearch, onReset, defaultExpanded, noCollapse, ...formOthers } = this.searchFormConfig
+			? this.searchFormConfig
 			: {};
 		this.searchForm =
-			this.state.colFormItems && this.state.colFormItems.length ? (
+			this.colFormItems && this.colFormItems.length ? (
 				<ZsearchForm
-					colFormItems={this.state.colFormItems}
+					{...formOthers}
+					hidden={!this.state.expandedSearch}
+					colFormItems={this.colFormItems}
 					onSearch={this.methods.onSearch}
 					onReset={this.methods.onReset}
 					noCollapse={true}
-					{...formOthers}
 				/>
 			) : null;
-		const { showLine, loadData, ...treeOthers } = this.props.treeProps;
+		const { showLine, loadData, onDrop, ...treeOthers } = this.props.treeProps || {};
 		return (
 			<section
 				ref={(el) => {
@@ -313,8 +434,10 @@ class ZtreePanel extends React.Component {
 							{this.state.treeData.length ? (
 								<Tree
 									showLine
+									onDrop={this.methods.onDrop}
 									loadData={this.ayncChild ? this.methods.loadChildData : undefined}
 									{...treeOthers}
+									autoExpandParent={false}
 								>
 									{this.getTreeNode(this.state.treeData)}
 								</Tree>

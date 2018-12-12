@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, notification, message,Icon } from "antd";
+import { Button, notification, message, Icon } from "antd";
 import { dataType } from "./zTool";
 const noticeMethod = {
 	notification,
@@ -126,8 +126,14 @@ export const animateTimout = {
 	flipOutTime: 300,
 };
 //如在Zform中使用const_initItems.call(this,this.props.items,<Input placeholder="加载中" disabled />);
-export const const_initItems = function(items, disableControl, renderArgument = {}, changeItems = function() {}) {
-	// callback = dataType.isFunction(callback) ? callback : function() {};
+export const const_initItems = function(
+	items,
+	disableControl,
+	renderArgument = {},
+	changeItems = function() {},
+	callback,
+) {
+	callback = dataType.isFunction(callback) ? callback : function() {};
 	this.allAsync = [];
 	this.filedKeys = [];
 	const newItems = items.map((item, index) => {
@@ -165,9 +171,12 @@ export const const_initItems = function(items, disableControl, renderArgument = 
 		this.filedKeys.push(item.key);
 		return newItem;
 	});
-	this.setState({
-		items: newItems,
-	});
+	this.setState(
+		{
+			items: newItems,
+		},
+		callback,
+	);
 };
 
 export const const_itemSpan = function(control, currentSpan, defaultSpan) {
@@ -205,18 +214,23 @@ export const const_execAsync = function(callback) {
 				{
 					items: [...this.state.items],
 				},
-				callback,
+				() => {
+					this.setFieldValue();
+					callback(this.props.form, this.methods);
+				},
 			);
 		});
 	} else {
-		callback(this.props.form,this.methods);
+		this.setFieldValue();
+		callback(this.props.form, this.methods);
 	}
 };
 //ZtreePanel和ZlistPanel的heading,这里不能是箭头函数
 export const const_getPanleHeader = function() {
+	const tool = this.getExportSomething();
 	const { showAddBtn, addBtnDisabled } = this.props;
-	const _showAddBtn = typeof showAddBtn == "function" ? showAddBtn() : showAddBtn;
-	const _addBtnDisabled = typeof addBtnDisabled == "function" ? addBtnDisabled() : addBtnDisabled;
+	const _showAddBtn = typeof showAddBtn == "function" ? showAddBtn(tool) : showAddBtn;
+	const _addBtnDisabled = typeof addBtnDisabled == "function" ? addBtnDisabled(tool) : addBtnDisabled;
 	this.addBtn =
 		_showAddBtn && !this.state.isListCard ? (
 			// <div className="z-margin-bottom-15">
@@ -232,15 +246,30 @@ export const const_getPanleHeader = function() {
 		) : // </div>
 		null;
 	const heading = this.props.panelHeader;
-	const items=this.getDefaultFormItems();
-	return heading ? (
+	let left = null,
+		center = null,
+		right = null;
+
+	if (dataType.isObject(heading)) {
+		left = dataType.isFunction(heading.left) ? heading.left(tool) : left;
+		center = dataType.isFunction(heading.center) ? heading.center(tool) : center;
+		right = dataType.isFunction(heading.right) ? heading.right(tool) : right;
+	} else if (dataType.isFunction(heading)) {
+		left = heading(tool);
+	} else {
+		left = heading;
+	}
+	const items = this.colFormItems;
+	return left||center||right|| items.length||this.addBtn? (
 		<div className="z-panel-heading z-flex-items-v-center z-flex-space-between">
-			<span>{typeof heading == "function" ? heading(this) : <span>{heading}</span>}</span>
+			<span>{left}</span>
+			{center}
 			<span>
+				{right}
 				{items.length ? (
 					<Button type="dashed" icon="search" className="z-margin-left-10" onClick={this.methods.openSearch}>
 						条件查询
-						<Icon type={this.state.colFormItems.length?"caret-up":"caret-down"} theme="filled" />
+						<Icon type={this.state.expandedSearch ? "caret-up" : "caret-down"} theme="filled" />
 					</Button>
 				) : null}
 				{this.addBtn}
@@ -370,7 +399,7 @@ export const const_getListConfig = (name, componentName) => {
 		[name]: list,
 	};
 };
-import {ZpageWrapperProps} from './ZpageWrapper';
+import { ZpageWrapperProps } from "./ZpageWrapper";
 export const const_getPageWrapperProps = function(config) {
 	const newProps = {};
 	Object.keys(ZpageWrapperProps).forEach((key) => {
@@ -380,3 +409,39 @@ export const const_getPageWrapperProps = function(config) {
 	});
 	return newProps;
 };
+
+export function const_extendArguments(func, ...otherArg) {
+	if (dataType.isFunction(func))
+		return (...arg) => {
+			return func(...arg, ...otherArg);
+		};
+}
+//ZlistPanel 和 ZtreePanel 调用 const_extendPanelFormConfig.call(this)
+export function const_extendPanelFormConfig() {
+	const config = this.props.searchForm;
+	if (config) {
+		const newConfig = {};
+		Object.keys(config).forEach((key) => {
+			if (dataType.isFunction(config[key])) {
+				newConfig[key] = const_extendArguments(config[key], this.getExportSomething());
+			} else {
+				newConfig[key] = config[key];
+			}
+		});
+		return newConfig;
+	}
+}
+//ZlistPanel 和 ZtreePanel 调用 const_getPanelDefaultFormItems.call(this)
+export function const_getPanelDefaultFormItems() {
+	const formItems = this.props.colFormItems
+		? this.props.colFormItems
+		: this.searchFormConfig
+		? this.searchFormConfig.items
+		: [];
+	return formItems.map((item) => {
+		return {
+			...item,
+			render: const_extendArguments(item.render, this.getExportSomething()),
+		};
+	});
+}

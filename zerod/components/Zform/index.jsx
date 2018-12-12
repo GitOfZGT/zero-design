@@ -8,6 +8,7 @@ import ZpageLoading from "../ZpageLoading";
 export const Zform = Form.create()(
 	class extends React.Component {
 		static propTypes = {
+			className:PropTypes.string,
 			items: PropTypes.arrayOf(PropTypes.object),
 			getFormInstance: PropTypes.func,
 			getInbuiltTool: PropTypes.func,
@@ -51,7 +52,7 @@ export const Zform = Form.create()(
 				this.execAsync(newItems);
 			},
 		};
-		setFormValues() {
+		setFieldValue() {
 			if (this.props.formDefaultValues && this.state.items.length) {
 				const newValues = {};
 				this.filedKeys.forEach((key) => {
@@ -67,14 +68,17 @@ export const Zform = Form.create()(
 				Array.isArray(newItems) ? newItems : this.props.items,
 				<Input placeholder="加载中" disabled />,
 				this.props.form,
-				this.methods.changeFormItems,
+                this.methods.changeFormItems,
+                ()=>{
+                    const_execAsync.call(this, this.props.afterItemsRendered);
+                }
 			);
-			const_execAsync.call(this, this.props.afterItemsRendered);
+
 		}
 		componentDidMount() {
 			this.execAsync();
 			this.props.getFormInstance && this.props.getFormInstance(this.props.form,this.methods);
-			
+
 			this.props.getInbuiltTool &&
 				this.props.getInbuiltTool({
 					form: this.props.form,
@@ -84,11 +88,9 @@ export const Zform = Form.create()(
 		}
 		componentDidUpdate(prevProps, prevState) {
 			if (
-				(this.props.formDefaultValues !== prevProps.formDefaultValues ||
-					this.state.items !== prevState.items) &&
-				!this.allAsync.length
+				this.props.formDefaultValues !== prevProps.formDefaultValues
 			) {
-				this.setFormValues();
+				this.setFieldValue();
 			}
 			if (this.props.items !== prevProps.items && !this.allAsync.length) {
 				this.execAsync();

@@ -147,7 +147,11 @@ export default ZeditorTreeHOC(pageConfig);
 	<tbody>
 	    <tr>
 			<td>searchForm</td>
-			<td>searchForm.defaultExpanded 是否默认展开(false)，其他属性 请查看 <span class="z-history-href" data-path="/main/component-doc/ZsearchForm-doc">组件/ZsearchForm</span> 的 props  (除了onSearch, onReset, noCollapse 其他都有效),其中searchForm.items的render函数参数在这里多加tool,如：items:[{render:(form,changeFormItems,tool)=>{},key:"myKey"}]</td>
+			<td>
+				<p>searchForm.defaultExpanded 是否默认展开表单(默认值false)，其他属性还包含： 请查看 <span class="z-history-href" data-path="/main/component-doc/ZsearchForm-doc">组件/ZsearchForm</span> 的 props  (除了onSearch, onReset, noCollapse 其他都有效)。</p>
+				<p>其中searchForm.items的render函数参数在这里多加tool,如：items:[{render:(form,changeFormItems,tool)=>{},key:"myKey"}]。</p>
+				<p>还有searchForm的其他函数属性除了原有的参数，还多加tool，如 searchForm.afterItemsRendered:(form,methods,tool)=>{}</p>
+			</td>
 			<td>object</td>
 			<td>--</td>
 		</tr>
@@ -176,8 +180,8 @@ export default ZeditorTreeHOC(pageConfig);
 	<tbody>
 		<tr>
 			<td><i class="zero-icon zerod-shengchangzhouqi"></i> panelHeader</td>
-			<td>列表面板的头部内容,为null则不显示面板头部</td>
-			<td>string | function(){return ;}</td>
+			<td>列表面板的头部内容,为null则不显示面板头部。也可以是一个对象：{left:(tool)=>span,center:(tool)=>span,right:(tool)=>span,}</td>
+			<td>string | (tool)=>span | object</td>
 			<td>列表</td>
 		</tr>
 		<tr>

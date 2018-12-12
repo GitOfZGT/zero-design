@@ -7,6 +7,8 @@ import {
 	const_getInsertLocation,
 	const_getMainTool,
 	const_getMethods,
+	const_extendPanelFormConfig,
+	const_getPanelDefaultFormItems,
 } from "../constant";
 import { Button, Icon, Divider, Dropdown, Menu, Modal } from "antd";
 import { ZsearchForm } from "../ZsearchForm";
@@ -72,50 +74,18 @@ class ZlistPanel extends React.Component {
 	hasMoreMenu = this.props.moreBtnMap && this.props.moreBtnMap.length;
 	//更多操作按钮
 	moreMenu = (record, index, otherItem) => {
+		const tool=this.getExportSomething();
 		const onClick = this.methods.handleMenuClick(record);
 		const items = otherItem ? [otherItem] : [];
 		this.hasMoreMenu &&
 			this.props.moreBtnMap.forEach((item) => {
 				const { show, name, ...others } = item;
-				const _show = typeof show == "function" ? show(record, index, item) : show === undefined ? true : show;
+				const _show = typeof show == "function" ? show(record, index, item,tool) : show === undefined ? true : show;
 				if (_show) items.push(<Menu.Item {...others}>{name}</Menu.Item>);
 			});
 		return items.length ? <Menu onClick={onClick}>{items}</Menu> : <span />;
 	};
-	getDefaultFormItems = () => {
-		const formItems=this.props.colFormItems
-		? this.props.colFormItems
-		: this.props.searchForm
-		? this.props.searchForm.items
-		: []
-		return formItems.map(item=>{
-			return {
-				...item,
-				render:(form,changeFormItems)=>{
-					return typeof item.render=='function'&&item.render(form,changeFormItems,this.getExportSomething())
-				}
-			}
-		});
-	};
-	state = {
-		listData: [],
-		noMore: false,
-		isListCard: this.props.listType === "card",
-		colFormItems: this.props.searchForm && this.props.searchForm.defaultExpanded ? this.getDefaultFormItems() : [],
-		expandedRowKeys: [],
-	};
-	isInfinite = this.props.paginationType === "infinite";
-	getPageSize = () => {
-		return this.props.getPageSize(this.props.listType, this.state.isListCard);
-	};
-	page = {
-		pageNumber: 1,
-		pageSize: this.getPageSize(),
-		totalCount: 0,
-		totalPage: 1,
-	};
-	searchQuery = null;
-	sorter = {};
+
 	methods = {
 		...const_getMethods.call(this),
 		handleMenuClick: (record) => {
@@ -311,7 +281,7 @@ class ZlistPanel extends React.Component {
 		},
 		openSearch: () => {
 			this.setState({
-				colFormItems: this.state.colFormItems.length ? [] : this.props.colFormItems,
+				expandedSearch: !this.state.expandedSearch,
 			});
 		},
 		//外部可以通过这个函数获取当前列表中的数据，
@@ -369,33 +339,34 @@ class ZlistPanel extends React.Component {
 						key: "actionBtns",
 						width: this.props.actionColumnWidth,
 						render: (text, record, index) => {
+							const tool=this.getExportSomething();
 							if (typeof this.props.actionRender === "function") {
 								return this.props.actionRender(
 									text,
 									record,
 									index,
-									this.getExportSomething(),
+									tool,
 									this.props.listType,
 								);
 							}
 							const _showDetailBtn =
-								typeof showDetailBtn == "function" ? showDetailBtn(record, index) : showDetailBtn;
+								typeof showDetailBtn == "function" ? showDetailBtn(record, index,tool) : showDetailBtn;
 							const _showUpdateBtn =
-								typeof showUpdateBtn == "function" ? showUpdateBtn(record, index) : showUpdateBtn;
+								typeof showUpdateBtn == "function" ? showUpdateBtn(record, index,tool) : showUpdateBtn;
 							const _showDeleteBtn =
-								typeof showDeleteBtn == "function" ? showDeleteBtn(record, index) : showDeleteBtn;
+								typeof showDeleteBtn == "function" ? showDeleteBtn(record, index,tool) : showDeleteBtn;
 
 							const _detailBtnDisabled =
 								typeof detailBtnDisabled == "function"
-									? detailBtnDisabled(record, index)
+									? detailBtnDisabled(record, index,tool)
 									: detailBtnDisabled;
 							const _updateBtnDisabled =
 								typeof updateBtnDisabled == "function"
-									? updateBtnDisabled(record, index)
+									? updateBtnDisabled(record, index,tool)
 									: updateBtnDisabled;
 							const _deleteBtnDisabled =
 								typeof deleteBtnDisabled == "function"
-									? deleteBtnDisabled(record, index)
+									? deleteBtnDisabled(record, index,tool)
 									: deleteBtnDisabled;
 
 							const detailBtnName = "详情";
@@ -508,7 +479,29 @@ class ZlistPanel extends React.Component {
 			},
 		};
 	}
+	searchFormConfig = const_extendPanelFormConfig.call(this);
+	colFormItems = const_getPanelDefaultFormItems.call(this);
+	state = {
+		listData: [],
+		noMore: false,
+		isListCard: this.props.listType === "card",
 
+		expandedRowKeys: [],
+		expandedSearch: this.searchFormConfig && this.searchFormConfig.defaultExpanded,
+	};
+	isInfinite = this.props.paginationType === "infinite";
+	getPageSize = () => {
+		const tool=this.getExportSomething();
+		return this.props.getPageSize(this.props.listType, this.state.isListCard,tool);
+	};
+	page = {
+		pageNumber: 1,
+		pageSize: this.getPageSize(),
+		totalCount: 0,
+		totalPage: 1,
+	};
+	searchQuery = null;
+	sorter = {};
 	componentDidMount() {
 		this.props.exportSomething && this.props.exportSomething(this.getExportSomething());
 		this.insertLocation = const_getInsertLocation(this.hocWrapperEl);
@@ -535,17 +528,18 @@ class ZlistPanel extends React.Component {
 			) : (
 				this.props.moreContentRender && this.props.moreContentRender(this.getExportSomething())
 			);
-		const { items, onSearch, onReset, noCollapse, defaultExpanded, ...formOthers } = this.props.searchForm
-			? this.props.searchForm
+		const { items, onSearch, onReset, noCollapse, defaultExpanded, ...formOthers } = this.searchFormConfig
+			? this.searchFormConfig
 			: {};
 		this.searchForm =
-			this.state.colFormItems && this.state.colFormItems.length ? (
+			this.colFormItems && this.colFormItems.length ? (
 				<ZsearchForm
-					colFormItems={this.state.colFormItems}
+					{...formOthers}
+					hidden={!this.state.expandedSearch}
+					colFormItems={this.colFormItems}
 					onSearch={this.methods.onSearch}
 					onReset={this.methods.onReset}
 					noCollapse={true}
-					{...formOthers}
 				/>
 			) : null;
 

@@ -5,9 +5,12 @@ import cssClass from "./style.scss";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
 import { animateTimout, const_initItems, const_execAsync, const_itemSpan } from "../constant";
 import ZpageLoading from "../ZpageLoading";
+import { once, } from "../zTool";
 export const ZsearchForm = Form.create()(
 	class extends React.Component {
 		static propTypes = {
+			hidden: PropTypes.bool,
+			className: PropTypes.string,
 			colFormItems: PropTypes.arrayOf(PropTypes.object), //兼容旧版本，现由items替代
 			items: PropTypes.arrayOf(PropTypes.object),
 			onSearch: PropTypes.func,
@@ -23,6 +26,7 @@ export const ZsearchForm = Form.create()(
 			defaultSpan: { xxl: 6, xl: 8, lg: 12, md: 24 },
 			collapseCount: 3,
 			noCollapse: false,
+			hidden: false,
 		};
 		state = {
 			expand: this.props.noCollapse,
@@ -52,7 +56,7 @@ export const ZsearchForm = Form.create()(
 		config = {
 			collapseCount: this.props.collapseCount,
 		};
-		setFormValues() {
+		setFieldValue() {
 			if (this.props.formDefaultValues && this.state.items.length) {
 				const newValues = {};
 				this.filedKeys.forEach((key) => {
@@ -62,6 +66,7 @@ export const ZsearchForm = Form.create()(
 				this.props.form.setFieldsValue(newValues);
 			}
 		}
+
 		execAsync(newItems) {
 			const items = this.props.items ? this.props.items : this.props.colFormItems;
 			const_initItems.call(
@@ -70,20 +75,35 @@ export const ZsearchForm = Form.create()(
 				<Input placeholder="加载中" disabled />,
 				this.props.form,
 				this.methods.changeFormItems,
+				() => {
+					const_execAsync.call(this, this.props.afterItemsRendered);
+				},
 			);
-			const_execAsync.call(this, this.props.afterItemsRendered);
+		}
+		setAnimate=() =>{
+			if (this.props.hidden) {
+				this.formEl.style.height = (this.formEl.scrollHeight > 0 ? this.formEl.scrollHeight : 1) + "px";
+				setTimeout(() => {
+					this.formEl.style.height = "0px";
+				},10);
+			} else {
+				this.formEl.style.height = "0px";
+				setTimeout(() => {
+					this.formEl.style.height = (this.formEl.scrollHeight > 0 ? this.formEl.scrollHeight : 1) + "px";
+					once(this.formEl, "transitionend", () => {
+						this.formEl.style.height = "";
+					});
+				},10);
+			}
 		}
 		componentDidMount() {
+			this.props.getFormInstance && this.props.getFormInstance(this.props.form, this.methods);
 			this.execAsync();
-			this.props.getFormInstance && this.props.getFormInstance(this.props.form,this.methods);
+			this.setAnimate();
 		}
 		componentDidUpdate(prevProps, prevState) {
-			if (
-				(this.props.formDefaultValues !== prevProps.formDefaultValues ||
-					this.state.items !== prevState.items) &&
-				!this.allAsync.length
-			) {
-				this.setFormValues();
+			if (this.props.formDefaultValues !== prevProps.formDefaultValues) {
+				this.setFieldValue();
 			}
 			if (
 				(this.props.items !== prevProps.items || this.props.colFormItems !== prevProps.colFormItems) &&
@@ -91,12 +111,18 @@ export const ZsearchForm = Form.create()(
 			) {
 				this.execAsync();
 			}
+			if (this.props.hidden !== prevProps.hidden) {
+				this.setAnimate();
+			}
 		}
 		getFormItems() {
 			const { getFieldDecorator } = this.props.form;
 			const items = this.state.expand ? this.state.items : this.state.items.slice(0, this.config.collapseCount);
 			return items.map((item, i) => {
-				const control = typeof item.control === "function" ? item.control(this.props.form,this.methods.changeFormItems) : item.control;
+				const control =
+					typeof item.control === "function"
+						? item.control(this.props.form, this.methods.changeFormItems)
+						: item.control;
 				const span = const_itemSpan(control, item.span, item.defaultSpan);
 				const isFormItem = typeof item.isFormItem === "boolean" ? item.isFormItem : true;
 				return (
@@ -120,40 +146,47 @@ export const ZsearchForm = Form.create()(
 		}
 		render() {
 			this.items = this.getFormItems();
+			const { className, hidden } = this.props;
 			return (
-				<Form className={cssClass["z-search-form"]} onSubmit={this.methods.handleSearch}>
-					<Row type="flex" className={cssClass["z-form-row"]}>
-						<TransitionGroup component={null} enter={true} exit={true} appear={true}>
-							{this.items}
-						</TransitionGroup>
-						{this.items.length ? (
-							<Col
-								{...(typeof this.props.defaultSpan == "number"
-									? { md: this.props.defaultSpan }
-									: this.props.defaultSpan)}
-								className="z-flex-items-end"
-							>
-								<div className="ant-form-item z-padding-bottom-4">
-									<Button type="primary" htmlType="submit">
-										查询
-									</Button>
-									<Button className={`z-margin-left-15`} onClick={this.methods.handleReset}>
-										重置
-									</Button>
-									{this.state.items.length > this.config.collapseCount && !this.props.noCollapse ? (
-										<Button
-											className={`z-margin-left-15 z-font-size-12`}
-											onClick={this.methods.expandToggle}
-										>
-											{this.state.expand ? "折叠" : "展开"}
-											<Icon type={this.state.expand ? "up" : "down"} />
+				<div
+					ref={(el) => (this.formEl = el)}
+					className={`${cssClass["z-search-form"]} ${className ? className : ""}`}
+				>
+					<Form onSubmit={this.methods.handleSearch}>
+						<Row type="flex" className={cssClass["z-form-row"]}>
+							<TransitionGroup component={null} enter={true} exit={true} appear={true}>
+								{this.items}
+							</TransitionGroup>
+							{this.items.length ? (
+								<Col
+									{...(typeof this.props.defaultSpan == "number"
+										? { md: this.props.defaultSpan }
+										: this.props.defaultSpan)}
+									className="z-flex-items-end"
+								>
+									<div className="ant-form-item z-padding-bottom-4">
+										<Button type="primary" htmlType="submit">
+											查询
 										</Button>
-									) : null}
-								</div>
-							</Col>
-						) : null}
-					</Row>
-				</Form>
+										<Button className={`z-margin-left-15`} onClick={this.methods.handleReset}>
+											重置
+										</Button>
+										{this.state.items.length > this.config.collapseCount &&
+										!this.props.noCollapse ? (
+											<Button
+												className={`z-margin-left-15 z-font-size-12`}
+												onClick={this.methods.expandToggle}
+											>
+												{this.state.expand ? "折叠" : "展开"}
+												<Icon type={this.state.expand ? "up" : "down"} />
+											</Button>
+										) : null}
+									</div>
+								</Col>
+							) : null}
+						</Row>
+					</Form>
+				</div>
 			);
 		}
 	},

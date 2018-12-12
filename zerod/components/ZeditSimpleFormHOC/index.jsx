@@ -1,6 +1,6 @@
 import React from "react";
 import { withRouter } from "react-router-dom";
-import { const_getInsertLocation, const_getMainTool, const_getMethods ,const_getPageWrapperProps} from "../constant";
+import { const_getInsertLocation, const_getMainTool, const_getMethods ,const_getPageWrapperProps,const_extendArguments} from "../constant";
 import PropTypes from "prop-types";
 import { Zform } from "../Zform";
 // import { Input } from "antd";
@@ -146,7 +146,7 @@ export function ZeditSimpleFormHOC(pageConfig) {
 		getPanleHeader() {
 			const heading = this.config.form.panelHeader;
 			return heading ? (
-				<div className="z-panel-heading">{typeof heading == "function" ? heading(this) : heading}</div>
+				<div className="z-panel-heading">{typeof heading == "function" ? heading(this.tool) : heading}</div>
 			) : null;
 		}
 		getFormInstance = (form) => {
@@ -201,6 +201,7 @@ export function ZeditSimpleFormHOC(pageConfig) {
 				onSubmit,
 				submitBtnName,
 				items,
+				submitBtnRender,
 				...formOthers
 			} = this.config.form;
 			return (
@@ -219,6 +220,7 @@ export function ZeditSimpleFormHOC(pageConfig) {
 							<div className="z-panel-body">
 								<Zform
 									{...formOthers}
+									submitBtnRender={const_extendArguments(submitBtnRender,this.tool)}
 									items={this.formItems}
 									onSubmit={this.methods.onSubmit}
 									getFormInstance={this.getFormInstance}

@@ -4,6 +4,7 @@ import { Zlayout } from "../Zlayout";
 import cssClass from "./style.scss";
 // 表格类型
 export default function tableTemplate() {
+	const tool = this.getExportSomething();
 	const {
 		columns,
 		dataSource,
@@ -23,7 +24,7 @@ export default function tableTemplate() {
 	const _onExpandedRowsChange =
 		typeof onExpandedRowsChange == "function"
 			? (expandedRows) => {
-					onExpandedRowsChange(expandedRows, this.getExportSomething());
+					onExpandedRowsChange(expandedRows, tool);
 			  }
 			: (expandedRows) => {
                 this.setState({
@@ -32,7 +33,7 @@ export default function tableTemplate() {
             };
 	return (
 		<Zlayout.Template>
-			{this.props.panelBeforeRender && this.props.panelBeforeRender(this.getExportSomething())}
+			{this.props.panelBeforeRender && this.props.panelBeforeRender(tool)}
 			<div className="z-panel">
 				{this.getPanleHeader()}
 				<div className="z-panel-body">
@@ -53,7 +54,7 @@ export default function tableTemplate() {
 					{this.moreBtn}
 				</div>
 			</div>
-			{this.props.panelAfterRender && this.props.panelAfterRender(this.getExportSomething())}
+			{this.props.panelAfterRender && this.props.panelAfterRender(tool)}
 		</Zlayout.Template>
 	);
 }

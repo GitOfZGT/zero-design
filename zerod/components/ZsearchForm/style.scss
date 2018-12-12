@@ -1,6 +1,12 @@
 @import "../../scssMixin/generateClassName";
 
-
+@include z("search-form"){
+	transition: height 0.2s ease-out;
+	overflow: hidden;
+	@include is("height-0"){
+		height: 0;
+	}
+}
 $--row-gutter: 12px;
 @include z("form-row") {
 	:global {

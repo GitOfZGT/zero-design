@@ -4,6 +4,7 @@ import { Button, Dropdown, Menu, Icon } from "antd";
 import cssClass from "./style.scss";
 class TreeTitle extends React.Component {
 	static propTypes = {
+		tool:PropTypes.object,
 		name: PropTypes.string,
 		record: PropTypes.any,
 		index: PropTypes.number,
@@ -28,12 +29,13 @@ class TreeTitle extends React.Component {
 
 	//更多操作按钮
 	moreMenu = (record, index) => {
+		const tool=this.props.tool;
 		const onClick = this.methods.handleMenuClick(record);
 		const items = [];
 		this.hasMoreMenu &&
 			this.props.moreBtnMap.forEach((item) => {
 				const { show, name, ...others } = item;
-				const _show = typeof show == "function" ? show(record, index, item) : show === undefined ? true : show;
+				const _show = typeof show == "function" ? show(record, index, item,tool) : show === undefined ? true : show;
 				if (_show) items.push(<Menu.Item {...others}>{name}</Menu.Item>);
 			});
 		return items.length ? <Menu onClick={onClick}>{items}</Menu> : <span />;
@@ -70,19 +72,20 @@ class TreeTitle extends React.Component {
 		) : null;
 	};
 	render() {
+		const tool=this.props.tool;
 		const { showDetailBtn, showUpdateBtn,showAddChildBtn, showDeleteBtn,detailBtnDisabled,updateBtnDisabled,addChildBtnDisabled,deleteBtnDisabled, record, index } = this.props;
-		const _showDetailBtn = typeof showDetailBtn == "function" ? showDetailBtn(record, index) : showDetailBtn;
-		const _showUpdateBtn = typeof showUpdateBtn == "function" ? showUpdateBtn(record, index) : showUpdateBtn;
-		const _showAddChildBtn = typeof showUpdateBtn == "function" ? showAddChildBtn(record, index) : showAddChildBtn;
-		const _showDeleteBtn = typeof showDeleteBtn == "function" ? showDeleteBtn(record, index) : showDeleteBtn;
+		const _showDetailBtn = typeof showDetailBtn == "function" ? showDetailBtn(record, index,tool) : showDetailBtn;
+		const _showUpdateBtn = typeof showUpdateBtn == "function" ? showUpdateBtn(record, index,tool) : showUpdateBtn;
+		const _showAddChildBtn = typeof showUpdateBtn == "function" ? showAddChildBtn(record, index,tool) : showAddChildBtn;
+		const _showDeleteBtn = typeof showDeleteBtn == "function" ? showDeleteBtn(record, index,tool) : showDeleteBtn;
 		const _detailBtnDisabled =
-			typeof detailBtnDisabled == "function" ? detailBtnDisabled(record, index) : detailBtnDisabled;
+			typeof detailBtnDisabled == "function" ? detailBtnDisabled(record, index,tool) : detailBtnDisabled;
 		const _updateBtnDisabled =
-			typeof updateBtnDisabled == "function" ? updateBtnDisabled(record, index) : updateBtnDisabled;
+			typeof updateBtnDisabled == "function" ? updateBtnDisabled(record, index,tool) : updateBtnDisabled;
 		const _addChildBtnDisabled =
-			typeof addChildBtnDisabled == "function" ? addChildBtnDisabled(record, index) : addChildBtnDisabled;
+			typeof addChildBtnDisabled == "function" ? addChildBtnDisabled(record, index,tool) : addChildBtnDisabled;
 		const _deleteBtnDisabled =
-			typeof deleteBtnDisabled == "function" ? deleteBtnDisabled(record, index) : deleteBtnDisabled;
+			typeof deleteBtnDisabled == "function" ? deleteBtnDisabled(record, index,tool) : deleteBtnDisabled;
 		return (
 			<span className="z-flex-space-between">
 				<span>{this.props.name}</span>

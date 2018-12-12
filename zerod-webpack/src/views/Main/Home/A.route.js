@@ -1,5 +1,5 @@
 import lazyLoad from "@/lazyLoad/lazyLoad";
-const Home = lazyLoad(import("./"));
+const Home = lazyLoad(()=>import("./"));
 
 export default [
 	{

@@ -154,6 +154,12 @@ class Myjavascript extends React.Component {
 			<td>function(form,methods){}</td>
 			<td>--</td>
 		</tr>
+		 <tr>
+			<td>hidden</td>
+			<td>通过改变height隐藏/显示ZsearchForm</a></td>
+			<td>boolean</td>
+			<td>false</td>
+		</tr>
 	</tbody>
 </table>
 

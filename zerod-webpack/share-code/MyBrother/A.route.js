@@ -1,5 +1,5 @@
 import lazyLoad from "@/lazyLoad/lazyLoad";
-const Component = lazyLoad(import("./"));
+const Component = lazyLoad(()=>import("./"));
 
 export default [
 	{

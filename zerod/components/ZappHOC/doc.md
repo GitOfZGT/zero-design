@@ -14,7 +14,7 @@ import { ZappHOC } from "zerod";
 
 // 路由组件
 import lazyLoad from "@/lazyLoad/lazyLoad";
-const Main = lazyLoad(import("@/views/Main/"));
+const Main = lazyLoad(()=>import("@/views/Main/"));
 
 const pageConfig = {
 	rootRoutes: [

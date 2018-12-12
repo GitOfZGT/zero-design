@@ -286,19 +286,19 @@ export default ZmainHOC(pageConfig);
 		<tr>
 			<td>beforeToggleCollapse</td>
 			<td>侧边栏折叠按钮触发后，过渡动画之前回调,参数有折叠状态collapsed</td>
-			<td>function(collapsed){}</td>
+			<td>function(collapsed,tool){}</td>
 			<td>--</td>
 		</tr>
 		<tr>
-			<td>beforeToggleCollapse</td>
+			<td>afterToggleCollapse</td>
 			<td>侧边栏折叠按钮触发后，过渡动画之后回调,参数有折叠状态collapsed</td>
-			<td>function(collapsed){}</td>
+			<td>function(collapsed,tool){}</td>
 			<td>--</td>
 		</tr>
 		<tr>
 			<td>componentDidMount</td>
 			<td>main组件加载完的钩子,考虑到可能走后台接口,提供一个一定要调用的callback，这个函数可传入两个可选参数:callback(userInfo = {}, menuData = []),userInfo是用户登录后要储存的一个对象，menuData是侧边导航的数据(map结构由pageConfig.sideMenu.mapKeys对应)。$router:是一个对象，提供history和location属性</td>
-			<td>function(callback,$router){}</td>
+			<td>function(callback,$router,tool){}</td>
 			<td>--</td>
 		</tr>
 	</tbody>
