@@ -22,6 +22,7 @@ import tableTemplate from "./tableTemplate";
 import cardTemplate from "./cardTemplate";
 import simpleTemplate from "./simpleTemplate";
 let defaultConfig = const_getListConfig("list", "ZlistPanel");
+import {ZroundingButton} from '../ZroundingButton';
 class ZlistPanel extends React.Component {
 	static propTypes = {
 		listType: PropTypes.string, // table | card
@@ -41,6 +42,7 @@ class ZlistPanel extends React.Component {
 		colFormItems: PropTypes.arrayOf(PropTypes.object), // 搜索表单列map数据数据,同searchForm.items （版本兼容）
 		tableColumns: PropTypes.arrayOf(PropTypes.object), // 表格列map数据数据，同antd的表格 columns
 		moreBtnMap: PropTypes.arrayOf(PropTypes.object), //更多操作按钮的map数据
+		moreBtnType: PropTypes.string, // menu | rounding
 		onMoreBtnClick: PropTypes.func, // 更多按钮点击事件
 		actionColumnWidth: PropTypes.oneOfType([PropTypes.string, PropTypes.number]), //表格操作列的宽度
 		actionDataIndex: PropTypes.any, // 操作列的key
@@ -73,17 +75,42 @@ class ZlistPanel extends React.Component {
 
 	hasMoreMenu = this.props.moreBtnMap && this.props.moreBtnMap.length;
 	//更多操作按钮
-	moreMenu = (record, index, otherItem) => {
-		const tool=this.getExportSomething();
+	moreMenu = (record, index) => {
+		const tool = this.getExportSomething();
 		const onClick = this.methods.handleMenuClick(record);
-		const items = otherItem ? [otherItem] : [];
+		const items = [];
 		this.hasMoreMenu &&
 			this.props.moreBtnMap.forEach((item) => {
-				const { show, name, ...others } = item;
-				const _show = typeof show == "function" ? show(record, index, item,tool) : show === undefined ? true : show;
-				if (_show) items.push(<Menu.Item {...others}>{name}</Menu.Item>);
+				const { show, disbaled, name, ...others } = item;
+				const _show =
+					typeof show == "function" ? show(record, index, item, tool) : show === undefined ? true : show;
+				const _disbaled =
+					typeof disbaled == "function"
+						? disbaled(record, index, item, tool)
+						: disbaled === undefined
+						? false
+						: disbaled;
+				if (this.props.moreBtnType == "rounding") {
+					items.push({
+						...item,
+						show: _show,
+						disabled: _disbaled,
+						onClick: onClick,
+					});
+				} else if (_show)
+					items.push(
+						<Menu.Item disabled={_disbaled} {...others}>
+							{name}
+						</Menu.Item>,
+					);
 			});
-		return items.length ? <Menu onClick={onClick}>{items}</Menu> : <span />;
+		return this.props.moreBtnType == "rounding" ? (
+			items
+		) : items.length ? (
+			<Menu onClick={onClick}>{items}</Menu>
+		) : (
+			<span />
+		);
 	};
 
 	methods = {
@@ -339,34 +366,28 @@ class ZlistPanel extends React.Component {
 						key: "actionBtns",
 						width: this.props.actionColumnWidth,
 						render: (text, record, index) => {
-							const tool=this.getExportSomething();
+							const tool = this.getExportSomething();
 							if (typeof this.props.actionRender === "function") {
-								return this.props.actionRender(
-									text,
-									record,
-									index,
-									tool,
-									this.props.listType,
-								);
+								return this.props.actionRender(text, record, index, tool, this.props.listType);
 							}
 							const _showDetailBtn =
-								typeof showDetailBtn == "function" ? showDetailBtn(record, index,tool) : showDetailBtn;
+								typeof showDetailBtn == "function" ? showDetailBtn(record, index, tool) : showDetailBtn;
 							const _showUpdateBtn =
-								typeof showUpdateBtn == "function" ? showUpdateBtn(record, index,tool) : showUpdateBtn;
+								typeof showUpdateBtn == "function" ? showUpdateBtn(record, index, tool) : showUpdateBtn;
 							const _showDeleteBtn =
-								typeof showDeleteBtn == "function" ? showDeleteBtn(record, index,tool) : showDeleteBtn;
+								typeof showDeleteBtn == "function" ? showDeleteBtn(record, index, tool) : showDeleteBtn;
 
 							const _detailBtnDisabled =
 								typeof detailBtnDisabled == "function"
-									? detailBtnDisabled(record, index,tool)
+									? detailBtnDisabled(record, index, tool)
 									: detailBtnDisabled;
 							const _updateBtnDisabled =
 								typeof updateBtnDisabled == "function"
-									? updateBtnDisabled(record, index,tool)
+									? updateBtnDisabled(record, index, tool)
 									: updateBtnDisabled;
 							const _deleteBtnDisabled =
 								typeof deleteBtnDisabled == "function"
-									? deleteBtnDisabled(record, index,tool)
+									? deleteBtnDisabled(record, index, tool)
 									: deleteBtnDisabled;
 
 							const detailBtnName = "详情";
@@ -432,14 +453,14 @@ class ZlistPanel extends React.Component {
 									<Icon type="down" />
 								</span>
 							);
-							const moreBtn = (
+							const moreBtn = this.props.moreBtnType=='rounding'?<ZroundingButton items={this.moreMenu(record, index)}> {this.getDiffBtn("default", moreBtnName, (e) => e.stopPropagation())}</ZroundingButton> :(
 								<Dropdown
 									key="more"
 									overlay={this.moreMenu(record, index)}
 									trigger={["click"]}
 									placement="bottomRight"
 								>
-									{this.getDiffBtn("default", moreBtnName)}
+									{this.getDiffBtn("default", moreBtnName, (e) => e.stopPropagation())}
 								</Dropdown>
 							);
 							if (this.hasMoreMenu) {
@@ -491,8 +512,8 @@ class ZlistPanel extends React.Component {
 	};
 	isInfinite = this.props.paginationType === "infinite";
 	getPageSize = () => {
-		const tool=this.getExportSomething();
-		return this.props.getPageSize(this.props.listType, this.state.isListCard,tool);
+		const tool = this.getExportSomething();
+		return this.props.getPageSize(this.props.listType, this.state.isListCard, tool);
 	};
 	page = {
 		pageNumber: 1,

@@ -263,6 +263,12 @@ export default ZeditorTreeHOC(pageConfig);
 			<td>true</td>
 		</tr>
 		<tr>
+			<td>moreBtnType</td>
+			<td>更多操作按钮显示类型</td>
+			<td>rounding | menu</td>
+			<td>rounding</td>
+		</tr>
+		<tr>
 			<td>moreBtnMap</td>
 			<td>更多操作按钮的map数据,[{key: "0",name: "默认的按钮", <i class="zero-icon zerod-shengchangzhouqi"></i> show: boolean | function(record,index,item){return true;},disabled:boolean}]</td>
 			<td>array[object]</td>

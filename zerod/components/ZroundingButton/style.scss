@@ -1,0 +1,32 @@
+@import '../../scssMixin/generateClassName';
+
+@include z("round-btn-cover"){
+	position: fixed;
+	z-index: 1059;
+	top:0;left: 0;;
+	display: none;
+}
+$--btn-w:40px;
+$--bg:#2F6BAA;
+@include z("round-btn"){
+	// display: none;
+	position: absolute;
+	width: $--btn-w;
+	height: $--btn-w;
+	text-align: center;
+	line-height: $--btn-w;
+	border-radius: $--btn-w/2;
+	background-color: $--bg;
+	box-shadow: 0 2px 5px rgba(0,0,0,.16), 0 2px 10px rgba(0,0,0,.12);
+	color: white;
+	transition: all .25s;
+	user-select: none;
+	&:not([class*='is-disabled']):hover{
+		background-color: lighten($--bg, 15%);
+		cursor: pointer;
+
+	}
+	@include is('disabled'){
+		background-color: #B9B9B9;
+	}
+}

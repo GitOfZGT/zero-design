@@ -373,6 +373,7 @@ class ZtreePanel extends React.Component {
 							name={data[nameKey]}
 							record={data}
 							index={index}
+							moreBtnType={this.props.moreBtnType}
 							moreBtnMap={this.props.moreBtnMap}
 							onMoreBtnClick={this.props.onMoreBtnClick}
 							onDetailClick={this.methods.onDetail}

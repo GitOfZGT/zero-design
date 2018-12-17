@@ -309,6 +309,7 @@ const common_protos = {
 	deleteBtnPermCod: "",
 	//更多操作按钮的map数据 [{key: "0",name: "默认的按钮",}]
 	moreBtnMap: null,
+	moreBtnType:"rounding", // rounding | menu
 	onMoreBtnClick: (item, record) => {},
 	// 删除按钮后台接口函数，其必须内部返回Promise
 	deleteApiInterface: (data) => Promise.resolve({ data: {} }),

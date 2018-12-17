@@ -1,5 +1,6 @@
 import "./Promise-extend.js";
 import axios from "axios";
+import {const_notification} from '../constant';
 /**
  *
  * @param {string} method //get || post || put    .....
@@ -54,6 +55,11 @@ function httpAjax(method, url, query, config, noCallback) {
 				}
 				P &&
 					P.then((result) => {
+						if(result.data.code==403403){
+							const_notification("notification").error(result.data.msg?result.data.msg:"用户未登录或身份已过期");
+							reject(result.data);
+							return;
+						}
 						// 后台请求返回的code=0是操作成功
 						result.data.code === 0 ? resolve(result.data) : reject(result.data);
 					}).catch((result) => {

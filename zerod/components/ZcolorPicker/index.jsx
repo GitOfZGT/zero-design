@@ -25,9 +25,27 @@ export class ZcolorPicker extends React.Component {
 			this.methods.initValue();
 		}
 	}
+	stopPropagation = (e) => {
+		if (e.target) {
+			let parentEl = e.target;
+			while (parentEl && !parentEl.className.includes("flexbox-fix")) {
+				parentEl = parentEl.parentElement;
+			}
+			if (parentEl && Array.prototype.slice.call(parentEl.children).length > 5) {
+				return;
+			}
+		}
+		e.stopPropagation();
+	};
 	componentDidMount() {
 		this.methods.initValue();
 		this.props.onChange && this.props.onChange(this.state.color);
+		document.documentElement.addEventListener("click", this.methods.closePicker, false);
+		this.pickerEl.addEventListener("click", this.stopPropagation, false);
+	}
+	componentWillUnmount() {
+		document.documentElement.removeEventListener("click", this.methods.closePicker, false);
+		this.pickerEl.removeEventListener("click", this.stopPropagation, false);
 	}
 	backgroundColor = this.state.color;
 	position = {};
@@ -102,7 +120,10 @@ export class ZcolorPicker extends React.Component {
 				this.coverEl.style.display = "none";
 			}
 		},
-		closePicker: () => {
+		closePicker: (e) => {
+			if (e.target && e.target.className.includes(cssClass["z-color"])) {
+				return;
+			}
 			this.setState({
 				showPicker: false,
 			});
@@ -130,14 +151,14 @@ export class ZcolorPicker extends React.Component {
 				{ReactDOM.createPortal(
 					<div
 						className={cssClass["z-cover"]}
-						onClick={this.methods.closePicker}
+						// onClick={this.methods.closePicker}
 						ref={(el) => (this.coverEl = el)}
 					>
 						<CSSTransition in={this.state.showPicker} timeout={500} classNames="fadeIn-to-down">
 							<div
 								className={cssClass["z-picker"]}
 								style={this.position}
-								onClick={(e) => e.stopPropagation()}
+								// onClick={(e) => e.stopPropagation()}
 								ref={(el) => (this.pickerEl = el)}
 								onAnimationEnd={this.methods.onAnimationEnd}
 							>

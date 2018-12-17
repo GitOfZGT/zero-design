@@ -2,12 +2,14 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Button, Dropdown, Menu, Icon } from "antd";
 import cssClass from "./style.scss";
+import {ZroundingButton} from '../ZroundingButton'
 class TreeTitle extends React.Component {
 	static propTypes = {
-		tool:PropTypes.object,
+		tool: PropTypes.object,
 		name: PropTypes.string,
 		record: PropTypes.any,
 		index: PropTypes.number,
+		moreBtnType: PropTypes.string,
 		moreBtnMap: PropTypes.arrayOf(PropTypes.object),
 		onMoreBtnClick: PropTypes.func,
 		onDetailClick: PropTypes.func,
@@ -29,21 +31,46 @@ class TreeTitle extends React.Component {
 
 	//更多操作按钮
 	moreMenu = (record, index) => {
-		const tool=this.props.tool;
+		const tool = this.props.tool;
 		const onClick = this.methods.handleMenuClick(record);
 		const items = [];
 		this.hasMoreMenu &&
 			this.props.moreBtnMap.forEach((item) => {
-				const { show, name, ...others } = item;
-				const _show = typeof show == "function" ? show(record, index, item,tool) : show === undefined ? true : show;
-				if (_show) items.push(<Menu.Item {...others}>{name}</Menu.Item>);
+				const { show, disbaled, name, ...others } = item;
+				const _show =
+					typeof show == "function" ? show(record, index, item, tool) : show === undefined ? true : show;
+				const _disbaled =
+					typeof disbaled == "function"
+						? disbaled(record, index, item, tool)
+						: disbaled === undefined
+						? false
+						: disbaled;
+				if (this.props.moreBtnType == "rounding") {
+					items.push({
+						...item,
+						show: _show,
+						disabled: _disbaled,
+						onClick: onClick,
+					});
+				} else if (_show)
+					items.push(
+						<Menu.Item disabled={_disbaled} {...others}>
+							{name}
+						</Menu.Item>,
+					);
 			});
-		return items.length ? <Menu onClick={onClick}>{items}</Menu> : <span />;
+		return this.props.moreBtnType == "rounding" ? (
+			items
+		) : items.length ? (
+			<Menu onClick={onClick}>{items}</Menu>
+		) : (
+			<span />
+		);
 	};
 	methods = {
 		handleMenuClick: (record) => {
 			return (item) => {
-				this.props.onMoreBtnClick && this.props.onMoreBtnClick(item, record);
+				this.props.onMoreBtnClick && this.props.onMoreBtnClick(item, record, this.props.tool);
 			};
 		},
 
@@ -72,41 +99,66 @@ class TreeTitle extends React.Component {
 		) : null;
 	};
 	render() {
-		const tool=this.props.tool;
-		const { showDetailBtn, showUpdateBtn,showAddChildBtn, showDeleteBtn,detailBtnDisabled,updateBtnDisabled,addChildBtnDisabled,deleteBtnDisabled, record, index } = this.props;
-		const _showDetailBtn = typeof showDetailBtn == "function" ? showDetailBtn(record, index,tool) : showDetailBtn;
-		const _showUpdateBtn = typeof showUpdateBtn == "function" ? showUpdateBtn(record, index,tool) : showUpdateBtn;
-		const _showAddChildBtn = typeof showUpdateBtn == "function" ? showAddChildBtn(record, index,tool) : showAddChildBtn;
-		const _showDeleteBtn = typeof showDeleteBtn == "function" ? showDeleteBtn(record, index,tool) : showDeleteBtn;
+		const tool = this.props.tool;
+		const {
+			showDetailBtn,
+			showUpdateBtn,
+			showAddChildBtn,
+			showDeleteBtn,
+			detailBtnDisabled,
+			updateBtnDisabled,
+			addChildBtnDisabled,
+			deleteBtnDisabled,
+			record,
+			index,
+		} = this.props;
+		const _showDetailBtn = typeof showDetailBtn == "function" ? showDetailBtn(record, index, tool) : showDetailBtn;
+		const _showUpdateBtn = typeof showUpdateBtn == "function" ? showUpdateBtn(record, index, tool) : showUpdateBtn;
+		const _showAddChildBtn =
+			typeof showUpdateBtn == "function" ? showAddChildBtn(record, index, tool) : showAddChildBtn;
+		const _showDeleteBtn = typeof showDeleteBtn == "function" ? showDeleteBtn(record, index, tool) : showDeleteBtn;
 		const _detailBtnDisabled =
-			typeof detailBtnDisabled == "function" ? detailBtnDisabled(record, index,tool) : detailBtnDisabled;
+			typeof detailBtnDisabled == "function" ? detailBtnDisabled(record, index, tool) : detailBtnDisabled;
 		const _updateBtnDisabled =
-			typeof updateBtnDisabled == "function" ? updateBtnDisabled(record, index,tool) : updateBtnDisabled;
+			typeof updateBtnDisabled == "function" ? updateBtnDisabled(record, index, tool) : updateBtnDisabled;
 		const _addChildBtnDisabled =
-			typeof addChildBtnDisabled == "function" ? addChildBtnDisabled(record, index,tool) : addChildBtnDisabled;
+			typeof addChildBtnDisabled == "function" ? addChildBtnDisabled(record, index, tool) : addChildBtnDisabled;
 		const _deleteBtnDisabled =
-			typeof deleteBtnDisabled == "function" ? deleteBtnDisabled(record, index,tool) : deleteBtnDisabled;
+			typeof deleteBtnDisabled == "function" ? deleteBtnDisabled(record, index, tool) : deleteBtnDisabled;
+		const moreBtn = (
+			<Button size="small">
+				更多
+				<Icon type="down" />
+			</Button>
+		);
 		return (
 			<span className="z-flex-space-between">
 				<span>{this.props.name}</span>
 				<span className={cssClass["z-tree-line"]} />
 				<span className={cssClass["z-tree-btns"]}>
-					{this.getBtn("default", "详情", this.methods.detailBtnClick, _showDetailBtn,_detailBtnDisabled)}
-					{this.getBtn("primary", "新增子节点", this.methods.addChildBtnClick, _showAddChildBtn,_addChildBtnDisabled)}
-					{this.getBtn("primary", "修改", this.methods.updateBtnClick, _showUpdateBtn,_updateBtnDisabled)}
-					{this.getBtn("danger", "删除", this.methods.deleteBtnClick, _showDeleteBtn,_deleteBtnDisabled)}
+					{this.getBtn("default", "详情", this.methods.detailBtnClick, _showDetailBtn, _detailBtnDisabled)}
+					{this.getBtn(
+						"primary",
+						"新增子节点",
+						this.methods.addChildBtnClick,
+						_showAddChildBtn,
+						_addChildBtnDisabled,
+					)}
+					{this.getBtn("primary", "修改", this.methods.updateBtnClick, _showUpdateBtn, _updateBtnDisabled)}
+					{this.getBtn("danger", "删除", this.methods.deleteBtnClick, _showDeleteBtn, _deleteBtnDisabled)}
 					{this.hasMoreMenu ? (
-						<Dropdown
-							key="more"
-							overlay={this.moreMenu(record, index)}
-							trigger={["click"]}
-							placement="bottomRight"
-						>
-							<Button size="small">
-								更多
-								<Icon type="down" />
-							</Button>
-						</Dropdown>
+						this.props.moreBtnType == "rounding" ? (
+							<ZroundingButton items={this.moreMenu(record, index)}> {moreBtn}</ZroundingButton>
+						) : (
+							<Dropdown
+								key="more"
+								overlay={this.moreMenu(record, index)}
+								trigger={["click"]}
+								placement="bottomRight"
+							>
+								{moreBtn}
+							</Dropdown>
+						)
 					) : null}
 				</span>
 			</span>
