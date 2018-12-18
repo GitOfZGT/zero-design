@@ -66,7 +66,7 @@ class Myjavascript extends React.Component {
 	<tbody>
 		<tr>
 			<td>items</td>
-			<td>json数组，请看下面的items结构</td>
+			<td>json数组，请看下面的items结构, (请使用变量缓存所需设置的值而非直接使用字面量)</td>
 			<td>array</td>
 			<td>--</td>
 		</tr>
@@ -78,7 +78,7 @@ class Myjavascript extends React.Component {
 		</tr>
 		<tr>
 			<td>fieldValue</td>
-			<td>对应items中key属性的map对象</td>
+			<td>对应items中key属性的map对象, (请使用变量缓存所需设置的值而非直接使用字面量)</td>
 			<td>object</td>
 			<td>--</td>
 		</tr>

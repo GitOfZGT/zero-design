@@ -32,33 +32,49 @@ export class ZpageHeader extends React.Component {
 		const mb = "bottom-16";
 		return (
 			<section className={`${cssClass["z-page-header"]} ${className ? className : ""}`} {...others}>
-				{breadcrumbRoutes && breadcrumbRoutes.length ? (
-					<div className={`z-padding-${mb}`}>
-						<Breadcrumb itemRender={itemRender} routes={breadcrumbRoutes} params={breadcrumbParams} />
-					</div>
-				) : null}
-				<div className="z-flex z-padding-left-30">
-					{trademark ? typeof trademark === "function" ? trademark(this.props) : <div>{trademark}</div> : null}
+				<div className="z-flex ">
 					<div className="z-flex-1">
-						{title ? (
-							typeof title === "function" ? (
-								title(this.props)
-							) : (
-								<header className={`${cssClass["z-page-header-title"]}`}>{title}</header>
-							)
+						{breadcrumbRoutes && breadcrumbRoutes.length ? (
+							<div className={`z-padding-${mb}`}>
+								<Breadcrumb
+									itemRender={itemRender}
+									routes={breadcrumbRoutes}
+									params={breadcrumbParams}
+								/>
+							</div>
 						) : null}
-						{content ? (
-							typeof content === "function" ? (
-								content(this.props)
-							) : (
-								<p className={`z-margin-bottom-10 z-text-gray`}>{content}</p>
-							)
-						) : null}
-						<ul className={`${cssClass["z-pillars"]} z-clear-fix z-margin-bottom-20`}>
-							<li className={`z-float-left ${cssClass["blue"]}`} />
-							<li className={`z-float-left ${cssClass["yellow"]}`} />
-							<li className={`z-float-left ${cssClass["green"]}`} />
-						</ul>
+						<section className="z-flex z-padding-left-30">
+							{trademark ? (
+								typeof trademark === "function" ? (
+									trademark(this.props)
+								) : (
+									<div>{trademark}</div>
+								)
+							) : null}
+							<div className="z-flex-1">
+								{title ? (
+									typeof title === "function" ? (
+										title(this.props)
+									) : (
+										<header className={`${cssClass["z-page-header-title"]}`}>{title}</header>
+									)
+								) : null}
+								{content ? (
+									typeof content === "function" ? (
+										content(this.props)
+									) : (
+										<p className={`z-margin-bottom-10 z-text-gray`}>{content}</p>
+									)
+								) : null}
+								{title || content ? (
+									<ul className={`${cssClass["z-pillars"]} z-clear-fix z-margin-bottom-20`}>
+										<li className={`z-float-left ${cssClass["blue"]}`} />
+										<li className={`z-float-left ${cssClass["yellow"]}`} />
+										<li className={`z-float-left ${cssClass["green"]}`} />
+									</ul>
+								) : null}
+							</div>
+						</section>
 					</div>
 					{typeof rightMoreContent === "function" ? rightMoreContent(this.props) : rightMoreContent}
 				</div>

@@ -147,7 +147,7 @@ class Com extends React.Component {
 					this.setState({
 						noOpen: false,
 					});
-				}, 300);
+				}, 200);
 			}
 		}
 	}
@@ -164,7 +164,7 @@ class Com extends React.Component {
 			<Menu
 				mode="inline"
 				selectedKeys={this.state.selectKeys}
-				openKeys={!this.noOpen ? openKeys : []}
+				openKeys={!this.state.noOpen ? openKeys : []}
 				onSelect={this.onSelect}
 				onOpenChange={this.openChange}
 				inlineCollapsed={this.props.collapsed}

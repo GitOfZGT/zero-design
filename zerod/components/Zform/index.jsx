@@ -5,6 +5,7 @@ import cssClass from "./style.scss";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
 import { animateTimout, const_initItems, const_execAsync, const_itemSpan } from "../constant";
 import ZpageLoading from "../ZpageLoading";
+import { dataType, } from "../zTool";
 export const Zform = Form.create()(
 	class extends React.Component {
 		static propTypes = {
@@ -108,7 +109,7 @@ export const Zform = Form.create()(
 							{isFormItem ? (
 								<Form.Item label={item.label}>
 									<ZpageLoading showLoading={item.loading} size="small" />
-									{getFieldDecorator(item.key, item.options)(control)}
+									{getFieldDecorator(item.key, dataType.isFunction(item.options)?item.options():item.options)(control)}
 								</Form.Item>
 							) : (
 								<div>

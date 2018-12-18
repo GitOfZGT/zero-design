@@ -57,6 +57,9 @@ class Zinfo extends React.Component {
 		if (this.props.fieldValue !== prevProps.fieldValue) {
 			this.setFieldValue();
 		}
+		if (this.props.items !== prevProps.items && !this.allAsync.length) {
+			this.execAsync();
+		}
 	}
 	getItems() {
 		const data = this.state.detailData;

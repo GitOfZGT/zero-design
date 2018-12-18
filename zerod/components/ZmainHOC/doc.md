@@ -373,7 +373,7 @@ export default ZmainHOC(pageConfig);
 		</tr>
 		<tr>
 			<td>noParentPath</td>
-			<td>为false时，菜单导航的path会取父路由的path拼接</td>
+			<td>如为true,则菜单导航的path不会与父节点的path拼接</td>
 			<td>boolean</td>
 			<td>false</td>
 		</tr>

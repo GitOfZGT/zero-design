@@ -571,7 +571,7 @@ export const IScrollInstance = function(el, opt) {
 		{
 			disableMouse: true,
 			disablePointer: true,
-			disableTouch: true,
+			disableTouch: false,
 			bounce: false, //当滚动条符合边界时，它会执行一个小的反弹动画
 			click: false, //要覆盖原生滚动，iScroll必须禁止某些默认浏览器行为，例如鼠标单击。如果您希望应用程序响应click事件，则必须将此选项显式设置为true。请注意，建议使用自定义tap事件
 			scrollX: false, //启用横向滚动
@@ -953,8 +953,8 @@ export function isUrl(path) {
 }
 
 // 将从后台获取的导航数据转成route的需要的key
-export function formatterMapKey(data, mapKey = {}, parentPath = "/") {
-	const notParPath = typeof parentPath == "boolean" && !parentPath;
+export function formatterMapKey(data, mapKey = {}, parentPath = "/",notParPath=false) {
+	// const notParPath = typeof parentPath == "boolean" && !parentPath;
 	mapKey = Object.assign(
 		{ iconClass: "iconClass", path: "path", name: "name", children: "children" },
 		mapKey ? mapKey : {},
@@ -966,11 +966,11 @@ export function formatterMapKey(data, mapKey = {}, parentPath = "/") {
 			...item,
 			iconClass: item[mapKey.iconClass] !== undefined ? item[mapKey.iconClass] : "smile-o",
 			path,
-			parPath: notParPath ? "" : parentPath.replace(/\/$/, ""),
+			parPath: parentPath.replace(/\/$/, ""),
 			name: item[mapKey.name],
 		};
 		if (Array.isArray(item[mapKey.children]) && item[mapKey.children].length) {
-			newData[mapKey.children] = formatterMapKey(item[mapKey.children], mapKey, notParPath ? false : `${path}/`);
+			newData[mapKey.children] = formatterMapKey(item[mapKey.children], mapKey, `${path}/`,notParPath);
 		}
 		return newData;
 	});

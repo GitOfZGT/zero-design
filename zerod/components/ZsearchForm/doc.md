@@ -102,7 +102,7 @@ class Myjavascript extends React.Component {
 	<tbody>
 		<tr>
 			<td>items</td>
-			<td>生成表单的json数组，请看下面的items结构</td>
+			<td>生成表单的json数组，请看下面的items结构, (请使用变量缓存所需设置的值而非直接使用字面量)</td>
 			<td>array</td>
 			<td>--</td>
 		</tr>
@@ -138,7 +138,7 @@ class Myjavascript extends React.Component {
 		</tr>
 		 <tr>
 			<td>formDefaultValues</td>
-			<td>返显表单的数据，如{serviceName:"名称"}，"serviceName"对应items属性里面的key</td>
+			<td>返显表单的数据，如{serviceName:"名称"}，"serviceName"对应items属性里面的key, (请使用变量缓存所需设置的值而非直接使用字面量)</td>
 			<td>object</td>
 			<td>--</td>
 		</tr>
@@ -214,9 +214,9 @@ class Myjavascript extends React.Component {
 			<td>--</td>
 		</tr>
 		<tr>
-			<td>options</td>
+			<td><i class="zero-icon zerod-shengchangzhouqi"></i> options</td>
 			<td><a href="https://ant.design/components/form-cn/" target="_blank">Antd的表单中getFieldDecorator函数的options参数</a>,可以配置验证规则}</td>
-			<td>string</td>
+			<td>object || ()=>options</td>
 			<td>--</td>
 		</tr>
 	</tbody>

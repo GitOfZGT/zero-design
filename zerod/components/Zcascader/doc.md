@@ -89,7 +89,7 @@ class Myjavascript extends React.Component {
 	<tbody>
 		<tr>
 			<td>tree</td>
-			<td>级联树数据，非treeAsync下有效</td>
+			<td>级联树数据，非treeAsync下有效, (请使用变量缓存所需设置的值而非直接使用字面量)</td>
 			<td>array[object]</td>
 			<td>[]</td>
 		</tr>
@@ -107,7 +107,7 @@ class Myjavascript extends React.Component {
 		</tr>
         <tr>
 			<td>selections</td>
-			<td>默认已选择的每一级选项的ids，如 默认选择 广东省：["1710121748130980000000166"]</td>
+			<td>默认已选择的每一级选项的ids，如 默认选择 广东省：["1710121748130980000000166"], (请使用变量缓存所需设置的值而非直接使用字面量)</td>
 			<td>array[string]</td>
 			<td>--</td>
 		</tr>

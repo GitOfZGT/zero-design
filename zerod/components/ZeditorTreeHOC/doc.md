@@ -147,9 +147,10 @@ export default ZeditorTreeHOC(pageConfig);
 	<tbody>
 	    <tr>
 			<td>searchForm</td>
-			<td>
-				<p>searchForm.defaultExpanded 是否默认展开表单(默认值false)，其他属性还包含： 请查看 <span class="z-history-href" data-path="/main/component-doc/ZsearchForm-doc">组件/ZsearchForm</span> 的 props  (除了onSearch, onReset, noCollapse 其他都有效)。</p>
+				<td>
+				<p>searchForm.defaultExpanded 是否默认展开表单(默认值false)，其他属性还包含： 请查看 <span class="z-history-href" data-path="/main/component-doc/ZsearchForm-doc">组件/ZsearchForm</span> 的 props  (除了onSearch, onReset, noCollapse ,hidden ,其他都有效)。</p>
 				<p>其中searchForm.items的render函数参数在这里多加tool,如：items:[{render:(form,changeFormItems,tool)=>{},key:"myKey"}]。</p>
+				<p>其中searchForm.items的options函数参数在这里多加tool,如：items:[{options:(tool)=>options}]。</p>
 				<p>还有searchForm的其他函数属性除了原有的参数，还多加tool，如 searchForm.afterItemsRendered:(form,methods,tool)=>{}</p>
 			</td>
 			<td>object</td>

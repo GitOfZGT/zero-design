@@ -133,7 +133,8 @@ export function ZmainHOC(pageConfig) {
 			this.sideMenuData = zTool.formatterMapKey(
 				[...topOtherMenu, ...menuData, ...bottomOtherMenu],
 				this.config.sideMenu.mapKeys,
-				this.config.sideMenu.noParentPath ? false : `${this.props.match.url}/`,
+				`${this.props.match.url}/`,
+				this.config.sideMenu.noParentPath,
 			);
 		}
 		methods = {
