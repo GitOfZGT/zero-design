@@ -1,7 +1,7 @@
 
 # 工具库 zTool
 
-`zTool`积累了一些通用的工具函数，包括对需要对 DOM 元素操作的一些函数
+`zTool`积累了一些通用的工具方法，包括对需要对 DOM 元素操作的一些方法
 
 <div class="z-doc-titles"></div>
 
@@ -21,7 +21,7 @@ import { zTool } from "zerod";
  * @param {string} url //接口url
  * @param {object} query //接口参数，key，value 对应
  * @param {object} config //axios的config参数，更多请看https://github.com/axios/axios
- * @param {boolean} noCallback //默认false，因为httpAjax函数默认会有对特殊请求结果的统一处理，noCallback=true时，就是不需要默认的统一处理
+ * @param {boolean} noCallback //默认false，因为httpAjax方法默认会有对特殊请求结果的统一处理，noCallback=true时，就是不需要默认的统一处理
  */
 //例：
 zTool
@@ -80,7 +80,7 @@ zTool.filterQuery(["name", "selected"], { name: "萧雨", selected: false, id: "
 
 ## zTool.BuildScroll
 
-`zTool.BuildScroll` 是一个构造函数，是对<a href="http://iscrolljs.com/#intro" target="_blank">漂亮滚动条插件 ISroll</a>的 `new IScroll(el,opt)` 的二次封装,并且解决嵌套滚动条的问题，且对 options 有一些默认值
+`zTool.BuildScroll` 是一个构造方法，是对<a href="http://iscrolljs.com/#intro" target="_blank">漂亮滚动条插件 ISroll</a>的 `new IScroll(el,opt)` 的二次封装,并且解决嵌套滚动条的问题，且对 options 有一些默认值
 
 ```jsx
 import { zTool } from "zerod";
@@ -91,7 +91,7 @@ import { zTool } from "zerod";
  */
 //scroollInstance有三个属性:
 //scroollInstance.scroll：其实是new IScroll(el,opt)的实例，
-//scroollInstance.refresh:更新滚动条的函数，
+//scroollInstance.refresh:更新滚动条的方法，
 //scroollInstance.nextScrollToTop：布尔值,默认false，下次调用refresh()时是否滚动条回到顶部
 const scroollInstance = new zTool.BuildScroll(el, opt);
 
@@ -177,7 +177,7 @@ zTool.EetoString(6.5e-7); //"0.65000000"
 
 ## zTool.loadFileList
 
-动态加载 .js、.css 的函数，支持多个文件同时加载，支持多个文件按顺序加载
+动态加载 .js、.css 的方法，支持多个文件同时加载，支持多个文件按顺序加载
 
 如果是"http" | "https" 开头,但没有.js|.css后缀的路径只支持加载js
 
@@ -436,7 +436,7 @@ const newTree= zTool.replaceItemFromTree({
 
 ## zTool.pushItemToTree
 
-在json数组中一项数据的children新增一条子数据(不会造成原json的变异)，返回新的json数组
+在json数组中一项数据的children末端新增一条子数据(不会造成原json的变异)，返回新的json数组
 
 ```js
 import { zTool } from "zerod";
@@ -452,11 +452,95 @@ import { zTool } from "zerod";
  */
 //例：
 const tree=[{id:2,name:"苹果"},{id:5,name:"蔬菜",children:[{id:9,name:"豆芽"}]}]
-//在{id:9}的那一条数据新增
+//在{id:5}的那一条数据新增
 const newTree= zTool.pushItemToTree({
 	tree:tree,
 	sourceItem:{id:5},
 	item:{id:18,name:"莴笋"}
 });
 //返回 [{id:2,name:"苹果"},{id:5,name:"蔬菜",children:[{id:9,name:"豆芽"},{id:18,name:"莴笋"}]}]
+```
+<div class="z-doc-titles"></div>
+
+## zTool.unshiftItemToTree
+
+在json数组中一项数据的children头端新增一条子数据(不会造成原json的变异)，返回新的json数组
+
+```js
+import { zTool } from "zerod";
+/**
+ *
+ * @param {object} obj 以对象方式传参：
+ * { 
+ *   tree:array (json数组), 
+ *   sourceItem:object (要被新增子数据的数据，匹配keyObj的id属性),
+ *   item: object (新数据)
+ *   keyObj:{id:"id",children:"children"
+ * }
+ */
+//例：
+const tree=[{id:2,name:"苹果"},{id:5,name:"蔬菜",children:[{id:9,name:"豆芽"}]}]
+//在{id:5}的那一条数据新增
+const newTree= zTool.unshiftItemToTree({
+	tree:tree,
+	sourceItem:{id:5},
+	item:{id:18,name:"莴笋"}
+});
+//返回 [{id:2,name:"苹果"},{id:5,name:"蔬菜",children:[{id:18,name:"莴笋"},{id:9,name:"豆芽"}]}]
+```
+<div class="z-doc-titles"></div>
+
+## zTool.insertBeforeItemFromTree
+
+用于将一项item数据插入在json数组中某项sourceItem数据之前
+
+```js
+import { zTool } from "zerod";
+/**
+ *
+ * @param {object} obj 以对象方式传参：
+ * { 
+ *   tree:array (json数组), 
+ *   sourceItem:object (匹配keyObj的id属性),
+ *   item: object (新数据)
+ *   keyObj:{id:"id",children:"children"
+ * }
+ */
+//例：
+const tree=[{id:2,name:"苹果"},{id:5,name:"蔬菜",children:[{id:9,name:"豆芽"}]}]
+//在{id:5}的那一条数据之前插入
+const newTree= zTool.insertBeforeItemFromTree({
+	tree:tree,
+	sourceItem:{id:5},
+	item:{id:18,name:"莴笋"}
+});
+//返回 [{id:2,name:"苹果"},{id:18,name:"莴笋"},{id:5,name:"蔬菜",children:[{id:9,name:"豆芽"}]}]
+```
+<div class="z-doc-titles"></div>
+
+## zTool.insertAfterItemFromTree
+
+用于将一项item数据插入在json数组中某项sourceItem数据之后
+
+```js
+import { zTool } from "zerod";
+/**
+ *
+ * @param {object} obj 以对象方式传参：
+ * { 
+ *   tree:array (json数组), 
+ *   sourceItem:object (匹配keyObj的id属性),
+ *   item: object (新数据)
+ *   keyObj:{id:"id",children:"children"
+ * }
+ */
+//例：
+const tree=[{id:2,name:"苹果"},{id:5,name:"蔬菜",children:[{id:9,name:"豆芽"}]}]
+//在{id:5}的那一条数据之后插入
+const newTree= zTool.insertBeforeItemFromTree({
+	tree:tree,
+	sourceItem:{id:5},
+	item:{id:18,name:"莴笋"}
+});
+//返回 [{id:2,name:"苹果"},{id:5,name:"蔬菜",children:[{id:9,name:"豆芽"}]},{id:18,name:"莴笋"}]
 ```

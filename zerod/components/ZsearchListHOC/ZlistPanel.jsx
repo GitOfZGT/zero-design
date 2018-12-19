@@ -1,4 +1,5 @@
 import React from "react";
+
 import { withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
 import {
@@ -9,20 +10,21 @@ import {
 	const_getMethods,
 	const_extendPanelFormConfig,
 	const_getPanelDefaultFormItems,
+	const_searchFormNode,
 } from "../constant";
 import { Button, Icon, Divider, Dropdown, Menu, Modal } from "antd";
-import { ZsearchForm } from "../ZsearchForm";
+
 import cssClass from "./style.scss";
 // 上下文
 import ZerodMainContext from "../ZerodMainContext";
 import ZerodRootContext from "../ZerodRootContext";
-import { dataTypeTest, deepCopy } from "../zTool";
+import { deepCopy, dataType } from "../zTool";
 
 import tableTemplate from "./tableTemplate";
 import cardTemplate from "./cardTemplate";
 import simpleTemplate from "./simpleTemplate";
 let defaultConfig = const_getListConfig("list", "ZlistPanel");
-import {ZroundingButton} from '../ZroundingButton';
+import { ZroundingButton } from "../ZroundingButton";
 class ZlistPanel extends React.Component {
 	static propTypes = {
 		listType: PropTypes.string, // table | card
@@ -127,7 +129,7 @@ class ZlistPanel extends React.Component {
 		// 获取列表数据
 		getListData: (merge, moreQuery) => {
 			let querys = this.searchQuery ? this.searchQuery : {};
-			if (dataTypeTest(moreQuery) === "object") {
+			if (dataType.isObject(moreQuery)) {
 				this.page.pageNumber = moreQuery.pageNumber ? moreQuery.pageNumber : this.page.pageNumber;
 				this.page.pageSize = moreQuery.pageSize ? moreQuery.pageSize : this.page.pageSize;
 				querys = Object.assign({}, querys, moreQuery);
@@ -453,16 +455,22 @@ class ZlistPanel extends React.Component {
 									<Icon type="down" />
 								</span>
 							);
-							const moreBtn = this.props.moreBtnType=='rounding'?<ZroundingButton items={this.moreMenu(record, index)}> {this.getDiffBtn("default", moreBtnName, (e) => e.stopPropagation())}</ZroundingButton> :(
-								<Dropdown
-									key="more"
-									overlay={this.moreMenu(record, index)}
-									trigger={["click"]}
-									placement="bottomRight"
-								>
-									{this.getDiffBtn("default", moreBtnName, (e) => e.stopPropagation())}
-								</Dropdown>
-							);
+							const moreBtn =
+								this.props.moreBtnType == "rounding" ? (
+									<ZroundingButton items={this.moreMenu(record, index)}>
+										{" "}
+										{this.getDiffBtn("default", moreBtnName, (e) => e.stopPropagation())}
+									</ZroundingButton>
+								) : (
+									<Dropdown
+										key="more"
+										overlay={this.moreMenu(record, index)}
+										trigger={["click"]}
+										placement="bottomRight"
+									>
+										{this.getDiffBtn("default", moreBtnName, (e) => e.stopPropagation())}
+									</Dropdown>
+								);
 							if (this.hasMoreMenu) {
 								btns.push(moreBtn);
 							}
@@ -549,21 +557,8 @@ class ZlistPanel extends React.Component {
 			) : (
 				this.props.moreContentRender && this.props.moreContentRender(this.getExportSomething())
 			);
-		const { items, onSearch, onReset, noCollapse, defaultExpanded, ...formOthers } = this.searchFormConfig
-			? this.searchFormConfig
-			: {};
-		this.searchForm =
-			this.colFormItems && this.colFormItems.length ? (
-				<ZsearchForm
-					{...formOthers}
-					hidden={!this.state.expandedSearch}
-					colFormItems={this.colFormItems}
-					onSearch={this.methods.onSearch}
-					onReset={this.methods.onReset}
-					noCollapse={true}
-				/>
-			) : null;
-
+		//this.searchForm赋值
+		const_searchFormNode.call(this);
 		this.paginationOpt = {
 			total: this.page.totalCount,
 			pageSize: this.page.pageSize,

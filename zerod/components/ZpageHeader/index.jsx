@@ -27,6 +27,7 @@ export class ZpageHeader extends React.Component {
 			breadcrumbRoutes,
 			className,
 			show,
+			pageId,
 			...others
 		} = this.props;
 		const mb = "bottom-16";
@@ -79,6 +80,7 @@ export class ZpageHeader extends React.Component {
 					{typeof rightMoreContent === "function" ? rightMoreContent(this.props) : rightMoreContent}
 				</div>
 				{typeof children == "function" ? children(this.props) : children}
+				<div id={pageId}></div>
 			</section>
 		);
 	}

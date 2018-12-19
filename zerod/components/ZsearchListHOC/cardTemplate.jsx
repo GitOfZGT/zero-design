@@ -53,9 +53,7 @@ export default function cardTemplate() {
 			{this.props.panelBeforeRender && this.props.panelBeforeRender(tool)}
 			<div className="z-panel z-margin-bottom-15 is-radius-top">
 				{this.getPanleHeader()}
-				{this.searchForm ? (
-					<div className="z-panel-body z-padding-bottom-0-important">{this.searchForm}</div>
-				) : null}
+				{this.searchForm}
 			</div>
 			{sorters.length ? <div className="z-margin-bottom-15">{sorters}</div> : null}
 			<Row type="flex" className={cssClass["z-card-row"]}>

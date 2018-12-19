@@ -4,9 +4,9 @@
 
 `Zform`将`antd`的`Form`、`Form.item`的结构转成数据结构直接渲染的方式，并且自带有一个`提交`表单的按钮
 
-1、基本使用
+1、基本使用 labelLayout=='horizontal'
 
-<div class="z-demo-box" data-render="demo1" data-title="基本使用"></div>
+<div class="z-demo-box" data-render="demo1" data-title="labelLayout=='horizontal'"></div>
 
 ```jsx
 import React from "react";
@@ -18,7 +18,6 @@ class Myjavascript extends React.Component {
 			key: "serviceCode",
 			label: "服务编码",
 			render: (form) => {
-				//异步加载表单控件
 				return new Promise((resolve) => {
 					setTimeout(() => {
 						resolve(<Input placeholder="请输入服务编码" />);
@@ -54,6 +53,23 @@ class Myjavascript extends React.Component {
 			},
 		},
 		{
+			key: "colorValue",
+			label: "颜色值",
+			render: (form) => {
+				return <ZcolorPicker className="z-margin-top-4" />;
+			},
+			//antd的 form.getFieldDecorator的options
+			options: {
+				//验证规则
+				rules: [
+					{
+						required: true,
+						message: "不能为空。",
+					},
+				],
+			},
+		},
+		{
 			key: "serviceRemark",
 			label: "服务说明",
 			render: (form) => {
@@ -72,8 +88,8 @@ class Myjavascript extends React.Component {
 		},
 		{
 			key: "servicePort",
-			detailKey: "serviceProt",
 			label: "端口号",
+			labelWidth: "80px",
 			render: (form) => {
 				return <InputNumber min={11110} max={65535} step={10} />;
 			},
@@ -86,6 +102,25 @@ class Myjavascript extends React.Component {
 						message: "不能为空。",
 					},
 				],
+			},
+		},
+		{
+			key: "myButton",
+			label: "按钮",
+			render: (form, changeFormItems) => {
+				return (
+					<Button
+						type="primary"
+						onClick={() => {
+							const newItems = this.items.slice(0);
+							newItems.splice(4, 1);
+							changeFormItems(hasHide ? this.items : newItems);
+							hasHide = !hasHide;
+						}}
+					>
+						{hasHide ? "显示" : "不显示"}端口号
+					</Button>
+				);
 			},
 		},
 		{
@@ -106,11 +141,18 @@ class Myjavascript extends React.Component {
 			},
 		},
 	];
+	defaultValue = {
+		serviceCode: "9999",
+		serviceRemark: "llll",
+	};
 	render() {
 		return (
 			<Zform
+				labelLayout="horizontal"
+				formDefaultValues={this.defaultValue}
 				items={this.items}
 				onSubmit={(values) => {
+					// console.log(values);
 					return Promise.resolve().then((re) => {
 						message.success("提交成功：" + JSON.stringify(values));
 					});
@@ -193,6 +235,12 @@ class Myjavascript extends React.Component {
 			<td>function(form,methods){}</td>
 			<td>--</td>
 		</tr>
+		 <tr>
+			<td>labelLayout</td>
+			<td>label的布局方式</a></td>
+			<td>'horizontal'|'vertical'</td>
+			<td>'vertical'</td>
+		</tr>
 	</tbody>
 </table>
 
@@ -219,6 +267,12 @@ class Myjavascript extends React.Component {
 		<tr>
 			<td>label</td>
 			<td>表单控件label</td>
+			<td>string</td>
+			<td>--</td>
+		</tr>
+		<tr>
+			<td>labelWidth</td>
+			<td>label的宽度，如labelWidth:"120px"，当labelLayout=='horizontal'才可能用的上</td>
 			<td>string</td>
 			<td>--</td>
 		</tr>

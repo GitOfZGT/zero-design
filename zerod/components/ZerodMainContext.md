@@ -6,7 +6,7 @@
 
 ## 打开右边窗口: showRightModal()
 
-showRightModal 函数有四个参数，`show`:是否显示，`modal`: "mainModal" | "appModal" | "mainModal_top" | "appModal_top"，`content`：窗口的内容，`scroll`：窗口内是否启用滚动条,`onTransitionend`:打开关闭的过渡动画执行完后的回调
+showRightModal 方法有四个参数，`show`:是否显示，`modal`: "mainModal" | "appModal" | "mainModal_top" | "appModal_top"，`content`：窗口的内容，`scroll`：窗口内是否启用滚动条,`onTransitionend`:打开关闭的过渡动画执行完后的回调
 
 `modal`属性层级："appModal_top" > "appModal" > "mainModal_top" > "mainModal"
 
@@ -74,7 +74,7 @@ const OutPut = ZerodMainContext.setConsumer(OpenModal);
 
 ## 显示主页路由区域 loading: showRouteLoading()
 
-showRouteLoading 函数有一个参数，`show`:是否显示
+showRouteLoading 方法有一个参数，`show`:是否显示
 
 <div class="z-demo-box" data-render="route-loading" data-title="this.props.showRouteLoading(true)"></div>
 
@@ -106,7 +106,7 @@ return <OutPut />;
 
 ## 显示右边窗口 loading: showModalLoading()
 
-showModalLoading 函数有两个参数，`show`:是否显示，`modal`: "mainModal" | "appModal" | "mainModal_top" | "appModal_top"
+showModalLoading 方法有两个参数，`show`:是否显示，`modal`: "mainModal" | "appModal" | "mainModal_top" | "appModal_top"
 
 <div class="z-demo-box" data-render="modal-loading" data-title="this.props.showModalLoading(true, modal);"></div>
 
@@ -176,7 +176,7 @@ getSideMenuData()返回的是一个数组
 
 ## 获取滚动条的实例：getScrollInstance(witch)
 
-getScrollInstance 函数有一个参数，`witch`:哪个地方的滚动条: "mainRoute" | "mainModal" | "mainModal_top" | "appModal" | "appModal_top"
+getScrollInstance 方法有一个参数，`witch`:哪个地方的滚动条: "mainRoute" | "mainModal" | "mainModal_top" | "appModal" | "appModal_top"
 
 <div class="z-doc-titles"></div>
 
@@ -190,9 +190,9 @@ getScrollInstance 函数有一个参数，`witch`:哪个地方的滚动条: "mai
 
 ## 获取滚动条区域的包裹元素：getScrollAreaWrapperEl(witch)
 
-getScrollAreaWrapperEl 函数有一个参数，`witch`:哪个地方的滚动条: "mainRoute" | "mainModal" | "mainModal_top" | "appModal" | "appModal_top"
+getScrollAreaWrapperEl 方法有一个参数，`witch`:哪个地方的滚动条: "mainRoute" | "mainModal" | "mainModal_top" | "appModal" | "appModal_top"
 
-当需要某块内容绝对定位于主要内容之上，但不想受滚动条滚动时，可用这函数获取对应得`wrapperEl`，然后使用`ReactDOM.createPortal(内容, wrapperEl)`将内容插入到`wrapperEl`内
+当需要某块内容绝对定位于主要内容之上，但不想受滚动条滚动时，可用这方法获取对应得`wrapperEl`，然后使用`ReactDOM.createPortal(内容, wrapperEl)`将内容插入到`wrapperEl`内
 
 ### const obj= this.props.getScrollAreaWrapperEl("mainModal")
 
@@ -282,13 +282,13 @@ export default ZerodMainContext.setConsumer(MoreCofig);
 
 ## 下次滚动条更新的时候，让滚动条回到顶部: setScrollToTop(witch)
 
-setScrollToTop 函数有一个参数，`witch`:哪个地方滚动条更新: "mainRoute" | "mainModal" | "mainModal_top" | "appModal" | "appModal_top"
+setScrollToTop 方法有一个参数，`witch`:哪个地方滚动条更新: "mainRoute" | "mainModal" | "mainModal_top" | "appModal" | "appModal_top"
 
 <div class="z-doc-titles"></div>
 
 ## 获取用户登录信息: getUserInfo()
 
-ZmainHOC 的 componentDidMount 钩子中的 callback 函数注入的 userInfo 数据，可以通过 getUserInfo()获得
+ZmainHOC 的 componentDidMount 钩子中的 callback 回调注入的 userInfo 数据，可以通过 getUserInfo()获得
 
 ## 临时存储器: setTemporaryStorage(data) 和 getTemporaryStorage()
 

@@ -1,4 +1,3 @@
-
 <div class="z-doc-titles"></div>
 
 # 列表展示：ZsearchListHOC
@@ -266,7 +265,7 @@ const pageConfig = {
 
 ## pageConfig
 
-除了如下的属性，pageConfig还包含 <span class="z-history-href" data-path="/main/HOC-doc/ZpageWraperHOC-doc">HOC/页面头尾结构：ZpageWrapper</span> 的props
+除了如下的属性，pageConfig 还包含 <span class="z-history-href" data-path="/main/HOC-doc/ZpageWraperHOC-doc">HOC/页面头尾结构：ZpageWrapper</span> 的 props
 
 <table>
 	<thead>
@@ -281,10 +280,12 @@ const pageConfig = {
 		 <tr>
 			<td>searchForm</td>
 			<td>
-				<p>searchForm.defaultExpanded 是否默认展开表单(默认值false)，其他属性还包含： 请查看 <span class="z-history-href" data-path="/main/component-doc/ZsearchForm-doc">组件/ZsearchForm</span> 的 props  (除了onSearch, onReset, noCollapse ,hidden ,其他都有效)。</p>
-				<p>其中searchForm.items的render函数参数在这里多加tool,如：items:[{render:(form,changeFormItems,tool)=>{},key:"myKey"}]。</p>
-				<p>其中searchForm.items的options函数参数在这里多加tool,如：items:[{options:(tool)=>options}]。</p>
-				<p>还有searchForm的其他函数属性除了原有的参数，还多加tool，如 searchForm.afterItemsRendered:(form,methods,tool)=>{}</p>
+				<p>1、<code>searchForm.defaultExpanded</code> 是否默认展开表单,(默认false)</p>
+				<p>2、<code>searchForm.insertTo</code> 此属性可以是:一个已存在的dom元素 || 一个已存在的dom元素的Id || true || false || (tool)=>{return 一个已存在的dom元素 || 一个已存在的dom元素的Id || true || false}，其用途为：将searchForm插到某个dom元素内,如为true则插到页头显示,(默认false)</p>
+				<p>3、<code>searchForm的其他属性</code>还包含： 请查看 <span class="z-history-href" data-path="/main/component-doc/ZsearchForm-doc">组件/ZsearchForm</span> 的 props  (除了onSearch, onReset, noCollapse ,hidden ,其他都有效)。</p>
+				<p>4、其中<code>searchForm.items</code>的<code>render函数</code>的参数在这里多加tool,如：items:[{render:(form,changeFormItems,tool)=>{},key:"myKey"}]。</p>
+				<p>5、其中<code>searchForm.items</code>的<code>options函数</code>的参数在这里多加tool,如：items:[{options:(tool)=>options}]。</p>
+				<p>6、<code>searchForm</code>的其他<code>函数属性</code>除了原有的参数，还多加tool，如 <code>searchForm.afterItemsRendered</code>:(form,methods,tool)=>{}</p>
 			</td>
 			<td>object</td>
 			<td>--</td>

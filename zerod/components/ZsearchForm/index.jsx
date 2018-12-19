@@ -10,6 +10,7 @@ export const ZsearchForm = Form.create()(
 	class extends React.Component {
 		static propTypes = {
 			hidden: PropTypes.bool,
+			labelLayout: PropTypes.string,//'horizontal'|'vertical'
 			className: PropTypes.string,
 			colFormItems: PropTypes.arrayOf(PropTypes.object), //兼容旧版本，现由items替代
 			items: PropTypes.arrayOf(PropTypes.object),
@@ -27,6 +28,7 @@ export const ZsearchForm = Form.create()(
 			collapseCount: 3,
 			noCollapse: false,
 			hidden: false,
+			labelLayout:"vertical",
 		};
 		state = {
 			expand: this.props.noCollapse,
@@ -129,7 +131,7 @@ export const ZsearchForm = Form.create()(
 					<CSSTransition key={i} timeout={animateTimout.flipInTime} classNames="fadeIn-to-down">
 						<Col {...span} className={item.className}>
 							{isFormItem ? (
-								<Form.Item label={item.label}>
+								<Form.Item label={item.label} className={item.itemClassName}>
 									<ZpageLoading showLoading={item.loading} size="small" />
 									{getFieldDecorator(item.key, dataType.isFunction(item.options)?item.options():item.options)(control)}
 								</Form.Item>
@@ -146,14 +148,14 @@ export const ZsearchForm = Form.create()(
 		}
 		render() {
 			this.items = this.getFormItems();
-			const { className, hidden } = this.props;
+			const { className, hidden,labelLayout } = this.props;
 			return (
 				<div
 					ref={(el) => (this.formEl = el)}
 					className={`${cssClass["z-search-form"]} ${className ? className : ""}`}
 				>
 					<Form onSubmit={this.methods.handleSearch}>
-						<Row type="flex" className={cssClass["z-form-row"]}>
+						<Row type="flex" className={`${cssClass["z-form-row"]} ${labelLayout=="horizontal"?"z-form-label-horizontal":""}`}>
 							<TransitionGroup component={null} enter={true} exit={true} appear={true}>
 								{this.items}
 							</TransitionGroup>

@@ -1,5 +1,9 @@
 @import "../../scssMixin/generateClassName";
 @import "../../scss/vars";
+@include z("embedded-form"){
+	padding:10px 20px 0;
+	transition: all 0.4s cubic-bezier(0,0,0.3,1) !important;
+}
 $--card-gutter: 8px;
 @include z("card-row") {
 	margin-left: -$--card-gutter;
@@ -21,7 +25,7 @@ $--simple-gutter: 20px;
 
 $--card-title-color: $heading-color;
 @include z("list-table") {
-	margin: 0 -24px 20px;
+	margin: 0 -1px  0  0;
 	:global {
 		.ant-table-thead > tr > th {
 			border-bottom: 0;

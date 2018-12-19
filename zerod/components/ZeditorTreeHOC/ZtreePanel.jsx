@@ -7,19 +7,17 @@ import {
 	const_getInsertLocation,
 	const_getMainTool,
 	const_getMethods,
-	const_extendArguments,
 	const_getPanelDefaultFormItems,
 	const_extendPanelFormConfig,
+	const_searchFormNode,
 } from "../constant";
 import { Tree, Modal } from "antd";
 const TreeNode = Tree.TreeNode;
-import { ZsearchForm } from "../ZsearchForm";
 import cssClass from "./style.scss";
 import TreeTitle from "./TreeTitle";
 import ZerodMainContext from "../ZerodMainContext";
 import {
 	unshiftItemToTree,
-	dataTypeTest,
 	deepCopy,
 	removeItemFromTree,
 	pushItemToTree,
@@ -80,7 +78,7 @@ class ZtreePanel extends React.Component {
 		// 获取列表数据
 		loadTreeData: (moreQuery) => {
 			let querys = this.searchQuery ? this.searchQuery : {};
-			if (dataTypeTest(moreQuery) === "object") {
+			if (dataType.isObject(moreQuery)) {
 				querys = Object.assign({}, querys, moreQuery);
 			}
 			this.methods.showLoading(true);
@@ -405,20 +403,7 @@ class ZtreePanel extends React.Component {
 		this.methods.onSearch();
 	}
 	render() {
-		const { items, onSearch, onReset, defaultExpanded, noCollapse, ...formOthers } = this.searchFormConfig
-			? this.searchFormConfig
-			: {};
-		this.searchForm =
-			this.colFormItems && this.colFormItems.length ? (
-				<ZsearchForm
-					{...formOthers}
-					hidden={!this.state.expandedSearch}
-					colFormItems={this.colFormItems}
-					onSearch={this.methods.onSearch}
-					onReset={this.methods.onReset}
-					noCollapse={true}
-				/>
-			) : null;
+		const_searchFormNode.call(this);
 		const { showLine, loadData, onDrop, ...treeOthers } = this.props.treeProps || {};
 		return (
 			<section
@@ -429,7 +414,7 @@ class ZtreePanel extends React.Component {
 				{this.props.panelBeforeRender && this.props.panelBeforeRender(this.getExportSomething())}
 				<div className="z-panel">
 					{this.getPanleHeader()}
-					<div className="z-panel-body">
+					<div>
 						{this.searchForm}
 						<div className={cssClass["z-editor-tree"]}>
 							{this.state.treeData.length ? (

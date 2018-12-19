@@ -160,6 +160,12 @@ class Myjavascript extends React.Component {
 			<td>boolean</td>
 			<td>false</td>
 		</tr>
+		 <tr>
+			<td>labelLayout</td>
+			<td>label的布局方式</a></td>
+			<td>'horizontal'|'vertical'</td>
+			<td>'vertical'</td>
+		</tr>
 	</tbody>
 </table>
 
@@ -186,6 +192,12 @@ class Myjavascript extends React.Component {
 		<tr>
 			<td>label</td>
 			<td>表单控件label</td>
+			<td>string</td>
+			<td>--</td>
+		</tr>
+			<tr>
+			<td>labelWidth</td>
+			<td>label的宽度，如labelWidth:"120px"，当labelLayout=='horizontal'才可能用的上</td>
 			<td>string</td>
 			<td>--</td>
 		</tr>

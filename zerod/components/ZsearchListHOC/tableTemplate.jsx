@@ -19,24 +19,24 @@ export default function tableTemplate() {
 		typeof expandedRowKeys == "function"
 			? expandedRowKeys()
 			: Array.isArray(expandedRowKeys)
-				? expandedRowKeys
-				: this.state.expandedRowKeys;
+			? expandedRowKeys
+			: this.state.expandedRowKeys;
 	const _onExpandedRowsChange =
 		typeof onExpandedRowsChange == "function"
 			? (expandedRows) => {
 					onExpandedRowsChange(expandedRows, tool);
 			  }
 			: (expandedRows) => {
-                this.setState({
-                    expandedRowKeys: expandedRows,
-                });
-            };
+					this.setState({
+						expandedRowKeys: expandedRows,
+					});
+			  };
 	return (
 		<Zlayout.Template>
 			{this.props.panelBeforeRender && this.props.panelBeforeRender(tool)}
 			<div className="z-panel">
 				{this.getPanleHeader()}
-				<div className="z-panel-body">
+				<div>
 					{this.searchForm}
 					<div className={cssClass["z-list-table"]}>
 						<Table

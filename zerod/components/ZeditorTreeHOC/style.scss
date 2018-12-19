@@ -1,5 +1,6 @@
 @import "../../scssMixin/generateClassName";
 @include z("editor-tree") {
+	padding:10px 20px;
 	:global {
 		.ant-tree li {
 			display: flex;

@@ -342,6 +342,7 @@ const data_types = {
 	regExp: "[object RegExp]",
 	json: "[object JSON]", //JSON对象
 	promise: "[object Promise]", //Promise对象
+	element: /HTML\w+Element/g,
 };
 // 包含isArray,isObject,isString,isPromise等等
 export const dataType = {};
@@ -355,7 +356,11 @@ export const dataTypeTest = function(item) {
 	const types = Object.keys(data_types);
 	for (let index = 0; index < types.length; index++) {
 		const key = types[index];
-		if (Object.prototype.toString.call(item) === data_types[key]) {
+		const value = Object.prototype.toString.call(item);
+		if (
+			value === data_types[key] ||
+			(Object.prototype.toString.call(data_types[key]) == "[object RegExp]" && data_types[key].test(value))
+		) {
 			return key;
 		}
 	}
@@ -380,6 +385,7 @@ export const deepCopyObject = function(obj) {
 			case "json":
 			case "promise":
 			case "regExp":
+			case "element":
 				newobj[key] = obj[key];
 				break;
 			case "date":
@@ -417,6 +423,7 @@ export const deepCopyArray = function(array) {
 			case "json":
 			case "promise":
 			case "regExp":
+			case "element":
 				newarray.push(item);
 				break;
 			case "date":
@@ -953,7 +960,7 @@ export function isUrl(path) {
 }
 
 // 将从后台获取的导航数据转成route的需要的key
-export function formatterMapKey(data, mapKey = {}, parentPath = "/",notParPath=false) {
+export function formatterMapKey(data, mapKey = {}, parentPath = "/", notParPath = false) {
 	// const notParPath = typeof parentPath == "boolean" && !parentPath;
 	mapKey = Object.assign(
 		{ iconClass: "iconClass", path: "path", name: "name", children: "children" },
@@ -970,7 +977,7 @@ export function formatterMapKey(data, mapKey = {}, parentPath = "/",notParPath=f
 			name: item[mapKey.name],
 		};
 		if (Array.isArray(item[mapKey.children]) && item[mapKey.children].length) {
-			newData[mapKey.children] = formatterMapKey(item[mapKey.children], mapKey, `${path}/`,notParPath);
+			newData[mapKey.children] = formatterMapKey(item[mapKey.children], mapKey, `${path}/`, notParPath);
 		}
 		return newData;
 	});
@@ -1031,7 +1038,7 @@ export function replaceItemFromTree(obj) {
 	}
 }
 /**
- *用于json中某项sourceItem数据的children添加一项item数据
+ *用于json中某项sourceItem数据的children末端添加一项item数据
  *
  * @export
  * @param {object} obj { tree:array, sourceItem:object,item:object, keyObj:{id:"id",children:"children"} }
@@ -1050,7 +1057,7 @@ export function pushItemToTree(obj) {
 	}
 }
 /**
- *用于json中某项sourceItem数据的children添加一项item数据
+ *用于json中某项sourceItem数据的children头端添加一项item数据
  *
  * @export
  * @param {object} obj { tree:array, sourceItem:object,item:object, keyObj:{id:"id",children:"children"} }
@@ -1094,7 +1101,7 @@ export function insertBeforeItemFromTree(obj) {
 export function insertAfterItemFromTree(obj) {
 	const newobj = deepCopy(obj);
 	newobj.action = function({ tree, currentItem, item, index, keyObj }) {
-		tree.splice(index+1, 0, item);
+		tree.splice(index + 1, 0, item);
 	};
 	if (itemsFromTree(newobj)) {
 		return newobj.tree;

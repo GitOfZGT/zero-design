@@ -3,20 +3,37 @@
 @include z("form"){
     width:80%;
 	margin: 0 auto !important;
+	:global{
+		.z-form-label-horizontal {
+			.ant-form-item{
+				display: flex;
+			}
+			.ant-form-item-control-wrapper{
+				flex:1;
+			}
+		}
+	}
 }
-$--row-gutter: 12px;
+$--row-gutter: 6px;
 @include z("form-row") {
     :global {
+		.ant-form-item{
+			margin-bottom: 16px;
+		}
 		.ant-form-item-children,.ant-input-number{
 			width: 100%;
-			display: block;
-        }
-        .ant-form-item-children .ant-btn{
-            float: left;
+			display: inline-block;
 		}
 		.ant-calendar-picker{
 			width:100% !important;
 		}
+		.ant-form-item-with-help{
+			margin-bottom: 0px;
+		}
+		.ant-form-explain, .ant-form-extra{
+			font-size: 12px;
+		}
+		
 	}
 	margin-left: -$--row-gutter;
 	margin-right: -$--row-gutter;

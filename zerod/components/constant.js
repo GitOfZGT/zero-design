@@ -1,6 +1,9 @@
 import React from "react";
+import ReactDOM from "react-dom";
+import { ZsearchForm } from "./ZsearchForm";
 import { Button, notification, message, Icon } from "antd";
-import { dataType } from "./zTool";
+import { dataType, GenNonDuplicateID } from "./zTool";
+import searchCssClass from "./ZsearchListHOC/style.scss";
 const noticeMethod = {
 	notification,
 	message,
@@ -125,6 +128,19 @@ export const animateTimout = {
 	flipInTime: 500,
 	flipOutTime: 300,
 };
+function addItemCss(classNames) {
+	let ht = "";
+	classNames.forEach((item) => {
+		ht += `.${item.className} .ant-form-item-label{width:${item.width} !important;white-space:normal !important;}`;
+	});
+	if (this.styleEl) {
+		this.styleEl.innerHTML = ht;
+	} else {
+		this.styleEl = document.createElement("style");
+		this.styleEl.innerHTML = ht;
+		document.head.appendChild(this.styleEl);
+	}
+}
 //如在Zform中使用const_initItems.call(this,this.props.items,<Input placeholder="加载中" disabled />);
 export const const_initItems = function(
 	items,
@@ -136,6 +152,7 @@ export const const_initItems = function(
 	callback = dataType.isFunction(callback) ? callback : function() {};
 	this.allAsync = [];
 	this.filedKeys = [];
+	const hasItemClass = [];
 	const newItems = items.map((item, index) => {
 		let render = item.render;
 		if (render && !dataType.isFunction(render)) {
@@ -161,16 +178,21 @@ export const const_initItems = function(
 		}
 		let defaultSpan = this.props.defaultSpan;
 		defaultSpan = dataType.isNumber(defaultSpan) ? { md: defaultSpan } : defaultSpan;
-
+		let ramdon = "";
+		const itemClassName = item.labelWidth
+			? ((ramdon = "z-form-item-" + GenNonDuplicateID()), hasItemClass.push({className:ramdon,width:item.labelWidth}), ramdon)
+			: "";
 		const newItem = {
 			...item,
 			loading,
 			control,
 			defaultSpan,
+			itemClassName,
 		};
 		this.filedKeys.push(item.key);
 		return newItem;
 	});
+	addItemCss.call(this,hasItemClass);
 	this.setState(
 		{
 			items: newItems,
@@ -260,7 +282,7 @@ export const const_getPanleHeader = function() {
 		left = heading;
 	}
 	const items = this.colFormItems;
-	return left||center||right|| items.length||this.addBtn? (
+	return left || center || right || items.length || this.addBtn ? (
 		<div className="z-panel-heading z-flex-items-v-center z-flex-space-between">
 			<span>{left}</span>
 			{center}
@@ -268,8 +290,12 @@ export const const_getPanleHeader = function() {
 				{right}
 				{items.length ? (
 					<Button type="dashed" icon="search" className="z-margin-left-10" onClick={this.methods.openSearch}>
-						条件查询
-						<Icon type={this.state.expandedSearch ? "caret-up" : "caret-down"} theme="filled" />
+						{this.state.expandedSearch ? "折叠" : "展开"}查询
+						<Icon
+							type="caret-up"
+							className={`z-search-btn ${this.state.expandedSearch ? "" : "is-down"}`}
+							theme="filled"
+						/>
 					</Button>
 				) : null}
 				{this.addBtn}
@@ -309,7 +335,7 @@ const common_protos = {
 	deleteBtnPermCod: "",
 	//更多操作按钮的map数据 [{key: "0",name: "默认的按钮",}]
 	moreBtnMap: null,
-	moreBtnType:"rounding", // rounding | menu
+	moreBtnType: "rounding", // rounding | menu
 	onMoreBtnClick: (item, record) => {},
 	// 删除按钮后台接口函数，其必须内部返回Promise
 	deleteApiInterface: (data) => Promise.resolve({ data: {} }),
@@ -376,6 +402,8 @@ export const const_getListConfig = (name, componentName) => {
 		pageFooter: undefined,
 		hasBodyPadding: true,
 		searchForm: {
+			defaultExpanded: false,
+			insertTo: false,
 			// array>[object] | null，如果是null则不显示搜索表单
 			items: [
 				// {
@@ -439,10 +467,52 @@ export function const_getPanelDefaultFormItems() {
 		: this.searchFormConfig
 		? this.searchFormConfig.items
 		: [];
+	const tool = this.getExportSomething();
 	return formItems.map((item) => {
+		const options = dataType.isFunction(item.options) ? const_extendArguments(item.options, tool) : item.options;
 		return {
 			...item,
-			render: const_extendArguments(item.render, this.getExportSomething()),
+			render: const_extendArguments(item.render, tool),
+			options,
 		};
 	});
+}
+//ZlistPanel 和 ZtreePanel 调用 const_searchFormNode.call(this)，给this.searchForm赋值
+export function const_searchFormNode() {
+	const { items, onSearch, onReset, noCollapse, defaultExpanded, insertTo, ...formOthers } = this.searchFormConfig
+		? this.searchFormConfig
+		: {};
+	this.searchForm =
+		this.colFormItems && this.colFormItems.length ? (
+			<ZsearchForm
+				{...formOthers}
+				hidden={!this.state.expandedSearch}
+				colFormItems={this.colFormItems}
+				onSearch={this.methods.onSearch}
+				onReset={this.methods.onReset}
+				noCollapse={true}
+			/>
+		) : null;
+	let insertEl = null;
+	const insertor = dataType.isFunction(insertTo) ? insertTo(this.getExportSomething()) : insertTo;
+	if (dataType.isBoolean(insertor) && insertor && this.props.pageId) {
+		insertEl = document.getElementById(this.props.pageId);
+	} else if (dataType.isElement(insertor)) {
+		insertEl = insertor;
+	} else if (insertor && dataType.isString(insertor)) {
+		insertEl = document.getElementById(insertor);
+	}
+	if (this.searchForm && insertEl) {
+		this.searchForm = ReactDOM.createPortal(this.searchForm, insertEl);
+	} else {
+		this.searchForm = this.searchForm ? (
+			<div
+				className={`${searchCssClass["z-embedded-form"]} ${
+					this.state.expandedSearch ? "" : "z-padding-top-0-important"
+				}`}
+			>
+				{this.searchForm}
+			</div>
+		) : null;
+	}
 }
