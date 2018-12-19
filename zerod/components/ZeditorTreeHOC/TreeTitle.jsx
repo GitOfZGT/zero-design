@@ -2,7 +2,8 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Button, Dropdown, Menu, Icon } from "antd";
 import cssClass from "./style.scss";
-import {ZroundingButton} from '../ZroundingButton'
+import { ZroundingButton } from "../ZroundingButton";
+import { removeClass, addClass } from "../zTool";
 class TreeTitle extends React.Component {
 	static propTypes = {
 		tool: PropTypes.object,
@@ -98,6 +99,11 @@ class TreeTitle extends React.Component {
 			</Button>
 		) : null;
 	};
+	onVisibleChange = (show) => {
+		if (this.moreIconEl) {
+			show ? removeClass(this.moreIconEl, "is-down") : addClass(this.moreIconEl, "is-down");
+		}
+	};
 	render() {
 		const tool = this.props.tool;
 		const {
@@ -128,9 +134,15 @@ class TreeTitle extends React.Component {
 		const moreBtn = (
 			<Button size="small">
 				更多
-				<Icon type="down" />
+				<i
+					className="zero-icon zerod-up z-open-btn is-down"
+					ref={(el) => {
+						this.moreIconEl = el;
+					}}
+				/>
 			</Button>
 		);
+
 		return (
 			<span className="z-flex-space-between">
 				<span>{this.props.name}</span>
@@ -148,13 +160,14 @@ class TreeTitle extends React.Component {
 					{this.getBtn("danger", "删除", this.methods.deleteBtnClick, _showDeleteBtn, _deleteBtnDisabled)}
 					{this.hasMoreMenu ? (
 						this.props.moreBtnType == "rounding" ? (
-							<ZroundingButton items={this.moreMenu(record, index)}> {moreBtn}</ZroundingButton>
+							<ZroundingButton items={this.moreMenu(record, index)} onVisibleChange={this.onVisibleChange}> {moreBtn}</ZroundingButton>
 						) : (
 							<Dropdown
 								key="more"
 								overlay={this.moreMenu(record, index)}
 								trigger={["click"]}
 								placement="bottomRight"
+								onVisibleChange={this.onVisibleChange}
 							>
 								{moreBtn}
 							</Dropdown>

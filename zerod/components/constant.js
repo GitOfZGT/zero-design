@@ -180,7 +180,9 @@ export const const_initItems = function(
 		defaultSpan = dataType.isNumber(defaultSpan) ? { md: defaultSpan } : defaultSpan;
 		let ramdon = "";
 		const itemClassName = item.labelWidth
-			? ((ramdon = "z-form-item-" + GenNonDuplicateID()), hasItemClass.push({className:ramdon,width:item.labelWidth}), ramdon)
+			? ((ramdon = "z-form-item-" + GenNonDuplicateID()),
+			  hasItemClass.push({ className: ramdon, width: item.labelWidth }),
+			  ramdon)
 			: "";
 		const newItem = {
 			...item,
@@ -192,7 +194,7 @@ export const const_initItems = function(
 		this.filedKeys.push(item.key);
 		return newItem;
 	});
-	addItemCss.call(this,hasItemClass);
+	addItemCss.call(this, hasItemClass);
 	this.setState(
 		{
 			items: newItems,
@@ -291,11 +293,7 @@ export const const_getPanleHeader = function() {
 				{items.length ? (
 					<Button type="dashed" icon="search" className="z-margin-left-10" onClick={this.methods.openSearch}>
 						{this.state.expandedSearch ? "折叠" : "展开"}查询
-						<Icon
-							type="caret-up"
-							className={`z-search-btn ${this.state.expandedSearch ? "" : "is-down"}`}
-							theme="filled"
-						/>
+						<i className={`zero-icon zerod-up z-margin-left-4 z-open-btn ${this.state.expandedSearch ? "" : "is-down"}`} />
 					</Button>
 				) : null}
 				{this.addBtn}

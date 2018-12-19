@@ -18,7 +18,7 @@ import cssClass from "./style.scss";
 // 上下文
 import ZerodMainContext from "../ZerodMainContext";
 import ZerodRootContext from "../ZerodRootContext";
-import { deepCopy, dataType } from "../zTool";
+import { deepCopy, dataType, addClass, removeClass } from "../zTool";
 
 import tableTemplate from "./tableTemplate";
 import cardTemplate from "./cardTemplate";
@@ -452,13 +452,27 @@ class ZlistPanel extends React.Component {
 							const moreBtnName = (
 								<span>
 									<span>更多</span>
-									<Icon type="down" />
+									<i
+										className="zero-icon zerod-up z-open-btn is-down"
+										ref={(el) => {
+											record.moreIconEl = el;
+										}}
+									/>
 								</span>
 							);
+							const onVisibleChange = (show) => {
+								if (record.moreIconEl) {
+									show
+										? removeClass(record.moreIconEl, "is-down")
+										: addClass(record.moreIconEl, "is-down");
+								}
+							};
 							const moreBtn =
 								this.props.moreBtnType == "rounding" ? (
-									<ZroundingButton items={this.moreMenu(record, index)}>
-										{" "}
+									<ZroundingButton
+										items={this.moreMenu(record, index)}
+										onVisibleChange={onVisibleChange}
+									>
 										{this.getDiffBtn("default", moreBtnName, (e) => e.stopPropagation())}
 									</ZroundingButton>
 								) : (
@@ -467,6 +481,7 @@ class ZlistPanel extends React.Component {
 										overlay={this.moreMenu(record, index)}
 										trigger={["click"]}
 										placement="bottomRight"
+										onVisibleChange={onVisibleChange}
 									>
 										{this.getDiffBtn("default", moreBtnName, (e) => e.stopPropagation())}
 									</Dropdown>

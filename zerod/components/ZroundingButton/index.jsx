@@ -13,6 +13,7 @@ export const ZroundingButton = ZerodMainContext.setConsumer(
 		static propTypes = {
 			className: PropTypes.string,
 			items: PropTypes.arrayOf(PropTypes.object),
+			onVisibleChange:PropTypes.func,
 		};
 		static defaultProps = {
 			items: [],
@@ -88,6 +89,7 @@ export const ZroundingButton = ZerodMainContext.setConsumer(
 					el.style.transform = "scale(0.1)";
 				});
 				this.isShow = false;
+
 			} else {
 				this.setPosition();
 				if (!this.$btns.length) return;
@@ -126,6 +128,7 @@ export const ZroundingButton = ZerodMainContext.setConsumer(
 					this.transitioning = false;
 				}, 10);
 			}
+			this.props.onVisibleChange&&this.props.onVisibleChange(this.isShow);
 		};
 		closeBtns = () => {
 			if (this.isShow) this.showBtns();

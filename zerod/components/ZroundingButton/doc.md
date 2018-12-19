@@ -42,7 +42,7 @@ class Myjavascript extends React.Component {
 			}
 		}
 ```
-## ZbgImage 的 props
+## ZroundingButton 的 props
 
 可追加`className`、`style`
 
@@ -60,6 +60,12 @@ class Myjavascript extends React.Component {
 			<td>items</td>
 			<td>按钮组的渲染数据，结构如下items</td>
 			<td>array[object]</td>
+			<td>--</td>
+		</tr>
+		<tr>
+			<td>onVisibleChange</td>
+			<td>显示状态改变会触发onVisibleChange</td>
+			<td>(visible)=>{}</td>
 			<td>--</td>
 		</tr>
 	</tbody>
