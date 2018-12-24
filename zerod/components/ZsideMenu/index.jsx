@@ -81,7 +81,7 @@ class Com extends React.Component {
 		let selected = true;
 		if (this.props.onSelect) selected = this.props.onSelect({ item, key, selectedKeys });
 		if (selected!==false) {
-			if (isHttpStart(key)) {
+			if (item.newWindow) {
 				window.open(key, "_blank");
 			} else if (/^\/[A-Za-z0-9]*/.test(key)) {
 				this.props.history.push(key);

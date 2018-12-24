@@ -532,7 +532,7 @@ class ZlistPanel extends React.Component {
 		.filter((item) => {
 			return !(dataType.isBoolean(item.show) && !item.show);
 		})
-		.map((item) => item.dataIndex);
+		.map((item) => item.dataIndex).concat(this.props.tableColumns.some(item=>item.dataIndex==this.props.actionDataIndex)?[]:[this.props.actionDataIndex]);
 	getShowTableColumns(checkValue) {
 		return this.tableColumns.filter((item) => {
 			return checkValue.includes(item.dataIndex);
