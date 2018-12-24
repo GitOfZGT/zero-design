@@ -41,7 +41,7 @@ export default function tableTemplate() {
 					<div className={cssClass["z-list-table"]}>
 						<Table
 							expandRowByClick={true}
-							columns={this.tableColumns}
+							columns={this.state.tableColumns}
 							rowKey="id"
 							dataSource={this.state.listData}
 							pagination={this.showPagination && !this.isInfinite ? this.paginationOpt : false}

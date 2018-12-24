@@ -348,6 +348,18 @@ export default ZmainHOC(pageConfig);
 	</thead>
 	<tbody>
 		<tr>
+			<td>collapseBtnRender</td>
+			<td>折叠按钮的渲染函数 (collapsed)=>Icon</td>
+			<td>(collapsed)=>Icon</td>
+			<td>--</td>
+		</tr>
+	    <tr>
+			<td>onSelect</td>
+			<td>点击选中菜单项触发的函数，如果函数内return false 则不会跳转menuData中对应项的path路径</td>
+			<td>function({ item, key, selectedKeys }){}</td>
+			<td>--</td>
+		</tr>
+		<tr>
 			<td>openAllSubmenu</td>
 			<td>侧边导航存在二级导航时，是否打开所有的一级导航</td>
 			<td>boolean</td>
@@ -382,6 +394,6 @@ export default ZmainHOC(pageConfig);
 
 <div class="z-doc-titles"></div>
 
-## tool参数
+## tool 参数
 
 `tool`是一个对象，里面的属性同 上下文/ZerodMainContext 提供的内容

@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { ZsearchForm } from "./ZsearchForm";
-import { Button, notification, message, Icon } from "antd";
+import { Button, notification, message, Tooltip, Popover,Checkbox } from "antd";
 import { dataType, GenNonDuplicateID } from "./zTool";
 import searchCssClass from "./ZsearchListHOC/style.scss";
 const noticeMethod = {
@@ -250,7 +250,7 @@ export const const_execAsync = function(callback) {
 	}
 };
 //ZtreePanel和ZlistPanel的heading,这里不能是箭头函数
-export const const_getPanleHeader = function() {
+export const const_getPanleHeader = function(hasControl) {
 	const tool = this.getExportSomething();
 	const { showAddBtn, addBtnDisabled } = this.props;
 	const _showAddBtn = typeof showAddBtn == "function" ? showAddBtn(tool) : showAddBtn;
@@ -286,14 +286,29 @@ export const const_getPanleHeader = function() {
 	const items = this.colFormItems;
 	return left || center || right || items.length || this.addBtn ? (
 		<div className="z-panel-heading z-flex-items-v-center z-flex-space-between">
-			<span>{left}</span>
+			<span>
+				{left}
+				{hasControl ? (
+					<Tooltip title="控制显示字段" placement="top">
+						<Popover content={<Checkbox.Group className={searchCssClass['z-control-group']} defaultValue={this.checkColumnsValue} options={this.props.tableColumns.map(item=>{
+							return {label:item.title+(item.dataIndex==this.props.actionDataIndex?"(包括操作区)":""),value:item.dataIndex};
+						})} onChange={this.methods.checkColumnsChange}></Checkbox.Group>} title="控制显示字段" trigger="click" placement="rightTop">
+							<i className={`zero-icon zerod-kongzhitai ${searchCssClass["z-control-icon"]}`} />
+						</Popover>
+					</Tooltip>
+				) : null}
+			</span>
 			{center}
 			<span>
 				{right}
 				{items.length ? (
 					<Button type="dashed" icon="search" className="z-margin-left-10" onClick={this.methods.openSearch}>
 						{this.state.expandedSearch ? "折叠" : "展开"}查询
-						<i className={`zero-icon zerod-up z-margin-left-4 z-open-btn ${this.state.expandedSearch ? "" : "is-down"}`} />
+						<i
+							className={`zero-icon zerod-up z-margin-left-4 z-open-btn ${
+								this.state.expandedSearch ? "" : "is-down"
+							}`}
+						/>
 					</Button>
 				) : null}
 				{this.addBtn}

@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import cssClass from "./style.scss";
 
-import { BuildScroll, listenDivSizeChange } from "../zTool";
+import { BuildScroll, listenDivSizeChange, addClass, removeClass ,once} from "../zTool";
 class Zbody extends React.Component {
 	static propTypes = {
 		className: PropTypes.string,
@@ -14,6 +14,32 @@ class Zbody extends React.Component {
 	state = {
 		scrollAreaStyle: {},
 		scrollAreaClassName: "",
+	};
+	hasShowToTop = false;
+	backToTop = () => {
+		this.scroollInstance.scroll.scrollTo(0,0,200);
+	};
+	showBackToTop = () => {
+		if (this.scroollInstance.scroll.y < this.scroollInstance.scroll.maxScrollY * 0.3) {
+			if (!this.hasShowToTop) {
+				addClass(this.toTopBtnEl,cssClass['is-animate-start']);
+				removeClass(this.toTopBtnEl, cssClass["is-hide"]);
+				this.hasShowToTop = true;
+				setTimeout(() => {
+					addClass(this.toTopBtnEl, `fadeIn-to-down-enter`);
+					once(this.toTopBtnEl,"animationend",()=>{
+						addClass(this.toTopBtnEl,cssClass['is-opacity']);
+						removeClass(this.toTopBtnEl,`fadeIn-to-down-enter ${cssClass['is-animate-start']}`)
+					})
+				},10);
+			}
+		} else {
+			if (this.hasShowToTop) {
+				removeClass(this.toTopBtnEl, `${cssClass['is-opacity']}`);
+				addClass(this.toTopBtnEl, cssClass["is-hide"]);
+				this.hasShowToTop = false;
+			}
+		}
 	};
 	createScroll = () => {
 		if (this.scroollInstance) {
@@ -27,6 +53,7 @@ class Zbody extends React.Component {
 			this.scroollInstance = new BuildScroll(this.bodyEl, { scrollbars: "custom" });
 			listenDivSizeChange(this._contentEl, this.scroollInstance.refresh);
 			listenDivSizeChange(this.bodyEl, this.scroollInstance.refresh);
+			this.scroollInstance.scroll.on("scrollEnd", this.showBackToTop);
 			this.props.getScrollInstance && this.props.getScrollInstance(this.scroollInstance);
 		}
 	};
@@ -53,15 +80,21 @@ class Zbody extends React.Component {
 	componentDidMount() {
 		this.createScroll();
 		this.props.getWrapperEl && this.props.getWrapperEl(this.wrapperEl, this.metods);
-		this.bodyEl.onscroll=()=>{
-			if(this.bodyEl.scrollTop>0){
-				this.bodyEl.scrollTop=0;
+		this.bodyEl.onscroll = () => {
+			if (this.bodyEl.scrollTop > 0) {
+				this.bodyEl.scrollTop = 0;
 			}
-		}
+		};
 	}
 	componentDidUpdate(prevProps) {
 		if (prevProps.scroll != this.props.scroll) {
 			this.createScroll();
+		}
+	}
+	componentWillUnmount() {
+		if (this.scroollInstance) {
+			this.scroollInstance.scroll.destroy();
+			this.scroollInstance = null;
 		}
 	}
 	render() {
@@ -94,6 +127,13 @@ class Zbody extends React.Component {
 					)}
 				</section>
 				{typeof insertToScrollWraper === "function" ? insertToScrollWraper() : insertToScrollWraper}
+				<i
+					className={`${cssClass["z-to-top"]} ${
+						this.hasShowToTop ? "" : cssClass["is-hide"]
+					} z-toTop-btn zero-icon zerod-top`}
+					ref={(el) => (this.toTopBtnEl = el)}
+					onClick={this.backToTop}
+				/>
 			</section>
 		);
 	}

@@ -3,6 +3,7 @@ import { Menu, Icon } from "antd";
 import { withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
 import cssClass from "./style.scss";
+import { isHttpStart } from "../zTool";
 /**
  * menuData
  * [{
@@ -22,8 +23,8 @@ class Com extends React.Component {
 		theme: PropTypes.string,
 	};
 	static defaultProps = {
-        // iconTheme: "outlined",
-        theme:"light",
+		// iconTheme: "outlined",
+		theme: "light",
 	};
 	allSubKeys = [];
 	getMenuItems(data) {
@@ -79,7 +80,13 @@ class Com extends React.Component {
 	onSelect = ({ item, key, selectedKeys }) => {
 		let selected = true;
 		if (this.props.onSelect) selected = this.props.onSelect({ item, key, selectedKeys });
-		if (/^\/[A-Za-z0-9]*/.test(key) && selected !== false) this.props.history.push(key);
+		if (selected!==false) {
+			if (isHttpStart(key)) {
+				window.open(key, "_blank");
+			} else if (/^\/[A-Za-z0-9]*/.test(key)) {
+				this.props.history.push(key);
+			}
+		}
 	};
 	defaultOpenKeys = [];
 	findKeys = (arr, currentPath) => {
@@ -160,19 +167,19 @@ class Com extends React.Component {
 				? this.allSubKeys
 				: this.state.openKeys;
 		return (
-            <div className={cssClass["z-side-menu"]}>
-			<Menu
-				mode="inline"
-				selectedKeys={this.state.selectKeys}
-				openKeys={!this.state.noOpen ? openKeys : []}
-				onSelect={this.onSelect}
-				onOpenChange={this.openChange}
-				inlineCollapsed={this.props.collapsed}
-				theme={this.props.theme=="light"?"light":"dark"}
-			>
-				{this.state.items}
-			</Menu>
-            </div>
+			<div className={cssClass["z-side-menu"]}>
+				<Menu
+					mode="inline"
+					selectedKeys={this.state.selectKeys}
+					openKeys={!this.state.noOpen ? openKeys : []}
+					onSelect={this.onSelect}
+					onOpenChange={this.openChange}
+					inlineCollapsed={this.props.collapsed}
+					theme={this.props.theme == "light" ? "light" : "dark"}
+				>
+					{this.state.items}
+				</Menu>
+			</div>
 		);
 	}
 }

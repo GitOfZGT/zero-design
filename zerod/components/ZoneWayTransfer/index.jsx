@@ -19,7 +19,10 @@ import {
 
 function getTransferTarget(target) {
 	let el = target;
-	while (el && !el.className.includes(cssClass["z-transfer-li"])) {
+	while (
+		el &&
+		(typeof el.className !== "string" || (typeof el.className == "string" && !el.className.includes(cssClass["z-transfer-li"])))
+	) {
 		if (el.parentElement) {
 			el = el.parentElement;
 		} else {

@@ -13,13 +13,13 @@ export default function simpleTemplate() {
 	const tool = this.getExportSomething();
 	const _cardSpan = this.props.cardSpan;
 	const _span = typeof _cardSpan == "number" ? { md: _cardSpan } : _cardSpan;
-	const contentColumns = deepCopy(this.tableColumns);
+	const contentColumns = deepCopy(this.state.tableColumns);
 	const actionCol = contentColumns[contentColumns.length - 1];
 	if (actionCol && actionCol.key == "actionBtns") {
 		contentColumns.pop();
 	}
 	let sorters = [];
-	this.tableColumns.forEach((col, index) => {
+	this.state.tableColumns.forEach((col, index) => {
 		if (col.sorter) {
 			sorters.push(
 				<ZsorterBtn

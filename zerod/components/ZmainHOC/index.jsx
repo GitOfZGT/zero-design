@@ -28,12 +28,14 @@ function getConstNames(witch) {
 
 class CollapseBtn extends React.Component {
 	render() {
+		const {collapseBtnRender,collapsed}=this.props;
+		const icon = typeof collapseBtnRender=='function'?collapseBtnRender(collapsed):<Icon type={ collapsed ? "menu-unfold" : "menu-fold"} />
 		return (
 			<Zlayout.ZheaderBtn
 				onClick={this.props.onClick && this.props.onClick}
 				className="z-padding-left-24-important z-padding-right-24-important z-font-size-20"
 			>
-				<Icon type={this.props.collapseIcon} />
+				{icon}
 			</Zlayout.ZheaderBtn>
 		);
 	}
@@ -61,6 +63,7 @@ export function ZmainHOC(pageConfig) {
 		globalLoading: <div />,
 		// 导航
 		sideMenu: {
+			collapseBtnRender:null,
 			openAllSubmenu: false,
 			topOtherMenu: [],
 			bottomOtherMenu: [],
@@ -329,7 +332,6 @@ export function ZmainHOC(pageConfig) {
 		}
 		getTemplate() {
 			const leftWidth = this.state.isCollapse ? 80 : this.config.leftExpandWidth;
-			const collapseIcon = this.state.isCollapse ? "menu-unfold" : "menu-fold";
 			const _showCollapseBtn =
 				typeof this.config.showCollapseBtn == "function"
 					? this.config.showCollapseBtn(this)
@@ -357,7 +359,7 @@ export function ZmainHOC(pageConfig) {
 										collapsed={this.state.isCollapse}
 										theme={this.config.theme}
 										openAllSubmenu={this.config.sideMenu.openAllSubmenu}
-										iconTheme={this.config.sideMenu.iconTheme}
+										onSelect={this.config.sideMenu.onSelect}
 									/>
 								</div>
 							</Zlayout.Zbody>
@@ -368,7 +370,8 @@ export function ZmainHOC(pageConfig) {
 									{_showCollapseBtn ? (
 										<CollapseBtn
 											onClick={this.methods.collapseBtnClick}
-											collapseIcon={collapseIcon}
+											collapsed={this.state.isCollapse}
+											collapseBtnRender={this.config.sideMenu.collapseBtnRender}
 										/>
 									) : null}
 									{typeof this.config.headerLeftRender === "function" &&

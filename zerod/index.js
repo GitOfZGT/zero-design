@@ -34,3 +34,4 @@ export { default as ZerodRootContext } from "./components/ZerodRootContext";
 
 export { default as zTool } from "./components/zTool";
 export { default as ZroundingButton } from "./components/ZroundingButton";
+export { default as ZlabelInput } from "./components/ZlabelInput";

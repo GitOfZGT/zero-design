@@ -2,7 +2,7 @@
 $--w: 32px;
 $--p: 2px;
 @include z("color-box") {
-
+	vertical-align: top;
 	cursor: pointer;
 	position: relative;
 	display: inline-block;

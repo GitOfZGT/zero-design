@@ -1,5 +1,5 @@
 import React from "react";
-
+import "../../zero-icon/iconfont.css";
 import { withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
 import {
@@ -327,6 +327,11 @@ class ZlistPanel extends React.Component {
 				noMore,
 			});
 		},
+		checkColumnsChange: (checkValue) => {
+			this.setState({
+				tableColumns: this.getShowTableColumns(checkValue),
+			});
+		},
 	};
 	getDiffBtn(type, btnName, onClick, disabled) {
 		switch (this.props.listType) {
@@ -523,13 +528,23 @@ class ZlistPanel extends React.Component {
 			},
 		};
 	}
+	checkColumnsValue = this.props.tableColumns
+		.filter((item) => {
+			return !(dataType.isBoolean(item.show) && !item.show);
+		})
+		.map((item) => item.dataIndex);
+	getShowTableColumns(checkValue) {
+		return this.tableColumns.filter((item) => {
+			return checkValue.includes(item.dataIndex);
+		});
+	}
 	searchFormConfig = const_extendPanelFormConfig.call(this);
 	colFormItems = const_getPanelDefaultFormItems.call(this);
 	state = {
 		listData: [],
 		noMore: false,
 		isListCard: this.props.listType === "card",
-
+		tableColumns: this.getShowTableColumns(this.checkColumnsValue),
 		expandedRowKeys: [],
 		expandedSearch: this.searchFormConfig && this.searchFormConfig.defaultExpanded,
 	};
@@ -607,5 +622,7 @@ class ZlistPanel extends React.Component {
 		);
 	}
 }
-ZlistPanel.prototype.getPanleHeader = const_getPanleHeader;
+ZlistPanel.prototype.getPanleHeader = function() {
+	return const_getPanleHeader.call(this, true);
+};
 export default ZerodRootContext.setConsumer(ZerodMainContext.setConsumer(withRouter(ZlistPanel)));

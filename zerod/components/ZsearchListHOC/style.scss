@@ -131,3 +131,29 @@ $--icon-w: 60px;
 
     }
 }
+@include z('control-icon'){
+	display: inline-block;
+	padding:4px;
+	font-size: 18px !important;
+	vertical-align: middle;
+	color: #0A1131;
+	margin-left: 10px;
+	border-radius: 3px;
+	cursor: pointer;
+	&:hover{
+		background-color: #E8E8ED;
+
+	}
+}
+
+@include z('control-group'){
+	:global{
+		.ant-checkbox-group-item{
+			display: block;
+			
+		}
+		.ant-checkbox-group-item:not(:first-child){
+			margin-top:5px;
+		}
+	}
+}

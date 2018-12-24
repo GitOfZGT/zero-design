@@ -958,6 +958,10 @@ const reg = /(((^https?:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+(?::\d+)?|(
 export function isUrl(path) {
 	return reg.test(path);
 }
+const startHttpReg=/^(http:|https:)[\w\?\&\.\#\%\*\@\$\!\~\/]*/;
+export function isHttpStart(path) {
+	return startHttpReg.test(path);
+}
 
 // 将从后台获取的导航数据转成route的需要的key
 export function formatterMapKey(data, mapKey = {}, parentPath = "/", notParPath = false) {
@@ -968,7 +972,7 @@ export function formatterMapKey(data, mapKey = {}, parentPath = "/", notParPath 
 	);
 	return data.map((item) => {
 		let path = item[mapKey.path];
-		if (!notParPath) path = parentPath + path.replace(/^\/*/, "");
+		if (!notParPath&&!isHttpStart(path)) path = parentPath + path.replace(/^\/*/, "");
 		const newData = {
 			...item,
 			iconClass: item[mapKey.iconClass] !== undefined ? item[mapKey.iconClass] : "smile-o",

@@ -1,0 +1,18 @@
+@import '../../scssMixin/generateClassName';
+@include z("label-input"){
+	:global{
+		.z-label{
+			// border-right:0;
+			border-top-right-radius: 0;
+			border-bottom-right-radius: 0;
+		}
+		.z-value{
+			margin-left:-1px;
+			border-top-left-radius: 0;
+			border-bottom-left-radius: 0;
+		}
+		 [class*="col-"]{
+			padding:0 !important;margin:0;
+		}
+	}
+}
