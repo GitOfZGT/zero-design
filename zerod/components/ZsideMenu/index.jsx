@@ -47,13 +47,14 @@ class Com extends React.Component {
 							</span>
 						}
 						key={el.path}
+						newWindow={el.newWindow}
 					>
 						{this.getMenuItems(el.children)}
 					</Menu.SubMenu>
 				);
 			} else {
 				return (
-					<Menu.Item key={el.path}>
+					<Menu.Item key={el.path} newWindow={el.newWindow}>
 						<span>
 							{icon}
 							<span>{el.name}</span>
@@ -81,7 +82,7 @@ class Com extends React.Component {
 		let selected = true;
 		if (this.props.onSelect) selected = this.props.onSelect({ item, key, selectedKeys });
 		if (selected!==false) {
-			if (item.newWindow) {
+			if (item.props.newWindow) {
 				window.open(key, "_blank");
 			} else if (/^\/[A-Za-z0-9]*/.test(key)) {
 				this.props.history.push(key);
