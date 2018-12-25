@@ -8,6 +8,7 @@ import { ZsorterBtn } from "../ZsorterBtn";
 
 import cssClass from "./style.scss";
 import { deepCopy } from "zerod/components/zTool";
+import { dataType } from "../zTool";
 
 export default function simpleTemplate() {
 	const tool = this.getExportSomething();
@@ -73,7 +74,7 @@ export default function simpleTemplate() {
 									item.hsl = cicle_bg;
 								}
 								const getColContent = (col) => {
-                                    if(!col)return null;
+									if (!col) return null;
 									return typeof col.render === "function"
 										? col.render(item[col.dataIndex], item, i, tool)
 										: item[col.dataIndex];
@@ -82,7 +83,7 @@ export default function simpleTemplate() {
 								let _ic = "";
 								if (_title) {
 									_title = getColContent(_title);
-									_ic = _title.substr(0, 1);
+									dataType.isString(_title) && (_ic = _title.substr(0, 1));
 								}
 								return (
 									<CSSTransition
@@ -97,13 +98,7 @@ export default function simpleTemplate() {
 											<div className={`${cssClass["z-list-simple"]}`}>
 												<div className={`${cssClass["z-list-simple-left"]}`}>
 													{typeof this.props.cardCoverRender == "function" ? (
-														this.props.cardCoverRender(
-															item,
-															i,
-															tool,
-															_ic,
-															item.hsl,
-														)
+														this.props.cardCoverRender(item, i, tool, _ic, item.hsl)
 													) : (
 														<span
 															className={`${cssClass["z-list-simple-icon"]}`}

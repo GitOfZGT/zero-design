@@ -1,8 +1,9 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Button, Dropdown, Menu, Icon } from "antd";
+import {  Dropdown, Menu } from "antd";
 import cssClass from "./style.scss";
 import { ZroundingButton } from "../ZroundingButton";
+import { Zbutton } from "../Zbutton";
 import { removeClass, addClass } from "../zTool";
 class TreeTitle extends React.Component {
 	static propTypes = {
@@ -94,10 +95,15 @@ class TreeTitle extends React.Component {
 	};
 	getBtn = (type, btnName, click, show, disabled) => {
 		return show ? (
-			<Button disabled={disabled} type={type} size="small" onClick={click}>
+			<Zbutton  onClick={click} size="small" type={type} disabled={disabled}>
 				{btnName}
-			</Button>
+			</Zbutton>
 		) : null;
+		// return show ? (
+		// 	<Button disabled={disabled} type={type} size="small" onClick={click}>
+		// 		{btnName}
+		// 	</Button>
+		// ) : null;
 	};
 	onVisibleChange = (show) => {
 		if (this.moreIconEl) {
@@ -132,7 +138,7 @@ class TreeTitle extends React.Component {
 		const _deleteBtnDisabled =
 			typeof deleteBtnDisabled == "function" ? deleteBtnDisabled(record, index, tool) : deleteBtnDisabled;
 		const moreBtn = (
-			<Button size="small">
+			<Zbutton size="small">
 				更多
 				<i
 					className="zero-icon zerod-up z-open-btn is-down"
@@ -140,7 +146,7 @@ class TreeTitle extends React.Component {
 						this.moreIconEl = el;
 					}}
 				/>
-			</Button>
+			</Zbutton>
 		);
 
 		return (

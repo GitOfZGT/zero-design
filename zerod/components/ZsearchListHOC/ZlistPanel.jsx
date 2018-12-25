@@ -25,6 +25,7 @@ import cardTemplate from "./cardTemplate";
 import simpleTemplate from "./simpleTemplate";
 let defaultConfig = const_getListConfig("list", "ZlistPanel");
 import { ZroundingButton } from "../ZroundingButton";
+import { Zbutton } from "../Zbutton";
 class ZlistPanel extends React.Component {
 	static propTypes = {
 		listType: PropTypes.string, // table | card
@@ -269,6 +270,7 @@ class ZlistPanel extends React.Component {
 		},
 		// 删除按钮触发
 		onDelete: (text, row) => {
+			text = row[this.props.actionDataIndex];
 			Modal.confirm({
 				title: `确认删除 ${text ? `[${text}]` : ""} 这条数据吗`,
 				content: "将永久删除",
@@ -338,9 +340,9 @@ class ZlistPanel extends React.Component {
 			case "table":
 			case "card":
 				return (
-					<Button disabled={disabled} size="small" type={type} onClick={onClick}>
+					<Zbutton disabled={disabled} size="small" type={type} onClick={onClick}>
 						{btnName}
-					</Button>
+					</Zbutton>
 				);
 			case "simple":
 				return (
@@ -356,6 +358,7 @@ class ZlistPanel extends React.Component {
 				);
 		}
 	}
+	actionColKey = this.props.actionDataIndex+"actionBtns";
 	actionBtns() {
 		const {
 			showDetailBtn,
@@ -369,8 +372,8 @@ class ZlistPanel extends React.Component {
 			? [
 					{
 						title: "操作",
-						dataIndex: this.props.actionDataIndex,
-						key: "actionBtns",
+						dataIndex: this.actionColKey,
+						key:"actionBtns",
 						width: this.props.actionColumnWidth,
 						render: (text, record, index) => {
 							const tool = this.getExportSomething();
@@ -475,6 +478,7 @@ class ZlistPanel extends React.Component {
 							const moreBtn =
 								this.props.moreBtnType == "rounding" ? (
 									<ZroundingButton
+										key="more"
 										items={this.moreMenu(record, index)}
 										onVisibleChange={onVisibleChange}
 									>
@@ -532,10 +536,10 @@ class ZlistPanel extends React.Component {
 		.filter((item) => {
 			return !(dataType.isBoolean(item.show) && !item.show);
 		})
-		.map((item) => item.dataIndex).concat(this.props.tableColumns.some(item=>item.dataIndex==this.props.actionDataIndex)?[]:[this.props.actionDataIndex]);
+		.map((item) => item.dataIndex);
 	getShowTableColumns(checkValue) {
 		return this.tableColumns.filter((item) => {
-			return checkValue.includes(item.dataIndex);
+			return checkValue.includes(item.dataIndex) || item.dataIndex == this.actionColKey;
 		});
 	}
 	searchFormConfig = const_extendPanelFormConfig.call(this);

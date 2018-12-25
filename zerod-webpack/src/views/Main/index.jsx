@@ -77,6 +77,7 @@ const pageConfig = {
 	// 组件加载完成的钩子
 	componentDidMount: (callback) => {
 		//获取登录信息
+		// callback();
 		api.login.getUserInfo().then((re) => {
 			if (re.data) {
 				//已经登录了保存登录信息数据，传入导航数据

@@ -367,6 +367,7 @@ class ZtreePanel extends React.Component {
 			const { title, key, dataRef, ...otherData } = data;
 			return (
 				<TreeNode
+					selectable={false}
 					title={
 						<TreeTitle
 							name={data[nameKey]}
@@ -425,6 +426,9 @@ class ZtreePanel extends React.Component {
 									loadData={this.ayncChild ? this.methods.loadChildData : undefined}
 									{...treeOthers}
 									autoExpandParent={false}
+									onRightClick={(e) => {
+										console.log(5);
+									}}
 								>
 									{this.getTreeNode(this.state.treeData)}
 								</Tree>

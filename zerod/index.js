@@ -19,15 +19,15 @@ export { default as ZcolorPicker } from "./components/ZcolorPicker";
 
 export { default as ZdetailSimpleBaseHOC } from "./components/ZdetailSimpleBaseHOC";
 export { default as ZeditSimpleFormHOC } from "./components/ZeditSimpleFormHOC";
-export { default as ZpageWrapper,ZpageWraperHOC } from "./components/ZpageWrapper";
+export { default as ZpageWrapper } from "./components/ZpageWrapper";
+export { default as ZpageWraperHOC } from "./components/ZpageWraperHOC";
 export { default as ZsearchListHOC } from "./components/ZsearchListHOC";
-import panel from "./components/ZsearchListHOC/ZlistPanel";
-export const ListPanel = panel;
-export const ZlistPanel = panel;
+export { default as ZlistPanel } from "./components/ZlistPanel";
+
 export { default as ZmainHOC } from "./components/ZmainHOC";
 export { default as ZappHOC } from "./components/ZappHOC";
 export { default as ZeditorTreeHOC } from "./components/ZeditorTreeHOC";
-export { default as ZtreePanel } from "./components/ZeditorTreeHOC/ZtreePanel";
+export { default as ZtreePanel } from "./components/ZtreePanel";
 
 export { default as ZerodMainContext } from "./components/ZerodMainContext";
 export { default as ZerodRootContext } from "./components/ZerodRootContext";
@@ -35,3 +35,4 @@ export { default as ZerodRootContext } from "./components/ZerodRootContext";
 export { default as zTool } from "./components/zTool";
 export { default as ZroundingButton } from "./components/ZroundingButton";
 export { default as ZlabelInput } from "./components/ZlabelInput";
+export { default as Zbutton } from "./components/Zbutton";

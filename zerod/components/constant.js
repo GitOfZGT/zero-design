@@ -291,7 +291,7 @@ export const const_getPanleHeader = function(hasControl) {
 				{hasControl ? (
 					<Tooltip title="控制显示字段" placement="top">
 						<Popover content={<Checkbox.Group className={searchCssClass['z-control-group']} defaultValue={this.checkColumnsValue} options={this.props.tableColumns.map(item=>{
-							return {label:item.title+(item.dataIndex==this.props.actionDataIndex?"(包括操作区)":""),value:item.dataIndex};
+							return {label:item.title,value:item.dataIndex};
 						})} onChange={this.methods.checkColumnsChange}></Checkbox.Group>} title="控制显示字段" trigger="click" placement="rightTop">
 							<i className={`zero-icon zerod-kongzhitai ${searchCssClass["z-control-icon"]}`} />
 						</Popover>

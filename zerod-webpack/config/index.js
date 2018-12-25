@@ -12,7 +12,7 @@ if (!/^(share\-)[a-z0-9]*/.test(shareName)) {
 const config = {
 	//入口js
 	entry: {
-		app: ["babel-polyfill", "./src/main.js"],
+		app: ["babel-polyfill","./src/main.js"],
 	},
 	copyName: shareName,
 	//babel-loader 要包含的文件夹是哪些
@@ -28,7 +28,7 @@ const config = {
 		//除了package.json的dependencies，还需包含
 		include: ["moment"],
 		//打包dll时从package.json的dependencies中不包含
-		exclude: ["antd", "uuid"],
+		exclude: ["antd", "uuid","babel-polyfill"],
 	},
 	//开发模式配置
 	dev: {

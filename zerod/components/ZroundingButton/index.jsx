@@ -13,10 +13,13 @@ export const ZroundingButton = ZerodMainContext.setConsumer(
 		static propTypes = {
 			className: PropTypes.string,
 			items: PropTypes.arrayOf(PropTypes.object),
-			onVisibleChange:PropTypes.func,
+			onVisibleChange: PropTypes.func,
 		};
 		static defaultProps = {
 			items: [],
+		};
+		state = {
+			createPortal: false,
 		};
 		on = on;
 		off = off;
@@ -52,8 +55,9 @@ export const ZroundingButton = ZerodMainContext.setConsumer(
 						let parentEl = e.target;
 						while (
 							parentEl &&
-							(typeof parentEl.className == "string" &&
-							!parentEl.className.includes(cssClass["z-round-btn"])||typeof parentEl.className !== "string")
+							((typeof parentEl.className == "string" &&
+								!parentEl.className.includes(cssClass["z-round-btn"])) ||
+								typeof parentEl.className !== "string")
 						) {
 							parentEl = parentEl.parentElement;
 						}
@@ -74,61 +78,75 @@ export const ZroundingButton = ZerodMainContext.setConsumer(
 			const d = to + (btnWidth + btnMargin) * i;
 			return d;
 		}
+		doShow = () => {
+			this.setPosition();
+			if (!this.$btns.length) return;
+			this.coverEl.style.display = "block";
+			this.isShow = true;
+			setTimeout(() => {
+				const theBtns = this.$btns.slice(0);
+				const lens = deepCopy(this.directionLen);
+				let i = 0;
+				while (theBtns.length) {
+					lens.forEach((dir, index) => {
+						if (dir.length && theBtns.length) {
+							const el = theBtns.shift();
+							let translate = "";
+							switch (index) {
+								case 0:
+									translate = `translate(0px,-${this.getTo(this.diameterH, i)}px)`;
+									break;
+								case 1:
+									translate = `translate(${this.getTo(this.diameterW, i)}px,0px)`;
+									break;
+								case 2:
+									translate = `translate(0px,${this.getTo(this.diameterH, i)}px)`;
+									break;
+								case 3:
+									translate = `translate(-${this.getTo(this.diameterW, i)}px,0px)`;
+									break;
+							}
+							el.style.opacity = 1;
+							el.style.transform = `scale(1) ${translate}`;
+							dir.shift();
+						}
+					});
+					i++;
+				}
+				this.transitioning = false;
+			}, 10);
+		};
+		doHide = () => {
+			this.$btns.forEach((el, i) => {
+				if (i == 0) {
+					once(el, "transitionend", () => {
+						this.coverEl.style.display = "none";
+						this.transitioning = false;
+					});
+				}
+				el.style.opacity = 0;
+				el.style.transform = "scale(0.1)";
+			});
+			this.isShow = false;
+		};
 		showBtns = () => {
 			if (!this.childEl || this.transitioning) return;
 			this.transitioning = true;
 			if (this.isShow) {
-				this.$btns.forEach((el, i) => {
-					if (i == 0) {
-						once(el, "transitionend", () => {
-							this.coverEl.style.display = "none";
-							this.transitioning = false;
-						});
-					}
-					el.style.opacity = 0;
-					el.style.transform = "scale(0.1)";
-				});
-				this.isShow = false;
-
+				this.doHide();
 			} else {
-				this.setPosition();
-				if (!this.$btns.length) return;
-				this.coverEl.style.display = "block";
-				this.isShow = true;
-				setTimeout(() => {
-					const theBtns = this.$btns.slice(0);
-					const lens = deepCopy(this.directionLen);
-					let i = 0;
-					while (theBtns.length) {
-						lens.forEach((dir, index) => {
-							if (dir.length && theBtns.length) {
-								const el = theBtns.shift();
-								let translate = "";
-								switch (index) {
-									case 0:
-										translate = `translate(0px,-${this.getTo(this.diameterH, i)}px)`;
-										break;
-									case 1:
-										translate = `translate(${this.getTo(this.diameterW, i)}px,0px)`;
-										break;
-									case 2:
-										translate = `translate(0px,${this.getTo(this.diameterH, i)}px)`;
-										break;
-									case 3:
-										translate = `translate(-${this.getTo(this.diameterW, i)}px,0px)`;
-										break;
-								}
-								el.style.opacity = 1;
-								el.style.transform = `scale(1) ${translate}`;
-								dir.shift();
-							}
-						});
-						i++;
-					}
-					this.transitioning = false;
-				}, 10);
+				if (this.state.createPortal) {
+					this.doShow();
+				} else {
+					this.setState(
+						{
+							createPortal: true,
+						},
+						this.doShow,
+					);
+				}
 			}
-			this.props.onVisibleChange&&this.props.onVisibleChange(this.isShow);
+			this.props.onVisibleChange && this.props.onVisibleChange(this.isShow);
 		};
 		closeBtns = () => {
 			if (this.isShow) this.showBtns();
@@ -153,7 +171,7 @@ export const ZroundingButton = ZerodMainContext.setConsumer(
 			this.setEvent("off");
 		}
 		render() {
-			const { className,style } = this.props;
+			const { className, style } = this.props;
 			const btnItems = this.props.items.map((item) => {
 				return {
 					...item,
@@ -162,34 +180,36 @@ export const ZroundingButton = ZerodMainContext.setConsumer(
 				};
 			});
 			return (
-				<span ref={(el) => (this.wrapEl = el)} className={className ? className : ""} style={style}>
+				<span ref={(el) => (this.wrapEl = el)} className={`z-round-main ${className ? className : ""}`} style={style}>
 					{this.props.children}
-					{ReactDOM.createPortal(
-						<div className={coverClass} ref={(el) => (this.coverEl = el)}>
-							{btnItems.map((item, i) => {
-								return item.show ? (
-									<Tooltip placement="top" title={item.name} mouseLeaveDelay={0}>
-										<div
-											className={`${cssClass["z-round-btn"]} ${
-												item.disabled ? cssClass["is-disabled"] : ""
-											}`}
-											key={i}
-											data-disabled={item.disabled ? "1" : "0"}
-										>
-											{item.icon
-												? typeof item.icon == "function"
-													? item.icon()
-													: item.icon
-												: typeof item.name == "string" && item.name
-												? item.name.slice(0, 1)
-												: ""}
-										</div>
-									</Tooltip>
-								) : null;
-							})}
-						</div>,
-						document.body,
-					)}
+					{this.state.createPortal
+						? ReactDOM.createPortal(
+								<div className={coverClass} ref={(el) => (this.coverEl = el)}>
+									{btnItems.map((item, i) => {
+										return item.show ? (
+											<Tooltip key={i} placement="top" title={item.name} mouseLeaveDelay={0}>
+												<div
+													className={`${cssClass["z-round-btn"]} ${
+														item.disabled ? cssClass["is-disabled"] : ""
+													}`}
+													key={i}
+													data-disabled={item.disabled ? "1" : "0"}
+												>
+													{item.icon
+														? typeof item.icon == "function"
+															? item.icon()
+															: item.icon
+														: typeof item.name == "string" && item.name
+														? item.name.slice(0, 1)
+														: ""}
+												</div>
+											</Tooltip>
+										) : null;
+									})}
+								</div>,
+								document.body,
+						  )
+						: null}
 				</span>
 			);
 		}

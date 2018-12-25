@@ -9,39 +9,52 @@ $--primary-6:lighten($--primary-color,8%);
 $--primary-7:lighten($--primary-color,6%);
 $--primary-8:lighten($--primary-color,4%);
 $--primary-9:lighten($--primary-color,2%);
+
+$--primary-bg:linear-gradient(90deg, $--blue-tint 0%, $--blue-deep 100%);
+$--primary-bg-hover:linear-gradient(90deg, $--blue-tint 0%, $--blue-tint 100%);
+$--primary-bg-active:linear-gradient(90deg, $--blue-deep 0%, $--blue-deep 100%);
+
+$--success-bg:linear-gradient(90deg, $--green-tint 0%, $--green-deep 100%);
+$--success-bg-hover:linear-gradient(90deg, $--green-tint 0%, $--green-tint 100%);
+$--success-bg-active:linear-gradient(90deg, $--green-deep 0%, $--green-deep 100%);
+
+$--danger-bg:linear-gradient(90deg, $--red-tint 0%, $--red-deep 100%);
+$--danger-bg-hover:linear-gradient(90deg, $--red-tint 0%, $--red-tint 100%);
+$--danger-bg-active:linear-gradient(90deg, $--red-deep 0%, $--red-deep 100%);
+
 :global {
 	body{
         .ant-btn-primary:not([disabled]) {
-            background-image: linear-gradient(90deg, $--blue-tint 0%, $--blue-deep 100%);
+            background-image: $--primary-bg;
             background-color:$--blue-tint;
             border-color: $--blue-tint;
             &:hover,&:focus{
-                background-image: linear-gradient(90deg, $--blue-tint 0%, $--blue-tint 100%);
+                background-image: $--primary-bg-hover;
             }
             &:active{
-                background-image: linear-gradient(90deg, $--blue-deep 0%, $--blue-deep 100%);
+                background-image: $--primary-bg-active;
             }
         }
-        .ant-btn-primary.z-btn-green:not([disabled]) {
-            background-image: linear-gradient(90deg, $--green-tint 0%, $--green-deep 100%);
+        .ant-btn-primary.z-btn-success:not([disabled]) {
+            background-image: $--success-bg;
             background-color:$--green-tint;
             border-color: $--green-tint;
             &:hover,&:focus{
-                background-image: linear-gradient(90deg, $--green-tint 0%, $--green-tint 100%);
+                background-image: $--success-bg-hover;
             }
             &:active{
-                background-image: linear-gradient(90deg, $--green-deep 0%, $--green-deep 100%);
+                background-image: $--success-bg-active;
             }
         }
         .ant-btn-danger:not([disabled]){
-            background-image: linear-gradient(90deg, $--red-tint 0%, $--red-deep 100%);
+            background-image: $--danger-bg;
             background-color:$--red-tint;
             border-color: $--red-tint;
             &:hover,&:focus{
-                background-image: linear-gradient(90deg, $--red-tint 0%, $--red-tint 100%);
+                background-image: $--danger-bg-hover;
             }
             &:active{
-                background-image: linear-gradient(90deg, $--red-deep 0%, $--red-deep 100%);
+                background-image: $--danger-bg-active;
             }
         }
         $--ra:$btn-border-radius-base;

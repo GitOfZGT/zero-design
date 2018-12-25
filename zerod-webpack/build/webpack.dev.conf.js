@@ -42,7 +42,7 @@ const devWebpackConfig = merge(baseWebpackConfig, {
 			aggregateTimeout: 1000,
 			ignored: [config.build.assetsRoot, path.resolve(__dirname, "../config"), __dirname],
 		},
-		disableHostCheck: false,
+		disableHostCheck: true,
 		public: address.ip(),
 	},
 	optimization: {

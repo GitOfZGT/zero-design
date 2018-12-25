@@ -3,7 +3,7 @@ import { Menu, Icon } from "antd";
 import { withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
 import cssClass from "./style.scss";
-import { isHttpStart } from "../zTool";
+import { itemsFromTree } from "../zTool";
 /**
  * menuData
  * [{
@@ -47,14 +47,13 @@ class Com extends React.Component {
 							</span>
 						}
 						key={el.path}
-						newWindow={el.newWindow}
 					>
 						{this.getMenuItems(el.children)}
 					</Menu.SubMenu>
 				);
 			} else {
 				return (
-					<Menu.Item key={el.path} newWindow={el.newWindow}>
+					<Menu.Item key={el.path}>
 						<span>
 							{icon}
 							<span>{el.name}</span>
@@ -81,8 +80,17 @@ class Com extends React.Component {
 	onSelect = ({ item, key, selectedKeys }) => {
 		let selected = true;
 		if (this.props.onSelect) selected = this.props.onSelect({ item, key, selectedKeys });
-		if (selected!==false) {
-			if (item.props.newWindow) {
+		if (selected !== false) {
+			let data = null;
+			itemsFromTree({
+				tree: this.props.menuData,
+				sourceItem: { path: key },
+				keyObj:{id:"path",children:"children"},
+				action: function({ tree, currentItem, item, index, keyObj }) {
+					data = currentItem;
+				},
+			});
+			if (data && data.newWindow) {
 				window.open(key, "_blank");
 			} else if (/^\/[A-Za-z0-9]*/.test(key)) {
 				this.props.history.push(key);

@@ -32,7 +32,7 @@
 
 2018-11-22 v1.1.0 去掉antd-scss-theme-plugin插件，添加happypack多线程插件，提高编译速度，添加DllPlugin和DllReferencePlugin  
 2018-12-11 v1.1.3 修复只分割代码未按需加载的问题，新增pace来显示加载loading
-
+2018-12-25 v1.2.0 升级babel@7.x
 
 <div class="z-doc-titles"></div>
 

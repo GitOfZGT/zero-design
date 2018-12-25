@@ -20,7 +20,7 @@ class Zbody extends React.Component {
 		this.scroollInstance.scroll.scrollTo(0,0,200);
 	};
 	showBackToTop = () => {
-		if (this.scroollInstance.scroll.y < this.scroollInstance.scroll.maxScrollY * 0.3) {
+		if (this.scroollInstance.scroll.y < -100) {
 			if (!this.hasShowToTop) {
 				addClass(this.toTopBtnEl,cssClass['is-animate-start']);
 				removeClass(this.toTopBtnEl, cssClass["is-hide"]);
