@@ -1,3 +1,4 @@
+import "../../zero-icon/iconfont.css";
 export { default as Zform } from "./components/Zform";
 export { default as Zinfo } from "./components/Zinfo";
 export { default as Zlayout } from "./components/Zlayout";

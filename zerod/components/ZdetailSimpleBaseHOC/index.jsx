@@ -64,7 +64,7 @@ export function ZdetailSimpleBaseHOC(pageConfig) {
 		exportSomething: null,
 	};
 	defaultConfig = mergeConfig(defaultConfig, pageConfig);
-	class myDetail extends React.Component {
+	class myDetail extends React.PureComponent {
 		static propTypes = {
 			detailId: PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.object]).isRequired,
 		};

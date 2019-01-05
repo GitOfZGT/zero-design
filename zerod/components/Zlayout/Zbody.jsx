@@ -1,9 +1,9 @@
 import React from "react";
 import PropTypes from "prop-types";
 import cssClass from "./style.scss";
-
+import "../../zero-icon/iconfont.css";
 import { BuildScroll, listenDivSizeChange, addClass, removeClass ,once} from "../zTool";
-class Zbody extends React.Component {
+class Zbody extends React.PureComponent {
 	static propTypes = {
 		className: PropTypes.string,
 		scroll: PropTypes.bool,
@@ -93,6 +93,7 @@ class Zbody extends React.Component {
 	}
 	componentWillUnmount() {
 		if (this.scroollInstance) {
+			this.scroollInstance.scroll.off("scrollEnd", this.showBackToTop);
 			this.scroollInstance.scroll.destroy();
 			this.scroollInstance = null;
 		}

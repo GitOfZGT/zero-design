@@ -10,7 +10,7 @@
 import React from "react";
 import { Ztabs } from "zerod";
 
-class Myjavascript extends React.Component {
+class Myjavascript extends React.PureComponent {
 	tabPanes = [
 		{ tab: "基本信息", key: "1", content: "基本信息内容" },
 		{ tab: "配置信息", key: "2", content: "配置信息内容" },

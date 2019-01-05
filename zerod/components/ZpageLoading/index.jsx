@@ -3,7 +3,7 @@ import { Spin } from "antd";
 import PropTypes from "prop-types";
 import cssClass from "./style.scss";
 
-export class ZpageLoading extends React.Component {
+export class ZpageLoading extends React.PureComponent {
 	static propTypes = {
 		showLoading: PropTypes.bool,
 		size: PropTypes.string,

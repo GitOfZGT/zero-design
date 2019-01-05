@@ -5,7 +5,7 @@ import cssClass from "./style.scss";
 import { ZroundingButton } from "../ZroundingButton";
 import { Zbutton } from "../Zbutton";
 import { removeClass, addClass } from "../zTool";
-class TreeTitle extends React.Component {
+class TreeTitle extends React.PureComponent {
 	static propTypes = {
 		tool: PropTypes.object,
 		name: PropTypes.string,

@@ -20,7 +20,7 @@ function ZappHOC(pageConfig) {
 		},
 	};
 	defaultConfig = zTool.mergeConfig(defaultConfig, pageConfig);
-	class App extends React.Component {
+	class App extends React.PureComponent {
 		config = defaultConfig;
 		routes = this.config.rootRoutes.map((item, i) => {
 			return item.redirect ? (

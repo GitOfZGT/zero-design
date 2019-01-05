@@ -1,11 +1,13 @@
 import React from "react";
 import PropTypes from "prop-types";
-export class Zbutton extends React.Component {
+export class Zbutton extends React.PureComponent {
 	static propTypes = {
 		className: PropTypes.string,
+		style:PropTypes.object,
 		size: PropTypes.string,
 		type: PropTypes.string,
 		disabled: PropTypes.bool,
+		onClick:PropTypes.func,
 	};
 	static defaultProps = {
 		size: "normal",

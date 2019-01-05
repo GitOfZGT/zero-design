@@ -8,7 +8,7 @@ import throttle from "lodash.throttle";
 const rotateClassName = cssClass["rotate-90"];
 const itemClassName = cssClass["z-cascader-item"];
 import { animateTimout } from "../constant";
-class ZcascaderItemGroup extends React.Component {
+class ZcascaderItemGroup extends React.PureComponent {
 	static propTypes = {
 		itemData: PropTypes.arrayOf(PropTypes.object),
 		itemKeys: PropTypes.object,
@@ -67,14 +67,14 @@ class ZcascaderItemGroup extends React.Component {
 				this.setState({
 					animateEnter: true,
 					animateExit: true,
-					itemData: this.saveDefaultData.slice(0, this.itemLens),
+					itemData: [...this.saveDefaultData.slice(0, this.itemLens)],
 				});
 				removeClass(this.moreBtnEl, rotateClassName);
 			} else {
 				this.setState({
 					animateEnter: true,
 					animateExit: true,
-					itemData: this.saveDefaultData.slice(0),
+					itemData: [...this.saveDefaultData.slice(0)],
 				});
 				addClass(this.moreBtnEl, rotateClassName);
 			}
@@ -145,7 +145,7 @@ class ZcascaderItemGroup extends React.Component {
 	}
 }
 
-export class Zcascader extends React.Component {
+export class Zcascader extends React.PureComponent {
 	static propTypes = {
 		itemKeys: PropTypes.object,
 		lables: PropTypes.arrayOf(PropTypes.string),
@@ -192,7 +192,7 @@ export class Zcascader extends React.Component {
 				}
 				this.setState(
 					{
-						cascaders: currentCascaders,
+						cascaders: [...currentCascaders],
 					},
 					() => {
 						this.props.onSelect && this.props.onSelect(this.selectItems);
@@ -238,7 +238,7 @@ export class Zcascader extends React.Component {
 			if (!Array.isArray(childs) || !childs.length) {
 				this.setState(
 					{
-						cascaders: currentCascaders,
+						cascaders: [...currentCascaders],
 						showLoading: false,
 					},
 					() => {
@@ -278,7 +278,7 @@ export class Zcascader extends React.Component {
 			}
 			this.setState(
 				{
-					cascaders: currentCascaders,
+					cascaders: [...currentCascaders],
 					showLoading: false,
 				},
 				() => {

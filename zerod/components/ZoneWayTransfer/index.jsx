@@ -38,7 +38,7 @@ class Template extends React.Component {
 	}
 }
 const _paddingLeft = "1em";
-class ZTransfer extends React.Component {
+class ZTransfer extends React.PureComponent {
 	static propTypes = {
 		getUlElement: PropTypes.func,
 		sourceKeys: PropTypes.object,
@@ -153,7 +153,7 @@ class ZTransfer extends React.Component {
 		);
 	}
 }
-export class ZoneWayTransfer extends React.Component {
+export class ZoneWayTransfer extends React.PureComponent {
 	static propTypes = {
 		sourceKeys: PropTypes.object,
 		leftSourceData: PropTypes.arrayOf(PropTypes.object),

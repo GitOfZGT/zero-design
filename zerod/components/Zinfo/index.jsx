@@ -6,7 +6,7 @@ import { CSSTransition, TransitionGroup } from "react-transition-group";
 import { animateTimout, const_initItems, const_execAsync, const_itemSpan } from "../constant";
 import ZpageLoading from "../ZpageLoading";
 
-class Zinfo extends React.Component {
+class Zinfo extends React.PureComponent {
 	static propTypes = {
 		items: PropTypes.arrayOf(PropTypes.object),
 		defaultSpan: PropTypes.oneOfType([PropTypes.number, PropTypes.object]),
@@ -60,6 +60,9 @@ class Zinfo extends React.Component {
 		if (this.props.items !== prevProps.items && !this.allAsync.length) {
 			this.execAsync();
 		}
+	}
+	componentWillUnmount(){
+		this.unmounted=true;
 	}
 	getItems() {
 		const data = this.state.detailData;

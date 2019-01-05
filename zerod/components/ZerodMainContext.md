@@ -30,7 +30,7 @@ this.props.showRightModal({
 import React from "react";
 import { Button } from "antd";
 import { ZerodMainContext } from "zerod";
-class OpenModal extends React.Component {
+class OpenModal extends React.PureComponent {
 	methods = {
 		openMainModal: (e) => {
 			this.props.showRightModal(
@@ -79,7 +79,7 @@ showRouteLoading 方法有一个参数，`show`:是否显示
 <div class="z-demo-box" data-render="route-loading" data-title="this.props.showRouteLoading(true)"></div>
 
 ```jsx
-class MyScript extends React.Component {
+class MyScript extends React.PureComponent {
 	methods = {
 		showRouteLoading: (e) => {
 			this.props.showRouteLoading(true);
@@ -111,7 +111,7 @@ showModalLoading 方法有两个参数，`show`:是否显示，`modal`: "mainMod
 <div class="z-demo-box" data-render="modal-loading" data-title="this.props.showModalLoading(true, modal);"></div>
 
 ```jsx
-class MyScript extends React.Component {
+class MyScript extends React.PureComponent {
 	methods = {
 		showModalLoading: (e, modal) => {
 			this.props.showRightModal(true, modal);
@@ -233,7 +233,7 @@ getScrollAreaWrapperEl 方法有一个参数，`witch`:哪个地方的滚动条:
 import React from "react";
 import ReactDom from "react-dom";
 import { ZerodMainContext } from "zerod";
-class MoreCofig extends React.Component {
+class MoreCofig extends React.PureComponent {
 	componentDidMount() {
 		// 首先得获取this.boxEl元素所在得位置
 		const insetLocaltion = this.props.getInsertLocation(this.boxEl);

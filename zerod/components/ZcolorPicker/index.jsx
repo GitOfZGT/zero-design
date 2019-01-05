@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import { SketchPicker } from "react-color";
 import cssClass from "./style.scss";
 import { CSSTransition } from "react-transition-group";
-export class ZcolorPicker extends React.Component {
+export class ZcolorPicker extends React.PureComponent {
 	static propTypes = {
 		value: PropTypes.string,
 		defaultValue: PropTypes.string,

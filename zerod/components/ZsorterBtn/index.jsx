@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import cssClass from "./style.scss";
 import { Tooltip ,Icon} from "antd";
-export class ZsorterBtn extends React.Component {
+export class ZsorterBtn extends React.PureComponent {
 	static propTypes = {
 		onClick: PropTypes.func,
 	};

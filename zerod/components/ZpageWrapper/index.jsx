@@ -40,7 +40,7 @@ export const ZpageWrapperProps = {
 	titleFromLasterBreadcrumb: PropTypes.bool, //pageHeader的title是否来自面包屑的最后一个名称
 };
 
-class Page extends React.Component {
+class Page extends React.PureComponent {
 	static propTypes = ZpageWrapperProps;
 	static defaultProps = {
 		pageHeader: { show: false },

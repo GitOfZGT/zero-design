@@ -13,7 +13,7 @@ import React from "react";
 import { ZsearchForm } from "zerod";
 import { Input, message } from "antd";
 
-class Myjavascript extends React.Component {
+class Myjavascript extends React.PureComponent {
 	items = [
 		{
 			key: "serviceCode",

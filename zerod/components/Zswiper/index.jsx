@@ -11,7 +11,7 @@ class Template extends React.Component{
     }
 }
 
-export class Zswiper extends React.Component {
+export class Zswiper extends React.PureComponent {
 	static propTypes = {
 		imgSrcs: PropTypes.arrayOf(PropTypes.string),
 		swiperClick: PropTypes.func,

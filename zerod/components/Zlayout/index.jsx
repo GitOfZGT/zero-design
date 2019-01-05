@@ -7,7 +7,7 @@ import Zfooter from "./Zfooter";
 import ZheaderBtn from "./ZheaderBtn";
 import { getStyle } from "../zTool";
 import { listenDivSizeChange, once } from "../zTool";
-export class Zlayout extends React.Component {
+export class Zlayout extends React.PureComponent {
 	static propTypes = {
 		flexRow: PropTypes.bool,
 		flex: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),

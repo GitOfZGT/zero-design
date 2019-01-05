@@ -233,6 +233,7 @@ export const const_execAsync = function(callback) {
 				return asy.promise;
 			}),
 		).then((re) => {
+			if(this.unmounted)return;
 			this.allAsync = [];
 			this.setState(
 				{
@@ -290,7 +291,7 @@ export const const_getPanleHeader = function(hasControl) {
 				{left}
 				{hasControl ? (
 					<Tooltip title="控制显示字段" placement="top">
-						<Popover content={<Checkbox.Group className={searchCssClass['z-control-group']} defaultValue={this.checkColumnsValue} options={this.props.tableColumns.map(item=>{
+						<Popover content={<Checkbox.Group className={searchCssClass['z-control-group']} defaultValue={this.checkColumnsValue} options={this.props.tableColumns.filter(item=>item.dataIndex).map(item=>{
 							return {label:item.title,value:item.dataIndex};
 						})} onChange={this.methods.checkColumnsChange}></Checkbox.Group>} title="控制显示字段" trigger="click" placement="rightTop">
 							<i className={`zero-icon zerod-kongzhitai ${searchCssClass["z-control-icon"]}`} />

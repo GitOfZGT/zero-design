@@ -30,7 +30,7 @@ import {
 } from "../zTool";
 // import { Zlayout } from "../Zlayout";
 let defaultConfig = const_getListConfig("list", "ZtreePanel");
-class ZtreePanel extends React.Component {
+class ZtreePanel extends React.PureComponent {
 	static propTypes = {
 		treeDataKeys: PropTypes.object,
 		panelBeforeRender: PropTypes.func,

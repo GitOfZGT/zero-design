@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import Prism from "prismjs";
 // import cssClass from "./style.scss";
-export class ZcodeHighlight extends React.Component {
+export class ZcodeHighlight extends React.PureComponent {
 	static propTypes = {
 		mode: PropTypes.string, // block || inline || html
 		lang: PropTypes.string,

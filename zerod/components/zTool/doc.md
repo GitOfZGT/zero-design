@@ -96,7 +96,7 @@ import { zTool } from "zerod";
 const scroollInstance = new zTool.BuildScroll(el, opt);
 
 // 结合zTool.listenDivSizeChange达到自动更新滚动条的效果
-class My extends React.Component {
+class My extends React.PureComponent {
 	componentDidMount() {
 		this.scroollInstance = new zTool.BuildScroll(this.bodyEl, { scrollbars: "custom" });
 		zTool.listenDivSizeChange(this.bodyEl, this.scroollInstance.refresh);

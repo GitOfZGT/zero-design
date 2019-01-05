@@ -7,7 +7,7 @@ import { animateTimout, const_initItems, const_execAsync, const_itemSpan } from 
 import ZpageLoading from "../ZpageLoading";
 import { once, dataType, } from "../zTool";
 export const ZsearchForm = Form.create()(
-	class extends React.Component {
+	class extends React.PureComponent {
 		static propTypes = {
 			hidden: PropTypes.bool,
 			labelLayout: PropTypes.string,//'horizontal'|'vertical'
@@ -116,6 +116,9 @@ export const ZsearchForm = Form.create()(
 			if (this.props.hidden !== prevProps.hidden) {
 				this.setAnimate();
 			}
+		}
+		componentWillUnmount(){
+			this.unmounted=true;
 		}
 		getFormItems() {
 			const { getFieldDecorator } = this.props.form;

@@ -83,7 +83,7 @@ export function ZeditSimpleFormHOC(pageConfig) {
 		exportSomething:null,
 	};
 	defaultConfig = mergeConfig(defaultConfig, pageConfig);
-	class myForm extends React.Component {
+	class myForm extends React.PureComponent {
 		static propTypes = {
 			detailId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 		};

@@ -11,7 +11,7 @@
 ```jsx
 import React from "react";
 import { ZcolorPicker } from "zerod";
-class Myjavascript extends React.Component {
+class Myjavascript extends React.PureComponent {
 	state = {
 		color: "#FFFFFF",
 	};

@@ -1,5 +1,5 @@
 {
-  "name": "zerod-admin-webpack",
+  "name": "zerod-admin-webpack-1.2.0",
   "version": "1.2.0",
   "private": true,
   "description": "react+react-router+redux+react-redux+antd+scss脚手架",
@@ -16,7 +16,7 @@
     "dll": "node build/webpack.dll.conf.js"
   },
   "dependencies": {
-    "antd": "^3.10.8",
+    "antd": "^3.11.6",
     "axios": "^0.18.0",
     "babel-polyfill": "^6.26.0",
     "react": "^16.4.0",
@@ -38,7 +38,6 @@
     "@babel/register": "^7.0.0",
     "@babel/runtime-corejs2": "^7.2.0",
     "address": "^1.0.3",
-    "antd-scss-theme-plugin": "^1.0.7",
     "autoprefixer": "^7.1.2",
     "babel-loader": "^8.0.4",
     "babel-plugin-import": "^1.8.0",

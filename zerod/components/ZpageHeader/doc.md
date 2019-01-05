@@ -9,7 +9,7 @@ import React from "react";
 import { ZpageHeader } from "zerod";
 import { Icon } from "antd";
 
-class PageHeader extends React.Component {
+class PageHeader extends React.PureComponent {
 	pageHeader = {
 		trademark: <Icon type="cloud" />,
 		// array>[object] | null,如果是null则不显示面包屑
@@ -50,7 +50,7 @@ import React from "react";
 import { ZpageHeader } from "zerod";
 import { Icon } from "antd";
 
-class PageHeader extends React.Component {
+class PageHeader extends React.PureComponent {
 	tabPanes = [
 		{ tab: "基本信息", key: "1", content: null },
 		{ tab: "配置信息", key: "2", content: null },

@@ -10,7 +10,7 @@
 import React from "react";
 import { message } from "antd";
 import { Zcascader } from "zerod";
-class Myjavascript extends React.Component {
+class Myjavascript extends React.PureComponent {
 	methods = {
 		onSelect: (items) => {
 			let names = items.map((item) => {
@@ -40,7 +40,7 @@ class Myjavascript extends React.Component {
 import React from "react";
 import { message } from "antd";
 import { Zcascader } from "zerod";
-class Myjavascript extends React.Component {
+class Myjavascript extends React.PureComponent {
 	methods = {
 		onSelect: (items) => {
 			let names = items.map((item) => {

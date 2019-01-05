@@ -15,13 +15,13 @@ module.exports =  {
 		plugins: [
 			["@babel/plugin-transform-runtime",{"corejs": 2}],
 			"@babel/plugin-syntax-dynamic-import",
+			["@babel/plugin-proposal-decorators", { legacy: true }],//经测试，必须在"@babel/plugin-proposal-class-properties"之前才有效
 			[
 				"@babel/plugin-proposal-class-properties",
 				{
 					loose: true,
 				},
 			],
-			["@babel/plugin-proposal-decorators", { legacy: true }],
 			[
 				"import",
 				{

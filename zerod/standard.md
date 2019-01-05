@@ -10,17 +10,17 @@
 
 4、react : 禁用组件生命周期函数：`componentWillMount`、`componentWillReceiveProps`、`componentWillUpdate`,因为这些可能在以后 react 中被废弃的函数;
 
-5、react : ref 属性禁用字符串方式, 如禁用`<div ref="myBox"></div>`，推荐用法`<div ref={(el)=>{this.myBoxEl=el;}}></div>`;
+5、react : ref 属性禁用字符串方式, 如禁用`<div ref="myBox"></div>`，推荐用法`<div ref={(el)=>{this.myBoxEl=el;}}></div>` 或者使用 `React.createRef()`;
 
 6、react : 组件内跟`setState`无关的属性，请不要写进 `state`中。
 
-7、react : v16.7.0之前的react组件写法：
+7、react : v16.7.0之前的react组件写法：(建议继承`React.PureComponent`)
 
 ```jsx
 import React from "react";
 import PropTypes from "prop-types";
 
-class MyComponent extends React.Component {
+class MyComponent extends React.PureComponent {
 	// 定义props的类型(如果有props规定必须要写)
 	static propTypes = {
 		className: PropTypes.string,
@@ -133,7 +133,7 @@ api.login.getList(查询参数).then(re=>{
 import cssClass from "./style.scss";
 
 import React from "react";
-class AtabBar extends React.Component {
+class AtabBar extends React.PureComponent {
 	render(){
 		return <div></div>
 	}
@@ -169,7 +169,7 @@ import cssClass from "./style.scss";
 
 import React from "react";
 function AshowDemoHOC(Comp) {
-	return class Common extends React.Component {
+	return class Common extends React.PureComponent {
 		render() {
 			return <Comp />;
 		}
@@ -340,7 +340,7 @@ const context = React.createContext(defaultValue); //创建上下文
 const { Provider, Consumer } = context;
 //提供启用上下文的方法
 const setConsumer = (ChildComponent) => {
-	return class ContextConsumer extends React.Component {
+	return class ContextConsumer extends React.PureComponent {
 		render() {
 			return <Consumer>{(value) => <ChildComponent {...this.props} {...value} />}</Consumer>;
 		}

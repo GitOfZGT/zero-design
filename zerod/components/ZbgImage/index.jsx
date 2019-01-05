@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import cssClass from "./style.scss";
-export class ZbgImage extends React.Component {
+export class ZbgImage extends React.PureComponent {
 	static propTypes = {
 		url: PropTypes.string,
 		position: PropTypes.string,// top | center
@@ -24,6 +24,7 @@ export class ZbgImage extends React.Component {
 			>
 				<span>图片</span>
 				<div className={`${cssClass["z-bg-image"]} ${cssClass[`is-bg-${this.props.position}`]}`} style={{ backgroundImage: `url(${this.props.url})` }} />
+				{this.props.children}
 			</div>
 		);
 	}

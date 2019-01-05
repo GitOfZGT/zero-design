@@ -8,7 +8,7 @@
 <div class="z-demo-box" data-render="demo1" data-title="基本使用"></div>
 
 ```jsx
-class Myjavascript extends React.Component {
+class Myjavascript extends React.PureComponent {
 	render() {
 		return (
 			<span>

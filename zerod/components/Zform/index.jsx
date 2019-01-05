@@ -7,7 +7,7 @@ import { animateTimout, const_initItems, const_execAsync, const_itemSpan } from 
 import ZpageLoading from "../ZpageLoading";
 import { dataType } from "../zTool";
 export const Zform = Form.create()(
-	class extends React.Component {
+	class extends React.PureComponent {
 		static propTypes = {
 			className: PropTypes.string,
 			labelLayout: PropTypes.string, //'horizontal'|'vertical'
@@ -95,6 +95,9 @@ export const Zform = Form.create()(
 			if (this.props.items !== prevProps.items && !this.allAsync.length) {
 				this.execAsync();
 			}
+		}
+		componentWillUnmount(){
+			this.unmounted=true;
 		}
 		getFormItems() {
 			const { getFieldDecorator } = this.props.form;

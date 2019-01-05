@@ -9,7 +9,7 @@ import { ZrightModal } from "../ZrightModal";
 import { const_getInsertLocation } from "../constant";
 import ZerodMainContext from "../ZerodMainContext";
 
-import zTool from "../zTool/";
+import { mergeConfig, formatterMapKey, deepCopy, dataTypeTest, dataType, itemsFromTree } from "../zTool/";
 // 样式类
 import cssClass from "./style.scss";
 
@@ -26,10 +26,15 @@ function getConstNames(witch) {
 	};
 }
 
-class CollapseBtn extends React.Component {
+class CollapseBtn extends React.PureComponent {
 	render() {
-		const {collapseBtnRender,collapsed}=this.props;
-		const icon = typeof collapseBtnRender=='function'?collapseBtnRender(collapsed):<Icon type={ collapsed ? "menu-unfold" : "menu-fold"} />
+		const { collapseBtnRender, collapsed } = this.props;
+		const icon =
+			typeof collapseBtnRender == "function" ? (
+				collapseBtnRender(collapsed)
+			) : (
+				<Icon type={collapsed ? "menu-unfold" : "menu-fold"} />
+			);
 		return (
 			<Zlayout.ZheaderBtn
 				onClick={this.props.onClick && this.props.onClick}
@@ -44,7 +49,7 @@ class CollapseBtn extends React.Component {
 export function ZmainHOC(pageConfig) {
 	pageConfig = pageConfig ? pageConfig : {};
 	let defaultConfig = {
-		noticeType:"notification", //notification | message
+		noticeType: "notification", //notification | message
 		// 左侧边展开时的宽度
 		leftExpandWidth: 240,
 		showCollapseBtn: true, //boolean | function
@@ -63,7 +68,7 @@ export function ZmainHOC(pageConfig) {
 		globalLoading: <div />,
 		// 导航
 		sideMenu: {
-			collapseBtnRender:null,
+			collapseBtnRender: null,
 			openAllSubmenu: false,
 			topOtherMenu: [],
 			bottomOtherMenu: [],
@@ -87,27 +92,10 @@ export function ZmainHOC(pageConfig) {
 		// rightModalType
 		// rightModalType: "mainModal",
 	};
-	defaultConfig = zTool.mergeConfig(defaultConfig, pageConfig);
-	class Main extends React.Component {
+	defaultConfig = mergeConfig(defaultConfig, pageConfig);
+	class Main extends React.PureComponent {
 		config = defaultConfig;
-		navRoutes = this.config.mainRoutes.map((item, i) => {
-			return item.redirect ? (
-				<Route
-					exact={typeof item.exact == "boolean" ? item.exact : true}
-					key={i}
-					path={this.props.match.url + item.path}
-					render={() => <Redirect to={this.props.match.url + item.to} />}
-				/>
-			) : (
-				<Route
-					exact={typeof item.exact == "boolean" ? item.exact : true}
-					key={i}
-					path={this.props.match.url + item.path}
-					component={item.component}
-				/>
-			);
-		});
-
+		navRoutes = [];
 		state = {
 			hasLogin: false, //
 			isCollapse: false, //侧边栏折叠状态
@@ -125,6 +113,46 @@ export function ZmainHOC(pageConfig) {
 			show_appModal_top: false,
 			show_appModal_top_Loading: false,
 		};
+		setNavRoutes(menuData) {
+			let newNav = [];
+			if (typeof this.config.mainRoutes == "function") {
+				newNav = this.config.mainRoutes(menuData, this.tool);
+			} else {
+				this.config.mainRoutes.forEach((item, i) => {
+					const currentPath = this.props.match.url + item.path;
+					const currentTo = this.props.match.url + item.to;
+					let hasPath = itemsFromTree({
+						tree: menuData,
+						sourceItem: { path: currentPath },
+						keyObj: {
+							id: "path",
+							children: "children",
+						},
+					});
+					if (hasPath||item.redirect) {
+						newNav.push(
+							item.redirect ? (
+								<Route
+									exact={typeof item.exact == "boolean" ? item.exact : true}
+									key={i}
+									path={currentPath}
+									render={() => <Redirect to={currentTo} />}
+								/>
+							) : (
+								<Route
+									exact={typeof item.exact == "boolean" ? item.exact : true}
+									key={i}
+									path={currentPath}
+									component={item.component}
+								/>
+							),
+						);
+					}
+				});
+			}
+
+			this.navRoutes = newNav;
+		}
 		sideMenuData = [];
 		// 处理侧边导航数据
 		setSideMenu(menuData) {
@@ -133,36 +161,37 @@ export function ZmainHOC(pageConfig) {
 			topOtherMenu = Array.isArray(topOtherMenu) ? topOtherMenu : [];
 			bottomOtherMenu = Array.isArray(bottomOtherMenu) ? bottomOtherMenu : [];
 			menuData = Array.isArray(menuData) ? menuData : [];
-			this.sideMenuData = zTool.formatterMapKey(
+			this.sideMenuData = formatterMapKey(
 				[...topOtherMenu, ...menuData, ...bottomOtherMenu],
 				this.config.sideMenu.mapKeys,
 				`${this.props.match.url}/`,
 				this.config.sideMenu.noParentPath,
 			);
+			this.setNavRoutes(this.sideMenuData);
 		}
 		methods = {
 			getTemporaryStorage: () => {
-				return zTool.deepCopy(this.temporaryStorage);
+				return deepCopy(this.temporaryStorage);
 			},
 			setTemporaryStorage: (data) => {
 				this.temporaryStorage = Object.assign(this.TemporaryStorage ? this.temporaryStorage : {}, data);
 			},
 			getSideMenuData: () => {
-				return zTool.deepCopy(this.sideMenuData);
+				return deepCopy(this.sideMenuData);
 			},
 			// 登录的用户信息对象存储在this.userInfoStorage
 			saveUserInfo: (data) => {
 				this.userInfoStorage = data;
 			},
 			getUserInfo: () => {
-				return zTool.deepCopy(this.userInfoStorage);
+				return deepCopy(this.userInfoStorage);
 			},
 			collapseToggleEnd: () => {
-				this.config.afterToggleCollapse && this.config.afterToggleCollapse(this.state.isCollapse,this.tool);
+				this.config.afterToggleCollapse && this.config.afterToggleCollapse(this.state.isCollapse, this.tool);
 			},
 			//折叠按钮点击触发
 			collapseBtnClick: () => {
-				this.config.beforeToggleCollapse && this.config.beforeToggleCollapse(this.state.isCollapse,this.tool);
+				this.config.beforeToggleCollapse && this.config.beforeToggleCollapse(this.state.isCollapse, this.tool);
 				this.setState({
 					isCollapse: !this.state.isCollapse,
 				});
@@ -199,7 +228,7 @@ export function ZmainHOC(pageConfig) {
 					return;
 				}
 				let opt = null;
-				if (zTool.dataTypeTest(show) === "object") {
+				if (dataTypeTest(show) === "object") {
 					opt = show;
 					show = opt.show;
 					witch = opt.modal;
@@ -262,9 +291,9 @@ export function ZmainHOC(pageConfig) {
 			showRightModal: this.methods.showRightModal,
 			getTemporaryStorage: this.methods.getTemporaryStorage,
 			setTemporaryStorage: this.methods.setTemporaryStorage,
-			getInsertLocation:const_getInsertLocation,
+			getInsertLocation: const_getInsertLocation,
 			$router: this.$router,
-			noticeType:this.config.noticeType,
+			noticeType: this.config.noticeType,
 		};
 		closeRightModal = (witch) => {
 			const { show_name } = getConstNames(witch);
@@ -331,6 +360,7 @@ export function ZmainHOC(pageConfig) {
 			);
 		}
 		getTemplate() {
+			
 			const leftWidth = this.state.isCollapse ? 80 : this.config.leftExpandWidth;
 			const _showCollapseBtn =
 				typeof this.config.showCollapseBtn == "function"
@@ -418,8 +448,8 @@ export function ZmainHOC(pageConfig) {
 			return this.state.hasLogin
 				? this.getTemplate()
 				: typeof GlobalLoading === "function"
-					? GlobalLoading()
-					: GlobalLoading;
+				? GlobalLoading()
+				: GlobalLoading;
 		}
 	}
 	return withRouter(Main);

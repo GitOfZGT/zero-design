@@ -12,7 +12,7 @@ import { itemsFromTree } from "../zTool";
  * iconClass
  * }]
  */
-class Com extends React.Component {
+class Com extends React.PureComponent {
 	static propTypes = {
 		openAllSubmenu: PropTypes.bool,
 		onSelect: PropTypes.func,

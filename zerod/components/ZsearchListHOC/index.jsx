@@ -20,7 +20,7 @@ export function ZsearchListHOC(pageConfig) {
 	let defaultConfig = const_getListConfig("list", "ZlistPanel");
 
 	defaultConfig = mergeConfig(defaultConfig, pageConfig);
-	class List extends React.Component {
+	class List extends React.PureComponent {
 		config = defaultConfig;
 		pageWraper = const_getPageWrapperProps(this.config);
 		//pageId 是 pageHeader内部一个插槽id，这里将ZlistPanel的searchForm插到pageHeader显示

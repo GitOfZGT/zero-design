@@ -26,7 +26,7 @@ import simpleTemplate from "./simpleTemplate";
 let defaultConfig = const_getListConfig("list", "ZlistPanel");
 import { ZroundingButton } from "../ZroundingButton";
 import { Zbutton } from "../Zbutton";
-class ZlistPanel extends React.Component {
+class ZlistPanel extends React.PureComponent {
 	static propTypes = {
 		listType: PropTypes.string, // table | card
 		cardSpan: PropTypes.oneOfType([PropTypes.object, PropTypes.number]),

@@ -17,8 +17,6 @@ const config = {
 	copyName: shareName,
 	//babel-loader 要包含的文件夹是哪些
 	"babel-includes": ["src", "node_modules/zerod", /(node_modules(\\|\/)share\-.*)/, "node_modules/webpack-dev-server/client"],
-	//是否使用了ant design 组件库，管理theme，当用于微信等移动端开发时请设置为false
-	"ant.design": true,
 	//微信页面开发授权域名验证的文件，如： path.resolve(__dirname, '../MP_verify_P7fns4NGi17lbM0R.txt')
 	MP_verify: "",
 	favicon: path.resolve(__dirname, "../src/assets/images/logo.png"),
@@ -28,7 +26,7 @@ const config = {
 		//除了package.json的dependencies，还需包含
 		include: ["moment"],
 		//打包dll时从package.json的dependencies中不包含
-		exclude: ["antd", "uuid","babel-polyfill"],
+		exclude: ["antd", "uuid","echarts","babel-polyfill"],
 	},
 	//开发模式配置
 	dev: {

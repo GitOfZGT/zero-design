@@ -6,7 +6,7 @@
 
 `zerod` 需要搭配`zerod-admin-webpack`脚手架使用
 
-# zerod-admin-webpack 脚手架 v1.1.3
+# zerod-admin-webpack 脚手架 v1.2.0
 
 基于 `react + react-router + redux + react-redux + antd + zerod + scss` 的 webpack4 前端开发环境
 
@@ -14,7 +14,7 @@
 
 2、支持 `js,jsx,css,scss,less` 公共代码抽取，压缩打包
 
-3、`babel-loader + less/sass` 模块加载功能
+3、`babel-loader + less/sass` 模块加载功能，支持`scss`的cssModules（不支持less的），主要使用scss文件写样式，less+less-loader这里只用来编译antd的样式或者其他使用less的第三方库，
 
 4、`webpack-dev-server` 服务器，支持反代理配置，热加载热更新
 
@@ -30,9 +30,9 @@
 
 `git`地址：<a href="http://172.16.26.120/components/zerod-admin-webpack.git" target="_blank">http://172.16.26.120/components/zerod-admin-webpack.git</a>
 
-2018-11-22 v1.1.0 去掉antd-scss-theme-plugin插件，添加happypack多线程插件，提高编译速度，添加DllPlugin和DllReferencePlugin  
-2018-12-11 v1.1.3 修复只分割代码未按需加载的问题，新增pace来显示加载loading
-2018-12-25 v1.2.0 升级babel@7.x
+2018-11-22 v1.1.0 去掉antd-scss-theme-plugin插件，添加happypack多线程插件，提高编译速度，添加DllPlugin和DllReferencePlugin，添加sass-resources-loader  
+2018-12-11 v1.1.3 修复只分割代码未按需加载的问题，新增pace来显示加载loading  
+2018-12-25 v1.2.0 升级<a href="https://babeljs.io/" target="_blank"> babel@7.x</a>  
 
 <div class="z-doc-titles"></div>
 
@@ -57,7 +57,7 @@
 │ ├── /HOC/          # 高阶组件，用于封装多次共用逻辑代码
 │ ├── /lazyLoad/
 │ │ ├── lazyLoad.js  # 这样使用const componet=lazyLoad(()=>import('./componet.jsx'))实现异步组件
-│ │ └── Loading.jsx  #
+│ │ └── Loading.jsx  # //暂未用到
 │ ├── /mock/         # 数据模拟（建议使用 mockjs）
 │ ├── /scss/         # 通用样式文件夹
 │ │ └── index.scss   #
@@ -72,8 +72,11 @@
 │ ├── app.scss       # 根样式文件
 │ └── main.js        # 项目入口文件
 ├── /static/         # 不会被压缩打包的静态文件放这里
-├── .babelrc         # babel配置
-├── .eslintrc.js     # Eslint配置
+│ ├── /pace/         # 页面的加载进度条
+│ │ ├── pace-theme-flash.css   # 
+│ │ └── pace.min.js   
+│ └── vendor.dll.*.js  # package.json的dependencies依赖包的预打包文件，由npm run dll命令生成
+├── babel.config.js  # babel配置
 ├── .gitgnore        # git忽略检测的配置
 ├── .postcssrc.js    # postcss配置
 ├── .prettierrc      # 格式化代码 prettier 的配置， vscode 编辑器需安装 prettier 插件
@@ -105,5 +108,11 @@
 
 2、打包：`npm run build`
 
-3、打包并显示依赖报告：`npm run build --report`
+3、打包并显示依赖报告：`npm run build --report`  
+
+4、不常变依赖包预打包：`npm run dll`  
+
+5、从私服安装最新zerod: `npm run npm-zerod`  
+
+6、`npm run init` (此命令包含 `rimraf node_modules & npm run npm-zerod & cnpm install & npm run dll`)
 

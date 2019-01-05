@@ -8,7 +8,7 @@
 import React from "react";
 import { ZpageFooter } from "zerod";
 import { Icon } from "antd";
-class PageFooter extends React.Component {
+class PageFooter extends React.PureComponent {
 	footerLinks = [
 		{
 			key: "hua-cloud",

@@ -657,81 +657,6 @@ export const scrollDisableWheel = function(el) {
 //监听盒子（div）尺寸变化
 export const listenDivSizeChange = function(el, scrollFun) {
 	new ResizeSensor(el, debounce(scrollFun, 70));
-	// return;
-	// // scroll passive events
-	// let passiveEvents = false;
-	// try {
-	// 	const opts = Object.defineProperty({}, "passive", {
-	// 		get: function() {
-	// 			passiveEvents = { passive: true };
-	// 		},
-	// 	});
-	// 	window.addEventListener("test", null, opts);
-	// } catch (e) {}
-	// // el.style.position = "relative";
-	// el.style.minWidth = "20px";
-	// el.style.minHeight = "20px";
-	// let lastWidth = el.offsetWidth || 1;
-	// let lastHeight = el.offsetHeight || 1;
-	// const maxWidth = 10000 * lastWidth;
-	// const maxHeight = 10000 * lastHeight;
-	// const _parDiv = document.createElement("div");
-	// _parDiv.style.cssText =
-	// 	"position: absolute;visibility: hidden;width: 100%;height: 100%;overflow: hidden;top:0;right: 0;left: 0;bottom: 0;z-index: -1000;";
-	// _parDiv.className = "listen_div_size_change";
-	// const _cloneParDiv = _parDiv.cloneNode(false);
-	// const _ChildDiv = document.createElement("div");
-	// _ChildDiv.style.cssText = "transition:0s; animation:none;";
-	// const _cloneChildDiv = _ChildDiv.cloneNode(false);
-
-	// _ChildDiv.style.width = maxWidth + "px";
-	// _ChildDiv.style.height = maxHeight + "px";
-
-	// _cloneChildDiv.style.width = "250%";
-	// _cloneChildDiv.style.height = "250%";
-
-	// _parDiv.appendChild(_ChildDiv);
-	// _cloneParDiv.appendChild(_cloneChildDiv);
-
-	// el.appendChild(_parDiv);
-	// el.appendChild(_cloneParDiv);
-
-	// if (_parDiv.offsetParent !== el) {
-	// 	el.style.position = "relative";
-	// }
-
-	// _parDiv.scrollTop = _cloneParDiv.scrollTop = maxHeight;
-	// _parDiv.scrollLeft = _cloneParDiv.scrollLeft = maxWidth;
-
-	// // _parDiv.scrollTop = _parDiv.scrollHeight;
-	// // _parDiv.scrollLeft = _parDiv.scrollWidth;
-
-	// // _cloneParDiv.scrollTop = _cloneParDiv.scrollHeight;
-	// // _cloneParDiv.scrollLeft = _cloneParDiv.scrollWidth;
-	// const handler = lodash.debounce(() => {
-	// 	console.log("改变");
-	// 	scrollFun();
-	// }, 100);
-	// var newWidth = 0;
-	// var newHeight = 0;
-	// function onResize() {
-	// 	if (newWidth !== lastWidth || newHeight !== lastHeight) {
-	// 		lastWidth = newWidth;
-	// 		lastHeight = newHeight;
-	// 		handler();
-	// 	}
-	// }
-	// function onScroll() {
-	// 	newWidth = el.offsetWidth || 1;
-	// 	newHeight = el.offsetHeight || 1;
-	// 	if (newWidth !== lastWidth || newHeight !== lastHeight) {
-	// 		requestAnimationFrame(onResize);
-	// 	}
-	// 	_parDiv.scrollTop = _cloneParDiv.scrollTop = maxHeight;
-	// 	_parDiv.scrollLeft = _cloneParDiv.scrollLeft = maxWidth;
-	// }
-	// _parDiv.addEventListener("scroll", onScroll, passiveEvents);
-	// _cloneParDiv.addEventListener("scroll", onScroll, passiveEvents);
 };
 //随机产生不重复id
 export const GenNonDuplicateID = function(randomLength = 8) {
@@ -958,7 +883,7 @@ const reg = /(((^https?:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+(?::\d+)?|(
 export function isUrl(path) {
 	return reg.test(path);
 }
-const startHttpReg=/^(http:|https:)[\w\?\&\.\#\%\*\@\$\!\~\/]*/;
+const startHttpReg = /^(http:|https:)[\w\?\&\.\#\%\*\@\$\!\~\/]*/;
 export function isHttpStart(path) {
 	return startHttpReg.test(path);
 }
@@ -972,7 +897,7 @@ export function formatterMapKey(data, mapKey = {}, parentPath = "/", notParPath 
 	);
 	return data.map((item) => {
 		let path = item[mapKey.path];
-		if (!notParPath&&!isHttpStart(path)) path = parentPath + path.replace(/^\/*/, "");
+		if (!notParPath && !isHttpStart(path)) path = parentPath + path.replace(/^\/*/, "");
 		const newData = {
 			...item,
 			iconClass: item[mapKey.iconClass] !== undefined ? item[mapKey.iconClass] : "smile-o",
@@ -999,7 +924,7 @@ export function itemsFromTree({ tree, sourceItem, item, keyObj, action }) {
 	for (let index = 0; index < tree.length; index++) {
 		const currentItem = tree[index];
 		if (currentItem[keyObj.id] === sourceItem[keyObj.id]) {
-			action({ tree, currentItem, item, index, keyObj });
+			dataType.isFunction(action) && action({ tree, currentItem, item, index, keyObj });
 			finished = true;
 		} else if (Array.isArray(currentItem[keyObj.children])) {
 			finished = itemsFromTree({ tree: currentItem[keyObj.children], sourceItem, item, keyObj, action });

@@ -9,7 +9,7 @@
 ```jsx
 import React from "react";
 import { ZoneWayTransfer } from "zerod";
-class Myjavascript extends React.Component {
+class Myjavascript extends React.PureComponent {
 	state = {
 		leftData: [
 			{ name: "风中飘摇", children: [{ name: "由于天涯" }, { name: "泪如雨下" }] },

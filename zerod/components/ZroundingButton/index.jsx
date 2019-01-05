@@ -9,7 +9,7 @@ const btnWidth = 40,
 import { on, off, once, deepCopy } from "../zTool";
 import ZerodMainContext from "../ZerodMainContext";
 export const ZroundingButton = ZerodMainContext.setConsumer(
-	class extends React.Component {
+	class extends React.PureComponent {
 		static propTypes = {
 			className: PropTypes.string,
 			items: PropTypes.arrayOf(PropTypes.object),

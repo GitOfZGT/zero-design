@@ -57,7 +57,7 @@ exports.cssLoaders = function(options) {
 			// 	loaderObj = AntdScssThemePlugin.themify(loaderObj);
 			// }
 			loaders.push(loaderObj);
-			if (loader == "sass") {
+			if (loader == "sass"&&config.scssVars) {
 				loaders.push({
 					loader: "sass-resources-loader",
 					options: {

@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import cssClass from "./style.scss";
-class Zheader extends React.Component {
+class Zheader extends React.PureComponent {
 	static propTypes = {
 		height: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
 		className: PropTypes.string,

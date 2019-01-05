@@ -21,7 +21,7 @@
 ```jsx
 import React from "react";
 import { ZcodeHighlight } from "zerod";
-class Myjavascript extends React.Component{
+class Myjavascript extends React.PureComponent{
     render(){
         return (
             <ZcodeHighlight lang="javascript" mode="block">
@@ -43,7 +43,7 @@ class Myjavascript extends React.Component{
 ```jsx
 import React from "react";
 import { ZcodeHighlight } from "zerod";
-class MyHtml extends React.Component{
+class MyHtml extends React.PureComponent{
     render(){
         return (
             <ZcodeHighlight mode="html">

@@ -6,7 +6,7 @@ import "viewerjs/dist/viewer.css";
 import ZbgImage from "../ZbgImage";
 import { animateTimout } from "../constant";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
-export class Zviewer extends React.Component {
+export class Zviewer extends React.PureComponent {
 	static propTypes = {
 		urls: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.string), PropTypes.arrayOf(PropTypes.object)]),
 		className: PropTypes.string,

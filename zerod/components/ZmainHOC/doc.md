@@ -101,7 +101,7 @@ const pageConfig = {
 };
 export default ZmainHOC(pageConfig);
 
-class Logo extends React.Component {
+class Logo extends React.PureComponent {
 	static propTypes = {
 		getLogoMethods: PropTypes.func,
 	};
@@ -164,7 +164,7 @@ const pageConfig = {
 	},
 };
 
-class UserDropdown extends React.Component {
+class UserDropdown extends React.PureComponent {
 	methods = {
 		//用户dropdown按钮点击触发
 		onMenuClick: (item) => {
@@ -255,8 +255,12 @@ export default ZmainHOC(pageConfig);
 		</tr>
 		<tr>
 			<td>mainRoutes</td>
-			<td>路由配置,如[{path: "/start-doc",component: 组件,exact:是否精准匹配默认true, redirect:false,to:"/redirect-path"}];  当重定向属性redirect为true时,component无效，to属性有效</td>
-			<td>array[object]</td>
+			<td>
+				<p>路由配置,如[{path: "/start-doc",component: 组件,exact:是否精准匹配默认true, redirect:false,to:"/redirect-path"}];  当重定向属性redirect为true时,component无效，to属性有效。</p>
+				<p>mainRoutes还可以是函数，return路由配置，componentDidMount钩子的callback回调之后执行</p>
+				<p>注：默认只有侧导航menuData里存在的path才会去生成路由，如需取消这种默认，让mainRoutes为函数return路由配置即可</p>
+			</td>
+			<td>array[object] | function(menuData,tool){ return array[object]}</td>
 			<td>[]</td>
 		</tr>
 		<tr>

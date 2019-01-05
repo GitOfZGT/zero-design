@@ -7,7 +7,7 @@ import cssClass from "./style.scss";
 function itemRender(route, params, routes, paths) {
 	return !route.link ? <span>{route.name}</span> : <Link to={paths.join("/")}>{route.name}</Link>;
 }
-export class ZpageHeader extends React.Component {
+export class ZpageHeader extends React.PureComponent {
 	static propTypes = {
 		trademark: PropTypes.any, //图标|图示
 		title: PropTypes.any, // 标题

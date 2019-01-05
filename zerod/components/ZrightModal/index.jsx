@@ -7,7 +7,7 @@ import Zlayout from "../Zlayout";
 import ZpageLoading from "../ZpageLoading";
 import { once } from "../zTool";
 
-export class ZrightModal extends React.Component {
+export class ZrightModal extends React.PureComponent {
 	static propTypes = {
 		show: PropTypes.bool,
 		onClose: PropTypes.func,

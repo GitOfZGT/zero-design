@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import cssClass from "./style.scss";
-class Com extends React.Component {
+class Com extends React.PureComponent {
 	static propTypes = {
 		links: PropTypes.arrayOf(PropTypes.object),
 		copyright: PropTypes.oneOfType([PropTypes.func, PropTypes.string]),

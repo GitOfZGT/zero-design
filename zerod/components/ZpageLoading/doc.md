@@ -8,7 +8,7 @@
 import React from "react";
 import { ZpageLoading, Zlayout } from "zerod";
 import { Button } from "antd";
-class Myjavascript extends React.Component {
+class Myjavascript extends React.PureComponent {
 	state = {
 		isShowLoading: false,
 	};
