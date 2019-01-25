@@ -921,6 +921,7 @@ export const mergeConfig = (defaultConfig, theConfig) => {
 
 export function itemsFromTree({ tree, sourceItem, item, keyObj, action }) {
 	let finished = false;
+	keyObj = dataType.isObject(keyObj) ? keyObj : { id: "id", children: "children" };
 	for (let index = 0; index < tree.length; index++) {
 		const currentItem = tree[index];
 		if (currentItem[keyObj.id] === sourceItem[keyObj.id]) {

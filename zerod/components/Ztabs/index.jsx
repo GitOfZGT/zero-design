@@ -1,9 +1,9 @@
-import React from "react";
+import React from "react";import ZpureComponent from "../ZpureComponent";
 import { Tabs } from "antd";
 import PropTypes from "prop-types";
 import cssClass from "./style.scss";
 
-export  class Ztabs extends React.PureComponent {
+export  class Ztabs extends ZpureComponent {
 	static propTypes = {
 		tabPanes: PropTypes.arrayOf(PropTypes.object),
 	};

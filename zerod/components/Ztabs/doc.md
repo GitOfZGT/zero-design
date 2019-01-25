@@ -7,10 +7,10 @@
 <div class="z-demo-box" data-render="demo1" data-title="基本使用"></div>
 
 ```jsx
-import React from "react";
+import React from "react";import ZpureComponent from "zerod/components/ZpureComponent";
 import { Ztabs } from "zerod";
 
-class Myjavascript extends React.PureComponent {
+class Myjavascript extends ZpureComponent {
 	tabPanes = [
 		{ tab: "基本信息", key: "1", content: "基本信息内容" },
 		{ tab: "配置信息", key: "2", content: "配置信息内容" },

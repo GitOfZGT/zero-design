@@ -1,4 +1,4 @@
-import React from "react";
+import React from "react";import ZpureComponent from "../ZpureComponent";
 import PropTypes from "prop-types";
 import { Icon } from "antd";
 
@@ -7,7 +7,7 @@ import Zlayout from "../Zlayout";
 import ZpageLoading from "../ZpageLoading";
 import { once } from "../zTool";
 
-export class ZrightModal extends React.PureComponent {
+export class ZrightModal extends ZpureComponent {
 	static propTypes = {
 		show: PropTypes.bool,
 		onClose: PropTypes.func,

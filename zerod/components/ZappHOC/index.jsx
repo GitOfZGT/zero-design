@@ -1,16 +1,30 @@
 import React from "react";
+import ZpureComponent from "../ZpureComponent";
 import { BrowserRouter, HashRouter, Route, Redirect, Switch } from "react-router-dom";
 import { LocaleProvider } from "antd";
 import zh_CN from "antd/lib/locale-provider/zh_CN";
 import Zlayout from "../Zlayout";
 import ZerodRootContext from "../ZerodRootContext";
 import zTool from "../zTool";
+let fistLoad = true;
+function hasPaceWatch() {
+	if (window.Pace && fistLoad) {
+		fistLoad = false;
+		window.addEventListener(
+			"hashchange",
+			() => {
+				window.Pace && window.Pace.restart();
+			},
+			false,
+		);
+	}
+}
 function ZappHOC(pageConfig) {
 	let defaultConfig = {
 		rootRoutes: [],
 		footerLinks: null,
 		footerCopyright: null,
-		routerType:"history",
+		routerType: "history",
 		responseKeys: {
 			listType: {
 				list: "list",
@@ -20,7 +34,10 @@ function ZappHOC(pageConfig) {
 		},
 	};
 	defaultConfig = zTool.mergeConfig(defaultConfig, pageConfig);
-	class App extends React.PureComponent {
+	if (defaultConfig.routerType == "hash") {
+		hasPaceWatch();
+	}
+	class App extends ZpureComponent {
 		config = defaultConfig;
 		routes = this.config.rootRoutes.map((item, i) => {
 			return item.redirect ? (
@@ -30,14 +47,14 @@ function ZappHOC(pageConfig) {
 			);
 		});
 		render() {
-			const Router=this.config.routerType==="history"?BrowserRouter:HashRouter;
+			const Router = this.config.routerType === "history" ? BrowserRouter : HashRouter;
 			return (
 				<LocaleProvider locale={zh_CN}>
 					<ZerodRootContext.Provider
 						value={{
 							footerLinks: this.config.footerLinks,
 							footerCopyright: this.config.footerCopyright,
-							responseKeys:this.config.responseKeys,
+							responseKeys: this.config.responseKeys,
 						}}
 					>
 						<Router>

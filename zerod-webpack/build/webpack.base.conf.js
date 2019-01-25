@@ -1,6 +1,6 @@
 "use strict";
 const webpack = require("webpack");
-const HtmlIncludeAssetsPlugin = require('html-webpack-include-assets-plugin');
+const HtmlIncludeAssetsPlugin = require("html-webpack-include-assets-plugin");
 const path = require("path");
 const utils = require("./utils");
 const config = require("../config");
@@ -46,7 +46,7 @@ module.exports = {
 				test: /\.(js|jsx)$/,
 				loader: "happypack/loader?id=babel",
 				// loader: "babel-loader",
-				exclude: resolve('static'),
+				exclude: resolve("static"),
 				include: config["babel-includes"].map((url) => {
 					return typeof url === "string" ? resolve(url) : url;
 				}),
@@ -78,7 +78,11 @@ module.exports = {
 		],
 	},
 	plugins: [
-		// ...(config["ant.design"] ? [new AntdScssThemePlugin(resolve("node_modules/zerod/ant-theme-vars.scss"))] : []),
+		// http://vuejs.github.io/vue-loader/en/workflow/production.html
+		new webpack.DefinePlugin({
+			"process.env":
+				process.env.NODE_ENV === "production" ? require("../config/prod.env") : require("../config/dev.env"),
+		}),
 		// copy custom static assets
 		new CopyWebpackPlugin(copyOpt),
 		new HappyPack({
@@ -103,6 +107,13 @@ module.exports = {
 		}),
 		new HtmlIncludeAssetsPlugin({
 			assets: [{ path: "static", glob: "vendor.dll.*.js", globPath: "static/" }], // 添加的资源相对html的路径
+			append: false, // false 在其他资源的之前添加 true 在其他资源之后添加
+		}),
+		new HtmlIncludeAssetsPlugin({
+			assets: [
+				{ path: "static/pace", glob: "*.js", globPath: "static/pace" },
+				{ path: "static/pace", glob: "*.css", globPath: "static/pace" },
+			], // 添加的资源相对html的路径
 			append: false, // false 在其他资源的之前添加 true 在其他资源之后添加
 		}),
 	],

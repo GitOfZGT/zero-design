@@ -1,4 +1,4 @@
-import React from "react";
+import React from "react";import ZpureComponent from "../ZpureComponent";
 import { Row, Col, Icon, Button, message, Modal } from "antd";
 import PropTypes from "prop-types";
 import dragula from "dragula";
@@ -38,7 +38,7 @@ class Template extends React.Component {
 	}
 }
 const _paddingLeft = "1em";
-class ZTransfer extends React.PureComponent {
+class ZTransfer extends ZpureComponent {
 	static propTypes = {
 		getUlElement: PropTypes.func,
 		sourceKeys: PropTypes.object,
@@ -153,7 +153,7 @@ class ZTransfer extends React.PureComponent {
 		);
 	}
 }
-export class ZoneWayTransfer extends React.PureComponent {
+export class ZoneWayTransfer extends ZpureComponent {
 	static propTypes = {
 		sourceKeys: PropTypes.object,
 		leftSourceData: PropTypes.arrayOf(PropTypes.object),

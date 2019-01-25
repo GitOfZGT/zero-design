@@ -1,4 +1,4 @@
-import React from "react";
+import React from "react";import ZpureComponent from "../ZpureComponent";
 import { withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
 import { const_getInsertLocation, const_getMainTool, const_getMethods,const_getPageWrapperProps } from "../constant";
@@ -64,7 +64,7 @@ export function ZdetailSimpleBaseHOC(pageConfig) {
 		exportSomething: null,
 	};
 	defaultConfig = mergeConfig(defaultConfig, pageConfig);
-	class myDetail extends React.PureComponent {
+	class myDetail extends ZpureComponent {
 		static propTypes = {
 			detailId: PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.object]).isRequired,
 		};

@@ -1,6 +1,6 @@
-import React from "react";
+import React from "react";import ZpureComponent from "../ZpureComponent";
 import PropTypes from "prop-types";
-export class Zbutton extends React.PureComponent {
+export class Zbutton extends ZpureComponent {
 	static propTypes = {
 		className: PropTypes.string,
 		style:PropTypes.object,

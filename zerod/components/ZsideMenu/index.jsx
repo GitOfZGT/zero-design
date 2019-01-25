@@ -1,4 +1,4 @@
-import React from "react";
+import React from "react";import ZpureComponent from "../ZpureComponent";
 import { Menu, Icon } from "antd";
 import { withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
@@ -12,7 +12,7 @@ import { itemsFromTree } from "../zTool";
  * iconClass
  * }]
  */
-class Com extends React.PureComponent {
+class Com extends ZpureComponent {
 	static propTypes = {
 		openAllSubmenu: PropTypes.bool,
 		onSelect: PropTypes.func,

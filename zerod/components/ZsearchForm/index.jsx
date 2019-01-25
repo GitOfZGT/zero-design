@@ -1,4 +1,4 @@
-import React from "react";
+import React from "react";import ZpureComponent from "../ZpureComponent";
 import { Form, Row, Col, Input, Button, Icon } from "antd";
 import PropTypes from "prop-types";
 import cssClass from "./style.scss";
@@ -7,7 +7,7 @@ import { animateTimout, const_initItems, const_execAsync, const_itemSpan } from 
 import ZpageLoading from "../ZpageLoading";
 import { once, dataType, } from "../zTool";
 export const ZsearchForm = Form.create()(
-	class extends React.PureComponent {
+	class extends ZpureComponent {
 		static propTypes = {
 			hidden: PropTypes.bool,
 			labelLayout: PropTypes.string,//'horizontal'|'vertical'

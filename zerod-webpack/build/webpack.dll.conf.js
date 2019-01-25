@@ -4,15 +4,28 @@ const config = require("../config");
 const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
 const package = require("../package.json");
 const rm = require("rimraf");
+const dllExcludeRegs = config.dll.exclude.filter((item) => {
+	return Object.prototype.toString.call(item) == "[object RegExp]";
+});
 
+const vendor = Object.keys(package.dependencies)
+	.filter((key) => {
+		let has = false;
+		for (let index = 0; index < dllExcludeRegs.length; index++) {
+			const reg = dllExcludeRegs[index];
+			if (reg.test(key)) {
+				has = true;
+				break;
+			}
+		}
+		return !(config.dll.exclude.includes(key) || has);
+	})
+	.concat(config.dll.include);
+console.log(vendor);
 const webpackConfig = {
 	mode: "production",
 	entry: {
-		vendor: Object.keys(package.dependencies)
-			.filter((key) => {
-				return !config.dll.exclude.includes(key);
-			})
-			.concat(config.dll.include),
+		vendor,
 	},
 	output: {
 		path: path.join(__dirname, "../static"),
@@ -33,6 +46,11 @@ const webpackConfig = {
 		],
 	},
 	plugins: [
+		// http://vuejs.github.io/vue-loader/en/workflow/production.html
+		new webpack.DefinePlugin({
+			"process.env":
+				process.env.NODE_ENV === "production" ? require("../config/prod.env") : require("../config/dev.env"),
+		}),
 		new webpack.DllPlugin({
 			path: path.join(__dirname, "./", "[name].manifest.json"),
 			name: "_dll_[name]_[hash]", // 和library 一致，输出的manifest.json中的name值

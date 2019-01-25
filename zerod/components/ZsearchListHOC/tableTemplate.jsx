@@ -1,4 +1,4 @@
-import React from "react";
+import React from "react";import ZpureComponent from "../ZpureComponent";
 import { Table } from "antd";
 import { Zlayout } from "../Zlayout";
 import cssClass from "./style.scss";

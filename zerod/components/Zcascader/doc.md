@@ -7,10 +7,10 @@
 <div class="z-demo-box" data-render="demo1" data-title="地区树方式"></div>
 
 ```jsx
-import React from "react";
+import React from "react";import ZpureComponent from "zerod/components/ZpureComponent";
 import { message } from "antd";
 import { Zcascader } from "zerod";
-class Myjavascript extends React.PureComponent {
+class Myjavascript extends ZpureComponent {
 	methods = {
 		onSelect: (items) => {
 			let names = items.map((item) => {
@@ -37,10 +37,10 @@ class Myjavascript extends React.PureComponent {
 <div class="z-demo-box" data-render="demo2" data-title="异步加载下一级"></div>
 
 ```jsx
-import React from "react";
+import React from "react";import ZpureComponent from "zerod/components/ZpureComponent";
 import { message } from "antd";
 import { Zcascader } from "zerod";
-class Myjavascript extends React.PureComponent {
+class Myjavascript extends ZpureComponent {
 	methods = {
 		onSelect: (items) => {
 			let names = items.map((item) => {

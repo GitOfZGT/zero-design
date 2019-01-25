@@ -5,10 +5,10 @@
 <div class="z-demo-box" data-render="demo1" data-title="相对于最近的position:relative;的父元素的绝对定位，水平垂直显示loading"></div>
 
 ```jsx
-import React from "react";
+import React from "react";import ZpureComponent from "zerod/components/ZpureComponent";
 import { ZpageLoading, Zlayout } from "zerod";
 import { Button } from "antd";
-class Myjavascript extends React.PureComponent {
+class Myjavascript extends ZpureComponent {
 	state = {
 		isShowLoading: false,
 	};

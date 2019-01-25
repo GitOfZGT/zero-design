@@ -1,9 +1,9 @@
-import React from "react";
+import React from "react";import ZpureComponent from "../ZpureComponent";
 import PropTypes from "prop-types";
 import cssClass from "./style.scss";
 import { Input, Col } from "antd";
 import { deepCopy } from "../zTool";
-export class ZlabelInput extends React.PureComponent {
+export class ZlabelInput extends ZpureComponent {
 	static propTypes = {
 		className: PropTypes.string,
 		onChange: PropTypes.func,

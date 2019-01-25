@@ -10,9 +10,6 @@ const baseWebpackConfig = require("./webpack.base.conf");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const OptimizeCSSPlugin = require("optimize-css-assets-webpack-plugin");
 const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
-
-const env = process.env.NODE_ENV === "testing" ? require("../config/test.env") : require("../config/prod.env");
-
 const webpackConfig = merge(baseWebpackConfig, {
 	mode: "production",
 	module: {
@@ -38,7 +35,7 @@ const webpackConfig = merge(baseWebpackConfig, {
 				"ant-icon": {
 					test: /[\\/]node_modules[\\/](@ant-design|_@ant-design)/,
 					chunks: "initial",
-					minChunks: 1,
+					minChunks: 2,
 					name: "ant-icon",
 					priority: 100,
 					enforce: true,
@@ -46,7 +43,7 @@ const webpackConfig = merge(baseWebpackConfig, {
 				moment: {
 					test: /[\\/]node_modules[\\/](moment|_moment)/,
 					chunks: "initial",
-					minChunks: 1,
+					minChunks:2,
 					name: "moment",
 					priority: 99,
 					enforce: true,
@@ -54,7 +51,7 @@ const webpackConfig = merge(baseWebpackConfig, {
 				antd: {
 					test: /[\\/]node_modules[\\/](antd|_antd)/,
 					chunks: "initial",
-					minChunks: 1,
+					minChunks: 2,
 					name: "antd",
 					priority: 98,
 					enforce: true,
@@ -62,7 +59,7 @@ const webpackConfig = merge(baseWebpackConfig, {
 				zerod: {
 					test: /[\\/]node_modules[\\/]zerod/,
 					chunks: "initial",
-					minChunks: 1,
+					minChunks:2,
 					name: "zerod",
 					priority: 97,
 					enforce: true,
@@ -70,7 +67,7 @@ const webpackConfig = merge(baseWebpackConfig, {
 				echarts: {
 					test: /[\\/]node_modules[\\/](echarts|_echarts)/,
 					chunks: "initial",
-					minChunks: 1,
+					minChunks: 2,
 					name: "echarts",
 					priority: 96,
 					enforce: true,
@@ -90,6 +87,15 @@ const webpackConfig = merge(baseWebpackConfig, {
 					chunks: "async",
 					priority: 94,
 					name: "async-vendors",
+					enforce: true,
+				},
+				// 处理异步chunk
+				"async-src": {
+					test: /[\\/]src[\\/]/,
+					minChunks: 2,
+					chunks: "async",
+					priority: 93,
+					name: "async-src",
 					enforce: true,
 				},
 				style: {
@@ -121,10 +127,6 @@ const webpackConfig = merge(baseWebpackConfig, {
 		],
 	},
 	plugins: [
-		// http://vuejs.github.io/vue-loader/en/workflow/production.html
-		new webpack.DefinePlugin({
-			"process.env": env,
-		}),
 		// extract css into its own file
 		new MiniCssExtractPlugin({
 			filename: utils.assetsPath("css/[name].[contenthash:12].css"),

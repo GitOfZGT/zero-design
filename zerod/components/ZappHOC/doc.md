@@ -9,7 +9,7 @@
 1、在`src/App.jsx`使用
 
 ```jsx
-import React from "react";
+import React from "react";import ZpureComponent from "zerod/components/ZpureComponent";
 import { ZappHOC } from "zerod";
 
 // 路由组件

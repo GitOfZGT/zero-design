@@ -1,0 +1,43 @@
+:global {
+	.z-full-layer {
+		position: fixed;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		background-color: rgba(0, 0, 0, 0.6);
+		overflow: hidden;
+        z-index: 999;
+        $--h:128px;
+		$--top:$--h/2;
+		display: none;
+		.close {
+			position: absolute;
+			top: -$--top;
+			right: -$--top;
+			width: $--h;
+			height: $--h;
+			border-radius: 50%;
+			background-color: rgba(206, 201, 201, 0.5);
+			cursor: pointer;
+			color: white;
+			font-size: 26px;
+			&:hover {
+				background-color: rgba(206, 201, 201, 0.7);
+			}
+			.text {
+				position: absolute;
+				bottom: 22px;
+				left: 30px;
+			}
+        }
+        .z-full-layer-heading{
+            height: $--top;
+            padding:0 $--top 0 20px;
+        }
+        .z-full-layer-body{
+            height: calc(100% - #{$--top});
+            overflow: auto;
+        }
+	}
+}

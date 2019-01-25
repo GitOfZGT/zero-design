@@ -1,9 +1,9 @@
-import React from "react";
+import React from "react";import ZpureComponent from "../ZpureComponent";
 import { Spin } from "antd";
 import PropTypes from "prop-types";
 import cssClass from "./style.scss";
 
-export class ZpageLoading extends React.PureComponent {
+export class ZpageLoading extends ZpureComponent {
 	static propTypes = {
 		showLoading: PropTypes.bool,
 		size: PropTypes.string,

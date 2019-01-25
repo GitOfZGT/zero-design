@@ -7,7 +7,7 @@
 <div class="z-demo-box" data-render="demo1" data-title="基本使用"></div>
 
 ```jsx
-import React from "react";
+import React from "react";import ZpureComponent from "zerod/components/ZpureComponent";
 import { ZpageWraperHOC } from "zerod";
 const PageWraper = ZpageWraperHOC();
 const pageHeader = {

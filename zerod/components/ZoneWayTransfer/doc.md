@@ -7,9 +7,9 @@
 <div class="z-demo-box" data-render="demo1" data-title="左框的选项拖动到右框，右框内的选项可以上下拖动排序"></div>
 
 ```jsx
-import React from "react";
+import React from "react";import ZpureComponent from "zerod/components/ZpureComponent";
 import { ZoneWayTransfer } from "zerod";
-class Myjavascript extends React.PureComponent {
+class Myjavascript extends ZpureComponent {
 	state = {
 		leftData: [
 			{ name: "风中飘摇", children: [{ name: "由于天涯" }, { name: "泪如雨下" }] },

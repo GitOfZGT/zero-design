@@ -1,4 +1,4 @@
-import React from "react";
+import React from "react";import ZpureComponent from "../ZpureComponent";
 import ZpageLoading from "../ZpageLoading";
 import PropTypes from "prop-types";
 import cssClass from "./style.scss";
@@ -8,7 +8,7 @@ import throttle from "lodash.throttle";
 const rotateClassName = cssClass["rotate-90"];
 const itemClassName = cssClass["z-cascader-item"];
 import { animateTimout } from "../constant";
-class ZcascaderItemGroup extends React.PureComponent {
+class ZcascaderItemGroup extends ZpureComponent {
 	static propTypes = {
 		itemData: PropTypes.arrayOf(PropTypes.object),
 		itemKeys: PropTypes.object,
@@ -145,7 +145,7 @@ class ZcascaderItemGroup extends React.PureComponent {
 	}
 }
 
-export class Zcascader extends React.PureComponent {
+export class Zcascader extends ZpureComponent {
 	static propTypes = {
 		itemKeys: PropTypes.object,
 		lables: PropTypes.arrayOf(PropTypes.string),

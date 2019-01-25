@@ -1,4 +1,4 @@
-import React from "react";
+import React from "react";import ZpureComponent from "../ZpureComponent";
 import { Route, Switch, withRouter, Redirect } from "react-router-dom";
 import { Icon, message } from "antd";
 // my component
@@ -26,7 +26,7 @@ function getConstNames(witch) {
 	};
 }
 
-class CollapseBtn extends React.PureComponent {
+class CollapseBtn extends ZpureComponent {
 	render() {
 		const { collapseBtnRender, collapsed } = this.props;
 		const icon =
@@ -93,7 +93,7 @@ export function ZmainHOC(pageConfig) {
 		// rightModalType: "mainModal",
 	};
 	defaultConfig = mergeConfig(defaultConfig, pageConfig);
-	class Main extends React.PureComponent {
+	class Main extends ZpureComponent {
 		config = defaultConfig;
 		navRoutes = [];
 		state = {

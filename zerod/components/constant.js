@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { ZsearchForm } from "./ZsearchForm";
-import { Button, notification, message, Tooltip, Popover,Checkbox } from "antd";
+import { Button, notification, message, Tooltip, Popover, Checkbox } from "antd";
 import { dataType, GenNonDuplicateID } from "./zTool";
 import searchCssClass from "./ZsearchListHOC/style.scss";
 const noticeMethod = {
@@ -117,6 +117,8 @@ export const const_getModalType = (insertLocation) => {
 			return const_insertLocations.mainModal;
 		case const_insertLocations.mainModal:
 			return const_insertLocations.mainModal_top;
+		case const_insertLocations.mainModal_top:
+			return const_insertLocations.appModal;
 		case const_insertLocations.appModal:
 			return const_insertLocations.appModal_top;
 		case const_insertLocations.appModal_top:
@@ -207,14 +209,15 @@ export const const_itemSpan = function(control, currentSpan, defaultSpan) {
 	let span = defaultSpan;
 	if (currentSpan !== undefined && currentSpan !== null) {
 		span = dataType.isNumber(currentSpan) ? { md: currentSpan } : currentSpan;
-	} else if (
-		dataType.isObject(control) &&
-		control.props &&
-		control.props.prefixCls == "ant-input" &&
-		dataType.isUndefined(control.type.TextArea)
-	) {
-		span = { md: 24 };
 	}
+	// else if (
+	// 	dataType.isObject(control) &&
+	// 	control.props &&
+	// 	control.props.prefixCls == "ant-input" &&
+	// 	dataType.isUndefined(control.type.TextArea)
+	// ) {
+	// 	span = { md: 24 };
+	// }
 	return span;
 };
 
@@ -233,7 +236,7 @@ export const const_execAsync = function(callback) {
 				return asy.promise;
 			}),
 		).then((re) => {
-			if(this.unmounted)return;
+			if (this.unmounted) return;
 			this.allAsync = [];
 			this.setState(
 				{
@@ -291,9 +294,23 @@ export const const_getPanleHeader = function(hasControl) {
 				{left}
 				{hasControl ? (
 					<Tooltip title="控制显示字段" placement="top">
-						<Popover content={<Checkbox.Group className={searchCssClass['z-control-group']} defaultValue={this.checkColumnsValue} options={this.props.tableColumns.filter(item=>item.dataIndex).map(item=>{
-							return {label:item.title,value:item.dataIndex};
-						})} onChange={this.methods.checkColumnsChange}></Checkbox.Group>} title="控制显示字段" trigger="click" placement="rightTop">
+						<Popover
+							content={
+								<Checkbox.Group
+									className={searchCssClass["z-control-group"]}
+									defaultValue={this.checkColumnsValue}
+									options={this.props.tableColumns
+										.filter((item) => item.dataIndex)
+										.map((item) => {
+											return { label: item.title, value: item.dataIndex };
+										})}
+									onChange={this.methods.checkColumnsChange}
+								/>
+							}
+							title="控制显示字段"
+							trigger="click"
+							placement="rightTop"
+						>
 							<i className={`zero-icon zerod-kongzhitai ${searchCssClass["z-control-icon"]}`} />
 						</Popover>
 					</Tooltip>

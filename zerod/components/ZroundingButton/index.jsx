@@ -1,4 +1,4 @@
-import React from "react";
+import React from "react";import ZpureComponent from "../ZpureComponent";
 import ReactDOM from "react-dom";
 import PropTypes from "prop-types";
 import cssClass from "./style.scss";
@@ -9,7 +9,7 @@ const btnWidth = 40,
 import { on, off, once, deepCopy } from "../zTool";
 import ZerodMainContext from "../ZerodMainContext";
 export const ZroundingButton = ZerodMainContext.setConsumer(
-	class extends React.PureComponent {
+	class extends ZpureComponent {
 		static propTypes = {
 			className: PropTypes.string,
 			items: PropTypes.arrayOf(PropTypes.object),

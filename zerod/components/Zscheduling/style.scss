@@ -1,0 +1,241 @@
+@import "../../scssMixin/generateClassName";
+:global {
+	$--border-color: #d9e2ee;
+	$--td-height: 60px;
+	@include z("scheduling-table") {
+		width: 100%;
+		border-collapse: collapse;
+		border-spacing: 0px;
+		// border: 1px solid $--border-color;
+		thead > tr > td,
+		tbody > tr > td {
+			border: 0px;
+			padding: 0;
+			& > div {
+				// transition: all 0.1s;
+				position: relative;
+				height: $--td-height;
+				display: flex !important;
+				align-items: center;
+				justify-content: center;
+				overflow: hidden;
+				color: #333333;
+				&:hover {
+					background-color: rgba(3, 128, 243, 0.2);
+				}
+				&.selected {
+					background-color: #0380f3;
+					color: white;
+					&>*{
+						opacity: 0.7;
+					}
+				}
+				&.disabled{
+					background-color: #FAFAFA;
+					color: #D1D3D6;
+				}
+				&.ant-popover-open{
+					background-color: #FFF5CE;
+				}
+			}
+		}
+		thead > tr > td {
+			// background-color: #F3F5F8;
+			color: #333333;
+			font-weight: 600;
+		}
+		thead > tr > td + td,
+		tbody > tr > td + td {
+			border-left: 1px dashed $--border-color;
+		}
+
+		tbody > tr + tr {
+			border-top: 1px dashed $--border-color;
+		}
+		thead > tr {
+			border-bottom: 1px solid $--border-color;
+		}
+		@include is("border-top") {
+			border-top: 1px solid $--border-color;
+		}
+		@include is("border-right") {
+			border-right: 1px solid $--border-color;
+		}
+		@include is("border-bottom") {
+			border-bottom: 1px solid $--border-color;
+		}
+		@include is("border-left") {
+			border-left: 1px solid $--border-color;
+		}
+	}
+	.z-scheduling-swiper-slide + .z-scheduling-swiper-slide table {
+		border-left: 1px dashed $--border-color;
+	}
+
+	@include z("scheduling-box") {
+		// margin-top: -1px;
+		position: relative;
+	}
+	// @include z("scheduling-skeleton"){
+	// 	position: absolute;
+	// 	top:0;left: 0;width: 100%;
+	// 	z-index: 2;
+	// }
+	@include z("scheduling-tool") {
+		position: relative;
+		border-bottom: 1px solid $--border-color;
+		height: $--td-height;
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+	}
+	@include z("swiper-pagination") {
+		padding-right: 15px;
+		.swiper-pagination-bullet + .swiper-pagination-bullet {
+			margin-left: 5px;
+		}
+	}
+	@include z("scheduling-mask") {
+		position: absolute;
+		left: 0;
+		right: 0;
+		top: 0;
+		bottom: 0;
+		display: none;
+		z-index: 9;
+	}
+	@include z("scheduling-checkcolumn") {
+		opacity: 1;
+		transition: opacity 0.25s;
+		position: relative;
+		z-index: 2;
+		table tbody > tr > td .ant-checkbox-wrapper {
+			padding: 0;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			& > :last-child > * {
+				display: block;
+			}
+			width: 100%;
+			height: 100%;
+		}
+	}
+	@include z("scheduling-content") {
+		opacity: 1;
+		transition: opacity 0.25s;
+		// margin-left: -1px;
+		position: relative;
+		z-index: 1;
+		overflow: hidden;
+		// width: calc(100% - 61px);
+		table thead > tr > td .ant-checkbox-wrapper {
+			padding: 0;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			& > :last-child > * {
+				display: block;
+			}
+			width: 100%;
+			height: 100%;
+		}
+	}
+	@include z("scheduling") {
+		position: relative;
+		.ant-checkbox-wrapper {
+			padding: 6px;
+			color: #333333;
+		}
+		@include z("allcheck-box") {
+			width: 100%;
+			height: 100%;
+			position: relative;
+
+			@include z("cutting-line") {
+				border-bottom: 1px dashed $--border-color;
+				// background-color: $--border-color;
+				position: absolute;
+				top: 0;
+				left: 0;
+				width: 100px;
+				transform: rotate(45deg);
+				transform-origin: left center;
+			}
+			@include z("all-checked") {
+				position: absolute;
+				@include is("col") {
+					right: 3px;
+					top: 3px;
+				}
+				@include is("row") {
+					left: 3px;
+					bottom: 3px;
+				}
+			}
+		}
+		@include z("weekend-color") {
+			color: red;
+		}
+		@include z("day-disabled-color") {
+			color: #bfbfbf;
+		}
+		@include z("day-disabled-bg") {
+			background-color: #e8eaea;
+		}
+		@include z("data-null") {
+			clear: both;
+			padding: 25px 0;
+		}
+	}
+	@include z("scheduling-hidden") {
+		opacity: 0;
+		position: absolute;
+	}
+	@include z("scheduling-popover") {
+		z-index: 100;
+		.ant-checkbox-wrapper {
+			display: block;
+			padding: 6px 12px;
+			&:hover {
+				box-shadow: 0 0 4px 2px rgba(197, 203, 218, 0.5);
+			}
+			&.ant-checkbox-wrapper-checked {
+				color: #0380f3;
+			}
+		}
+	}
+	@include z("scheduling-popover-title") {
+		color: #333333;
+		font-weight: 600;
+		padding: 10px 15px;
+		font-size: 16px;
+	}
+	$-dot-w: 14px;
+	@include z("scheduling-dot") {
+		width: $-dot-w;
+		height: $-dot-w;
+		display: inline-block;
+		border-radius: 50%;
+		vertical-align: middle;
+		background-color: #d9d9d9;
+		& + * {
+			vertical-align: middle;
+			margin-left: 6px;
+		}
+	}
+	@include z("scheduling-dot-p") {
+		padding: 0;
+		margin:0;
+		font-size: 12px;
+		
+		cursor: default;
+		& + .z-scheduling-dot-p {
+			margin-top: 4px;
+		}
+	}
+	@include z("scheduling-icon"){
+		color:#F7F7FA;
+		font-size: 18px;
+	}
+}

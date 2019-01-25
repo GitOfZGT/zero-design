@@ -1,4 +1,4 @@
-import "../../zero-icon/iconfont.css";
+import "./zero-icon/iconfont.css";
 export { default as Zform } from "./components/Zform";
 export { default as Zinfo } from "./components/Zinfo";
 export { default as Zlayout } from "./components/Zlayout";
@@ -37,3 +37,4 @@ export { default as zTool } from "./components/zTool";
 export { default as ZroundingButton } from "./components/ZroundingButton";
 export { default as ZlabelInput } from "./components/ZlabelInput";
 export { default as Zbutton } from "./components/Zbutton";
+export { default as ZpureComponent } from "./components/ZpureComponent";

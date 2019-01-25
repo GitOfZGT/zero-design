@@ -1,11 +1,11 @@
-import React from "react";
+import React from "react";import ZpureComponent from "../ZpureComponent";
 import PropTypes from "prop-types";
 import {  Dropdown, Menu } from "antd";
 import cssClass from "./style.scss";
 import { ZroundingButton } from "../ZroundingButton";
 import { Zbutton } from "../Zbutton";
 import { removeClass, addClass } from "../zTool";
-class TreeTitle extends React.PureComponent {
+class TreeTitle extends ZpureComponent {
 	static propTypes = {
 		tool: PropTypes.object,
 		name: PropTypes.string,

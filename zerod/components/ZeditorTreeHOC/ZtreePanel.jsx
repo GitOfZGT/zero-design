@@ -1,4 +1,4 @@
-import React from "react";
+import React from "react";import ZpureComponent from "../ZpureComponent";
 import "../../zero-icon/iconfont.css";
 import { withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
@@ -30,7 +30,7 @@ import {
 } from "../zTool";
 // import { Zlayout } from "../Zlayout";
 let defaultConfig = const_getListConfig("list", "ZtreePanel");
-class ZtreePanel extends React.PureComponent {
+class ZtreePanel extends ZpureComponent {
 	static propTypes = {
 		treeDataKeys: PropTypes.object,
 		panelBeforeRender: PropTypes.func,

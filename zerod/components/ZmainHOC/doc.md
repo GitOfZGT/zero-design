@@ -16,7 +16,7 @@
 
 ```jsx
 // react
-import React from "react";
+import React from "react";import ZpureComponent from "zerod/components/ZpureComponent";
 import PropTypes from "prop-types";
 // zerod
 import { Zlayout, ZmainHOC } from "zerod";
@@ -101,7 +101,7 @@ const pageConfig = {
 };
 export default ZmainHOC(pageConfig);
 
-class Logo extends React.PureComponent {
+class Logo extends ZpureComponent {
 	static propTypes = {
 		getLogoMethods: PropTypes.func,
 	};
@@ -164,7 +164,7 @@ const pageConfig = {
 	},
 };
 
-class UserDropdown extends React.PureComponent {
+class UserDropdown extends ZpureComponent {
 	methods = {
 		//用户dropdown按钮点击触发
 		onMenuClick: (item) => {

@@ -23,7 +23,7 @@ $--danger-bg-hover:linear-gradient(90deg, $--red-tint 0%, $--red-tint 100%);
 $--danger-bg-active:linear-gradient(90deg, $--red-deep 0%, $--red-deep 100%);
 
 :global {
-	body{
+	body:not([class*=not-cover]){
         .ant-btn-primary:not([disabled]) {
             background-image: $--primary-bg;
             background-color:$--blue-tint;

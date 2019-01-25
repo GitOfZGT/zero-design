@@ -9,10 +9,10 @@
 <div class="z-demo-box" data-render="demo1" data-title="基本使用"></div>
 
 ```jsx
-import React from "react";
+import React from "react";import ZpureComponent from "zerod/components/ZpureComponent";
 import { Zinfo } from "zerod";
 import { Tag } from "antd";
-class Myjavascript extends React.PureComponent {
+class Myjavascript extends ZpureComponent {
 	items = [
 		{
 			key: "serviceCode",

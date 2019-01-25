@@ -27,10 +27,10 @@ this.props.showRightModal({
 <div class="z-demo-box" data-render="open-modal" data-title="关闭窗口只需两个参数 this.props.showRightModal (false,'mainModal')"></div>
 
 ```jsx
-import React from "react";
+import React from "react";import ZpureComponent from "zerod/components/ZpureComponent";
 import { Button } from "antd";
 import { ZerodMainContext } from "zerod";
-class OpenModal extends React.PureComponent {
+class OpenModal extends ZpureComponent {
 	methods = {
 		openMainModal: (e) => {
 			this.props.showRightModal(
@@ -79,7 +79,7 @@ showRouteLoading 方法有一个参数，`show`:是否显示
 <div class="z-demo-box" data-render="route-loading" data-title="this.props.showRouteLoading(true)"></div>
 
 ```jsx
-class MyScript extends React.PureComponent {
+class MyScript extends ZpureComponent {
 	methods = {
 		showRouteLoading: (e) => {
 			this.props.showRouteLoading(true);
@@ -111,7 +111,7 @@ showModalLoading 方法有两个参数，`show`:是否显示，`modal`: "mainMod
 <div class="z-demo-box" data-render="modal-loading" data-title="this.props.showModalLoading(true, modal);"></div>
 
 ```jsx
-class MyScript extends React.PureComponent {
+class MyScript extends ZpureComponent {
 	methods = {
 		showModalLoading: (e, modal) => {
 			this.props.showRightModal(true, modal);
@@ -230,10 +230,10 @@ getScrollAreaWrapperEl 方法有一个参数，`witch`:哪个地方的滚动条:
 <div class="z-demo-box" data-render="myWrapperDemo" data-title="例如：使用ZeditSimpleFormHOC时，在pageCofig的panelAfterRender放入了如下代码的组件"></div>
 
 ```jsx
-import React from "react";
+import React from "react";import ZpureComponent from "zerod/components/ZpureComponent";
 import ReactDom from "react-dom";
 import { ZerodMainContext } from "zerod";
-class MoreCofig extends React.PureComponent {
+class MoreCofig extends ZpureComponent {
 	componentDidMount() {
 		// 首先得获取this.boxEl元素所在得位置
 		const insetLocaltion = this.props.getInsertLocation(this.boxEl);

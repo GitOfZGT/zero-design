@@ -14,13 +14,13 @@
 
 6、react : 组件内跟`setState`无关的属性，请不要写进 `state`中。
 
-7、react : v16.7.0之前的react组件写法：(建议继承`React.PureComponent`)
+7、react : v16.7.0之前的react组件写法：(建议继承`ZpureComponent`)
 
 ```jsx
-import React from "react";
+import React from "react";import ZpureComponent from "zerod/components/ZpureComponent";
 import PropTypes from "prop-types";
 
-class MyComponent extends React.PureComponent {
+class MyComponent extends ZpureComponent {
 	// 定义props的类型(如果有props规定必须要写)
 	static propTypes = {
 		className: PropTypes.string,
@@ -132,8 +132,8 @@ api.login.getList(查询参数).then(re=>{
 //使用模块化的css
 import cssClass from "./style.scss";
 
-import React from "react";
-class AtabBar extends React.PureComponent {
+import React from "react";import ZpureComponent from "zerod/components/ZpureComponent";
+class AtabBar extends ZpureComponent {
 	render(){
 		return <div></div>
 	}
@@ -167,9 +167,9 @@ const { AtabBar, ApageTitle } = components;
 //使用模块化的css
 import cssClass from "./style.scss";
 
-import React from "react";
+import React from "react";import ZpureComponent from "zerod/components/ZpureComponent";
 function AshowDemoHOC(Comp) {
-	return class Common extends React.PureComponent {
+	return class Common extends ZpureComponent {
 		render() {
 			return <Comp />;
 		}
@@ -312,7 +312,7 @@ export const getInputValueState2 = function(state) {
 假如有 `Input` 这样的组件,它有 value 和 onChange 两个 props，它与 `mapStateToProps`和`actions`的连接如下：
 
 ```jsx
-import React from "react";
+import React from "react";import ZpureComponent from "zerod/components/ZpureComponent";
 import { Input } from "antd";
 import { connect } from "react-redux";
 import { numberChange1 } from "@/store/actions";
@@ -334,13 +334,13 @@ const NewInput = connect(
 2、例：`AppRootContext.js`
 
 ```jsx
-import React from "react";
+import React from "react";import ZpureComponent from "zerod/components/ZpureComponent";
 const defaultValue = {};
 const context = React.createContext(defaultValue); //创建上下文
 const { Provider, Consumer } = context;
 //提供启用上下文的方法
 const setConsumer = (ChildComponent) => {
-	return class ContextConsumer extends React.PureComponent {
+	return class ContextConsumer extends ZpureComponent {
 		render() {
 			return <Consumer>{(value) => <ChildComponent {...this.props} {...value} />}</Consumer>;
 		}

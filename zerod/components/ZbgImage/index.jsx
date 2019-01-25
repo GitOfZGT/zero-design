@@ -1,7 +1,7 @@
-import React from "react";
+import React from "react";import ZpureComponent from "../ZpureComponent";
 import PropTypes from "prop-types";
 import cssClass from "./style.scss";
-export class ZbgImage extends React.PureComponent {
+export class ZbgImage extends ZpureComponent {
 	static propTypes = {
 		url: PropTypes.string,
 		position: PropTypes.string,// top | center

@@ -1,4 +1,4 @@
-import React from "react";
+import React from "react";import ZpureComponent from "../ZpureComponent";
 import { withRouter } from "react-router-dom";
 import { const_getInsertLocation, const_getMainTool, const_getMethods ,const_getPageWrapperProps,const_extendArguments} from "../constant";
 import PropTypes from "prop-types";
@@ -83,7 +83,7 @@ export function ZeditSimpleFormHOC(pageConfig) {
 		exportSomething:null,
 	};
 	defaultConfig = mergeConfig(defaultConfig, pageConfig);
-	class myForm extends React.PureComponent {
+	class myForm extends ZpureComponent {
 		static propTypes = {
 			detailId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 		};

@@ -1,4 +1,4 @@
-import React from "react";
+import React from "react";import ZpureComponent from "../ZpureComponent";
 import { Link } from "react-router-dom";
 import { Breadcrumb, Icon } from "antd";
 import PropTypes from "prop-types";
@@ -7,7 +7,7 @@ import cssClass from "./style.scss";
 function itemRender(route, params, routes, paths) {
 	return !route.link ? <span>{route.name}</span> : <Link to={paths.join("/")}>{route.name}</Link>;
 }
-export class ZpageHeader extends React.PureComponent {
+export class ZpageHeader extends ZpureComponent {
 	static propTypes = {
 		trademark: PropTypes.any, //图标|图示
 		title: PropTypes.any, // 标题

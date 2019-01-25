@@ -1,7 +1,7 @@
-import React from "react";
+import React from "react";import ZpureComponent from "../ZpureComponent";
 import PropTypes from "prop-types";
 import cssClass from "./style.scss";
-class Com extends React.PureComponent {
+class Com extends ZpureComponent {
 	static propTypes = {
 		links: PropTypes.arrayOf(PropTypes.object),
 		copyright: PropTypes.oneOfType([PropTypes.func, PropTypes.string]),

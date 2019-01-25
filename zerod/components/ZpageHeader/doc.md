@@ -5,11 +5,11 @@
 <div class="z-demo-box" data-render="demo1" data-title="基本使用"></div>
 
 ```jsx
-import React from "react";
+import React from "react";import ZpureComponent from "zerod/components/ZpureComponent";
 import { ZpageHeader } from "zerod";
 import { Icon } from "antd";
 
-class PageHeader extends React.PureComponent {
+class PageHeader extends ZpureComponent {
 	pageHeader = {
 		trademark: <Icon type="cloud" />,
 		// array>[object] | null,如果是null则不显示面包屑
@@ -46,11 +46,11 @@ export default PageHeader;
 <div class="z-demo-box" data-render="demo2" data-title="使用children属性"></div>
 
 ```jsx
-import React from "react";
+import React from "react";import ZpureComponent from "zerod/components/ZpureComponent";
 import { ZpageHeader } from "zerod";
 import { Icon } from "antd";
 
-class PageHeader extends React.PureComponent {
+class PageHeader extends ZpureComponent {
 	tabPanes = [
 		{ tab: "基本信息", key: "1", content: null },
 		{ tab: "配置信息", key: "2", content: null },

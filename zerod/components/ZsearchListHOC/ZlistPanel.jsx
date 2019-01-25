@@ -1,4 +1,4 @@
-import React from "react";
+import React from "react";import ZpureComponent from "../ZpureComponent";
 import "../../zero-icon/iconfont.css";
 import { withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
@@ -26,7 +26,7 @@ import simpleTemplate from "./simpleTemplate";
 let defaultConfig = const_getListConfig("list", "ZlistPanel");
 import { ZroundingButton } from "../ZroundingButton";
 import { Zbutton } from "../Zbutton";
-class ZlistPanel extends React.PureComponent {
+class ZlistPanel extends ZpureComponent {
 	static propTypes = {
 		listType: PropTypes.string, // table | card
 		cardSpan: PropTypes.oneOfType([PropTypes.object, PropTypes.number]),

@@ -9,7 +9,7 @@
 <div class="z-demo-box" data-render="demo1" data-title="新增表单"></div>
 
 ```jsx
-import React from "react";
+import React from "react";import ZpureComponent from "zerod/components/ZpureComponent";
 import { Input, InputNumber, Button } from "antd";
 import { ZeditSimpleFormHOC, zTool } from "zerod";
 import defaultConfigData from "@/mock/serviceDefaultConfigData.js";
@@ -171,7 +171,7 @@ export default ZeditSimpleFormHOC(pageConfig);
 <div class="z-demo-box" data-render="demo2" data-title='form.type="update"时为修改表单,这时才会调用form.detailApiInterface钩子，使用moreContentRender函数在页面末端追加更多内容'></div>
 
 ```jsx
-import React from "react";
+import React from "react";import ZpureComponent from "zerod/components/ZpureComponent";
 import { Input, InputNumber, Button } from "antd";
 import { ZeditSimpleFormHOC, zTool } from "zerod";
 import defaultConfigData from "@/mock/serviceDefaultConfigData.js";

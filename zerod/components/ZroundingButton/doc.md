@@ -7,7 +7,7 @@
 <div class="z-demo-box" data-render="demo1" data-title="基本使用"></div>
 
 ```jsx
-class Myjavascript extends React.PureComponent {
+class Myjavascript extends ZpureComponent {
 			onClick = (item) => {
 				message.success("点击了" + item.name);
 			};

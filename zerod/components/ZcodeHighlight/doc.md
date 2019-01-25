@@ -19,9 +19,9 @@
 1、基本使用
 
 ```jsx
-import React from "react";
+import React from "react";import ZpureComponent from "zerod/components/ZpureComponent";
 import { ZcodeHighlight } from "zerod";
-class Myjavascript extends React.PureComponent{
+class Myjavascript extends ZpureComponent{
     render(){
         return (
             <ZcodeHighlight lang="javascript" mode="block">
@@ -41,9 +41,9 @@ class Myjavascript extends React.PureComponent{
 2、当`mode="html"`时
 
 ```jsx
-import React from "react";
+import React from "react";import ZpureComponent from "zerod/components/ZpureComponent";
 import { ZcodeHighlight } from "zerod";
-class MyHtml extends React.PureComponent{
+class MyHtml extends ZpureComponent{
     render(){
         return (
             <ZcodeHighlight mode="html">

@@ -269,7 +269,7 @@
 `react`组件的`render`函数必须要有一个根元素，有时我们不想要一个多余无任何实际作用的根元素，这时就可以使用`Zlayout.Template`来替代
 
 ```jsx
-class myCom extends React.PureComponent {
+class myCom extends ZpureComponent {
 	render() {
 		return (
 			<Zlayout.Template>

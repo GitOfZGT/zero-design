@@ -1,4 +1,4 @@
-import React from "react";
+import React from "react";import ZpureComponent from "../ZpureComponent";
 import PropTypes from "prop-types";
 import Swiper from "swiper/dist/js/swiper";
 import "swiper/dist/css/swiper.css";
@@ -11,7 +11,7 @@ class Template extends React.Component{
     }
 }
 
-export class Zswiper extends React.PureComponent {
+export class Zswiper extends ZpureComponent {
 	static propTypes = {
 		imgSrcs: PropTypes.arrayOf(PropTypes.string),
 		swiperClick: PropTypes.func,

@@ -1,4 +1,4 @@
-import React from "react";
+import React from "react";import ZpureComponent from "../ZpureComponent";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router-dom";
 // my component
@@ -40,7 +40,7 @@ export const ZpageWrapperProps = {
 	titleFromLasterBreadcrumb: PropTypes.bool, //pageHeader的title是否来自面包屑的最后一个名称
 };
 
-class Page extends React.PureComponent {
+class Page extends ZpureComponent {
 	static propTypes = ZpageWrapperProps;
 	static defaultProps = {
 		pageHeader: { show: false },

@@ -1,10 +1,10 @@
-import React from "react";
+import React from "react";import ZpureComponent from "../ZpureComponent";
 import ReactDOM from "react-dom";
 import PropTypes from "prop-types";
 import { SketchPicker } from "react-color";
 import cssClass from "./style.scss";
 import { CSSTransition } from "react-transition-group";
-export class ZcolorPicker extends React.PureComponent {
+export class ZcolorPicker extends ZpureComponent {
 	static propTypes = {
 		value: PropTypes.string,
 		defaultValue: PropTypes.string,

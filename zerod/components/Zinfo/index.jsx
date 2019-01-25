@@ -1,4 +1,4 @@
-import React from "react";
+import React from "react";import ZpureComponent from "../ZpureComponent";
 import { Row, Col } from "antd";
 import PropTypes from "prop-types";
 import cssClass from "./style.scss";
@@ -6,7 +6,7 @@ import { CSSTransition, TransitionGroup } from "react-transition-group";
 import { animateTimout, const_initItems, const_execAsync, const_itemSpan } from "../constant";
 import ZpageLoading from "../ZpageLoading";
 
-class Zinfo extends React.PureComponent {
+class Zinfo extends ZpureComponent {
 	static propTypes = {
 		items: PropTypes.arrayOf(PropTypes.object),
 		defaultSpan: PropTypes.oneOfType([PropTypes.number, PropTypes.object]),

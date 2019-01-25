@@ -1,4 +1,4 @@
-import React from "react";
+import React from "react";import ZpureComponent from "../ZpureComponent";
 import PropTypes from "prop-types";
 import cssClass from "./style.scss";
 import Zheader from "./Zheader";
@@ -7,7 +7,7 @@ import Zfooter from "./Zfooter";
 import ZheaderBtn from "./ZheaderBtn";
 import { getStyle } from "../zTool";
 import { listenDivSizeChange, once } from "../zTool";
-export class Zlayout extends React.PureComponent {
+export class Zlayout extends ZpureComponent {
 	static propTypes = {
 		flexRow: PropTypes.bool,
 		flex: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),

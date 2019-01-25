@@ -6,7 +6,7 @@
 
 `zerod` 需要搭配`zerod-admin-webpack`脚手架使用
 
-# zerod-admin-webpack 脚手架 v1.2.0
+# zerod-admin-webpack 脚手架 v1.2.1
 
 基于 `react + react-router + redux + react-redux + antd + zerod + scss` 的 webpack4 前端开发环境
 
@@ -14,7 +14,7 @@
 
 2、支持 `js,jsx,css,scss,less` 公共代码抽取，压缩打包
 
-3、`babel-loader + less/sass` 模块加载功能，支持`scss`的cssModules（不支持less的），主要使用scss文件写样式，less+less-loader这里只用来编译antd的样式或者其他使用less的第三方库，
+3、`babel-loader + less/sass` 模块加载功能，支持`scss`的 cssModules（不支持 less 的），主要使用 scss 文件写样式，less+less-loader 这里只用来编译 antd 的样式或者其他使用 less 的第三方库，
 
 4、`webpack-dev-server` 服务器，支持反代理配置，热加载热更新
 
@@ -30,9 +30,16 @@
 
 `git`地址：<a href="http://172.16.26.120/components/zerod-admin-webpack.git" target="_blank">http://172.16.26.120/components/zerod-admin-webpack.git</a>
 
-2018-11-22 v1.1.0 去掉antd-scss-theme-plugin插件，添加happypack多线程插件，提高编译速度，添加DllPlugin和DllReferencePlugin，添加sass-resources-loader  
-2018-12-11 v1.1.3 修复只分割代码未按需加载的问题，新增pace来显示加载loading  
+2018-11-22 v1.1.0 去掉 antd-scss-theme-plugin 插件，添加 happypack 多线程插件，提高编译速度，添加 DllPlugin 和 DllReferencePlugin，添加 sass-resources-loader  
+2018-12-11 v1.1.3 修复只分割代码未按需加载的问题，新增 pace 来显示加载 loading  
 2018-12-25 v1.2.0 升级<a href="https://babeljs.io/" target="_blank"> babel@7.x</a>  
+2019-01-24 v1.2.1 pacejs 插件使用 html-webpack-include-assets-plugin 插入 html 保持与打包路径一致，config/index.js 的 dll.exclude 支持正则匹配，新增 npm run dll-dev 和 npm run dll-prod 两条命令用于生成 dll 文件才用 development 或 production，只有 react 的 development 才支持 DevTools Profiler（性能分析），原 npm run dll 默认是 npm run dll-dev，npm run build 则包含了 npm run dll-prod
+
+生成的 vendor.manifest.json 和 vendor.dll.\*.js 都可以提交 git
+
+如果在开发中发现这个报错：“You are currently using minified code outside of NODE_ENV === "production". This means that you are running a slower development build of Redux.” 可以忽略，npm run build 后是不会有的  
+
+偶热发现，cnpm install 安装的依赖包依赖链比 npm install 安装的要长的多，所以 npm install 的，运行或打包相对来说快的多。  
 
 <div class="z-doc-titles"></div>
 
@@ -73,8 +80,8 @@
 │ └── main.js        # 项目入口文件
 ├── /static/         # 不会被压缩打包的静态文件放这里
 │ ├── /pace/         # 页面的加载进度条
-│ │ ├── pace-theme-flash.css   # 
-│ │ └── pace.min.js   
+│ │ ├── pace-theme-flash.css   #
+│ │ └── pace.min.js
 │ └── vendor.dll.*.js  # package.json的dependencies依赖包的预打包文件，由npm run dll命令生成
 ├── babel.config.js  # babel配置
 ├── .gitgnore        # git忽略检测的配置
@@ -94,9 +101,9 @@
 
 由于我们的`zerod`存储在`我们的npm私有服务器`中，请按如下顺序执行命令行：
 
-1、`npm install rimraf cnpm -g`  (如果已经执行过了，跳过此步)
+1、`npm install rimraf cnpm -g` (如果已经执行过了，跳过此步)
 
-2、`npm run init`  (此命令包含 rimraf node_modules & npm run npm-zerod & cnpm install & npm run dll)
+2、`npm run init` (此命令包含 rimraf node_modules & npm run npm-zerod & cnpm install & npm run dll)
 
 `注：每次更新zerod包时(从私服安装依赖包)，需从第2步骤依次执行，这是因为私服和外网npm服务有差异，cnpm和npm混用导致某些包文件丢失，然后重新启动报错`
 
@@ -108,11 +115,10 @@
 
 2、打包：`npm run build`
 
-3、打包并显示依赖报告：`npm run build --report`  
+3、打包并显示依赖报告：`npm run build --report`
 
-4、不常变依赖包预打包：`npm run dll`  
+4、不常变依赖包预打包：`npm run dll`
 
-5、从私服安装最新zerod: `npm run npm-zerod`  
+5、从私服安装最新 zerod: `npm run npm-zerod`
 
 6、`npm run init` (此命令包含 `rimraf node_modules & npm run npm-zerod & cnpm install & npm run dll`)
-

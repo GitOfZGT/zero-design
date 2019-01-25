@@ -7,7 +7,7 @@
 <div class="z-demo-box" data-render="demo1" data-title="这里是缩略图列表，点击查看大图"></div>
 
 ```jsx
-class Myjavascript extends React.PureComponent {
+class Myjavascript extends ZpureComponent {
 	state = {
 		urls: [
 			"https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1535952786111&di=7d03c11e1f0ad40f08578cf8506844aa&imgtype=0&src=http%3A%2F%2Fpic11.photophoto.cn%2F20090415%2F0020032851022998_b.jpg",

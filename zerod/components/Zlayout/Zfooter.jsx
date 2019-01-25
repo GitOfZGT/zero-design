@@ -1,7 +1,7 @@
-import React from "react";
+import React from "react";import ZpureComponent from "../ZpureComponent";
 import PropTypes from "prop-types";
 import cssClass from "./style.scss";
-class Zfooter extends React.PureComponent {
+class Zfooter extends ZpureComponent {
 	static propTypes = {
 		height: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
 		className: PropTypes.string,

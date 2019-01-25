@@ -1,4 +1,4 @@
-import React from "react";
+import React from "react";import ZpureComponent from "../ZpureComponent";
 // import { Input } from "antd";
 
 // 工具
@@ -20,7 +20,7 @@ export function ZeditorTreeHOC(pageConfig) {
 	let defaultConfig = const_getListConfig("tree", "ZtreePanel");
 
 	defaultConfig = mergeConfig(defaultConfig, pageConfig);
-	class List extends React.PureComponent {
+	class List extends ZpureComponent {
 		config = defaultConfig;
 		pageWraper = const_getPageWrapperProps(this.config);
 		//pageId 是 pageHeader内部一个插槽id，这里将ZtreePanel的searchForm插到pageHeader显示
