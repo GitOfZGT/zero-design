@@ -2,7 +2,9 @@
 
 # 信息展示：Zinfo
 
-`Zinfo` 用于展示一组 label 和 value 的组件
+`Zinfo` 用于展示一组 label 和 value 的组件  
+
+继承了React.PureComponent  
 
 1、基本使用
 
@@ -49,6 +51,7 @@ class Myjavascript extends ZpureComponent {
 	}
 }
 ```
+
 
 <div class="z-doc-titles"></div>
 

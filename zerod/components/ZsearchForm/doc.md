@@ -2,18 +2,21 @@
 
 # 查询表单：ZsearchForm
 
-`ZsearchForm`是有栅栏布局的横向排版的，将`antd`的`Form`、`Form.item` 的结构转成数据结构直接渲染的方式，并且带有查询、重置、折叠按钮
+`ZsearchForm`是有栅栏布局的横向排版的，将`antd`的`Form`、`Form.item` 的结构转成数据结构直接渲染的方式，并且带有查询、重置、折叠按钮  
+
+继承了React.PureComponent  
 
 1、基本使用
 
 <div class="z-demo-box" data-render="demo1" data-title="基本使用"></div>
 
 ```jsx
-import React from "react";import ZpureComponent from "zerod/components/ZpureComponent";
+import React from "react";
+import ZpureComponent from "zerod/components/ZpureComponent";
 import { ZsearchForm } from "zerod";
 import { Input, message } from "antd";
 
-class Myjavascript extends ZpureComponent {
+class Myjavascript extends React.PureComponent {
 	items = [
 		{
 			key: "serviceCode",
@@ -55,8 +58,16 @@ class Myjavascript extends ZpureComponent {
 			},
 		},
 		{
+			key: "time",
+			label: "申请时间",
+			render: (form) => {
+				return <DatePicker.RangePicker renderExtraFooter={() => "extra footer"} showTime />;
+			},
+		},
+		{
 			key: "serviceRemark",
 			label: "服务说明",
+			span: 24,
 			render: (form) => {
 				return <Input.TextArea rows={2} placeholder="请输入服务说明" />;
 			},
@@ -75,6 +86,7 @@ class Myjavascript extends ZpureComponent {
 	render() {
 		return (
 			<ZsearchForm
+				labelLayout="inline"
 				colFormItems={this.items}
 				onSearch={(values) => {
 					message.success("提交成功：" + JSON.stringify(values));
@@ -163,7 +175,7 @@ class Myjavascript extends ZpureComponent {
 		 <tr>
 			<td>labelLayout</td>
 			<td>label的布局方式</a></td>
-			<td>'horizontal'|'vertical'</td>
+			<td>'horizontal'|'vertical'|'inline'</td>
 			<td>'vertical'</td>
 		</tr>
 	</tbody>
@@ -203,7 +215,7 @@ class Myjavascript extends ZpureComponent {
 		</tr>
 		<tr>
 			<td><i class="zero-icon zerod-shengchangzhouqi"></i> render</td>
-			<td>渲染表单控件的钩子。支持异步加载：必须return的是Promise对象。例如使用了后台接口：(form,changeFormItems)=>api.getOptions.then(re=>{return 表单控件})。changeFormItems是一个方法，可用于改变items,可选参数有newItems：changeFormItems(newItems)，但不能直接在render函数中使用，应在控件的事件当中</td>
+			<td>渲染表单控件的钩子。支持异步加载：必须return的是Promise对象。例如使用了后台接口：(form,changeFormItems)=>api.getOptions.then(re=>{return 表单控件})。changeFormItems 是一个方法，主要用于局部改变items，实现表单控件之间交互联动,使用方式请往下看</td>
 			<td>(form,changeFormItems)=>{return ReactNode | Element | Promise}</td>
 			<td>--</td>
 		</tr>
@@ -233,3 +245,50 @@ class Myjavascript extends ZpureComponent {
 		</tr>
 	</tbody>
 </table>
+
+## changeFormItems
+
+changeFormItems 是一个方法，主要用于局部改变 items，实现表单控件之间交互联动。但不能直接在 render 函数中使用，应在控件的事件当中。changeFormItems除了在items里的render参数中，还存在于getFormInstance函数的methods参数里。
+
+changeFormItems 需要两个参数：`newItems`：array | object 和 `part` : boolean
+
+`newItems`的结构取决于 `part`参数
+
+如果`part`为 false (默认为 false),`newItems`同 Zform 的 items，会重新渲染全部 items，这是早期的做法，不建议使用
+
+```jsx
+//this.items就是Zform的items
+const newItems = this.items.slice(0);
+newItems.splice(4, 1); //不显示第五个
+changeFormItems(this.items, false); //触发渲染
+```
+
+如果`part`为 true，就是局部改变，`newItems`可以为数组(多个 item 改变)，可以为对象(单个 item 改变),推荐使用方式如下
+
+```jsx
+//不显示key为servicePort的那个item，
+changeFormItems(
+	{
+		key: "servicePort", //对应Zform的items里的key
+		show: false, //是否显示
+	},
+	true,
+);
+//其他内容
+changeFormItems(
+	[
+		{
+			key: "servicePort", //对应Zform的items里的key
+			//改变key为servicePort的那个item的内容
+			newItem: {
+				control: <Input />, //控件  ReactNode
+				span: { lg: 12 }, //栅栏占格 同zform 的items里的span
+				options: {}, //同zform 的items里的options
+				isFormItem: true, //control是否是表单控件
+				label: "", //label
+			},
+		},
+	],
+	true,
+);
+```

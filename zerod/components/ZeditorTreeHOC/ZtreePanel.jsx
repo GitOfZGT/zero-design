@@ -323,8 +323,10 @@ class ZtreePanel extends ZpureComponent {
 			this.methods.openModal(content);
 		},
 		openSearch: () => {
-			this.setState({
-				expandedSearch: !this.state.expandedSearch,
+			this.ZsearchFormMethods.unfold((show) => {
+				this.setState({
+					expandedSearch: show,
+				});
 			});
 		},
 		//外部可以通过这个函数获取当前列表中的数据，
@@ -404,6 +406,7 @@ class ZtreePanel extends ZpureComponent {
 		this.insertLocation = const_getInsertLocation(this.hocWrapperEl);
 		this.methods.onSearch();
 	}
+	getSearchFormMethods = (methods) => (this.ZsearchFormMethods = methods);
 	render() {
 		const_searchFormNode.call(this);
 		const { showLine, loadData, onDrop, ...treeOthers } = this.props.treeProps || {};

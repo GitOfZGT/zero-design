@@ -14,16 +14,26 @@ class Cell extends React.PureComponent {
 				callback,
 			);
 		},
+		update: () => {
+			this.setState({
+				updated: !this.state.updated,
+			});
+		},
 	};
 	state = {
 		selected: false,
+		updated: false,
 	};
-	cellEl = React.createRef();
+	// cellEl = React.createRef();
 	render() {
-		const { className, children, ...others } = this.props;
+		const { className, children, tr, tr_i, td, td_i, ...others } = this.props;
 		return (
 			<div className={`${className} ${this.state.selected ? "selected" : ""}`} {...others}>
-				{children}
+				{dataType.isFunction(td.render)
+					? td.render(tr, tr_i, td, td_i)
+					: dataType.isObject(tr.record)
+					? tr.record[td.dataIndex]
+					: tr[td.dataIndex]}
 			</div>
 		);
 	}
@@ -140,13 +150,12 @@ export class ZschedulingTable extends React.PureComponent {
 											: { onDoubleClick: onNodeClick };
 									const disabledCellClassName = tr.disabled || td.disabled ? "disabled" : "";
 									const textNode = (
-										<Cell className={`${disabledCellClassName}`} {...nodeEvent} ref={cell.ref}>
-											{dataType.isFunction(td.render)
-												? td.render(tr, tr_i, td, td_i)
-												: dataType.isObject(tr.record)
-												? tr.record[td.dataIndex]
-												: tr[td.dataIndex]}
-										</Cell>
+										<Cell
+											className={`${disabledCellClassName}`}
+											{...{ tr, tr_i, td, td_i }}
+											{...nodeEvent}
+											ref={cell.ref}
+										/>
 									);
 									return (
 										<td key={tdKey}>

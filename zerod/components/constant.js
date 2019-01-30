@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { ZsearchForm } from "./ZsearchForm";
 import { Button, notification, message, Tooltip, Popover, Checkbox } from "antd";
-import { dataType, GenNonDuplicateID } from "./zTool";
+import { dataType, GenNonDuplicateID, arrayFilterBy } from "./zTool";
 import searchCssClass from "./ZsearchListHOC/style.scss";
 const noticeMethod = {
 	notification,
@@ -143,14 +143,47 @@ function addItemCss(classNames) {
 		document.head.appendChild(this.styleEl);
 	}
 }
+function const_extendItem(needRef, item, render, hasItemClass, renderArgument, changeItems, index) {
+	let control = (value) => value;
+	let loading = false;
+	let renderValue = null;
+	if (render) {
+		const _return = render(renderArgument, changeItems);
+		if (dataType.isPromise(_return) && index !== undefined) {
+			this.allAsync.push({ promise: _return, index });
+			// renderValue = disableControl;
+			loading = true;
+		} else if (dataType.isFunction(_return)) {
+			renderValue = _return;
+		}
+	}
+	if (renderValue) {
+		control = renderValue;
+	} else {
+		control = render;
+	}
+	let defaultSpan = this.props.defaultSpan;
+	defaultSpan = dataType.isNumber(defaultSpan) ? { md: defaultSpan } : defaultSpan;
+	let ramdon = "";
+	const itemClassName = item.labelWidth
+		? ((ramdon = "z-form-item-" + GenNonDuplicateID()),
+		  hasItemClass.push({ className: ramdon, width: item.labelWidth }),
+		  ramdon)
+		: "";
+	const newItem = {
+		...item,
+		loading,
+		control,
+		defaultSpan,
+		itemClassName,
+	};
+	if (needRef) {
+		newItem.ref = React.createRef();
+	}
+	return newItem;
+}
 //如在Zform中使用const_initItems.call(this,this.props.items,<Input placeholder="加载中" disabled />);
-export const const_initItems = function(
-	items,
-	disableControl,
-	renderArgument = {},
-	changeItems = function() {},
-	callback,
-) {
+export const const_initItems = function(items, renderArgument = {}, changeItems = function() {}, callback) {
 	callback = dataType.isFunction(callback) ? callback : function() {};
 	this.allAsync = [];
 	this.filedKeys = [];
@@ -160,41 +193,9 @@ export const const_initItems = function(
 		if (render && !dataType.isFunction(render)) {
 			throw Error("render属性必须是函数");
 		}
-		let control = (value) => value;
-		let loading = false;
-		let renderValue = null;
-		if (render) {
-			const _return = render(renderArgument, changeItems);
-			if (dataType.isPromise(_return)) {
-				this.allAsync.push({ promise: _return, index });
-				renderValue = disableControl;
-				loading = true;
-			} else if (dataType.isFunction(_return)) {
-				renderValue = _return;
-			}
-		}
-		if (renderValue) {
-			control = renderValue;
-		} else {
-			control = render;
-		}
-		let defaultSpan = this.props.defaultSpan;
-		defaultSpan = dataType.isNumber(defaultSpan) ? { md: defaultSpan } : defaultSpan;
-		let ramdon = "";
-		const itemClassName = item.labelWidth
-			? ((ramdon = "z-form-item-" + GenNonDuplicateID()),
-			  hasItemClass.push({ className: ramdon, width: item.labelWidth }),
-			  ramdon)
-			: "";
-		const newItem = {
-			...item,
-			loading,
-			control,
-			defaultSpan,
-			itemClassName,
-		};
+
 		this.filedKeys.push(item.key);
-		return newItem;
+		return const_extendItem.call(this, true, item, render, hasItemClass, renderArgument, changeItems, index);
 	});
 	addItemCss.call(this, hasItemClass);
 	this.setState(
@@ -227,8 +228,15 @@ export const const_execAsync = function(callback) {
 	if (this.allAsync.length) {
 		this.allAsync.forEach((asy) => {
 			asy.promise.then((control) => {
-				this.state.items[asy.index].control = control;
-				this.state.items[asy.index].loading = false;
+				if (this.unmounted) return;
+				// console.log(control)
+				const formItem = this.state.items[asy.index].ref.current;
+				formItem.methods.changeItem({
+					control,
+				});
+				formItem.methods.showLoading(false);
+				// this.state.items[asy.index].control = control;
+				// this.state.items[asy.index].loading = false;
 			});
 		});
 		Promise.all(
@@ -238,21 +246,59 @@ export const const_execAsync = function(callback) {
 		).then((re) => {
 			if (this.unmounted) return;
 			this.allAsync = [];
-			this.setState(
-				{
-					items: [...this.state.items],
-				},
-				() => {
-					this.setFieldValue();
-					callback(this.props.form, this.methods);
-				},
-			);
+			this.setFieldValue();
+			callback(this.props.form, this.methods);
+			// this.setState(
+			// 	{
+			// 		items: [...this.state.items],
+			// 	},
+			// 	() => {
+			// 		this.setFieldValue();
+			// 		callback(this.props.form, this.methods);
+			// 	},
+			// );
 		});
 	} else {
 		this.setFieldValue();
 		callback(this.props.form, this.methods);
 	}
 };
+export function const_changeFormItems(newItems, part = false) {
+	if (part) {
+		//part 表示局部
+		let itemsKeys = [],
+			items = [];
+		if (dataType.isObject(newItems)) {
+			itemsKeys = [{ key: newItems.key }];
+			items = [newItems];
+		} else if (dataType.isArray(newItems)) {
+			itemsKeys = newItems.map((item) => item.key);
+			items = newItems;
+		}
+		const needChangeItems = arrayFilterBy(this.state.items, itemsKeys);
+		needChangeItems.forEach((item, i) => {
+			const formItem = item.ref.current;
+			Object.keys(items[i]).forEach((k) => {
+				if (k == "show") {
+					formItem.methods.showItem(items[i].show);
+				} else if (k == "loading") {
+					formItem.methods.showLoading(items[i].loading);
+				} else if (k == "newItem") {
+					formItem.methods.changeItem(items[i].newItem);
+					// newItem={
+					// 	control:<Input></Input>,
+					// 	span:{lg:12},
+					// 	options:{},
+					// 	isFormItem:true,
+					// 	label:"",
+					// }
+				}
+			});
+		});
+	} else {
+		this.execAsync(newItems);
+	}
+}
 //ZtreePanel和ZlistPanel的heading,这里不能是箭头函数
 export const const_getPanleHeader = function(hasControl) {
 	const tool = this.getExportSomething();
@@ -522,6 +568,7 @@ export function const_searchFormNode() {
 				onSearch={this.methods.onSearch}
 				onReset={this.methods.onReset}
 				noCollapse={true}
+				exportMethods={this.getSearchFormMethods}
 			/>
 		) : null;
 	let insertEl = null;
@@ -537,11 +584,7 @@ export function const_searchFormNode() {
 		this.searchForm = ReactDOM.createPortal(this.searchForm, insertEl);
 	} else {
 		this.searchForm = this.searchForm ? (
-			<div
-				className={`${searchCssClass["z-embedded-form"]} ${
-					this.state.expandedSearch ? "" : "z-padding-top-0-important"
-				}`}
-			>
+			<div className={`${searchCssClass["z-embedded-form"]} ${"z-padding-top-0-important"}`}>
 				{this.searchForm}
 			</div>
 		) : null;
