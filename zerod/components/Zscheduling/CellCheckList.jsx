@@ -33,7 +33,11 @@ class RowCheckBox extends React.PureComponent {
 			<Checkbox.Group value={this.state.checked} onChange={this.methods.onChange}>
 				{checkList.map((check, i) => {
 					return (
+<<<<<<< HEAD
 						<p key={i} className="z-margin-bottom-0-important">
+=======
+						<p key={i}>
+>>>>>>> 67aa4fe54164c70d8d3bdb1cdd6ac08568ed9eab
 							<Checkbox value={check[mapKeys.value]}>
 								<span
 									className="z-schedul-color-span"
@@ -104,7 +108,11 @@ class CellCheckList extends ZpureComponent {
 					/>
 					{!checkList.length ? <Empty /> : null}
 				</div>
+<<<<<<< HEAD
 				{onCancel || onOk ?<div className="z-padding-15 z-text-center z-flex">
+=======
+				<div className="z-padding-15 z-text-center z-flex">
+>>>>>>> 67aa4fe54164c70d8d3bdb1cdd6ac08568ed9eab
 					{onCancel ? (
 						<div className={`z-flex-1 ${onCancel && onOk ? "z-margin-right-15" : ""}`}>
 							<Button block size="default" type="default" onClick={this.methods.okCancel}>
@@ -125,7 +133,11 @@ class CellCheckList extends ZpureComponent {
 							</Button>
 						</div>
 					) : null}
+<<<<<<< HEAD
 				</div>:null}
+=======
+				</div>
+>>>>>>> 67aa4fe54164c70d8d3bdb1cdd6ac08568ed9eab
 				<ZpageLoading showLoading={this.state.loading} size="default" />
 			</div>
 		);
