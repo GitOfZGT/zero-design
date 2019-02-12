@@ -90,11 +90,7 @@ class ColFormItem extends React.PureComponent {
 				} ${this.state.focus ? "focus" : ""}`;
 			}
 		}
-<<<<<<< HEAD
 		const loader = <ZpageLoading showLoading={this.state.loading} size="small" />;
-=======
-
->>>>>>> 67aa4fe54164c70d8d3bdb1cdd6ac08568ed9eab
 		return (
 			<Col {...span} className={item.className}>
 				{isFormItem ? (
@@ -102,20 +98,12 @@ class ColFormItem extends React.PureComponent {
 						label={!this.state.loading ? item.label : ""}
 						className={`z-form-item ${formItemClassName}`}
 					>
-<<<<<<< HEAD
 						{loader}
-=======
-						<ZpageLoading showLoading={this.state.loading} size="small" />
->>>>>>> 67aa4fe54164c70d8d3bdb1cdd6ac08568ed9eab
 						{this.state.loading ? <Input placeholder="加载中" disabled /> : control}
 					</Form.Item>
 				) : (
 					<div>
-<<<<<<< HEAD
 						{loader}
-=======
-						<ZpageLoading showLoading={this.state.loading} size="small" />
->>>>>>> 67aa4fe54164c70d8d3bdb1cdd6ac08568ed9eab
 						{control}
 					</div>
 				)}

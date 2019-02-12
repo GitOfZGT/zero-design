@@ -99,17 +99,10 @@ class Myjavascript extends React.PureComponent {
 | <i class="zero-icon zerod-shengchangzhouqi"></i> toolbarRender             | 工具栏（与年月选框同一行）的 渲染函数                            | function(){return }                             | --     |
 | <i class="zero-icon zerod-shengchangzhouqi"></i> leftPopoverTitleRender    | 非日期列的 popover 的 title 渲染函数                             | function(row, rowindex, col, colindex){return}  | --     |
 | <i class="zero-icon zerod-shengchangzhouqi"></i> leftPopoverContentRender  | 非日期列的 popover 的 content 渲染函数                           | function(row, rowindex, col, colindex){return}  | --     |
-<<<<<<< HEAD
 | onLeftPopoverVisibleChange                                                 | 非日期列的 popover 的 popover 的打开/隐藏的回调                  | function(show,row, rowindex, col, colindex){}        | --     |
 | <i class="zero-icon zerod-shengchangzhouqi"></i> rightPopoverTitleRender   | 日期列的 popover 的 content 渲染函数                             | function(row, rowindex, col, colindex){return}  | --     |
 | <i class="zero-icon zerod-shengchangzhouqi"></i> rightPopoverContentRender | 日期列的 popover 的 content 渲染函数                             | function(row, rowindex, col, colindex){return}  | --     |
 | onRightPopoverVisibleChange                                                | 日期列的 popover 的 popover 的打开/隐藏的回调                    | function(show,row, rowindex, col, colindex){}        | --     |
-=======
-| onLeftPopoverVisibleChange                                                 | 非日期列的 popover 的 popover 的打开/隐藏的回调                  | function(row, rowindex, col, colindex){}        | --     |
-| <i class="zero-icon zerod-shengchangzhouqi"></i> rightPopoverTitleRender   | 日期列的 popover 的 content 渲染函数                             | function(row, rowindex, col, colindex){return}  | --     |
-| <i class="zero-icon zerod-shengchangzhouqi"></i> rightPopoverContentRender | 日期列的 popover 的 content 渲染函数                             | function(row, rowindex, col, colindex){return}  | --     |
-| onRightPopoverVisibleChange                                                | 日期列的 popover 的 popover 的打开/隐藏的回调                    | function(row, rowindex, col, colindex){}        | --     |
->>>>>>> 67aa4fe54164c70d8d3bdb1cdd6ac08568ed9eab
 
 <div class="z-doc-titles"></div>
 

@@ -1,10 +1,6 @@
 {
 	"name": "zerod",
-<<<<<<< HEAD
 	"version": "0.0.88",
-=======
-	"version": "0.0.86",
->>>>>>> 67aa4fe54164c70d8d3bdb1cdd6ac08568ed9eab
 	"description": "react+antd+scss的扩展组件，结合zerod-admin-web脚手架使用",
 	"author": "zgt",
 	"main": "index.js",

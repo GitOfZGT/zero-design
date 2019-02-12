@@ -2,11 +2,7 @@
 
 # 自带浮层按钮：ZpopoverButton
 
-<<<<<<< HEAD
 ZpopoverButton 默认有一个按钮，自带 popover，左键和右键都会打开 popover，也可以是嵌入自定义按钮（必须是 ReactNode，且支持 onClick,style,disabled 等属性）
-=======
-ZpopoverButton 默认有一个按钮，自带 popover，左键和右键都会打开 popover，也可以是嵌入自定义按钮（必须是 React 组件，且要支持 onClick,style,disabled 等属性）
->>>>>>> 67aa4fe54164c70d8d3bdb1cdd6ac08568ed9eab
 
 1、基本使用
 
