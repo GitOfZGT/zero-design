@@ -1,4 +1,5 @@
-import React from "react";import ZpureComponent from "../ZpureComponent";
+import React from "react";
+import ZpureComponent from "../ZpureComponent";
 import "../../zero-icon/iconfont.css";
 import { withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
@@ -311,8 +312,10 @@ class ZlistPanel extends ZpureComponent {
 			this.methods.getListData(true);
 		},
 		openSearch: () => {
-			this.setState({
-				expandedSearch: !this.state.expandedSearch,
+			this.ZsearchFormMethods.unfold((show) => {
+				this.setState({
+					expandedSearch: show,
+				});
 			});
 		},
 		//外部可以通过这个函数获取当前列表中的数据，
@@ -358,7 +361,7 @@ class ZlistPanel extends ZpureComponent {
 				);
 		}
 	}
-	actionColKey = this.props.actionDataIndex+"actionBtns";
+	actionColKey = this.props.actionDataIndex + "actionBtns";
 	actionBtns() {
 		const {
 			showDetailBtn,
@@ -373,7 +376,7 @@ class ZlistPanel extends ZpureComponent {
 					{
 						title: "操作",
 						dataIndex: this.actionColKey,
-						key:"actionBtns",
+						key: "actionBtns",
 						width: this.props.actionColumnWidth,
 						render: (text, record, index) => {
 							const tool = this.getExportSomething();
@@ -570,6 +573,7 @@ class ZlistPanel extends ZpureComponent {
 		this.insertLocation = const_getInsertLocation(this.hocWrapperEl);
 		this.methods.onSearch();
 	}
+	getSearchFormMethods = (methods) => (this.ZsearchFormMethods = methods);
 	render() {
 		this.showPagination =
 			typeof this.props.showPagination === "function"

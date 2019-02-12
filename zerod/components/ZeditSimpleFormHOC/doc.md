@@ -62,6 +62,7 @@ const pageCofig = {
 			{
 				key: "serviceRemark",
 				label: "服务说明",
+				span: 24,
 				render: (form) => {
 					return <Input.TextArea rows={2} placeholder="请输入服务说明" />;
 				},
@@ -114,6 +115,7 @@ const pageCofig = {
 			{
 				key: "confProperty",
 				label: "默认配置",
+				span: 24,
 				render: (form) => {
 					return (
 						<Input.TextArea
@@ -224,6 +226,7 @@ const pageCofig = {
 			{
 				key: "serviceRemark",
 				label: "服务说明",
+				span: 24,
 				render: (form) => {
 					return <Input.TextArea rows={2} placeholder="请输入服务说明" />;
 				},

@@ -37,7 +37,12 @@
         }
         .z-full-layer-body{
             height: calc(100% - #{$--top});
-            overflow: auto;
+			overflow: auto;
+			transition: all 0.3s ease-out;
+			&.scale{
+				transform-origin:center 10%;
+				transform: scale(0);
+			}
         }
 	}
 }

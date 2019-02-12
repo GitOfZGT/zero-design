@@ -1,4 +1,3 @@
-
 # 工具库 zTool
 
 `zTool`积累了一些通用的工具方法，包括对需要对 DOM 元素操作的一些方法
@@ -32,6 +31,7 @@ zTool
 	.finally(() => {});
 zTool.httpAjax("post", "/webapi/v1.0/config/center/updateConfigProperty", { id: "41", name: "我们的故事" });
 ```
+
 <div class="z-doc-titles"></div>
 
 ## zTool.isUrl
@@ -46,6 +46,7 @@ import { zTool } from "zerod";
  */
 zTool.isUrl("https://github.com/axios/axios"); // true
 ```
+
 <div class="z-doc-titles"></div>
 
 ## zTool.parseQueryString
@@ -61,6 +62,7 @@ import { zTool } from "zerod";
 zTool.parseQueryString("http://my.com/select?id=100&selected=1"); //{id:100,selected:1}
 zTool.parseQueryString("?id=100&selected=1"); //{id:100,selected:1}
 ```
+
 <div class="z-doc-titles"></div>
 
 ## zTool.filterQuery
@@ -76,6 +78,7 @@ import { zTool } from "zerod";
  */
 zTool.filterQuery(["name", "selected"], { name: "萧雨", selected: false, id: "85", woch: "犹豫" }); //得到新对象： {name:"萧雨",selected:false}
 ```
+
 <div class="z-doc-titles"></div>
 
 ## zTool.BuildScroll
@@ -113,6 +116,7 @@ class My extends ZpureComponent {
 	}
 }
 ```
+
 <div class="z-doc-titles"></div>
 
 ## zTool.listenDivSizeChange
@@ -130,6 +134,7 @@ zTool.listenDivSizeChange(document.querySelector("#id"), ()=>{
     //盒子高度/宽度变化了
 }));
 ```
+
 <div class="z-doc-titles"></div>
 
 ## zTool.scrollDisableWheel
@@ -144,6 +149,7 @@ import { zTool } from "zerod";
  */
 zTool.scrollDisableWheel(document.querySelector("#textarea"));
 ```
+
 <div class="z-doc-titles"></div>
 
 ## zTool.GenNonDuplicateID
@@ -158,6 +164,7 @@ import { zTool } from "zerod";
  */
 zTool.GenNonDuplicateID(8);
 ```
+
 <div class="z-doc-titles"></div>
 
 ## zTool.EetoString
@@ -173,13 +180,14 @@ import { zTool } from "zerod";
 zTool.EetoString(6.5e8); //"650000000"
 zTool.EetoString(6.5e-7); //"0.65000000"
 ```
+
 <div class="z-doc-titles"></div>
 
 ## zTool.loadFileList
 
 动态加载 .js、.css 的方法，支持多个文件同时加载，支持多个文件按顺序加载
 
-如果是"http" | "https" 开头,但没有.js|.css后缀的路径只支持加载js
+如果是"http" | "https" 开头,但没有.js|.css 后缀的路径只支持加载 js
 
 ```js
 import { zTool } from "zerod";
@@ -199,6 +207,7 @@ zTool
 		//所有文件加载完的回调
 	});
 ```
+
 <div class="z-doc-titles"></div>
 
 ## zTool.dataTypeTest
@@ -221,6 +230,7 @@ zTool.dataTypeTest(new Symbol()); // symbol
 zTool.dataTypeTest(new Set()); // set
 zTool.dataTypeTest(new Map()); // map
 ```
+
 <div class="z-doc-titles"></div>
 
 ## zTool.deepCopy
@@ -233,6 +243,7 @@ import { zTool } from "zerod";
 const newArray = zTool.deepCopy([{ name: "1", children: [{ name: "1-1" }] }]);
 const newObj = zTool.deepCopy({ name: "1", children: [{ name: "1-1" }] });
 ```
+
 <div class="z-doc-titles"></div>
 
 ## zTool.arrayFilterBy
@@ -343,6 +354,7 @@ import { zTool } from "zerod";
 //例：
 zTool.removeClass(document.querySelector("#id"), "z-font-size-20");
 ```
+
 <div class="z-doc-titles"></div>
 
 ## zTool.getStyle
@@ -379,55 +391,88 @@ zTool.setStyle(document.querySelector("#id"), "height", "500px");
 
 <div class="z-doc-titles"></div>
 
-## zTool.removeItemFromTree
+## zTool.itemsFromTree
 
-用于移除json数组中一项数据(不会造成原json的变异)，返回新的json数组
+在 json 数组中递归查找一项数据
 
 ```js
 import { zTool } from "zerod";
 /**
  *
  * @param {object} obj 以对象方式传参：
- * { 
- *   tree:array (json数组), 
+ * {
+ *   tree:array (json数组),
+ *   sourceItem:object (要查找的数据，匹配keyObj的id属性),
+ *   item:可选参数，会传入action函数的参数
+ *   keyObj:{id:"id",children:"children"},
+ * 	 action:({ tree, currentItem, item, index, keyObj })=>{}，//currentItem是查找到的那项数据
+ * }
+ */
+//例：
+const tree = [{ id: 2, name: "苹果" }, { id: 5, name: "蔬菜", children: [{ id: 9, name: "豆芽" }] }];
+//移除{id:9}的那一条数据
+const finished = zTool.itemsFromTree({
+	tree: tree,
+	sourceItem: { id: 9 },
+	action: ({ tree, currentItem, item, index, keyObj }) => {
+		//currentItem取得{id:9,name:"豆芽"}
+	},
+});
+//finished 查找到就返回true
+```
+
+<div class="z-doc-titles"></div>
+
+## zTool.removeItemFromTree
+
+用于移除 json 数组中一项数据(不会造成原 json 的变异)，返回新的 json 数组
+
+```js
+import { zTool } from "zerod";
+/**
+ *
+ * @param {object} obj 以对象方式传参：
+ * {
+ *   tree:array (json数组),
  *   sourceItem:object (要移除的数据，匹配keyObj的id属性),
  *   keyObj:{id:"id",children:"children"
  * }
  */
 //例：
-const tree=[{id:2,name:"苹果"},{id:5,name:"蔬菜",children:[{id:9,name:"豆芽"}]}]
+const tree = [{ id: 2, name: "苹果" }, { id: 5, name: "蔬菜", children: [{ id: 9, name: "豆芽" }] }];
 //移除{id:9}的那一条数据
-const newTree zTool.removeItemFromTree({
-	tree:tree,
-	sourceItem:{id:9}
+const newTree = zTool.removeItemFromTree({
+	tree: tree,
+	sourceItem: { id: 9 },
 });
 // 返回 [{id:2,name:"苹果"},{id:5,name:"蔬菜",children:[]}]
 ```
+
 <div class="z-doc-titles"></div>
 
 ## zTool.replaceItemFromTree
 
-用于替换json数组中一项数据(不会造成原json的变异)，返回新的json数组
+用于替换 json 数组中一项数据(不会造成原 json 的变异)，返回新的 json 数组
 
 ```js
 import { zTool } from "zerod";
 /**
  *
  * @param {object} obj 以对象方式传参：
- * { 
- *   tree:array (json数组), 
+ * {
+ *   tree:array (json数组),
  *   sourceItem:object (要被替换的数据，匹配keyObj的id属性),
  *   item: object (新数据)
  *   keyObj:{id:"id",children:"children"
  * }
  */
 //例：
-const tree=[{id:2,name:"苹果"},{id:5,name:"蔬菜",children:[{id:9,name:"豆芽"}]}]
+const tree = [{ id: 2, name: "苹果" }, { id: 5, name: "蔬菜", children: [{ id: 9, name: "豆芽" }] }];
 //替换{id:9}的那一条数据
-const newTree= zTool.replaceItemFromTree({
-	tree:tree,
-	sourceItem:{id:9},
-	item:{id:18,name:"莴笋"}
+const newTree = zTool.replaceItemFromTree({
+	tree: tree,
+	sourceItem: { id: 9 },
+	item: { id: 18, name: "莴笋" },
 });
 //返回 [{id:2,name:"苹果"},{id:5,name:"蔬菜",children:[{id:18,name:"莴笋"}]}]
 ```
@@ -436,111 +481,114 @@ const newTree= zTool.replaceItemFromTree({
 
 ## zTool.pushItemToTree
 
-在json数组中一项数据的children末端新增一条子数据(不会造成原json的变异)，返回新的json数组
+在 json 数组中一项数据的 children 末端新增一条子数据(不会造成原 json 的变异)，返回新的 json 数组
 
 ```js
 import { zTool } from "zerod";
 /**
  *
  * @param {object} obj 以对象方式传参：
- * { 
- *   tree:array (json数组), 
+ * {
+ *   tree:array (json数组),
  *   sourceItem:object (要被新增子数据的数据，匹配keyObj的id属性),
  *   item: object (新数据)
  *   keyObj:{id:"id",children:"children"
  * }
  */
 //例：
-const tree=[{id:2,name:"苹果"},{id:5,name:"蔬菜",children:[{id:9,name:"豆芽"}]}]
+const tree = [{ id: 2, name: "苹果" }, { id: 5, name: "蔬菜", children: [{ id: 9, name: "豆芽" }] }];
 //在{id:5}的那一条数据新增
-const newTree= zTool.pushItemToTree({
-	tree:tree,
-	sourceItem:{id:5},
-	item:{id:18,name:"莴笋"}
+const newTree = zTool.pushItemToTree({
+	tree: tree,
+	sourceItem: { id: 5 },
+	item: { id: 18, name: "莴笋" },
 });
 //返回 [{id:2,name:"苹果"},{id:5,name:"蔬菜",children:[{id:9,name:"豆芽"},{id:18,name:"莴笋"}]}]
 ```
+
 <div class="z-doc-titles"></div>
 
 ## zTool.unshiftItemToTree
 
-在json数组中一项数据的children头端新增一条子数据(不会造成原json的变异)，返回新的json数组
+在 json 数组中一项数据的 children 头端新增一条子数据(不会造成原 json 的变异)，返回新的 json 数组
 
 ```js
 import { zTool } from "zerod";
 /**
  *
  * @param {object} obj 以对象方式传参：
- * { 
- *   tree:array (json数组), 
+ * {
+ *   tree:array (json数组),
  *   sourceItem:object (要被新增子数据的数据，匹配keyObj的id属性),
  *   item: object (新数据)
  *   keyObj:{id:"id",children:"children"
  * }
  */
 //例：
-const tree=[{id:2,name:"苹果"},{id:5,name:"蔬菜",children:[{id:9,name:"豆芽"}]}]
+const tree = [{ id: 2, name: "苹果" }, { id: 5, name: "蔬菜", children: [{ id: 9, name: "豆芽" }] }];
 //在{id:5}的那一条数据新增
-const newTree= zTool.unshiftItemToTree({
-	tree:tree,
-	sourceItem:{id:5},
-	item:{id:18,name:"莴笋"}
+const newTree = zTool.unshiftItemToTree({
+	tree: tree,
+	sourceItem: { id: 5 },
+	item: { id: 18, name: "莴笋" },
 });
 //返回 [{id:2,name:"苹果"},{id:5,name:"蔬菜",children:[{id:18,name:"莴笋"},{id:9,name:"豆芽"}]}]
 ```
+
 <div class="z-doc-titles"></div>
 
 ## zTool.insertBeforeItemFromTree
 
-用于将一项item数据插入在json数组中某项sourceItem数据之前
+用于将一项 item 数据插入在 json 数组中某项 sourceItem 数据之前
 
 ```js
 import { zTool } from "zerod";
 /**
  *
  * @param {object} obj 以对象方式传参：
- * { 
- *   tree:array (json数组), 
+ * {
+ *   tree:array (json数组),
  *   sourceItem:object (匹配keyObj的id属性),
  *   item: object (新数据)
  *   keyObj:{id:"id",children:"children"
  * }
  */
 //例：
-const tree=[{id:2,name:"苹果"},{id:5,name:"蔬菜",children:[{id:9,name:"豆芽"}]}]
+const tree = [{ id: 2, name: "苹果" }, { id: 5, name: "蔬菜", children: [{ id: 9, name: "豆芽" }] }];
 //在{id:5}的那一条数据之前插入
-const newTree= zTool.insertBeforeItemFromTree({
-	tree:tree,
-	sourceItem:{id:5},
-	item:{id:18,name:"莴笋"}
+const newTree = zTool.insertBeforeItemFromTree({
+	tree: tree,
+	sourceItem: { id: 5 },
+	item: { id: 18, name: "莴笋" },
 });
 //返回 [{id:2,name:"苹果"},{id:18,name:"莴笋"},{id:5,name:"蔬菜",children:[{id:9,name:"豆芽"}]}]
 ```
+
 <div class="z-doc-titles"></div>
 
 ## zTool.insertAfterItemFromTree
 
-用于将一项item数据插入在json数组中某项sourceItem数据之后
+用于将一项 item 数据插入在 json 数组中某项 sourceItem 数据之后
 
 ```js
 import { zTool } from "zerod";
 /**
  *
  * @param {object} obj 以对象方式传参：
- * { 
- *   tree:array (json数组), 
+ * {
+ *   tree:array (json数组),
  *   sourceItem:object (匹配keyObj的id属性),
  *   item: object (新数据)
  *   keyObj:{id:"id",children:"children"
  * }
  */
 //例：
-const tree=[{id:2,name:"苹果"},{id:5,name:"蔬菜",children:[{id:9,name:"豆芽"}]}]
+const tree = [{ id: 2, name: "苹果" }, { id: 5, name: "蔬菜", children: [{ id: 9, name: "豆芽" }] }];
 //在{id:5}的那一条数据之后插入
-const newTree= zTool.insertBeforeItemFromTree({
-	tree:tree,
-	sourceItem:{id:5},
-	item:{id:18,name:"莴笋"}
+const newTree = zTool.insertBeforeItemFromTree({
+	tree: tree,
+	sourceItem: { id: 5 },
+	item: { id: 18, name: "莴笋" },
 });
 //返回 [{id:2,name:"苹果"},{id:5,name:"蔬菜",children:[{id:9,name:"豆芽"}]},{id:18,name:"莴笋"}]
 ```

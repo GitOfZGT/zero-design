@@ -24,9 +24,14 @@ class Header extends React.PureComponent {
 class Myjavascript extends React.PureComponent {
 	methods = {
 		open: () => {
-			this.ZfullLayerMethods.showLayer(true, () => {
-				console.log("open");
-			});
+			const amplify = this.ZfullLayerMethods.showLayer(
+				true,
+				() => {
+					console.log("open");
+				},
+				true,
+			);
+			amplify();
 		},
 	};
 	exportMethods = (m) => {
@@ -56,60 +61,15 @@ class Myjavascript extends React.PureComponent {
 
 ## ZfullLayer 的 props
 
-<table>
-	<thead>
-		<tr>
-			<th>参数</th>
-			<th>说明</th>
-			<th>类型</th>
-			<th>默认值</th>
-		</tr>
-	</thead>
-	<tbody>
-    	<tr>
-			<td>header</td>
-			<td>头部区域内容，高度有64px</td>
-			<td>ReactNode</td>
-			<td>--</td>
-		</tr>
-		<tr>
-			<td>children</td>
-			<td>主体区域内容</td>
-			<td>ReactNode</td>
-			<td>--</td>
-		</tr>
-		<tr>
-			<td>exportMethods</td>
-			<td>提供内部方法的钩子,methods是一个对象，具体看下面</td>
-			<td>function(methods){}</td>
-			<td>--</td>
-		</tr>
-	</tbody>
-</table>
+| 参数          | 说明                                                            | 类型                | 默认值 |
+| ------------- | --------------------------------------------------------------- | ------------------- | ------ |
+| header        | 头部区域内容，高度有 64px                                       | ReactNode           | --     |
+| children      | 主体区域内容                                                    | ReactNode           | --     |
+| exportMethods | 在 componentDidMount 导出组件内部可调用的方法，methods 请往下看 | function(methods){} | --     |
 
 ## methods
 
-<table>
-	<thead>
-		<tr>
-			<th>参数</th>
-			<th>说明</th>
-			<th>使用</th>
-			<th>返回值类型</th>
-		</tr>
-	</thead>
-	<tbody>
-    	<tr>
-			<td>showLayer</td>
-			<td>显示/隐藏ZfullLayer的方法</td>
-			<td>methods.showLayer(show,callback)</td>
-			<td>--</td>
-		</tr>
-    	<tr>
-			<td>showLoading</td>
-			<td>显示/隐藏ZfullLayer内部的loading</td>
-			<td>methods.showLoading(show)</td>
-			<td>--</td>
-		</tr>
-	</tbody>
-</table>
+| 参数        | 说明                                                                                                      | 使用                                     | 返回值类型 |
+| ----------- | --------------------------------------------------------------------------------------------------------- | ---------------------------------------- | ---------- |
+| showLayer   | 显示/隐藏 ZfullLayer 的方法,当 isScale 为 true 时返回一个函数，调用这个函数主体内容会有一个放大的过渡动画 | methods.showLayer(show,callback,isScale) | --         |
+| showLoading | 显示/隐藏 ZfullLayer 内部的 loading                                                                       | methods.showLoading(show)                | --         |

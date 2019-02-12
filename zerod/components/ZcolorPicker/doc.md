@@ -18,8 +18,12 @@ class Myjavascript extends ZpureComponent {
 	colorChange = (value) => {
 		console.log(value);
 	};
+	picker={
+		style:{width:"40px"}
+		valueType:"hex"
+	}
 	render() {
-		return <ZcolorPicker value={this.state.state} onChange={this.colorChange} valueType="hex" />;
+		return <ZcolorPicker {...this.picker} value={this.state.state} onChange={this.colorChange} />;
 	}
 }
 ```

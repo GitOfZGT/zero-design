@@ -1,0 +1,67 @@
+:global {
+	.z-form-label-horizontal {
+		.ant-form-item {
+			display: flex;
+		}
+		.ant-form-item-control-wrapper {
+			flex: 1;
+		}
+	}
+	.z-form-label-inline {
+		.z-form-item {
+			.ant-form-item-label {
+				padding: 0 6px;
+				position: absolute;
+				line-height: 1.4;
+				top: 10px;
+				left: 11px;
+				pointer-events: none;
+				z-index: 9;
+				text-align: left;
+				transition: left 150ms cubic-bezier(0.4, 0, 0.2, 1), transform 150ms cubic-bezier(0.4, 0, 0.2, 1),
+					opacity 150ms cubic-bezier(0.4, 0, 0.2, 1);
+				background-color: transparent;
+				label {
+					color: #80868b;
+				}
+			}
+			.ant-form-item-label label:after {
+				display: none;
+			}
+			textarea.ant-input {
+				padding: 8px 11px;
+			}
+			&.focus .ant-form-item-label,
+			&.has-value .ant-form-item-label {
+				transform: scale(0.85) translateY(-24px);
+				z-index: 1;
+				background-color: white;
+				left: 0px;
+			}
+			&.focus .ant-form-item-label label {
+				color: #2f6baa;
+			}
+			&.has-value .ant-input {
+				color: #202124;
+				font-weight: 400;
+			}
+			.ant-form-explain {
+				position: absolute;
+				padding: 0 6px;
+				background-color: white;
+				bottom: -6px;
+				right: 11px;
+			}
+		}
+		.ant-form-item,
+		.ant-form-item-with-help {
+			margin-bottom: 16px !important;
+		}
+		.ant-input:focus,
+		.ant-input-number-focused,
+		.ant-select-focused {
+			box-shadow: none;
+			// border-width: 1px !important;
+		}
+	}
+}

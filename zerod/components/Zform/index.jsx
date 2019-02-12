@@ -1,16 +1,18 @@
-import React from "react";import ZpureComponent from "../ZpureComponent";
+import React from "react";
 import { Form, Modal, Input, Button, Row, Col } from "antd";
 import PropTypes from "prop-types";
 import cssClass from "./style.scss";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
-import { animateTimout, const_initItems, const_execAsync, const_itemSpan } from "../constant";
-import ZpageLoading from "../ZpageLoading";
+import { animateTimout, const_initItems, const_execAsync, const_changeFormItems } from "../constant";
+// import ZpageLoading from "../ZpageLoading";
+// import { dataType, arrayFilterBy } from "../zTool";
+import ColFormItem from "./ColFormItem";
 import { dataType } from "../zTool";
 export const Zform = Form.create()(
-	class extends ZpureComponent {
+	class extends React.PureComponent {
 		static propTypes = {
 			className: PropTypes.string,
-			labelLayout: PropTypes.string, //'horizontal'|'vertical'
+			labelLayout: PropTypes.string, //'horizontal'|'vertical' | 	inline
 			items: PropTypes.arrayOf(PropTypes.object),
 			getFormInstance: PropTypes.func,
 			getInbuiltTool: PropTypes.func,
@@ -38,6 +40,13 @@ export const Zform = Form.create()(
 				e.preventDefault();
 				this.props.form.validateFields((err, values) => {
 					if (err) return;
+					if (dataType.isObject(values)) {
+						Object.keys(values).forEach((key) => {
+							if (dataType.isString(values[key])) {
+								values[key] = values[key].trim();
+							}
+						});
+					}
 					if (this.props.submitMsg) {
 						Modal.confirm({
 							title: "确定好提交了吗?",
@@ -51,8 +60,8 @@ export const Zform = Form.create()(
 					}
 				});
 			},
-			changeFormItems: (newItems) => {
-				this.execAsync(newItems);
+			changeFormItems: (newItems, part = false) => {
+				const_changeFormItems.call(this, newItems, part);
 			},
 		};
 		setFieldValue() {
@@ -69,7 +78,6 @@ export const Zform = Form.create()(
 			const_initItems.call(
 				this,
 				Array.isArray(newItems) ? newItems : this.props.items,
-				<Input placeholder="加载中" disabled />,
 				this.props.form,
 				this.methods.changeFormItems,
 				() => {
@@ -96,37 +104,26 @@ export const Zform = Form.create()(
 				this.execAsync();
 			}
 		}
-		componentWillUnmount(){
-			this.unmounted=true;
+		componentWillUnmount() {
+			this.unmounted = true;
 		}
 		getFormItems() {
-			const { getFieldDecorator } = this.props.form;
+			// const { getFieldDecorator } = this.props.form;
 			const formItems = this.state.items.map((item, i) => {
-				const control =
-					typeof item.control === "function"
-						? item.control(this.props.form, this.methods.changeFormItems)
-						: item.control;
-				const span = const_itemSpan(control, item.span, item.defaultSpan);
-				const isFormItem = typeof item.isFormItem === "boolean" ? item.isFormItem : true;
-
 				return (
-					<CSSTransition key={i} timeout={animateTimout.flipInTime} classNames="fadeIn-to-down">
-						<Col {...span} className={item.className}>
-							{isFormItem ? (
-								<Form.Item label={item.label} className={item.itemClassName}>
-									<ZpageLoading showLoading={item.loading} size="small" />
-									{getFieldDecorator(
-										item.key,
-										dataType.isFunction(item.options) ? item.options() : item.options,
-									)(control)}
-								</Form.Item>
-							) : (
-								<div>
-									<ZpageLoading showLoading={item.loading} size="small" />
-									{control}
-								</div>
-							)}
-						</Col>
+					<CSSTransition
+						key={item.key + "_" + i}
+						timeout={animateTimout.flipInTime}
+						classNames="fadeIn-to-down"
+					>
+						<ColFormItem
+							loading={item.loading}
+							form={this.props.form}
+							changeFormItems={this.methods.changeFormItems}
+							item={item}
+							ref={item.ref}
+							labelLayout={this.props.labelLayout}
+						/>
 					</CSSTransition>
 				);
 			});
@@ -140,12 +137,7 @@ export const Zform = Form.create()(
 					className={`${cssClass["z-form"]} ${className ? className : ""}`}
 					style={style}
 				>
-					<Row
-						type="flex"
-						className={`${cssClass["z-form-row"]} ${
-							labelLayout == "horizontal" ? "z-form-label-horizontal" : ""
-						}`}
-					>
+					<Row type="flex" className={`${cssClass["z-form-row"]} ${"z-form-label-" + labelLayout}`}>
 						<TransitionGroup component={null} enter={true} exit={true} appear={true}>
 							{this.getFormItems()}
 						</TransitionGroup>

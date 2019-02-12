@@ -5,9 +5,11 @@ import "swiper/dist/css/swiper.css";
 import "../../zero-icon/iconfont.css";
 import Swiper from "swiper/dist/js/swiper";
 import moment from "moment";
-import { Checkbox, Tooltip, DatePicker, Spin, Empty } from "antd";
+import { Checkbox, Tooltip, DatePicker, Spin, Empty, Tag } from "antd";
 import ZschedulingTable from "../ZschedulingTable";
 import { dataType, deepCopy, addClass, removeClass } from "../zTool";
+import CellCheckList from "./CellCheckList";
+
 const weekDayNums = {
 	0: "周日",
 	1: "周一",
@@ -651,10 +653,10 @@ export class Zscheduling extends React.PureComponent {
 	getElement = (name) => {
 		return (el) => (this[name] = el);
 	};
-	//将methods对象通过exportMethods导出去
-	exported = this.props.exportMethods && this.props.exportMethods(this.methods);
-	componentDidMount() {
 
+	componentDidMount() {
+		//将methods对象通过exportMethods导出去
+		this.props.exportMethods && this.props.exportMethods(this.methods);
 		this.methods.updateSize();
 		removeClass(this.checkboxEl, "z-scheduling-hidden");
 		removeClass(this.contentEl, "z-scheduling-hidden");
@@ -682,7 +684,6 @@ export class Zscheduling extends React.PureComponent {
 			// touchRatio:4,
 			// effect:"cube",
 		});
-	
 	}
 	componentDidUpdate(prevProps, prevState) {
 		if (this.props.dataSource !== prevProps.dataSource) {
@@ -783,13 +784,28 @@ export class Zscheduling extends React.PureComponent {
 						</div>
 					</div>
 				</div>
-				<ActionMsg
-					ref={this.actionMsgRef}
-					style={this.state.dataList.length ? { display: "none" } : {}}
-				/>
+				<ActionMsg ref={this.actionMsgRef} style={this.state.dataList.length ? { display: "none" } : {}} />
 			</section>
 		);
 	}
 }
-
+export class CellTag extends React.PureComponent {
+	static propTypes = {
+		title: PropTypes.string,
+		color: PropTypes.string,
+		name: PropTypes.string,
+	};
+	render() {
+		const { title, name, color } = this.props;
+		return name ? (
+			<Tooltip mouseLeaveDelay={0} title={title}>
+				<div className="z-cell-tag">
+					<Tag color={color}>{name}</Tag>
+				</div>
+			</Tooltip>
+		) : null;
+	}
+}
+Zscheduling.CellTag = CellTag;
+Zscheduling.CellCheckList = CellCheckList;
 export default Zscheduling;

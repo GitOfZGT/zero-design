@@ -4,46 +4,91 @@ import ZpureComponent from "../ZpureComponent";
 import PropTypes from "prop-types";
 import cssClass from "./style.scss";
 import ZpageLoading from "../ZpageLoading";
-
+import { once } from "../zTool";
 export class ZfullLayer extends ZpureComponent {
 	static propTypes = {
 		header: PropTypes.node,
 		children: PropTypes.node,
 		exportMethods: PropTypes.func,
 	};
+	isScale = false;
 	methods = {
-		showLayer: (show, callback) => {
-			this.setState(
-				{
-					show,
-				},
-				callback,
-			);
+		showLayer: (show, callback, scale) => {
+			if (show) {
+				this.setState(
+					scale
+						? {
+								show,
+								scale,
+						  }
+						: {
+								show,
+						  },
+					callback,
+				);
+				this.isScale = scale;
+			} else {
+				if (this.isScale) {
+					this.setState({
+						scale: true,
+					});
+					once(this.bodyElRef.current, "transitionend", () => {
+						this.setState(
+							{
+								show,
+							},
+							callback,
+						);
+					});
+				} else {
+					this.setState(
+						{
+							show,
+						},
+						callback,
+					);
+				}
+			}
+			if (scale && show) {
+				return this.methods.amplify;
+			}
+		},
+		amplify: () => {
+			setTimeout(() => {
+				this.setState({
+					scale: false,
+				});
+			}, 10);
 		},
 		closeLayer: () => {
 			this.methods.showLayer(false);
 		},
 		showLoading: (show) => {
-			this.setState({
-				loading: show,
-			});
+			this.ZpageLoadingRef.current.methods.showLoading(show);
 		},
 	};
-	returned = this.props.exportMethods && this.props.exportMethods(this.methods);
+	componentDidMount() {
+		this.props.exportMethods && this.props.exportMethods(this.methods);
+	}
 	state = {
 		show: false,
-		loading: false,
+		scale: false,
 	};
+	ZpageLoadingRef = React.createRef();
+	bodyElRef = React.createRef();
 	render() {
 		const { header, children } = this.props;
+		const { scale, show } = this.state;
 		return ReactDOM.createPortal(
-			<div className="z-full-layer" style={{ display: this.state.show ? "block" : "none" }}>
+			<div className="z-full-layer" style={{ display: show ? "block" : "none" }}>
 				<div className="z-full-layer-heading">{header}</div>
-				<div className="z-full-layer-body">{children}</div>
+				<div className={`z-full-layer-body ${scale ? "scale" : ""}`} ref={this.bodyElRef}>
+					{children}
+				</div>
 				<div className="close" onClick={this.methods.closeLayer}>
 					<span className="text">×</span>
 				</div>
-				<ZpageLoading showLoading={this.state.loading} size="default" />
+				<ZpageLoading ref={this.ZpageLoadingRef} size="default" />
 			</div>,
 			document.body,
 		);

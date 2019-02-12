@@ -14,13 +14,13 @@
 
 6、react : 组件内跟`setState`无关的属性，请不要写进 `state`中。
 
-7、react : v16.7.0之前的react组件写法：(建议继承`ZpureComponent`)
+7、react : v16.7.0之前的react组件写法：(建议继承`React.PureComponent`)
 
 ```jsx
-import React from "react";import ZpureComponent from "zerod/components/ZpureComponent";
+import React from "react";
 import PropTypes from "prop-types";
 
-class MyComponent extends ZpureComponent {
+class MyComponent extends React.PureComponent {
 	// 定义props的类型(如果有props规定必须要写)
 	static propTypes = {
 		className: PropTypes.string,

@@ -17,14 +17,14 @@
 		<Zlayout.Template>
 			<ZpageLoading showLoading={this.state.isShowLoading} />
 			<ZrightModal
-				show={this.state.isShowRightModal}//打开modal的状态
+				show={this.state.isShowRightModal} //打开modal的状态
 				scroll //启用滚动条
-				getScrollInstance={(instance) => (this.rightBodyScrollInstance = instance)}//获取滚动条实例
+				getScrollInstance={(instance) => (this.rightBodyScrollInstance = instance)} //获取滚动条实例
 				showLoading={this.state.isShowModalLoading} //显示loading的状态
 				onClose={() => {
-					this.methods.showRightModal(false);//关闭modal
+					this.methods.showRightModal(false); //关闭modal
 				}}
-				onTransitionend={this.methods.afterModalTransitionend}//modal过渡动画执行完之后
+				onTransitionend={this.methods.afterModalTransitionend} //modal过渡动画执行完之后
 			>
 				{this.state.rightModalContent}
 			</ZrightModal>
@@ -81,7 +81,7 @@
 		</tr>
 		<tr>
 			<td>showLoading</td>
-			<td>是否显示loading</td>
+			<td>是否显示loading , 可以不使用这个属性，通过 ref 取得 ZpageLoading 的实例调用 methods.showLoading(show) ,也可以用 exportMethods 导出的参数调用</td>
 			<td>boolean</td>
 			<td>--</td>
 		</tr>
@@ -103,5 +103,17 @@
 			<td>function</td>
 			<td>--</td>
 		</tr>
+        <tr>
+			<td>exportMethods</td>
+			<td>在 componentDidMount 导出组件内部可调用的方法，methods 请往下看  </td>
+			<td>function(methods){}</td>
+			<td>--</td>
+		</tr>
 	</tbody>
 </table>
+
+## ZrightModal 的 methods
+
+| 参数        | 说明                                           | 使用                      | 返回值类型 |
+| ----------- | ---------------------------------------------- | ------------------------- | ---------- |
+| showLoading | ZpageLoading 在没有 showLoading 属性情况下使用 | methods.showLoading(show) | --         |

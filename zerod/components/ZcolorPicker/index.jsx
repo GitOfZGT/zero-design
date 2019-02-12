@@ -130,16 +130,18 @@ export class ZcolorPicker extends ZpureComponent {
 		},
 	};
 	render() {
-		const { className } = this.props;
+		const { className ,style} = this.props;
 		return (
 			<span
 				className={`${cssClass["z-color-box"]} ${className ? className : ""}`}
 				ref={(el) => (this.boxEl = el)}
+				style={style}
+				onClick={this.methods.openPicker}
 			>
 				<span className={cssClass["z-bg"]} />
 				<span
 					className={cssClass["z-color"]}
-					onClick={this.methods.openPicker}
+					
 					style={
 						this.state.color
 							? {

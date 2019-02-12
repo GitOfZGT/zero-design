@@ -1,4 +1,5 @@
-import React from "react";import ZpureComponent from "../ZpureComponent";
+import React from "react";
+import ZpureComponent from "../ZpureComponent";
 import PropTypes from "prop-types";
 import { Icon } from "antd";
 
@@ -19,6 +20,7 @@ export class ZrightModal extends ZpureComponent {
 		zIndex: PropTypes.number,
 		width: PropTypes.string,
 		name: PropTypes.string,
+		exportMethods: PropTypes.func,
 	};
 	static defaultProps = {
 		scroll: true,
@@ -40,14 +42,25 @@ export class ZrightModal extends ZpureComponent {
 				showCover: false,
 			});
 		}
+		document.documentElement.style.overflow = "";
 		this.props.onTransitionend && this.props.onTransitionend(this.props.show);
 	};
+	componentDidMount() {
+		this.props.exportMethods && this.props.exportMethods(this.methods);
+	}
 	componentDidUpdate(prevProps) {
 		if (this.props.show !== prevProps.show) {
 			if (this.props.show) this.setState({ showCover: true });
+			document.documentElement.style.overflow = "hidden";
 			once(this.boxEl, "transitionend", this.showAfter);
 		}
 	}
+	methods = {
+		showLoading: (show) => {
+			this.loadingRef.current.methods.showLoading(show);
+		},
+	};
+	loadingRef = React.createRef();
 	render() {
 		return (
 			<Zlayout.Template>
@@ -77,7 +90,7 @@ export class ZrightModal extends ZpureComponent {
 					<div className={`${cssClass["z-pop-close"]} z-flex-items-v-center`}>
 						<Icon type="right" className={`${cssClass["z-btn"]}`} onClick={this.closeModal} />
 					</div>
-					<ZpageLoading showLoading={this.props.showLoading} />
+					<ZpageLoading ref={this.loadingRef} showLoading={this.props.showLoading} />
 				</div>
 			</Zlayout.Template>
 		);

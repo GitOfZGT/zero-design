@@ -1,4 +1,5 @@
-import React from "react";import ZpureComponent from "../ZpureComponent";
+import React from "react";
+import ZpureComponent from "../ZpureComponent";
 import ReactDOM from "react-dom";
 import PropTypes from "prop-types";
 import cssClass from "./style.scss";
@@ -161,7 +162,7 @@ export const ZroundingButton = ZerodMainContext.setConsumer(
 			if (this.props.getInsertLocation) {
 				const insert = this.props.getInsertLocation(this.wrapEl);
 				const instance = this.props.getScrollInstance(insert);
-				instance.scroll[ev]("scrollStart", this.closeBtns);
+				instance && instance.scroll[ev]("scrollStart", this.closeBtns);
 			}
 		};
 		componentDidMount() {
@@ -180,7 +181,11 @@ export const ZroundingButton = ZerodMainContext.setConsumer(
 				};
 			});
 			return (
-				<span ref={(el) => (this.wrapEl = el)} className={`z-round-main ${className ? className : ""}`} style={style}>
+				<span
+					ref={(el) => (this.wrapEl = el)}
+					className={`z-round-main ${className ? className : ""}`}
+					style={style}
+				>
 					{this.props.children}
 					{this.state.createPortal
 						? ReactDOM.createPortal(

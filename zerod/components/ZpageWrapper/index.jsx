@@ -2,7 +2,7 @@ import React from "react";import ZpureComponent from "../ZpureComponent";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router-dom";
 // my component
-import { Zlayout } from "../Zlayout";
+// import { Zlayout } from "../Zlayout";
 import { ZpageHeader } from "../ZpageHeader";
 import { ZpageFooter } from "../ZpageFooter";
 
@@ -114,7 +114,7 @@ class Page extends ZpureComponent {
 			: footerCopyright;
 
 		return (
-			<Zlayout.Template>
+			<>
 				{this.props.pageHeader.show ? <ZpageHeader {...this.newPageHeader} /> : null}
 				<div
 					className={`${this.props.hasBodyPadding ? cssClass["z-wraper-body"] : ""} ${
@@ -132,7 +132,7 @@ class Page extends ZpureComponent {
 						{...footerOther}
 					/>
 				) : null}
-			</Zlayout.Template>
+			</>
 		);
 	}
 }

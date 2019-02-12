@@ -26,16 +26,16 @@
 				&.selected {
 					background-color: #0380f3;
 					color: white;
-					&>*{
+					& > * {
 						opacity: 0.7;
 					}
 				}
-				&.disabled{
-					background-color: #FAFAFA;
-					color: #D1D3D6;
+				&.disabled {
+					background-color: #fafafa;
+					color: #d1d3d6;
 				}
-				&.ant-popover-open{
-					background-color: #FFF5CE;
+				&.ant-popover-open {
+					background-color: #fff5ce;
 				}
 			}
 		}
@@ -226,16 +226,32 @@
 	}
 	@include z("scheduling-dot-p") {
 		padding: 0;
-		margin:0;
+		margin: 0;
 		font-size: 12px;
-		
+
 		cursor: default;
 		& + .z-scheduling-dot-p {
 			margin-top: 4px;
 		}
 	}
-	@include z("scheduling-icon"){
-		color:#F7F7FA;
+	@include z("scheduling-icon") {
+		color: #f7f7fa;
 		font-size: 18px;
+	}
+
+	//用于包裹Tag组件，让多个Tag换行后保持上下间距
+	.z-cell-tag {
+		display: inline-block;
+		padding: 2px 0px;
+	}
+	$--w: 16px;
+	//圆角矩形颜色小框
+	.z-schedul-color-span {
+		display: inline-block;
+		width: $--w;
+		height: $--w;
+		border-radius: 3px;
+		vertical-align: -0.25em;
+		margin-right: 4px;
 	}
 }

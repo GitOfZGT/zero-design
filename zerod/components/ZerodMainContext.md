@@ -4,30 +4,40 @@
 
 <div class="z-doc-titles"></div>
 
-## 打开右边窗口: showRightModal()
+## 打开右抽屉窗口: showRightModal()
 
-showRightModal 方法有四个参数，`show`:是否显示，`modal`: "mainModal" | "appModal" | "mainModal_top" | "appModal_top"，`content`：窗口的内容，`scroll`：窗口内是否启用滚动条,`onTransitionend`:打开关闭的过渡动画执行完后的回调
-
-`modal`属性层级："appModal_top" > "appModal" > "mainModal_top" > "mainModal"
-
-2018-10-01 `modal`属性新增 "mainModal_top"和"appModal_top"值
-
-2018-08-22 新增`onTransitionend`属性，以后可能还会有其他参数，为了向下兼容，还可以这样
+showRightModal 参数有：`show`:是否显示，`modal`: 任意字符串（窗口的唯一标识，可以理解为ID） <del>"mainModal" | "appModal" | "mainModal_top" | "appModal_top"</del>，`content`：窗口的内容，`scroll`：窗口内是否启用滚动条,`onTransitionend`:打开关闭的过渡动画执行完后的回调，`wrapperEl`:窗口的父元素(dom 元素，可选， document.body 或其他)
 
 ```jsx
+//第一种传参
+this.props.showRightModal(true, "mainModal", <div>内容</div>, true, (show) => {});
+//第二种传参
 this.props.showRightModal({
 	show: true,
-	modal: "mainModal",
-	content: null,
+	modal: "mainModal",//modal也可以不写，内部会随机一个
+	content: <div>内容</div>,
 	scroll: true,
 	onTransitionend: (show) => {},
+	// wrapperEl:document.body
 });
+//关闭窗口
+this.props.showRightModal (false,'mainModal');//关闭对应的
+this.props.showRightModal (false);//关闭的是最顶层的那个
 ```
 
-<div class="z-demo-box" data-render="open-modal" data-title="关闭窗口只需两个参数 this.props.showRightModal (false,'mainModal')"></div>
+<del>`modal`属性层级："appModal_top" > "appModal" > "mainModal_top" > "mainModal"</del>
+
+<del>2018-10-01 `modal`属性新增 "mainModal_top"和"appModal_top"值</del>
+
+2018-08-22 新增`onTransitionend`属性，支持如下的传参方式
+
+2019-01-11 `modal`属性不再是固定的，是任意的字符串，窗口数量可以无限叠加；新增`wrapperEl`属性：窗口的父元素(dom 元素，可以选择 document.body 或其他)
+
+<div class="z-demo-box" data-render="open-modal" data-title=""></div>
 
 ```jsx
-import React from "react";import ZpureComponent from "zerod/components/ZpureComponent";
+import React from "react";
+import ZpureComponent from "zerod/components/ZpureComponent";
 import { Button } from "antd";
 import { ZerodMainContext } from "zerod";
 class OpenModal extends ZpureComponent {
@@ -106,7 +116,7 @@ return <OutPut />;
 
 ## 显示右边窗口 loading: showModalLoading()
 
-showModalLoading 方法有两个参数，`show`:是否显示，`modal`: "mainModal" | "appModal" | "mainModal_top" | "appModal_top"
+showModalLoading 方法有两个参数，`show`:是否显示，`modal`: "mainModal" | 与 showRightModal()的 modal 属性对应
 
 <div class="z-demo-box" data-render="modal-loading" data-title="this.props.showModalLoading(true, modal);"></div>
 
@@ -176,21 +186,21 @@ getSideMenuData()返回的是一个数组
 
 ## 获取滚动条的实例：getScrollInstance(witch)
 
-getScrollInstance 方法有一个参数，`witch`:哪个地方的滚动条: "mainRoute" | "mainModal" | "mainModal_top" | "appModal" | "appModal_top"
+getScrollInstance 方法有一个参数，`witch`:哪个地方的滚动条: "mainRoute" | 与 showRightModal()的 modal 属性对应
 
 <div class="z-doc-titles"></div>
 
-## 获取某个dom元素所在的位置：getInsertLocation(el)
+## 获取某个 dom 元素所在的位置：getInsertLocation(el)
 
-`const insertLocaltion = this.props.getInsertLocation(el); ` 返回值`insertLocaltion`是 "mainRoute" | "mainModal" | "mainModal_top" | "appModal" | "appModal_top" 中的其中一个
+`const insertLocaltion = this.props.getInsertLocation(el);` 返回值`insertLocaltion`是 "mainRoute" | 与 showRightModal()的 modal 属性对应
 
-使用例子可参考如下的 getScrollAreaWrapperEl 中 demo 的代码 
+使用例子可参考如下的 getScrollAreaWrapperEl 中 demo 的代码
 
 <div class="z-doc-titles"></div>
 
 ## 获取滚动条区域的包裹元素：getScrollAreaWrapperEl(witch)
 
-getScrollAreaWrapperEl 方法有一个参数，`witch`:哪个地方的滚动条: "mainRoute" | "mainModal" | "mainModal_top" | "appModal" | "appModal_top"
+getScrollAreaWrapperEl 方法有一个参数，`witch`:哪个地方的滚动条: "mainRoute" | 与 showRightModal()的 modal 属性对应
 
 当需要某块内容绝对定位于主要内容之上，但不想受滚动条滚动时，可用这方法获取对应得`wrapperEl`，然后使用`ReactDOM.createPortal(内容, wrapperEl)`将内容插入到`wrapperEl`内
 
@@ -230,7 +240,8 @@ getScrollAreaWrapperEl 方法有一个参数，`witch`:哪个地方的滚动条:
 <div class="z-demo-box" data-render="myWrapperDemo" data-title="例如：使用ZeditSimpleFormHOC时，在pageCofig的panelAfterRender放入了如下代码的组件"></div>
 
 ```jsx
-import React from "react";import ZpureComponent from "zerod/components/ZpureComponent";
+import React from "react";
+import ZpureComponent from "zerod/components/ZpureComponent";
 import ReactDom from "react-dom";
 import { ZerodMainContext } from "zerod";
 class MoreCofig extends ZpureComponent {
@@ -238,13 +249,13 @@ class MoreCofig extends ZpureComponent {
 		// 首先得获取this.boxEl元素所在得位置
 		const insetLocaltion = this.props.getInsertLocation(this.boxEl);
 		// 获取insetLocaltion所在滚动区域得包裹元素
-        this.obj = this.props.getScrollAreaWrapperEl(insetLocaltion);
+		this.obj = this.props.getScrollAreaWrapperEl(insetLocaltion);
 		// 由于将 100px 高度的内容插入到滚动区域外边，
 		// 需要将 滚动区域 的高度设置为`calc(100% - 100px)`
 		this.obj.methods.setScrollAreaStyle({
 			height: `calc(100% - 100px)`,
 		});
-        this.setState({});
+		this.setState({});
 	}
 	componentWillUnmount() {
 		// 组件销毁前 恢复 滚动区域的原始样式
@@ -277,12 +288,11 @@ class MoreCofig extends ZpureComponent {
 	}
 }
 export default ZerodMainContext.setConsumer(MoreCofig);
-
 ```
 
 ## 下次滚动条更新的时候，让滚动条回到顶部: setScrollToTop(witch)
 
-setScrollToTop 方法有一个参数，`witch`:哪个地方滚动条更新: "mainRoute" | "mainModal" | "mainModal_top" | "appModal" | "appModal_top"
+setScrollToTop 方法有一个参数，`witch`:哪个地方滚动条更新: "mainRoute" | 与 showRightModal()的 modal 属性对应
 
 <div class="z-doc-titles"></div>
 
@@ -294,6 +304,6 @@ ZmainHOC 的 componentDidMount 钩子中的 callback 回调注入的 userInfo �
 
 setTemporaryStorage(data)用于跨路由页面临时存储一些数据，data 参数是一个对象：{"key":"存储的数据"}；getTemporaryStorage()获取当前存储器的数据
 
-## $router
+## \$router
 
-$router:是一个对象，提供 history 和 location 属性
+\$router:是一个对象，提供 history 和 location 属性

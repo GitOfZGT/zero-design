@@ -6,16 +6,6 @@
 	@include is("height-0"){
 		height: 0;
 	}
-	:global{
-		.z-form-label-horizontal {
-			.ant-form-item{
-				display: flex;
-			}
-			.ant-form-item-control-wrapper{
-				flex:1;
-			}
-		}
-	}
 }
 
 $--row-gutter: 6px;

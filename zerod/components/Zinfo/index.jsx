@@ -1,12 +1,12 @@
-import React from "react";import ZpureComponent from "../ZpureComponent";
+import React from "react";
 import { Row, Col } from "antd";
 import PropTypes from "prop-types";
 import cssClass from "./style.scss";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
 import { animateTimout, const_initItems, const_execAsync, const_itemSpan } from "../constant";
-import ZpageLoading from "../ZpageLoading";
-
-class Zinfo extends ZpureComponent {
+// import ZpageLoading from "../ZpageLoading";
+import ColInfoItem from "./ColInfoItem";
+class Zinfo extends React.PureComponent {
 	static propTypes = {
 		items: PropTypes.arrayOf(PropTypes.object),
 		defaultSpan: PropTypes.oneOfType([PropTypes.number, PropTypes.object]),
@@ -36,9 +36,6 @@ class Zinfo extends ZpureComponent {
 		const_initItems.call(
 			this,
 			this.props.items,
-			(value, record) => {
-				<span>加载中...</span>;
-			},
 			this.props.fieldValue,
 			undefined,
 			const_execAsync.bind(this),
@@ -61,30 +58,15 @@ class Zinfo extends ZpureComponent {
 			this.execAsync();
 		}
 	}
-	componentWillUnmount(){
-		this.unmounted=true;
+	componentWillUnmount() {
+		this.unmounted = true;
 	}
 	getItems() {
 		const data = this.state.detailData;
 		return this.state.items.map((item, i) => {
-			const control = typeof item.control == "function" ? item.control(data[item.key], data) : data[item.key];
-			const span = const_itemSpan(control, item.span, item.defaultSpan);
 			return (
-				<CSSTransition key={i} timeout={animateTimout.flipInTime} classNames="flipX">
-					<Col {...span}>
-						<div className="z-info z-margin-bottom-20 is-border-right">
-							<div
-								className="z-info-left z-padding-bottom-10"
-								style={{ width: item.width ? item.width : "160px" }}
-							>
-								{item.label}
-							</div>
-							<div className="z-info-right z-padding-bottom-10">
-								<ZpageLoading showLoading={item.loading} size="small" />
-								{control}
-							</div>
-						</div>
-					</Col>
+				<CSSTransition key={item.key + "_" + i} timeout={animateTimout.flipInTime} classNames="flipX">
+					<ColInfoItem key={i} loading={item.loading} item={item} ref={item.ref} data={data} />
 				</CSSTransition>
 			);
 		});

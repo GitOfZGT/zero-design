@@ -1,6 +1,9 @@
-import React from "react";import ZpureComponent from "../ZpureComponent";
+import React from "react";
+import ReactDOM from "react-dom";
+import PropTypes from "prop-types";
+import ZpureComponent from "../ZpureComponent";
 import { Route, Switch, withRouter, Redirect } from "react-router-dom";
-import { Icon, message } from "antd";
+import { Icon } from "antd";
 // my component
 import { Zlayout } from "../Zlayout";
 import { ZsideMenu } from "../ZsideMenu";
@@ -9,7 +12,15 @@ import { ZrightModal } from "../ZrightModal";
 import { const_getInsertLocation } from "../constant";
 import ZerodMainContext from "../ZerodMainContext";
 
-import { mergeConfig, formatterMapKey, deepCopy, dataTypeTest, dataType, itemsFromTree } from "../zTool/";
+import {
+	mergeConfig,
+	formatterMapKey,
+	deepCopy,
+	dataTypeTest,
+	dataType,
+	itemsFromTree,
+	GenNonDuplicateID,
+} from "../zTool/";
 // 样式类
 import cssClass from "./style.scss";
 
@@ -26,9 +37,20 @@ function getConstNames(witch) {
 	};
 }
 
-class CollapseBtn extends ZpureComponent {
+class CollapseBtn extends React.PureComponent {
+	state = {
+		collapsed: false,
+	};
+	methods = {
+		changeCollapsed: () => {
+			this.setState({
+				collapsed: !this.state.collapsed,
+			});
+		},
+	};
 	render() {
-		const { collapseBtnRender, collapsed } = this.props;
+		const { collapseBtnRender } = this.props;
+		const { collapsed } = this.state;
 		const icon =
 			typeof collapseBtnRender == "function" ? (
 				collapseBtnRender(collapsed)
@@ -53,7 +75,7 @@ export function ZmainHOC(pageConfig) {
 		// 左侧边展开时的宽度
 		leftExpandWidth: 240,
 		showCollapseBtn: true, //boolean | function
-		mainBodyId: "", // 主页路由区域html元素的id
+		mainBodyId: "Z_mainBody", // 主页路由区域html元素的id
 		// 主题有 light | dark | mazarine
 		theme: "light",
 		logo: {
@@ -100,18 +122,18 @@ export function ZmainHOC(pageConfig) {
 			hasLogin: false, //
 			isCollapse: false, //侧边栏折叠状态
 			show_mainRoute_Loading: false, // 路由页面的loading
-			mainModal_Content: null,
-			appModal_Content: null,
-			mainModal_top_Content: null,
-			appModal_top_Content: null,
-			show_mainModal: false,
-			show_mainModal_Loading: false, // 右侧拉开页面的loading
-			show_mainModal_top: false,
-			show_mainModal_top_Loading: false,
-			show_appModal: false,
-			show_appModal_Loading: false,
-			show_appModal_top: false,
-			show_appModal_top_Loading: false,
+			// mainModal_Content: null,
+			// appModal_Content: null,
+			// mainModal_top_Content: null,
+			// appModal_top_Content: null,
+			// show_mainModal: false,
+			// show_mainModal_Loading: false, // 右侧拉开页面的loading
+			// show_mainModal_top: false,
+			// show_mainModal_top_Loading: false,
+			// show_appModal: false,
+			// show_appModal_Loading: false,
+			// show_appModal_top: false,
+			// show_appModal_top_Loading: false,
 		};
 		setNavRoutes(menuData) {
 			let newNav = [];
@@ -129,7 +151,7 @@ export function ZmainHOC(pageConfig) {
 							children: "children",
 						},
 					});
-					if (hasPath||item.redirect) {
+					if (hasPath || item.redirect) {
 						newNav.push(
 							item.redirect ? (
 								<Route
@@ -187,46 +209,53 @@ export function ZmainHOC(pageConfig) {
 				return deepCopy(this.userInfoStorage);
 			},
 			collapseToggleEnd: () => {
-				this.config.afterToggleCollapse && this.config.afterToggleCollapse(this.state.isCollapse, this.tool);
+				this.config.afterToggleCollapse &&
+					this.config.afterToggleCollapse(this.MainLeftRef.current.state.isCollapse, this.tool);
 			},
 			//折叠按钮点击触发
 			collapseBtnClick: () => {
-				this.config.beforeToggleCollapse && this.config.beforeToggleCollapse(this.state.isCollapse, this.tool);
-				this.setState({
-					isCollapse: !this.state.isCollapse,
-				});
+				this.config.beforeToggleCollapse &&
+					this.config.beforeToggleCollapse(this.MainLeftRef.current.state.isCollapse, this.tool);
+				// this.setState({
+				// 	isCollapse: !this.state.isCollapse,
+				// });
+				this.MainLeftRef.current.methods.collapse();
+				this.CollapseBtnRef.current.methods.changeCollapsed();
 			},
 			//是否显示loading
 			showRouteLoading: (show) => {
-				this.setState({
-					show_mainRoute_Loading: show, //true || false
-				});
+				this.mainRoute_Loading_ref.current && this.mainRoute_Loading_ref.current.methods.showLoading(show);
+				// this.setState({
+				// 	show_mainRoute_Loading: show, //true || false
+				// });
 			},
 			showModalLoading: (show, witch) => {
 				const { loading_name } = getConstNames(witch);
-				this.setState({
-					[loading_name]: show, //true || false
-				});
-			},
-			mainModal_Content: null,
-			mainModal_scroll: true,
-			mainModal_top_Content: null,
-			mainModal_top_scroll: true,
-			appModal_Content: null,
-			appModal_scroll: true,
-			appModal_top_Content: null,
-			appModal_top_scroll: true,
-			currentModalType: "",
-			mainModal_Transitionend: null,
-			mainModal_top_Transitionend: null,
-			appModal_Transitionend: null,
-			appModal_top_Transitionend: null,
-			//是否弹出右边窗口
-			showRightModal: function(show, witch, content, scroll, onTransitionend) {
-				if (witch == "noModal") {
-					message.warning("已经没有更高级的modal了");
-					return;
+				if (loading_name == "show_mainRoute_Loading") {
+					this.methods.showRouteLoading(show);
+				} else {
+					const modal = this.RightModalsRef.current.methods.findModal(witch);
+					modal && modal.ref.current.methods.showModalLoading(show);
+					// this.setState({
+					// 	[loading_name]: show, //true || false
+					// });
 				}
+			},
+			// mainModal_Content: null,
+			// mainModal_scroll: true,
+			// mainModal_top_Content: null,
+			// mainModal_top_scroll: true,
+			// appModal_Content: null,
+			// appModal_scroll: true,
+			// appModal_top_Content: null,
+			// appModal_top_scroll: true,
+			// currentModalType: "",
+			// mainModal_Transitionend: null,
+			// mainModal_top_Transitionend: null,
+			// appModal_Transitionend: null,
+			// appModal_top_Transitionend: null,
+			//是否弹出右边窗口
+			showRightModal: (show, witch, content, scroll, onTransitionend, wrapperEl) => {
 				let opt = null;
 				if (dataTypeTest(show) === "object") {
 					opt = show;
@@ -235,45 +264,77 @@ export function ZmainHOC(pageConfig) {
 					content = opt.content;
 					scroll = opt.scroll;
 					onTransitionend = opt.onTransitionend;
+					wrapperEl = opt.wrapperEl;
 				}
-				this.methods.setScrollToTop(witch);
-				const { content_name, trans_name, show_name, scroll_name } = getConstNames(witch);
-				this.methods[content_name] = content;
-				if (onTransitionend) this.methods[trans_name] = onTransitionend;
-				if (this.state[show_name] && show) {
-					this.setState({
-						[content_name]: content,
-					});
-				} else {
-					this.setState({
-						[show_name]: show, //true || false
-					});
-				}
-				this.methods[scroll_name] = typeof scroll === "boolean" ? scroll : true;
-				this.methods.currentModalType = witch;
-				return show;
-			}.bind(this),
-			//右边窗口弹出过渡动画之后执行
-			afterModalTransitionend: (show) => {
-				const witch = this.methods.currentModalType;
-				const { content_name, trans_name } = getConstNames(witch);
-				this.setState({
-					[content_name]: show ? this.methods[content_name] : null, //设置modal内容
-				});
-				this.methods[trans_name] && this.methods[trans_name](show);
+
+				this.RightModalsRef.current.methods.changeModals(
+					{
+						show,
+						content,
+						scroll,
+						witch,
+						onTransitionend,
+					},
+					wrapperEl ? wrapperEl : document.querySelector("#" + this.config.mainBodyId),
+				);
+				// if (witch == "noModal") {
+				// 	message.warning("已经没有更高级的modal了");
+				// 	return;
+				// }
+				// let opt = null;
+				// if (dataTypeTest(show) === "object") {
+				// 	opt = show;
+				// 	show = opt.show;
+				// 	witch = opt.modal;
+				// 	content = opt.content;
+				// 	scroll = opt.scroll;
+				// 	onTransitionend = opt.onTransitionend;
+				// }
+				// this.methods.setScrollToTop(witch);
+				// const { content_name, trans_name, show_name, scroll_name } = getConstNames(witch);
+				// this.methods[content_name] = content;
+				// if (onTransitionend) this.methods[trans_name] = onTransitionend;
+				// if (this.state[show_name] && show) {
+				// 	this.setState({
+				// 		[content_name]: content,
+				// 	});
+				// } else {
+				// 	this.setState({
+				// 		[show_name]: show, //true || false
+				// 	});
+				// }
+				// this.methods[scroll_name] = typeof scroll === "boolean" ? scroll : true;
+				// this.methods.currentModalType = witch;
+				// return show;
 			},
+			// //右边窗口弹出过渡动画之后执行
+			// afterModalTransitionend: (show) => {
+			// 	const witch = this.methods.currentModalType;
+			// 	const { content_name, trans_name } = getConstNames(witch);
+			// 	this.setState({
+			// 		[content_name]: show ? this.methods[content_name] : null, //设置modal内容
+			// 	});
+			// 	this.methods[trans_name] && this.methods[trans_name](show);
+			// },
 			// 下次滚动条更新的时候，让滚动条回到顶部
 			setScrollToTop: (witch) => {
 				let scrollInstance = this.methods.getScrollInstance(witch);
 				scrollInstance && (scrollInstance.nextScrollToTop = true);
 			},
 			getScrollInstance: (witch) => {
-				const { instance_name } = getConstNames(witch);
-				return this[instance_name];
+				if (witch == "mainRoute") {
+					const { instance_name } = getConstNames(witch);
+					return this[instance_name];
+				} else {
+					const modal = this.RightModalsRef.current.methods.findModal(witch);
+					return modal && modal.ref.current.methods.getScrollInstance();
+				}
 			},
 			getScrollAreaWrapperEl: (witch) => {
-				const { wrapper_name, wrapperMethods_name } = getConstNames(witch);
-				return { wrapperEl: this[wrapper_name], methods: this[wrapperMethods_name] };
+				const modal = this.RightModalsRef.current.methods.findModal(witch);
+				return modal && modal.ref.current.methods.getWrapperEl();
+				// const { wrapper_name, wrapperMethods_name } = getConstNames(witch);
+				// return { wrapperEl: this[wrapper_name], methods: this[wrapperMethods_name] };
 			},
 		};
 		$router = {
@@ -295,18 +356,20 @@ export function ZmainHOC(pageConfig) {
 			$router: this.$router,
 			noticeType: this.config.noticeType,
 		};
-		closeRightModal = (witch) => {
-			const { show_name } = getConstNames(witch);
-			if (this.state[show_name]) {
-				this.methods.showRightModal(false, witch);
-			}
+		closeRightModal = () => {
+			this.RightModalsRef.current.methods.closeAllModal();
+			// const { show_name } = getConstNames(witch);
+			// if (this.state[show_name]) {
+			// 	this.methods.showRightModal(false, witch);
+			// }
 		};
 		componentDidUpdate(prevProps) {
 			//路由地址改变，关闭右边modal
 			if (this.props.location.pathname !== prevProps.location.pathname) {
-				["mainModal", "mainModal_top", "appModal", "appModal_top"].forEach((name) => {
-					this.closeRightModal(name);
-				});
+				this.closeRightModal();
+				// ["mainModal", "mainModal_top", "appModal", "appModal_top"].forEach((name) => {
+				// 	this.closeRightModal(name);
+				// });
 				this.methods.setScrollToTop("mainRoute");
 			}
 		}
@@ -327,41 +390,44 @@ export function ZmainHOC(pageConfig) {
 					this.tool,
 				);
 		}
-		modalTemplate(witch, zIndex, width) {
-			const {
-				content_name,
-				show_name,
-				scroll_name,
-				loading_name,
-				instance_name,
-				wrapper_name,
-				wrapperMethods_name,
-			} = getConstNames(witch);
-			return (
-				<ZrightModal
-					name={witch}
-					zIndex={zIndex}
-					width={width}
-					show={this.state[show_name]}
-					scroll={this.methods[scroll_name]}
-					getScrollInstance={(instance) => (this[instance_name] = instance)}
-					showLoading={this.state[loading_name]}
-					onClose={() => {
-						this.methods.showRightModal(false, witch, null);
-					}}
-					onTransitionend={this.methods.afterModalTransitionend}
-					getWrapperEl={(el, method) => {
-						this[wrapper_name] = el;
-						this[wrapperMethods_name] = method;
-					}}
-				>
-					{this.state[content_name]}
-				</ZrightModal>
-			);
-		}
+		// modalTemplate(witch, zIndex, width) {
+		// 	const {
+		// 		content_name,
+		// 		show_name,
+		// 		scroll_name,
+		// 		loading_name,
+		// 		instance_name,
+		// 		wrapper_name,
+		// 		wrapperMethods_name,
+		// 	} = getConstNames(witch);
+		// 	return (
+		// 		<ZrightModal
+		// 			name={witch}
+		// 			zIndex={zIndex}
+		// 			width={width}
+		// 			show={this.state[show_name]}
+		// 			scroll={this.methods[scroll_name]}
+		// 			getScrollInstance={(instance) => (this[instance_name] = instance)}
+		// 			showLoading={this.state[loading_name]}
+		// 			onClose={() => {
+		// 				this.methods.showRightModal(false, witch, null);
+		// 			}}
+		// 			onTransitionend={this.methods.afterModalTransitionend}
+		// 			getWrapperEl={(el, method) => {
+		// 				this[wrapper_name] = el;
+		// 				this[wrapperMethods_name] = method;
+		// 			}}
+		// 		>
+		// 			{this.state[content_name]}
+		// 		</ZrightModal>
+		// 	);
+		// }
+		//refs
+		MainLeftRef = React.createRef();
+		CollapseBtnRef = React.createRef();
+		mainRoute_Loading_ref = React.createRef();
+		RightModalsRef = React.createRef();
 		getTemplate() {
-			
-			const leftWidth = this.state.isCollapse ? 80 : this.config.leftExpandWidth;
 			const _showCollapseBtn =
 				typeof this.config.showCollapseBtn == "function"
 					? this.config.showCollapseBtn(this)
@@ -369,38 +435,24 @@ export function ZmainHOC(pageConfig) {
 			return (
 				<ZerodMainContext.Provider value={this.tool}>
 					<Zlayout flexRow className={`z-layout-${this.config.theme}`}>
-						<Zlayout
-							onTransitionend={this.methods.collapseToggleEnd}
-							width={leftWidth}
-							className={`${cssClass["z-main-left"]} ${cssClass[`is-${this.config.theme}`]}`}
-						>
-							<Zlayout.Zheader
-								className={`${cssClass["z-main-logo"]} ${cssClass[`is-${this.config.theme}`]}`}
-							>
-								{this.config.logo.render()}
-							</Zlayout.Zheader>
-							<Zlayout.Zbody
-								className={`${cssClass["z-main-nav"]} ${cssClass[`is-${this.config.theme}`]}`}
-								scroll
-							>
-								<div className="z-padding-top-10">
-									<ZsideMenu
-										menuData={this.sideMenuData}
-										collapsed={this.state.isCollapse}
-										theme={this.config.theme}
-										openAllSubmenu={this.config.sideMenu.openAllSubmenu}
-										onSelect={this.config.sideMenu.onSelect}
-									/>
-								</div>
-							</Zlayout.Zbody>
-						</Zlayout>
+						<MainLeft
+							ref={this.MainLeftRef}
+							logo={this.config.logo}
+							collapseToggleEnd={this.methods.collapseToggleEnd}
+							theme={this.config.theme}
+							sideMenuData={this.sideMenuData}
+							openAllSubmenu={this.config.sideMenu.openAllSubmenu}
+							onSelect={this.config.sideMenu.onSelect}
+							leftExpandWidth={this.config.leftExpandWidth}
+							location={this.props.location}
+						/>
 						<Zlayout>
 							<Zlayout.Zheader className={`${cssClass["z-main-header"]} z-flex-space-between`}>
 								<div className="z-flex">
 									{_showCollapseBtn ? (
 										<CollapseBtn
+											ref={this.CollapseBtnRef}
 											onClick={this.methods.collapseBtnClick}
-											collapsed={this.state.isCollapse}
 											collapseBtnRender={this.config.sideMenu.collapseBtnRender}
 										/>
 									) : null}
@@ -425,11 +477,11 @@ export function ZmainHOC(pageConfig) {
 									this[wrapperMethods_name] = method;
 								}}
 								insertToScrollWraper={
-									<Zlayout.Template>
-										<ZpageLoading showLoading={this.state.show_mainRoute_Loading} />
-										{this.modalTemplate("mainModal", 99, "94%")}
-										{this.modalTemplate("mainModal_top", 100, "88%")}
-									</Zlayout.Template>
+									<>
+										<ZpageLoading ref={this.mainRoute_Loading_ref} />
+										{/* {this.modalTemplate("mainModal", 99, "94%")}
+										{this.modalTemplate("mainModal_top", 100, "88%")} */}
+									</>
 								}
 							>
 								<section>
@@ -438,8 +490,9 @@ export function ZmainHOC(pageConfig) {
 							</Zlayout.Zbody>
 						</Zlayout>
 					</Zlayout>
-					{this.modalTemplate("appModal", 99, "90%")}
-					{this.modalTemplate("appModal_top", 100, "80%")}
+					{/* {this.modalTemplate("appModal", 99, "90%")}
+					{this.modalTemplate("appModal_top", 100, "80%")} */}
+					<RightModals ref={this.RightModalsRef} />
 				</ZerodMainContext.Provider>
 			);
 		}
@@ -454,5 +507,197 @@ export function ZmainHOC(pageConfig) {
 	}
 	return withRouter(Main);
 }
+class MainLeft extends React.PureComponent {
+	static propTypes = {
+		collapseToggleEnd: PropTypes.func,
+		theme: PropTypes.string,
+		sideMenuData: PropTypes.array,
+		openAllSubmenu: PropTypes.bool,
+		onSelect: PropTypes.func,
+		leftExpandWidth: PropTypes.number,
+	};
+	methods = {
+		collapse: () => {
+			this.setState({
+				isCollapse: !this.state.isCollapse,
+			});
+		},
+	};
+	state = {
+		isCollapse: false,
+	};
+	render() {
+		const { collapseToggleEnd, theme, sideMenuData, openAllSubmenu, onSelect, logo } = this.props;
+		const leftWidth = this.state.isCollapse ? 80 : this.props.leftExpandWidth;
+		return (
+			<Zlayout
+				onTransitionend={collapseToggleEnd}
+				width={leftWidth}
+				className={`${cssClass["z-main-left"]} ${cssClass[`is-${theme}`]}`}
+			>
+				<Zlayout.Zheader className={`${cssClass["z-main-logo"]} ${cssClass[`is-${theme}`]}`}>
+					{logo.render()}
+				</Zlayout.Zheader>
+				<Zlayout.Zbody className={`${cssClass["z-main-nav"]} ${cssClass[`is-${theme}`]}`} scroll>
+					<div className="z-padding-top-10">
+						<ZsideMenu
+							menuData={sideMenuData}
+							collapsed={this.state.isCollapse}
+							theme={theme}
+							openAllSubmenu={openAllSubmenu}
+							onSelect={onSelect}
+						/>
+					</div>
+				</Zlayout.Zbody>
+			</Zlayout>
+		);
+	}
+}
 
+class RightModals extends React.PureComponent {
+	methods = {
+		closeAllModal: () => {
+			this.state.modals.forEach((modal) => {
+				modal.ref.current.methods.close();
+			});
+		},
+		findModal: (witch) => {
+			let modal = null;
+			for (let index = 0; index < this.state.modals.length; index++) {
+				const element = this.state.modals[index];
+				if (element.options.witch == witch) {
+					modal = element;
+				}
+			}
+			return modal;
+		},
+		changeModals: (opt, wrapperEl) => {
+			const end = opt.onTransitionend;
+			opt.onTransitionend = (show) => {
+				if (show) {
+					const laster = this.state.modals.slice(-1)[0];
+					laster &&
+						laster.ref.current.methods.showModal({
+							content: laster.content,
+						});
+				} else {
+					this.state.modals.pop();
+					this.setState({
+						modals: [...this.state.modals],
+					});
+				}
+				typeof end == "function" && end(show);
+			};
+
+			if (opt.show) {
+				let len = 0;
+				for (let index = 0; index < this.state.modals.length; index++) {
+					const element = this.state.modals[index];
+					if (element.wrapperEl == wrapperEl) {
+						len++;
+					}
+				}
+				const width = 94 - len * 6 + "%";
+				const zIndex = 99 + len * 6;
+				this.setState(
+					{
+						modals: [
+							...this.state.modals,
+							...[
+								{
+									wrapperEl,
+									ref: React.createRef(),
+									content: opt.content,
+									options: {
+										...opt,
+										width,
+										zIndex,
+										content: null,
+										witch: opt.witch ? opt.witch : "modal_" + GenNonDuplicateID(),
+									},
+								},
+							],
+						],
+					},
+					() => {
+						const laster = this.state.modals.slice(-1)[0];
+						laster && laster.ref.current.methods.showModal(laster.options);
+					},
+				);
+			} else {
+				if (opt.witch) {
+					const modal = this.methods.findModal(opt.witch);
+					modal && modal.ref.current.methods.close();
+				} else {
+					const laster = this.state.modals.slice(-1)[0];
+					laster && laster.ref.current.methods.close();
+				}
+			}
+		},
+	};
+	state = {
+		modals: [],
+	};
+	render() {
+		return this.state.modals.map((item) => {
+			return item.wrapperEl ? ReactDOM.createPortal(<RightModalSelf ref={item.ref} />, item.wrapperEl) : null;
+		});
+	}
+}
+
+class RightModalSelf extends React.PureComponent {
+	methods = {
+		showModal: (opt) => {
+			this.setState(opt);
+		},
+		showModalLoading: (show) => {
+			this.modalRef.current && this.modalRef.current.methods.showLoading(show);
+		},
+		getScrollInstance: () => {
+			return this.ScrollInstance;
+		},
+		getWrapperEl: () => {
+			return { wrapperEl: this.wrapperEl, methods: this.wrapperMethods };
+		},
+		close: () => {
+			this.setState({
+				show: false,
+			});
+		},
+	};
+	state = {
+		witch: "modalName",
+		zIndex: 9,
+		width: "90%",
+		show: false,
+		scroll: true,
+		onTransitionend: () => {},
+		content: null,
+	};
+	modalRef = React.createRef();
+	getScrollInstance = (instance) => (this.ScrollInstance = instance);
+	getWrapperEl = (el, method) => {
+		this.wrapperEl = el;
+		this.wrapperMethods = method;
+	};
+	render() {
+		const { witch, zIndex, width, show, scroll, content, onTransitionend } = this.state;
+		return (
+			<ZrightModal
+				ref={this.modalRef}
+				name={witch}
+				zIndex={zIndex}
+				width={width}
+				show={show}
+				scroll={scroll}
+				getScrollInstance={this.getScrollInstance}
+				onClose={this.methods.close}
+				onTransitionend={onTransitionend}
+				getWrapperEl={this.getWrapperEl}
+			>
+				{content}
+			</ZrightModal>
+		);
+	}
+}
 export default ZmainHOC;

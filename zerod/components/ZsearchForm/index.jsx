@@ -1,22 +1,24 @@
-import React from "react";import ZpureComponent from "../ZpureComponent";
+import React from "react";
 import { Form, Row, Col, Input, Button, Icon } from "antd";
 import PropTypes from "prop-types";
 import cssClass from "./style.scss";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
-import { animateTimout, const_initItems, const_execAsync, const_itemSpan } from "../constant";
-import ZpageLoading from "../ZpageLoading";
-import { once, dataType, } from "../zTool";
+import { animateTimout, const_initItems, const_execAsync, const_changeFormItems } from "../constant";
+// import ZpageLoading from "../ZpageLoading";
+import { once, dataType } from "../zTool";
+import ColFormItem from "../Zform/ColFormItem";
 export const ZsearchForm = Form.create()(
-	class extends ZpureComponent {
+	class extends React.PureComponent {
 		static propTypes = {
 			hidden: PropTypes.bool,
-			labelLayout: PropTypes.string,//'horizontal'|'vertical'
+			labelLayout: PropTypes.string, //'horizontal'|'vertical'
 			className: PropTypes.string,
 			colFormItems: PropTypes.arrayOf(PropTypes.object), //兼容旧版本，现由items替代
 			items: PropTypes.arrayOf(PropTypes.object),
 			onSearch: PropTypes.func,
 			onReset: PropTypes.func,
 			getFormInstance: PropTypes.func,
+			exportMethods: PropTypes.func,
 			noCollapse: PropTypes.bool,
 			defaultSpan: PropTypes.oneOfType([PropTypes.number, PropTypes.object]),
 			formDefaultValues: PropTypes.object,
@@ -28,7 +30,7 @@ export const ZsearchForm = Form.create()(
 			collapseCount: 3,
 			noCollapse: false,
 			hidden: false,
-			labelLayout:"vertical",
+			labelLayout: "vertical",
 		};
 		state = {
 			expand: this.props.noCollapse,
@@ -36,10 +38,20 @@ export const ZsearchForm = Form.create()(
 		};
 		allAsync = [];
 		methods = {
+			unfold: (callback) => {
+				this.setAnimate(callback);
+			},
 			handleSearch: (e) => {
 				e.preventDefault();
 				this.props.form.validateFields((err, values) => {
 					if (!err) {
+						if (dataType.isObject(values)) {
+							Object.keys(values).forEach((key) => {
+								if (dataType.isString(values[key])) {
+									values[key] = values[key].trim();
+								}
+							});
+						}
 						this.props.onSearch && this.props.onSearch(values);
 					}
 				});
@@ -51,8 +63,8 @@ export const ZsearchForm = Form.create()(
 			expandToggle: () => {
 				this.setState({ expand: !this.state.expand });
 			},
-			changeFormItems: (newItems) => {
-				this.execAsync(newItems);
+			changeFormItems: (newItems, part = false) => {
+				const_changeFormItems.call(this, newItems, part);
 			},
 		};
 		config = {
@@ -74,7 +86,6 @@ export const ZsearchForm = Form.create()(
 			const_initItems.call(
 				this,
 				Array.isArray(newItems) ? newItems : items,
-				<Input placeholder="加载中" disabled />,
 				this.props.form,
 				this.methods.changeFormItems,
 				() => {
@@ -82,12 +93,15 @@ export const ZsearchForm = Form.create()(
 				},
 			);
 		}
-		setAnimate=() =>{
-			if (this.props.hidden) {
+		hidden = this.props.hidden;
+		setAnimate = (callback) => {
+			if (this.hidden) {
 				this.formEl.style.height = (this.formEl.scrollHeight > 0 ? this.formEl.scrollHeight : 1) + "px";
 				setTimeout(() => {
 					this.formEl.style.height = "0px";
-				},10);
+					this.hidden = false;
+					callback && callback(this.hidden);
+				}, 10);
 			} else {
 				this.formEl.style.height = "0px";
 				setTimeout(() => {
@@ -95,11 +109,14 @@ export const ZsearchForm = Form.create()(
 					once(this.formEl, "transitionend", () => {
 						this.formEl.style.height = "";
 					});
-				},10);
+					this.hidden = true;
+					callback && callback(this.hidden);
+				}, 10);
 			}
-		}
+		};
 		componentDidMount() {
 			this.props.getFormInstance && this.props.getFormInstance(this.props.form, this.methods);
+			this.props.exportMethods && this.props.exportMethods(this.methods);
 			this.execAsync();
 			this.setAnimate();
 		}
@@ -113,52 +130,45 @@ export const ZsearchForm = Form.create()(
 			) {
 				this.execAsync();
 			}
-			if (this.props.hidden !== prevProps.hidden) {
-				this.setAnimate();
-			}
+			// if (this.props.hidden !== prevProps.hidden) {
+			// 	this.setAnimate();
+			// }
 		}
-		componentWillUnmount(){
-			this.unmounted=true;
+		componentWillUnmount() {
+			this.unmounted = true;
 		}
 		getFormItems() {
-			const { getFieldDecorator } = this.props.form;
+			// const { getFieldDecorator } = this.props.form;
 			const items = this.state.expand ? this.state.items : this.state.items.slice(0, this.config.collapseCount);
 			return items.map((item, i) => {
-				const control =
-					typeof item.control === "function"
-						? item.control(this.props.form, this.methods.changeFormItems)
-						: item.control;
-				const span = const_itemSpan(control, item.span, item.defaultSpan);
-				const isFormItem = typeof item.isFormItem === "boolean" ? item.isFormItem : true;
 				return (
-					<CSSTransition key={i} timeout={animateTimout.flipInTime} classNames="fadeIn-to-down">
-						<Col {...span} className={item.className}>
-							{isFormItem ? (
-								<Form.Item label={item.label} className={item.itemClassName}>
-									<ZpageLoading showLoading={item.loading} size="small" />
-									{getFieldDecorator(item.key, dataType.isFunction(item.options)?item.options():item.options)(control)}
-								</Form.Item>
-							) : (
-								<div>
-									<ZpageLoading showLoading={item.loading} size="small" />
-									{control}
-								</div>
-							)}
-						</Col>
+					<CSSTransition
+						key={item.key + "_" + i}
+						timeout={animateTimout.flipInTime}
+						classNames="fadeIn-to-down"
+					>
+						<ColFormItem
+							loading={item.loading}
+							form={this.props.form}
+							changeFormItems={this.methods.changeFormItems}
+							item={item}
+							ref={item.ref}
+							labelLayout={this.props.labelLayout}
+						/>
 					</CSSTransition>
 				);
 			});
 		}
 		render() {
 			this.items = this.getFormItems();
-			const { className, hidden,labelLayout } = this.props;
+			const { className, hidden, labelLayout } = this.props;
 			return (
 				<div
 					ref={(el) => (this.formEl = el)}
 					className={`${cssClass["z-search-form"]} ${className ? className : ""}`}
 				>
-					<Form onSubmit={this.methods.handleSearch}>
-						<Row type="flex" className={`${cssClass["z-form-row"]} ${labelLayout=="horizontal"?"z-form-label-horizontal":""}`}>
+					<Form onSubmit={this.methods.handleSearch} className="z-padding-top-14">
+						<Row type="flex" className={`${cssClass["z-form-row"]} ${"z-form-label-" + labelLayout}`}>
 							<TransitionGroup component={null} enter={true} exit={true} appear={true}>
 								{this.items}
 							</TransitionGroup>
