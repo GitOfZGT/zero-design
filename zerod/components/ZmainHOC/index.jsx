@@ -575,11 +575,11 @@ class RightModals extends React.PureComponent {
 			const end = opt.onTransitionend;
 			opt.onTransitionend = (show) => {
 				if (show) {
-					const laster = this.state.modals.slice(-1)[0];
-					laster &&
-						laster.ref.current.methods.showModal({
-							content: laster.content,
-						});
+					// const laster = this.state.modals.slice(-1)[0];
+					// laster &&
+					// 	laster.ref.current.methods.showModal({
+					// 		content: laster.content,
+					// 	});
 				} else {
 					this.state.modals.pop();
 					this.setState({
@@ -607,12 +607,12 @@ class RightModals extends React.PureComponent {
 								{
 									wrapperEl,
 									ref: React.createRef(),
-									content: opt.content,
+									// content: opt.content,
 									options: {
 										...opt,
 										width,
 										zIndex,
-										content: null,
+										// content: null,
 										witch: opt.witch ? opt.witch : "modal_" + GenNonDuplicateID(),
 									},
 								},

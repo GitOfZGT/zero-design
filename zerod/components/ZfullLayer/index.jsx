@@ -24,13 +24,21 @@ export class ZfullLayer extends ZpureComponent {
 						: {
 								show,
 						  },
-					callback,
+					() => {
+						setTimeout(() => {
+							this.setState({
+								transparent: false,
+							});
+							callback && callback();
+						}, 10);
+					},
 				);
 				this.isScale = scale;
 			} else {
 				if (this.isScale) {
 					this.setState({
 						scale: true,
+						transparent: true,
 					});
 					once(this.bodyElRef.current, "transitionend", () => {
 						this.setState(
@@ -73,14 +81,20 @@ export class ZfullLayer extends ZpureComponent {
 	state = {
 		show: false,
 		scale: false,
+		transparent: true,
 	};
 	ZpageLoadingRef = React.createRef();
 	bodyElRef = React.createRef();
+	layerElRef = React.createRef();
 	render() {
 		const { header, children } = this.props;
-		const { scale, show } = this.state;
+		const { scale, show, transparent } = this.state;
 		return ReactDOM.createPortal(
-			<div className="z-full-layer" style={{ display: show ? "block" : "none" }}>
+			<div
+				ref={this.layerElRef}
+				className={`z-full-layer ${transparent ? "transparent" : ""}`}
+				style={{ display: show ? "block" : "none" }}
+			>
 				<div className="z-full-layer-heading">{header}</div>
 				<div className={`z-full-layer-body ${scale ? "scale" : ""}`} ref={this.bodyElRef}>
 					{children}

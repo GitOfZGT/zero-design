@@ -10,7 +10,12 @@
         z-index: 999;
         $--h:128px;
 		$--top:$--h/2;
+		opacity: 1;
 		display: none;
+		transition: all 0.25s;
+		&.transparent{
+			opacity: 0;
+		}
 		.close {
 			position: absolute;
 			top: -$--top;
@@ -38,10 +43,12 @@
         .z-full-layer-body{
             height: calc(100% - #{$--top});
 			overflow: auto;
-			transition: all 0.3s ease-out;
+			transition: all 0.25s;
+			opacity: 1;
 			&.scale{
-				transform-origin:center 10%;
+				transform-origin:center center;
 				transform: scale(0);
+				opacity: 0;
 			}
         }
 	}
