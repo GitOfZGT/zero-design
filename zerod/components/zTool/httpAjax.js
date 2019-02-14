@@ -38,24 +38,23 @@ function httpAjax(method, url, query, config, noCallback) {
 							.join("&");
 			break;
 	}
-
+	let P = null;
+	switch (method) {
+		case "get":
+			P = axios[method](url, config);
+			break;
+		case "delete":
+			P = axios[method](url, config);
+			break;
+		default:
+			P = axios[method](url, query, config);
+	}
 	let promise = noCallback
 		? P
 		: new Promise((resolve, reject) => {
-				let P = null;
-				switch (method) {
-					case "get":
-						P = axios[method](url, config);
-						break;
-					case "delete":
-						P = axios[method](url, config);
-						break;
-					default:
-						P = axios[method](url, query, config);
-				}
 				P &&
 					P.then((result) => {
-						if(result.data.code==403403){
+						if (result.data.code == 403403) {
 							// const_notification("notification").error(result.data.msg?result.data.msg:"用户未登录或身份已过期");
 							reject(result.data);
 							return;

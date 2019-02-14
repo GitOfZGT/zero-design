@@ -266,7 +266,7 @@ export function ZmainHOC(pageConfig) {
 					onTransitionend = opt.onTransitionend;
 					wrapperEl = opt.wrapperEl;
 				}
-
+				const defaultWrapper = document.querySelector("#" + this.config.mainBodyId);
 				this.RightModalsRef.current.methods.changeModals(
 					{
 						show,
@@ -275,7 +275,7 @@ export function ZmainHOC(pageConfig) {
 						witch,
 						onTransitionend,
 					},
-					wrapperEl ? wrapperEl : document.querySelector("#" + this.config.mainBodyId),
+					wrapperEl ? wrapperEl : defaultWrapper ? defaultWrapper : document.body,
 				);
 				// if (witch == "noModal") {
 				// 	message.warning("已经没有更高级的modal了");

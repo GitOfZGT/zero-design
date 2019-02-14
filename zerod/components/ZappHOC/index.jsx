@@ -3,9 +3,8 @@ import ZpureComponent from "../ZpureComponent";
 import { BrowserRouter, HashRouter, Route, Redirect, Switch } from "react-router-dom";
 import { LocaleProvider } from "antd";
 import zh_CN from "antd/lib/locale-provider/zh_CN";
-import Zlayout from "../Zlayout";
 import ZerodRootContext from "../ZerodRootContext";
-import zTool from "../zTool";
+import {mergeConfig,dataType} from "../zTool";
 let fistLoad = true;
 function hasPaceWatch() {
 	if (window.Pace && fistLoad) {
@@ -33,7 +32,8 @@ function ZappHOC(pageConfig) {
 			},
 		},
 	};
-	defaultConfig = zTool.mergeConfig(defaultConfig, pageConfig);
+	// console.log(dataType.isObject(pageConfig),pageConfig);
+	defaultConfig = mergeConfig(defaultConfig, pageConfig);
 	if (defaultConfig.routerType == "hash") {
 		hasPaceWatch();
 	}
@@ -58,7 +58,7 @@ function ZappHOC(pageConfig) {
 						}}
 					>
 						<Router>
-							<Zlayout.Template>{this.routes}</Zlayout.Template>
+							<>{this.routes}</>
 						</Router>
 					</ZerodRootContext.Provider>
 				</LocaleProvider>

@@ -70,11 +70,12 @@ export const ZsearchForm = Form.create()(
 		config = {
 			collapseCount: this.props.collapseCount,
 		};
-		setFieldValue() {
-			if (this.props.formDefaultValues && this.state.items.length) {
+		setFieldsValue(values) {
+			values = values ? values : this.props.formDefaultValues;
+			if (values && this.state.items.length) {
 				const newValues = {};
 				this.filedKeys.forEach((key) => {
-					const value = this.props.formDefaultValues[key];
+					const value = values[key];
 					if (value !== undefined) newValues[key] = value;
 				});
 				this.props.form.setFieldsValue(newValues);
@@ -122,7 +123,7 @@ export const ZsearchForm = Form.create()(
 		}
 		componentDidUpdate(prevProps, prevState) {
 			if (this.props.formDefaultValues !== prevProps.formDefaultValues) {
-				this.setFieldValue();
+				this.setFieldsValue();
 			}
 			if (
 				(this.props.items !== prevProps.items || this.props.colFormItems !== prevProps.colFormItems) &&

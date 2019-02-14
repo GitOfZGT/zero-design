@@ -2,9 +2,9 @@
 
 # 普通表单：Zform
 
-`Zform`将`antd`的`Form`、`Form.item`的结构转成数据结构直接渲染的方式，并且自带有一个`提交`表单的按钮  
+`Zform`将`antd`的`Form`、`Form.item`的结构转成数据结构直接渲染的方式，并且自带有一个`提交`表单的按钮
 
-继承了React.PureComponent  
+继承了 React.PureComponent
 
 1、labelLayout=='inline'
 
@@ -206,8 +206,8 @@ class Myjavascript extends React.PureComponent {
 		</tr>
 		<tr>
 			<td>onSubmit</td>
-			<td>表单提交事件,(values)=>{return Promise.resolve()},当submitMsg不为空时,onSubmit函数必须返回Promise对象才能关闭提示框</td>
-			<td>function</td>
+			<td>触发保存按钮会先验证表单是否通过,通过了当submitMsg不为空时会打开确认提示框,确认后才调用onSubmit,onSubmit函数必须返回Promise对象才能关闭提示框，如果存在otherForms,values是一个数组，否则是一个对象</td>
+			<td>function(values){return Promise.resolve()}</td>
 			<td>--</td>
 		</tr>
         <tr>
@@ -220,7 +220,7 @@ class Myjavascript extends React.PureComponent {
 		</tr>
         <tr>
 			<td>submitMsg</td>
-			<td>提交表单时的确认提示框文本，如果为空，则不会触发提示</td>
+			<td>提交表单时的确认提示框文本，如果为空，则不会打开提示框直接调用onSubmit函数</td>
 			<td>string</td>
 			<td>点击确定按钮提交数据</td>
 		</tr>
@@ -232,13 +232,13 @@ class Myjavascript extends React.PureComponent {
 		</tr>
         <tr>
 			<td>formDefaultValues</td>
-			<td>返显表单的数据，如{serviceName:"名称"}，"serviceName"对应items属性里面的key, (请使用变量缓存所需设置的值而非直接使用字面量)</td>
+			<td>表单控件的默认值，如{serviceName:"名称"}，"serviceName"对应items属性里面的key, (请使用变量缓存所需设置的值而非直接使用字面量)。如需后续修改表单控件的值，也可以选择getFormInstance导出的methods.setFieldsValue(newValues)或者form.setFieldsValue(newValues)</td>
 			<td>object</td>
 			<td>--</td>
 		</tr>
         <tr>
 			<td>getFormInstance</td>
-			<td>获取Form实例的钩子，外部通过(form)=>{this.formIstance=form;}获得form实例对象,通过this.formInstance.调用antd<a href="https://ant.design/components/form-cn/" target="_blank">表单相关方法</a></td>
+			<td>获取form对象的钩子，外部通过(form)=>{this.formIstance=form;}获得form对象,通过this.formInstance.调用antd<a href="https://ant.design/components/form-cn/" target="_blank">表单相关方法</a></td>
 			<td>function(form,methods){}</td>
 			<td>--</td>
 		</tr>
@@ -253,6 +253,12 @@ class Myjavascript extends React.PureComponent {
 			<td>label的布局方式</a></td>
 			<td>'horizontal'|'vertical'|'inline'</td>
 			<td>'vertical'</td>
+		</tr>
+		 <tr>
+			<td>otherForms</td>
+			<td>有时存在多个Zform时，只想有一个保存按钮来触发提交，当触发保存时，会调用otherForms函数，otherForms应该return一个其他form对象的数组，会加上当前的form一起验证表单是否通过，通过了才会调用onSubmit</td>
+			<td>function(){return [form1,form2]}</td>
+			<td>--</td>
 		</tr>
 	</tbody>
 </table>
@@ -326,7 +332,7 @@ class Myjavascript extends React.PureComponent {
 
 ## changeFormItems
 
-changeFormItems 是一个方法，主要用于局部改变 items，实现表单控件之间交互联动。但不能直接在 render 函数中使用，应在控件的事件当中。changeFormItems除了在items里的render参数中，还存在于getFormInstance函数的methods参数里。
+changeFormItems 是一个方法，主要用于局部改变 items，实现表单控件之间交互联动。但不能直接在 render 函数中使用，应在控件的事件当中。changeFormItems 除了在 items 里的 render 参数中，还存在于 getFormInstance 函数的 methods 参数里。
 
 changeFormItems 需要两个参数：`newItems`：array | object 和 `part` : boolean
 

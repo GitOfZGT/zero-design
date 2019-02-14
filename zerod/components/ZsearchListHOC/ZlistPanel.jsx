@@ -51,8 +51,6 @@ class ZlistPanel extends ZpureComponent {
 		actionColumnWidth: PropTypes.oneOfType([PropTypes.string, PropTypes.number]), //表格操作列的宽度
 		actionDataIndex: PropTypes.any, // 操作列的key
 		actionRender: PropTypes.func, // 操作列的render,可以自定义操作列的按钮
-		addBtnPermCode: PropTypes.string, // 新建按钮权限控制代码
-		detailBtnPermCode: PropTypes.string, // 详情按钮权限控制代码
 		updateBtnPermCod: PropTypes.string, // 修改按钮权限控制代码
 		deleteBtnPermCod: PropTypes.string, // 删除按钮权限控制代码
 		showDetailBtn: PropTypes.oneOfType([PropTypes.func, PropTypes.bool]), // 是否显示详情按钮

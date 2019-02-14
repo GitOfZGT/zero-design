@@ -48,8 +48,6 @@ class ZtreePanel extends ZpureComponent {
 		colFormItems: PropTypes.arrayOf(PropTypes.object), // 搜索表单列map数据数据
 		moreBtnMap: PropTypes.arrayOf(PropTypes.object), //更多操作按钮的map数据
 		onMoreBtnClick: PropTypes.func, // 更多按钮点击事件
-		addBtnPermCode: PropTypes.string, // 新建按钮权限控制代码
-		detailBtnPermCode: PropTypes.string, // 详情按钮权限控制代码
 		updateBtnPermCod: PropTypes.string, // 修改按钮权限控制代码
 		deleteBtnPermCod: PropTypes.string, // 删除按钮权限控制代码
 		showDetailBtn: PropTypes.oneOfType([PropTypes.func, PropTypes.bool]), // 是否显示详情按钮

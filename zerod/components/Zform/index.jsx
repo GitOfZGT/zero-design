@@ -23,6 +23,7 @@ export const Zform = Form.create()(
 			defaultSpan: PropTypes.oneOfType([PropTypes.number, PropTypes.object]),
 			submitBtnRender: PropTypes.func,
 			afterItemsRendered: PropTypes.func, // 表单控件渲染完的回调
+			otherForms: PropTypes.func, // 取得其他表单对象
 		};
 		static defaultProps = {
 			items: [{ lable: "字段名", key: "name", options: {}, render: (form, panel) => <Input /> }],
@@ -38,37 +39,75 @@ export const Zform = Form.create()(
 		methods = {
 			onSubmit: (e) => {
 				e.preventDefault();
-				this.props.form.validateFields((err, values) => {
-					if (err) return;
-					if (dataType.isObject(values)) {
-						Object.keys(values).forEach((key) => {
-							if (dataType.isString(values[key])) {
-								values[key] = values[key].trim();
-							}
-						});
-					}
-					if (this.props.submitMsg) {
-						Modal.confirm({
-							title: "确定好提交了吗?",
-							content: this.props.submitMsg,
-							onOk: (e) => {
-								return this.props.onSubmit ? this.props.onSubmit(values) : Promise.resolve();
-							},
-						});
-					} else {
-						this.props.onSubmit && this.props.onSubmit(values);
-					}
-				});
+				const forms = dataType.isFunction(this.props.otherForms)
+					? this.props.otherForms(this.props.form).concat([this.props.form])
+					: [this.props.form];
+				let valided = true;
+				let formsValues = [];
+				for (let index = 0; index < forms.length; index++) {
+					const form = forms[index];
+					form.validateFields((err, values) => {
+						if (err) {
+							valided = false;
+							return;
+						}
+						if (dataType.isObject(values)) {
+							Object.keys(values).forEach((key) => {
+								if (dataType.isString(values[key])) {
+									values[key] = values[key].trim();
+								}
+							});
+						}
+						formsValues.push(values);
+					});
+					if (!valided) break;
+				}
+				if (!valided) return;
+				if (this.props.submitMsg) {
+					Modal.confirm({
+						title: "确定好提交了吗?",
+						content: this.props.submitMsg,
+						onOk: (e) => {
+							return this.props.onSubmit
+								? this.props.onSubmit(formsValues.length == 1 ? formsValues[0] : formsValues)
+								: Promise.resolve();
+						},
+					});
+				} else {
+					this.props.onSubmit && this.props.onSubmit(formsValues.length == 1 ? formsValues[0] : formsValues);
+				}
+				// this.props.form.validateFields((err, values) => {
+				// 	if (err) return;
+				// 	if (dataType.isObject(values)) {
+				// 		Object.keys(values).forEach((key) => {
+				// 			if (dataType.isString(values[key])) {
+				// 				values[key] = values[key].trim();
+				// 			}
+				// 		});
+				// 	}
+				// 	if (this.props.submitMsg) {
+				// 		Modal.confirm({
+				// 			title: "确定好提交了吗?",
+				// 			content: this.props.submitMsg,
+				// 			onOk: (e) => {
+				// 				return this.props.onSubmit ? this.props.onSubmit(values) : Promise.resolve();
+				// 			},
+				// 		});
+				// 	} else {
+				// 		this.props.onSubmit && this.props.onSubmit(values);
+				// 	}
+				// });
 			},
 			changeFormItems: (newItems, part = false) => {
 				const_changeFormItems.call(this, newItems, part);
 			},
 		};
-		setFieldValue() {
-			if (this.props.formDefaultValues && this.state.items.length) {
+		setFieldsValue(values) {
+			values = values ? values : this.props.formDefaultValues;
+			if (values && this.state.items.length) {
 				const newValues = {};
 				this.filedKeys.forEach((key) => {
-					const value = this.props.formDefaultValues[key];
+					const value = values[key];
 					if (value !== undefined) newValues[key] = value;
 				});
 				this.props.form.setFieldsValue(newValues);
@@ -98,7 +137,7 @@ export const Zform = Form.create()(
 		}
 		componentDidUpdate(prevProps, prevState) {
 			if (this.props.formDefaultValues !== prevProps.formDefaultValues) {
-				this.setFieldValue();
+				this.setFieldsValue();
 			}
 			if (this.props.items !== prevProps.items && !this.allAsync.length) {
 				this.execAsync();

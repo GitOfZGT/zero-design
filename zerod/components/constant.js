@@ -246,20 +246,20 @@ export const const_execAsync = function(callback) {
 		).then((re) => {
 			if (this.unmounted) return;
 			this.allAsync = [];
-			this.setFieldValue();
+			this.setFieldsValue();
 			callback(this.props.form, this.methods);
 			// this.setState(
 			// 	{
 			// 		items: [...this.state.items],
 			// 	},
 			// 	() => {
-			// 		this.setFieldValue();
+			// 		this.setFieldsValue();
 			// 		callback(this.props.form, this.methods);
 			// 	},
 			// );
 		});
 	} else {
-		this.setFieldValue();
+		this.setFieldsValue();
 		callback(this.props.form, this.methods);
 	}
 };

@@ -14,74 +14,130 @@ Zscheduling 分自定义列（左）和日期列（右），日期列可视区�
 
 ```jsx
 class Myjavascript extends React.PureComponent {
-	state = {
-		list: [],
-	};
-	componentDidMount() {
-		api.scheduling.getList().then((re) => {
-			this.setState({
-				list: re.data.list,
-			});
-		});
-	}
-	popover = {
-		leftPopoverTitleRender: (row, trindex, col, tdindex) => {
-			// console.log(row,trindex,col,tdindex)
-			return false;
-		}, //checkBox列的 popover的title渲染函数，
-		leftPopoverContentRender: (row, trindex, col, tdindex) => {
-			return row.name;
-		}, //checkBox列的 popover的content渲染函数，
-		rightPopoverTitleRender: (row, trindex, col, tdindex) => {
-			return col.name;
-		}, //日期列的 popover的title渲染函数，
-		rightPopoverContentRender: (row, trindex, col, tdindex) => {
-			return row.name;
-		}, //日期列的 popover的content渲染函数，
-	};
-	columns = [
-		{
-			key: "name",
-			width: "80px",
-			dataIndex: "name",
-			name: "人员",
-		},
-	];
-	methods = {
-		getData: () => {
-			console.log(this.ZschedulingMethods.getSelectedCells());
-		},
-		clears: () => {
-			this.ZschedulingMethods.cancelAllSelected();
-		},
-	};
-	toolbarRender = () => {
-		return (
-			<span>
-				<Button className="z-margin-left-15" size="small" type="primary" onClick={this.methods.getData}>
-					选择的单元格数据
-				</Button>
-				<Button className="z-margin-left-15" size="small" type="primary" onClick={this.methods.clears}>
-					清空选择
-				</Button>
-			</span>
-		);
-	};
-	importMethods = (methods) => {
-		this.ZschedulingMethods = methods;
-	};
-	render() {
-		return (
-			<Zscheduling
-				exportMethods={this.importMethods}
-				toolbarRender={this.toolbarRender}
-				columns={this.columns}
-				dataSource={this.state.list}
-				{...this.popover}
-			/>
-		);
-	}
-}
+			state = {
+				list: [],
+			};
+			componentDidMount() {
+				this.ZschedulingMethods.showLoading(true);
+				api.scheduling
+					.getList()
+					.then((re) => {
+						this.setState({
+							list: re.data.list,
+						});
+					})
+					.finally(() => {
+						this.ZschedulingMethods.showLoading(false);
+					});
+			}
+			planList = [
+				{
+					name: "早班",
+					id: 1,
+					color: "#E54D4D",
+					startTime: "09:00",
+					endTime: "11:00",
+				},
+				{
+					name: "中班",
+					id: 2,
+					color: "#4DB4E5",
+					startTime: "13:00",
+					endTime: "15:00",
+				},
+				{
+					name: "晚班",
+					id: 3,
+					color: "#81E54D",
+					startTime: "16:00",
+					endTime: "19:00",
+				},
+			];
+			checkName = (item, i) => {
+				return `${item.name}-[${item.startTime}-${item.endTime}]`;
+			};
+			planOk = (checkedValue, props) => {
+				const { row, trindex, col, tdindex } = props;
+				message.success(`${checkedValue.join(",")}`);
+			};
+			popover = {
+				leftPopoverTitleRender: (row, trindex, col, tdindex) => {
+					// console.log(row,trindex,col,tdindex)
+					return false;
+				}, //checkBox列的 popover的title渲染函数，
+				// leftPopoverContentRender: (row, trindex, col, tdindex) => {
+				// 	return row.record.name;
+				// }, //checkBox列的 popover的content渲染函数，
+				rightPopoverTitleRender: (row, trindex, col, tdindex) => {
+					return col.title + "_" + row.record.name;
+				}, //日期列的 popover的title渲染函数，
+				rightPopoverContentRender: (row, trindex, col, tdindex) => {
+					//row[col.key]是日期单元格的独立对象
+					return (
+						<Zscheduling.CellCheckList
+							checkList={this.planList}
+							exportMethods={(methods) => {
+								row[col.key]["cellMethods"] = methods;
+							}}
+							checkNameRender={this.checkName}
+							{...{ row, trindex, col, tdindex }}
+							onOk={this.planOk}
+						/>
+					);
+				}, //日期列的 popover的content渲染函数，
+				dateColCellRender: (row, trindex, col, tdindex) => {
+					//row.record
+					return <Zscheduling.CellTag title="时间段" name="早班" color="#854522" />;
+				},
+			};
+			columns = [
+				{
+					key: "name",
+					width: "80px",
+					dataIndex: "name",
+					title: "人员",
+				},
+			];
+			methods = {
+				getData: () => {
+					const data=this.ZschedulingMethods.getSelectedCells();
+					if(Object.keys(data).length){
+						message.success(JSON.stringify(data));
+					}else{
+						message.warning("未选择单元格");
+					}
+				},
+				clears: () => {
+					this.ZschedulingMethods.cancelAllSelected();
+				},
+			};
+			toolbarRender = () => {
+				return (
+					<span>
+						<Button className="z-margin-left-15" size="small" type="primary" onClick={this.methods.getData}>
+							选择的单元格数据
+						</Button>
+						<Button className="z-margin-left-15" size="small" type="primary" onClick={this.methods.clears}>
+							清空选择
+						</Button>
+					</span>
+				);
+			};
+			importMethods = (methods) => {
+				this.ZschedulingMethods = methods;
+			};
+			render() {
+				return (
+					<Zscheduling
+						exportMethods={this.importMethods}
+						toolbarRender={this.toolbarRender}
+						columns={this.columns}
+						dataSource={this.state.list}
+						{...this.popover}
+					/>
+				);
+			}
+		}
 ```
 
 <div class="z-doc-titles"></div>

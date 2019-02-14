@@ -41,7 +41,7 @@ class Zinfo extends React.PureComponent {
 			const_execAsync.bind(this),
 		);
 	}
-	setFieldValue() {
+	setFieldsValue () {
 		if (this.props.fieldValue)
 			this.setState({
 				detailData: this.props.fieldValue,
@@ -52,7 +52,7 @@ class Zinfo extends React.PureComponent {
 	}
 	componentDidUpdate(prevProps, prevState) {
 		if (this.props.fieldValue !== prevProps.fieldValue) {
-			this.setFieldValue();
+			this.setFieldsValue ();
 		}
 		if (this.props.items !== prevProps.items && !this.allAsync.length) {
 			this.execAsync();
