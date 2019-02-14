@@ -135,7 +135,7 @@ class ZlistPanel extends ZpureComponent {
 				querys = Object.assign({}, querys, moreQuery);
 			}
 			this.methods.showLoading(true);
-			this.props
+			return this.props
 				.listApiInterface(
 					Object.assign(
 						{
@@ -369,7 +369,7 @@ class ZlistPanel extends ZpureComponent {
 			updateBtnDisabled,
 			deleteBtnDisabled,
 		} = this.props;
-		return showDetailBtn || showUpdateBtn || showDeleteBtn || this.hasMoreMenu
+		return showDetailBtn || showUpdateBtn || showDeleteBtn || this.hasMoreMenu||typeof this.props.actionRender === "function"
 			? [
 					{
 						title: "操作",

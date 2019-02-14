@@ -119,7 +119,7 @@ class Page extends ZpureComponent {
 				<div
 					className={`${this.props.hasBodyPadding ? cssClass["z-wraper-body"] : ""} ${
 						className ? className : ""
-					}`}
+					} ${pageFooter.show?"":"z-padding-24-important"}`}
 					ref={(el) => (this.wrapEl = el)}
 				>
 					{this.props.children}
