@@ -561,19 +561,33 @@ class RightModals extends React.PureComponent {
 				modal.ref.current.methods.close();
 			});
 		},
+		getModalEls: (wrapperEl) => {
+			const modalEls = [];
+			Array.prototype.slice.call(wrapperEl.children).forEach((el) => {
+				if (el.dataset["zgt_modal"]) {
+					modalEls.push(el);
+				}
+			});
+			return modalEls;
+		},
 		findModal: (witch) => {
 			let modal = null;
 			for (let index = 0; index < this.state.modals.length; index++) {
 				const element = this.state.modals[index];
 				if (element.options.witch == witch) {
 					modal = element;
+					break;
 				}
 			}
 			return modal;
 		},
 		changeModals: (opt, wrapperEl) => {
+			if (this.opening) return;
+			this.opening = true;
 			const end = opt.onTransitionend;
+			const id = GenNonDuplicateID();
 			opt.onTransitionend = (show) => {
+				this.opening = false;
 				if (show) {
 					// const laster = this.state.modals.slice(-1)[0];
 					// laster &&
@@ -581,7 +595,8 @@ class RightModals extends React.PureComponent {
 					// 		content: laster.content,
 					// 	});
 				} else {
-					this.state.modals.pop();
+					const index = this.state.modals.findIndex((item) => item.id == id);
+					this.state.modals.splice(index, 1);
 					this.setState({
 						modals: [...this.state.modals],
 					});
@@ -590,12 +605,23 @@ class RightModals extends React.PureComponent {
 			};
 
 			if (opt.show) {
+				const witch = opt.witch ? opt.witch : "modal_" + id;
+				const hased = this.methods.findModal(witch);
+				if (hased) {
+					console.warn(`showRightModal()的 ${witch} 已存在，请使用别的名称`);
+				}
 				let len = 0;
 				for (let index = 0; index < this.state.modals.length; index++) {
 					const element = this.state.modals[index];
 					if (element.wrapperEl == wrapperEl) {
 						len++;
 					}
+				}
+				if (len > 0) {
+					const modalEls = this.methods.getModalEls(wrapperEl);
+					modalEls.forEach((el) => {
+						el.previousElementSibling.style.backgroundColor = "transparent";
+					});
 				}
 				const width = 94 - len * 6 + "%";
 				const zIndex = 99 + len * 6;
@@ -605,6 +631,7 @@ class RightModals extends React.PureComponent {
 							...this.state.modals,
 							...[
 								{
+									id,
 									wrapperEl,
 									ref: React.createRef(),
 									// content: opt.content,
@@ -613,7 +640,7 @@ class RightModals extends React.PureComponent {
 										width,
 										zIndex,
 										// content: null,
-										witch: opt.witch ? opt.witch : "modal_" + GenNonDuplicateID(),
+										witch,
 									},
 								},
 							],
@@ -635,12 +662,24 @@ class RightModals extends React.PureComponent {
 			}
 		},
 	};
+	onBeforeClose = (props) => {
+		const index = this.state.modals.findIndex((item) => item.id == props.id);
+		if (index == this.state.modals.length - 1 && this.state.modals.length > 1) {
+			const modalEls = this.methods.getModalEls(props.wrapperEl);
+			modalEls[this.state.modals.length - 2].previousElementSibling.style.backgroundColor = "";
+		}
+	};
 	state = {
 		modals: [],
 	};
 	render() {
 		return this.state.modals.map((item) => {
-			return item.wrapperEl ? ReactDOM.createPortal(<RightModalSelf ref={item.ref} />, item.wrapperEl) : null;
+			return item.wrapperEl
+				? ReactDOM.createPortal(
+						<RightModalSelf id={item.id} key={item.id} wrapperEl={item.wrapperEl} ref={item.ref} onBeforeClose={this.onBeforeClose} />,
+						item.wrapperEl,
+				  )
+				: null;
 		});
 	}
 }
@@ -660,6 +699,7 @@ class RightModalSelf extends React.PureComponent {
 			return { wrapperEl: this.wrapperEl, methods: this.wrapperMethods };
 		},
 		close: () => {
+			this.props.onBeforeClose && this.props.onBeforeClose(this.props);
 			this.setState({
 				show: false,
 			});
@@ -682,6 +722,9 @@ class RightModalSelf extends React.PureComponent {
 	};
 	render() {
 		const { witch, zIndex, width, show, scroll, content, onTransitionend } = this.state;
+		const newOnTransitionend = (show) => {
+			dataType.isFunction(onTransitionend) && onTransitionend(show, this.state);
+		};
 		return (
 			<ZrightModal
 				ref={this.modalRef}
@@ -692,7 +735,7 @@ class RightModalSelf extends React.PureComponent {
 				scroll={scroll}
 				getScrollInstance={this.getScrollInstance}
 				onClose={this.methods.close}
-				onTransitionend={onTransitionend}
+				onTransitionend={newOnTransitionend}
 				getWrapperEl={this.getWrapperEl}
 			>
 				{content}

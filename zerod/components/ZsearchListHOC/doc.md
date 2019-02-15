@@ -406,7 +406,7 @@ const pageConfig = {
 		<tr>
 			<td>addPageRender</td>
 			<td>新增按钮打开的页面渲染函数,如果函数return false,此函数相当于按钮点击事件的回调；tool参数是列表组件的内部提供的一些工具方法</td>
-			<td>function(tool){return ReacNode|Element}</td>
+			<td>function(tool){return ReacNode}</td>
 			<td>--</td>
 		</tr>
 		<tr>
@@ -418,7 +418,7 @@ const pageConfig = {
 		<tr>
 			<td>detailPageRender</td>
 			<td>详情按钮打开的页面渲染函数,如果函数return false,此函数相当于按钮点击事件的回调；tool参数是列表组件的内部提供的一些工具方法</td>
-			<td>function(record,tool){return ReacNode|Element}</td>
+			<td>function(record,tool){return ReacNode}</td>
 			<td>--</td>
 		</tr>
 		<tr>
@@ -430,7 +430,7 @@ const pageConfig = {
 		<tr>
 			<td>updatePageRender</td>
 			<td>修改按钮打开的页面渲染函数,如果函数return false,此函数相当于按钮点击事件的回调；tool参数是列表组件的内部提供的一些工具方法</td>
-			<td>function(record,tool){return ReacNode|Element}</td>
+			<td>function(record,tool){return ReacNode}</td>
 			<td>--</td>
 		</tr>
 		<tr>
@@ -460,19 +460,19 @@ const pageConfig = {
 		<tr>
 			<td><i class="zero-icon zerod-shengchangzhouqi"></i> panelBeforeRender</td>
 			<td>列表面板上面的渲染函数</td>
-			<td>function(tool){return ReacNode|Element;}</td>
+			<td>function(tool){return ReacNode;}</td>
 			<td>--</td>
 		</tr>
 		<tr>
 			<td><i class="zero-icon zerod-shengchangzhouqi"></i> panelAfterRender</td>
 			<td>列表面板下面的渲染函数</td>
-			<td>function(tool){return ReacNode|Element;}</td>
+			<td>function(tool){return ReacNode;}</td>
 			<td>--</td>
 		</tr>
 		<tr>
 			<td><i class="zero-icon zerod-shengchangzhouqi"></i> moreContentRender</td>
 			<td>分页控件下面更多内容的渲染函数</td>
-			<td>function(tool){return ReacNode|Element;}</td>
+			<td>function(tool){return ReacNode;}</td>
 			<td>--</td>
 		</tr>
 			<tr>

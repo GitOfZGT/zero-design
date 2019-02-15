@@ -95,13 +95,13 @@ let defaultConfig = {
 		<tr>
 			<td><i class="zero-icon zerod-shengchangzhouqi"></i> panelBeforeRender</td>
 			<td>列表面板上面的渲染函数</td>
-			<td>function(detail,tool){return ReacNode|Element;}</td>
+			<td>function(detail,tool){return ReacNode}</td>
 			<td>--</td>
 		</tr>
 		<tr>
 			<td><i class="zero-icon zerod-shengchangzhouqi"></i> panelAfterRender</td>
 			<td>列表面板下面的渲染函数</td>
-			<td>function(detail,tool){return ReacNode|Element;}</td>
+			<td>function(detail,tool){return ReacNode;}</td>
 			<td>--</td>
 		</tr>
 			<tr>

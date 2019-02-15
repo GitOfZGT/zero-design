@@ -320,13 +320,13 @@ export default ZeditSimpleFormHOC(pageConfig);
 		<tr>
 			<td><i class="zero-icon zerod-shengchangzhouqi"></i> panelBeforeRender</td>
 			<td>列表面板上面的渲染函数</td>
-			<td>function(detail,tool){return ReacNode|Element;}</td>
+			<td>function(detail,tool){return ReacNode;}</td>
 			<td>--</td>
 		</tr>
 		<tr>
 			<td><i class="zero-icon zerod-shengchangzhouqi"></i> panelAfterRender</td>
 			<td>列表面板下面的渲染函数</td>
-			<td>function(detail,tool){return ReacNode|Element;}</td>
+			<td>function(detail,tool){return ReacNode;}</td>
 			<td>--</td>
 		</tr>
 	</tbody>
@@ -385,7 +385,7 @@ export default ZeditSimpleFormHOC(pageConfig);
         <tr>
 			<td><i class="zero-icon zerod-shengchangzhouqi"></i> submitBtnRender</td>
 			<td>同 <span class="z-history-href" data-path="/main/component-doc/Zform-doc">组件/Zform</span> 的submitBtnRender属性</td>
-			<td>funtion(onSubmit,props,tool){return ReactNode | Element;}</td>
+			<td>funtion(onSubmit,props,tool){return ReactNode;}</td>
 			<td>--</td>
 		</tr>
 		<tr>

@@ -216,7 +216,7 @@ class Myjavascript extends React.PureComponent {
 		<tr>
 			<td><i class="zero-icon zerod-shengchangzhouqi"></i> render</td>
 			<td>渲染表单控件的钩子。支持异步加载：必须return的是Promise对象。例如使用了后台接口：(form,changeFormItems)=>api.getOptions.then(re=>{return 表单控件})。changeFormItems 是一个方法，主要用于局部改变items，实现表单控件之间交互联动,使用方式请往下看</td>
-			<td>(form,changeFormItems)=>{return ReactNode | Element | Promise}</td>
+			<td>(form,changeFormItems)=>{return ReactNode | Promise}</td>
 			<td>--</td>
 		</tr>
 		<tr>

@@ -55,7 +55,7 @@ const menus = [
 	<tbody>
 		<tr>
 			<td>menuData</td>
-			<td>菜单数据，每个对象的属性有iconClass：小图标、name、path：路由地址必须以"/"开头的、若有子菜单，则还有children属性。iconClass默认支持antd的Icon组件的type,还支持函数return自定义图标, (请使用变量缓存所需设置的值而非直接使用字面量)</td>
+			<td>菜单数据，每个对象的属性有iconClass：小图标、name、path：路由地址必须以"/"或"http"开头的、newWindow:是否打开新的浏览器标签页、若有子菜单，则还有children属性。iconClass默认支持antd的Icon组件的type,还支持函数return自定义图标, (请使用变量缓存所需设置的值而非直接使用字面量)</td>
 			<td>array[object]</td>
 			<td>-</td>
 		</tr>

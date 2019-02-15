@@ -50,6 +50,7 @@ $--p: 8px;
 }
 
 @include z("picker") {
+	outline:none;
 	position: absolute;
 	box-sizing: content-box;
 	:global{

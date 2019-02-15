@@ -192,6 +192,12 @@ class Myjavascript extends React.PureComponent {
 		</tr>
 	</thead>
 	<tbody>
+		 <tr>
+			<td>labelLayout</td>
+			<td>label的布局方式</a></td>
+			<td>'horizontal'|'vertical'|'inline'</td>
+			<td>'vertical'</td>
+		</tr>
 		<tr>
 			<td>items</td>
 			<td>生成表单的json数组，请看下面的items结构, (请使用变量缓存所需设置的值而非直接使用字面量)</td>
@@ -206,7 +212,7 @@ class Myjavascript extends React.PureComponent {
 		</tr>
 		<tr>
 			<td>onSubmit</td>
-			<td>触发保存按钮会先验证表单是否通过,通过了当submitMsg不为空时会打开确认提示框,确认后才调用onSubmit,onSubmit函数必须返回Promise对象才能关闭提示框，如果存在otherForms,values是一个数组，否则是一个对象</td>
+			<td>触发保存按钮会先验证表单是否通过,通过了当confirm.show为ture会打开确认提示框,确认后才调用onSubmit,onSubmit函数必须返回Promise对象才能关闭提示框，如果存在otherForms,values是一个数组，否则是一个对象</td>
 			<td>function(values){return Promise.resolve()}</td>
 			<td>--</td>
 		</tr>
@@ -214,20 +220,20 @@ class Myjavascript extends React.PureComponent {
 			<td><i class="zero-icon zerod-shengchangzhouqi"></i> submitBtnName</td>
 			<td>提交按钮的名称，如果为空则不显示默认的提交按钮</td>
 			<td>string | furnction(){
-				return ReactNode | Element;
+				return ReactNode;
 			}</td>
 			<td>保存</td>
 		</tr>
         <tr>
-			<td>submitMsg</td>
-			<td>提交表单时的确认提示框文本，如果为空，则不会打开提示框直接调用onSubmit函数</td>
+			<td><del>submitMsg</del></td>
+			<td><del>提交表单时的确认提示框文本，如果为空，则不会打开提示框直接调用onSubmit函数</del>，submitMsg已经被 confirm.content替代，这里保留着向下兼容</td>
 			<td>string</td>
 			<td>点击确定按钮提交数据</td>
 		</tr>
         <tr>
 			<td><i class="zero-icon zerod-shengchangzhouqi"></i> submitBtnRender</td>
 			<td>渲染提交按钮的函数，可以用自定义内容替换默认的提交按钮;参数有onSubmit：内置的提交按钮的方法，props:Zform组件的props,可以取得props.form</td>
-			<td>funtion(onSubmit,props){return ReactNode | Element;}</td>
+			<td>funtion(onSubmit,props){return ReactNode;}</td>
 			<td>--</td>
 		</tr>
         <tr>
@@ -249,15 +255,15 @@ class Myjavascript extends React.PureComponent {
 			<td>--</td>
 		</tr>
 		 <tr>
-			<td>labelLayout</td>
-			<td>label的布局方式</a></td>
-			<td>'horizontal'|'vertical'|'inline'</td>
-			<td>'vertical'</td>
-		</tr>
-		 <tr>
 			<td>otherForms</td>
 			<td>有时存在多个Zform时，只想有一个保存按钮来触发提交，当触发保存时，会调用otherForms函数，otherForms应该return一个其他form对象的数组，会加上当前的form一起验证表单是否通过，通过了才会调用onSubmit</td>
 			<td>function(){return [form1,form2]}</td>
+			<td>--</td>
+		</tr>
+		 <tr>
+			<td>confirm</td>
+			<td>是一个对象，触发保存按钮后的确认提示框的配置，包含<a href="https://ant.design/components/modal-cn/" target="_blank"> Antd的Modal的属性（除了onOk）</a>，还包含 show属性(如果为false则不会出现确认提示框，直接调用onSubmit函数)</td>
+			<td>object</td>
 			<td>--</td>
 		</tr>
 	</tbody>
@@ -298,7 +304,7 @@ class Myjavascript extends React.PureComponent {
 		<tr>
 			<td><i class="zero-icon zerod-shengchangzhouqi"></i> render</td>
 			<td>渲染表单控件的钩子。支持异步加载：必须return的是Promise对象。例如使用了后台接口：(form,changeFormItems)=>api.getOptions.then(re=>{return 表单控件})。changeFormItems 是一个方法，主要用于局部改变items，实现表单控件之间交互联动,使用方式请往下看</td>
-			<td>(form,changeFormItems)=>{return ReactNode | Element | Promise}</td>
+			<td>(form,changeFormItems)=>{return ReactNode | Promise}</td>
 			<td>--</td>
 		</tr>
 		<tr>

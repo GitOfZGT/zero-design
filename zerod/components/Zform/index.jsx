@@ -24,8 +24,10 @@ export const Zform = Form.create()(
 			submitBtnRender: PropTypes.func,
 			afterItemsRendered: PropTypes.func, // 表单控件渲染完的回调
 			otherForms: PropTypes.func, // 取得其他表单对象
+			confirm: PropTypes.object, // antd 的 modal 参数
 		};
 		static defaultProps = {
+			confirm: {},
 			items: [{ lable: "字段名", key: "name", options: {}, render: (form, panel) => <Input /> }],
 			submitMsg: "点击确定按钮提交数据",
 			defaultSpan: { xxl: 6, xl: 8, lg: 12, md: 24 },
@@ -42,10 +44,9 @@ export const Zform = Form.create()(
 				const forms = dataType.isFunction(this.props.otherForms)
 					? this.props.otherForms(this.props.form).concat([this.props.form])
 					: [this.props.form];
-				let valided = true;
 				let formsValues = [];
-				for (let index = 0; index < forms.length; index++) {
-					const form = forms[index];
+				const valideds = forms.map((form) => {
+					let valided = true;
 					form.validateFields((err, values) => {
 						if (err) {
 							valided = false;
@@ -60,18 +61,28 @@ export const Zform = Form.create()(
 						}
 						formsValues.push(values);
 					});
-					if (!valided) break;
+					return valided;
+				});
+				//有一个验证失败，就阻止
+				if (
+					valideds.some((valid) => {
+						return !valid;
+					})
+				) {
+					return;
 				}
-				if (!valided) return;
-				if (this.props.submitMsg) {
+				const { onOk, content, show, ...others } = this.props.confirm;
+				//submitMsg本可以弃掉，这里为了兼容，confirm的参数可以代替submitMsg
+				if ((dataType.isBoolean(show) && show) || (this.props.submitMsg && !dataType.isBoolean(show))) {
 					Modal.confirm({
 						title: "确定好提交了吗?",
-						content: this.props.submitMsg,
+						content: content ? content : this.props.submitMsg,
 						onOk: (e) => {
 							return this.props.onSubmit
 								? this.props.onSubmit(formsValues.length == 1 ? formsValues[0] : formsValues)
 								: Promise.resolve();
 						},
+						...others,
 					});
 				} else {
 					this.props.onSubmit && this.props.onSubmit(formsValues.length == 1 ? formsValues[0] : formsValues);

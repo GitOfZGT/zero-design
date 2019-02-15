@@ -16,7 +16,8 @@
 
 ```jsx
 // react
-import React from "react";import ZpureComponent from "zerod/components/ZpureComponent";
+import React from "react";
+import ZpureComponent from "zerod/components/ZpureComponent";
 import PropTypes from "prop-types";
 // zerod
 import { Zlayout, ZmainHOC } from "zerod";
@@ -266,7 +267,7 @@ export default ZmainHOC(pageConfig);
 		<tr>
 			<td><i class="zero-icon zerod-shengchangzhouqi"></i> globalLoading</td>
 			<td>加载前要显示的一个全局loading</td>
-			<td>Element | ReactNode | function(){return ;}</td>
+			<td>ReactNode | function(){return ;}</td>
 			<td>--</td>
 		</tr>
 		<tr>
@@ -301,7 +302,9 @@ export default ZmainHOC(pageConfig);
 		</tr>
 		<tr>
 			<td>componentDidMount</td>
-			<td>main组件加载完的钩子,考虑到可能走后台接口,提供一个一定要调用的callback，这个函数可传入两个可选参数:callback(userInfo = {}, menuData = []),userInfo是用户登录后要储存的一个对象，menuData是侧边导航的数据(map结构由pageConfig.sideMenu.mapKeys对应)。$router:是一个对象，提供history和location属性</td>
+			<td><p>main组件加载完的钩子,考虑到可能走异步,提供一个一定要调用的callback</p>
+			<p>callback(userInfo = {}, menuData = []),userInfo是用户登录后要储存的一个对象，menuData是侧边导航的数据(map结构由pageConfig.sideMenu.mapKeys对应)。menuData除了pageConfig.sideMenu.mapKeys对应的属性外，还可以选择添加newWindow:true(点击这个导航打开新的浏览器标签页)</p>
+			<p>$router:是一个对象，提供history和location属性</p></td>
 			<td>function(callback,$router,tool){}</td>
 			<td>--</td>
 		</tr>
@@ -370,14 +373,14 @@ export default ZmainHOC(pageConfig);
 			<td>false</td>
 		</tr>
 		<tr>
-			<td>topOtherMenu</td>
-			<td>追加在上面的导航配置(map结构由pageConfig.sideMenu.mapKeys对应)，中间的导航配置是由pageConfig.componentDidMount中的callback函数注入进去的</td>
+			<td><del>topOtherMenu</del></td>
+			<td><del>追加在上面的导航配置(map结构由pageConfig.sideMenu.mapKeys对应)，中间的导航配置是由pageConfig.componentDidMount中的callback函数注入进去的</del>；其实不需要这属性，直接处理componentDidMount的callback的menuData数据即可</td>
 			<td>array[object]</td>
 			<td>--</td>
 		</tr>
 		<tr>
-			<td>bottomOtherMenu</td>
-			<td>追加在下面的导航配置(map结构由pageConfig.sideMenu.mapKeys对应)</td>
+			<td><del>bottomOtherMenu</del></td>
+			<td><del>追加在下面的导航配置(map结构由pageConfig.sideMenu.mapKeys对应)</del>；其实不需要这属性，直接处理componentDidMount的callback的menuData数据即可</td>
 			<td>array[object]</td>
 			<td>--</td>
 		</tr>
