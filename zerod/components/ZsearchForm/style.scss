@@ -11,9 +11,9 @@
 $--row-gutter: 6px;
 @include z("form-row") {
 	:global {
-		.ant-form-item{
-			margin-bottom: 0;
-		}
+		// .ant-form-item{
+		// 	margin-bottom: 0px;
+		// }
 		.ant-form-item-children,.ant-input-number{
 			width: 100%;
 			display: block;
@@ -24,9 +24,9 @@ $--row-gutter: 6px;
 		.ant-form-item-with-help{
 			margin-bottom: 0px;
 		}
-		.ant-form-explain-holder{
-			line-height: 16px;
-		}
+		// .ant-form-explain-holder{
+		// 	line-height: 16px;
+		// }
 		.ant-form-explain, .ant-form-extra{
 			font-size: 12px;
 		}

@@ -46,5 +46,11 @@
 			<td>funtion(e){}</td>
 			<td>--</td>
 		</tr>
+        <tr>
+			<td>children</td>
+			<td>可选择放一些子内容通过绝对定位浮于背景图之上</td>
+			<td>ReactNode</td>
+			<td>--</td>
+		</tr>
 	</tbody>
 </table>

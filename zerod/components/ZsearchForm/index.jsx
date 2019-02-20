@@ -197,7 +197,6 @@ export const ZsearchForm = Form.create()(
 												<Icon type={this.state.expand ? "up" : "down"} />
 											</Button>
 										) : null}
-										<div className="ant-form-explain-holder" style={{width:"100%"}}></div>
 									</div>
 									
 								</Col>

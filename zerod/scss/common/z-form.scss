@@ -1,8 +1,12 @@
 :global {
+	.z-form-label-vertical .ant-form-item{
+		margin-bottom: 19px;
+	}
 	.z-form-label-horizontal {
 		.ant-form-item {
 			display: flex;
 			flex-wrap: wrap;
+			margin-bottom: 19px;
 		}
 		.ant-form-item-control-wrapper {
 			flex: 1;
@@ -50,7 +54,7 @@
 				position: absolute;
 				padding: 0 6px;
 				background-color: white;
-				bottom: 12px;
+				bottom: -6px;
 				right: 11px;
 			}
 		}

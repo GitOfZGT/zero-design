@@ -2,13 +2,9 @@
 
 # 主页布局：ZmainHOC
 
-`ZmainHOC`是一个函数，传入`pageConfig`参数配置，返回一个主页布局结构的`路由组件`(我们这里称它为`main`组件)
+`ZmainHOC`是一个函数，传入`pageConfig`参数配置，返回一个主页布局结构(内置固定一种二级路由布局)的`组件`(我们这里称它为`main`组件)，凡是二级路由的子组件都可以使用<span class="z-history-href" data-path="/main/context-doc/ZerodMainContext-doc">上下文/ZerodMainContext</span>
 
-在`zerod-admin-webpack 脚手架`的`src/views/Main/index.jsx`已经使用。
-
-只有使用了`ZmainHOC`后，它内部的子孙组件才能使用`ZerodMainContext`的内容。
-
-且`ZsearchListHOC`、`ZeditSimpleFormHOC`、`ZdetailSimpleBaseHOC`、`ZeditorTreeHOC`就应该是`ZmainHOC`的子孙组件才能发挥所长
+如果想`自定义布局结构`，又想能使用<span class="z-history-href" data-path="/main/context-doc/ZerodMainContext-doc">上下文/ZerodMainContext</span>，ZmainHOC 需要的参数就不是 pageConfig 参数配置 ，而是自己写的 Main 组件：`ZmainHOC(MainComponent,componentDidMount)`
 
 1、基本使用
 
@@ -212,9 +208,104 @@ class UserDropdown extends ZpureComponent {
 export default ZmainHOC(pageConfig);
 ```
 
-## 重点
+3、自定义布局
 
-在主页中定义了两种打开右边窗口的模式，如需调用打开右边窗口和调用显示 loading 的方法请 <span class="z-history-href" data-path="/main/context-doc/ZerodMainContext-doc">查看 上下文/ZerodMainContext</span>
+<div class="z-demo-box" data-render="demo3" data-title="ZmainHOC(MainComponent,componentDidMount)"></div>
+
+```jsx
+import logo from "@/assets/images/logo.png";
+import mainRoutes from "@/Main/load-child-routes.js";
+class Logo extends React.PureComponent {
+	static propTypes = {
+		getLogoMethods: PropTypes.func,
+	};
+	state = {
+		showTitle: true,
+	};
+	toggleTitle = (show) => {
+		this.setState({
+			showTitle: show,
+		});
+	};
+	componentDidMount() {
+		this.props.getLogoMethods &&
+			this.props.getLogoMethods({
+				toggleTitle: this.toggleTitle,
+			});
+	}
+	render() {
+		return (
+			<div className="z-flex-items-v-center" style={{ height: "100%" }}>
+				<img src={logo} alt="" width="32" className="z-margin-left-24" />
+				{this.state.showTitle ? (
+					<span className="z-margin-left-12 z-font-size-20" style={{ fontWeight: 600, color: "white" }}>
+						Zero-design
+					</span>
+				) : null}
+			</div>
+		);
+	}
+}
+class Main extends React.Component {
+	componentDidMount() {}
+	render() {
+		//自定义主页布局，经过ZmainHOC包装的组件，会this.props.getSideMenuTemplate和this.props.getMaimRouteTemplate两个方法
+		return (
+			<Zlayout>
+				<Zlayout.Zheader style={{ backgroundColor: "#0A1131" }}>
+					<Logo />
+				</Zlayout.Zheader>
+				<Zlayout.Zbody scroll={false}>
+					<Zlayout flexRow>
+						<Zlayout width={"320px"}>
+							{this.props.getSideMenuTemplate({
+								theme: "dark",
+								isCollapse: false,
+								openAllSubmenu: true,
+							})}
+						</Zlayout>
+						<Zlayout>{this.props.getMaimRouteTemplate("my_main_body")}</Zlayout>
+					</Zlayout>
+				</Zlayout.Zbody>
+			</Zlayout>
+		);
+	}
+}
+const NewMain = ZmainHOC(Main, (callback) => {
+	//同pageConfig的componentDidMount函数
+	callback(
+		//保存的用户信息
+		{},
+		//侧边导航数据
+		[
+			{
+				permUrl: "start-doc",
+				permName: "开始",
+			},
+			{
+				permUrl: "standard-doc",
+				permName: "开发约定规范",
+			},
+			{
+				permUrl: "mobile-doc",
+				permName: "移动端开发",
+			},
+			{
+				permUrl: "zTool-doc",
+				permName: "工具函数：zTool",
+			},
+			{
+				permUrl: "style-doc",
+				permName: "通用样式",
+			},
+		],
+		//mapKeys
+		{ iconClass: "permIconUrl", path: "permUrl", name: "permName", children: "children" },
+		//路由配置数据
+		mainRoutes,
+	);
+});
+```
 
 <div class="z-doc-titles"></div>
 
@@ -399,6 +490,77 @@ export default ZmainHOC(pageConfig);
 	</tbody>
 </table>
 
+<div class="z-doc-titles"></div>
+
+## 自定义主页布局
+
+如果想自定义布局结构，又想能使用<span class="z-history-href" data-path="/main/context-doc/ZerodMainContext-doc">上下文/ZerodMainContext</span>，ZmainHOC 需要的参数就不是 pageConfig 参数配置 ，而是自己写的 Main 组件：`ZmainHOC(MainComponent,componentDidMount)`,其中 componentDidMount 参数同 pageConfig 的 componentDidMount
+
+```jsx
+//componentDidMount的callback调用需多些参数
+const NewMain= ZmainHOC(MainComponent, (callback) => {
+	//callback必须调用，可在异步之后调用
+	callback(
+		//保存的用户信息
+		{},
+		//侧边导航数据
+		[
+			{
+				permUrl: "start-doc",
+				permName: "开始",
+			},
+		],
+		//mapKeys  同 pageConfig.sideMenu 的mapKeys
+		{ iconClass: "permIconUrl", path: "permUrl", name: "permName", children: "children" },
+		//路由配置数据,同pageConfig的mainRoutes
+		mainRoutes,
+	);
+});
+```
+
+这时`MainComponent`组件的 props 会添加`getSideMenuTemplate`和`getMaimRouteTemplate`两个方法，可在`MainComponent`组件的 render 函数中使用
+
+```jsx
+//得到的sideMenuBody是侧边导航布局内容，必须放进Zlayout内
+const sideMenuBody = this.props.getSideMenuTemplate({
+	theme: "mazarine", //同pageConfig的theme : light | dark | mazarine
+	isCollapse: false, //是否折叠侧边导航
+	openAllSubmenu: false, //是否默认打开所有的二级导航
+	onSelect: function({ item, key, selectedKeys }) {}, //同ZsideMenu的onSelect
+});
+//得到的mainRouteBody是二级路由区域布局内容，必须放进Zlayout内
+const mainRouteBody = this.props.getMaimRouteTemplate(id); //id可选，当一个应用中出现两次 ZmainHOC时，就要用id区分
+```
+
+必须使用 <span class="z-history-href" data-path="/main/component-doc/Zlayout-doc">组件/Zlayout</span> 来布局
+
+```jsx
+class MainComponent extends React.Component {
+	componentDidMount() {}
+	render() {
+		//自定义主页布局，经过ZmainHOC包装的组件，会有this.props.getSideMenuTemplate和this.props.getMaimRouteTemplate两个方法
+		return (
+			<Zlayout>
+				<Zlayout.Zheader style={{ backgroundColor: "#0A1131" }}>
+					<Logo />
+				</Zlayout.Zheader>
+				<Zlayout.Zbody scroll={false}>
+					<Zlayout flexRow>
+						<Zlayout width={"320px"}>
+							{this.props.getSideMenuTemplate({
+								theme: "dark",
+								isCollapse: false,
+								openAllSubmenu: true,
+							})}
+						</Zlayout>
+						<Zlayout>{this.props.getMaimRouteTemplate("my_main_body")}</Zlayout>
+					</Zlayout>
+				</Zlayout.Zbody>
+			</Zlayout>
+		);
+	}
+}
+```
 <div class="z-doc-titles"></div>
 
 ## tool 参数
