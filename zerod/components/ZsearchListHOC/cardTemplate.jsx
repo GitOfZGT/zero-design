@@ -1,4 +1,4 @@
-import React from "react";import ZpureComponent from "../ZpureComponent";
+import React from "react";
 import { animateTimout } from "../constant";
 import { Button, Card, Row, Col, Pagination } from "antd";
 import { CSSTransition, TransitionGroup } from "react-transition-group";

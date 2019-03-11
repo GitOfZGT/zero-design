@@ -277,19 +277,24 @@ class ZlistPanel extends ZpureComponent {
 				okType: "danger",
 				cancelText: "取消",
 				onOk: () => {
-					return new Promise((resolve, rejects) => {
-						this.props
-							.deleteApiInterface(row, this.getExportSomething())
-							.then((re) => {
-								this.methods.notice.success("删除成功");
-								this.methods.removeOneData(row);
-								resolve();
-							})
-							.catch((re) => {
-								this.methods.notice.error(re && re.msg ? re.msg : "删除失败");
-								rejects();
-							});
-					});
+					const pro = this.props.deleteApiInterface(row, this.getExportSomething());
+					if (dataType.isPromise(pro)) {
+						return new Promise((resolve, rejects) => {
+							this.props
+								.deleteApiInterface(row, this.getExportSomething())
+								.then((re) => {
+									this.methods.notice.success("删除成功");
+									this.methods.removeOneData(row);
+									resolve();
+								})
+								.catch((re) => {
+									this.methods.notice.error(re && re.msg ? re.msg : "删除失败");
+									rejects();
+								});
+						});
+					} else {
+						return Promise.resolve();
+					}
 				},
 			});
 		},
@@ -369,7 +374,11 @@ class ZlistPanel extends ZpureComponent {
 			updateBtnDisabled,
 			deleteBtnDisabled,
 		} = this.props;
-		return showDetailBtn || showUpdateBtn || showDeleteBtn || this.hasMoreMenu||typeof this.props.actionRender === "function"
+		return showDetailBtn ||
+			showUpdateBtn ||
+			showDeleteBtn ||
+			this.hasMoreMenu ||
+			typeof this.props.actionRender === "function"
 			? [
 					{
 						title: "操作",
