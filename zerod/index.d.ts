@@ -41,3 +41,5 @@ export { default as ZpureComponent } from "./components/ZpureComponent";
 export { default as ZfullLayer } from "./components/ZfullLayer";
 export { default as Zscheduling } from "./components/Zscheduling";
 export { default as ZschedulingTable } from "./components/ZschedulingTable";
+export { default as ZpopoverButton } from "./components/ZpopoverButton";
+export { default as ZliveForm } from "./components/ZliveForm";

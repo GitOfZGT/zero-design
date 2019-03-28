@@ -272,19 +272,23 @@ export function const_changeFormItems(newItems, part = false) {
 			itemsKeys = [{ key: newItems.key }];
 			items = [newItems];
 		} else if (dataType.isArray(newItems)) {
-			itemsKeys = newItems.map((item) => item.key);
+			itemsKeys = newItems.map((item) => ({ key: item.key }));
 			items = newItems;
 		}
 		const needChangeItems = arrayFilterBy(this.state.items, itemsKeys);
 		needChangeItems.forEach((item, i) => {
 			const formItem = item.ref.current;
-			Object.keys(items[i]).forEach((k) => {
-				if (k == "show") {
-					formItem.methods.showItem(items[i].show);
-				} else if (k == "loading") {
-					formItem.methods.showLoading(items[i].loading);
-				} else if (k == "newItem") {
-					formItem.methods.changeItem(items[i].newItem);
+			const theItem = arrayFilterBy(items, { key: item.key })[0];
+			if (theItem) {
+				if (theItem.hasOwnProperty("loading")) {
+					formItem.methods.showLoading(theItem.loading);
+					return;
+				}
+				if (theItem.hasOwnProperty("show")) {
+					formItem.methods.showItem(theItem.show);
+				}
+				if (theItem.hasOwnProperty("newItem")) {
+					formItem.methods.changeItem(theItem.newItem);
 					// newItem={
 					// 	control:<Input></Input>,
 					// 	span:{lg:12},
@@ -293,7 +297,7 @@ export function const_changeFormItems(newItems, part = false) {
 					// 	label:"",
 					// }
 				}
-			});
+			}
 		});
 	} else {
 		this.execAsync(newItems);

@@ -144,7 +144,7 @@ export const ZsearchForm = Form.create()(
 			return items.map((item, i) => {
 				return (
 					<CSSTransition
-						key={item.key + "_" + i}
+						key={item.key}
 						timeout={animateTimout.flipInTime}
 						classNames="fadeIn-to-down"
 					>

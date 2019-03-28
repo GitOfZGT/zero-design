@@ -112,6 +112,9 @@ export const Zform = Form.create()(
 			changeFormItems: (newItems, part = false) => {
 				const_changeFormItems.call(this, newItems, part);
 			},
+			getInsideItems:()=>{
+				return this.state.items;
+			}
 		};
 		setFieldsValue(values) {
 			values = values ? values : this.props.formDefaultValues;
@@ -138,7 +141,6 @@ export const Zform = Form.create()(
 		componentDidMount() {
 			this.execAsync();
 			this.props.getFormInstance && this.props.getFormInstance(this.props.form, this.methods);
-
 			this.props.getInbuiltTool &&
 				this.props.getInbuiltTool({
 					form: this.props.form,
@@ -161,11 +163,7 @@ export const Zform = Form.create()(
 			// const { getFieldDecorator } = this.props.form;
 			const formItems = this.state.items.map((item, i) => {
 				return (
-					<CSSTransition
-						key={item.key + "_" + i}
-						timeout={animateTimout.flipInTime}
-						classNames="fadeIn-to-down"
-					>
+					<CSSTransition key={item.key} timeout={animateTimout.flipInTime} classNames="fadeIn-to-down">
 						<ColFormItem
 							loading={item.loading}
 							form={this.props.form}

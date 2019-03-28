@@ -14,10 +14,16 @@ class ColFormItem extends React.PureComponent {
 			});
 		},
 		getStateItem: () => this.state.item,
-		changeItem: (newItem = {}) => {
-			this.setState({
-				item: { ...this.state.item, ...newItem },
-			});
+		changeItem: (newItem) => {
+			if (dataType.isObject(newItem)) {
+				this.setState({
+					item: { ...this.state.item, ...newItem },
+				});
+			} else if (newItem == "reset") {
+				this.setState({
+					item: this.props.item,
+				});
+			}
 		},
 		showItem: (show) => {
 			this.setState({
@@ -31,7 +37,7 @@ class ColFormItem extends React.PureComponent {
 		show: true,
 		focus: false,
 	};
-	componentDidUpdate(prevProps) {
+	componentDidUpdate(prevProps, prevState) {
 		if (this.props.item !== prevProps.item) {
 			this.setState({
 				item: this.props.item,
@@ -95,11 +101,11 @@ class ColFormItem extends React.PureComponent {
 			<Col {...span} className={item.className}>
 				{isFormItem ? (
 					<Form.Item
-						label={!this.state.loading ? item.label : ""}
+						label={!this.state.loading ? item.label : this.props.labelLayout != "inline" ? "加载中" : ""}
 						className={`z-form-item ${formItemClassName}`}
 					>
 						{loader}
-						{this.state.loading ? <Input placeholder="加载中" disabled /> : control}
+						{this.state.loading ? <Input placeholder="加载中..." disabled /> : control}
 					</Form.Item>
 				) : (
 					<div>

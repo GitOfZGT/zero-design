@@ -6,9 +6,6 @@
 $--row-gutter: 6px;
 @include z("form-row") {
 	:global {
-		// .ant-form-item {
-		// 	margin-bottom: 0px;
-		// }
 		.ant-form-item-children,
 		.ant-input-number {
 			width: 100%;
@@ -16,9 +13,6 @@ $--row-gutter: 6px;
 		}
 		.ant-calendar-picker {
 			width: 100% !important;
-		}
-		.ant-form-item-with-help {
-			margin-bottom: 0px;
 		}
 		.ant-form-explain,
 		.ant-form-extra {
