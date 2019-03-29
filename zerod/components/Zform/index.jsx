@@ -155,6 +155,9 @@ export const Zform = Form.create()(
 			if (this.props.items !== prevProps.items && !this.allAsync.length) {
 				this.execAsync();
 			}
+			if(this.props.form!==prevProps.form){
+				this.props.getFormInstance && this.props.getFormInstance(this.props.form, this.methods);
+			}
 		}
 		componentWillUnmount() {
 			this.unmounted = true;
@@ -185,7 +188,7 @@ export const Zform = Form.create()(
 					className={`${cssClass["z-form"]} ${className ? className : ""}`}
 					style={style}
 				>
-					<Row type="flex" className={`${cssClass["z-form-row"]} ${"z-form-label-" + labelLayout}`}>
+					<Row type="flex" className={`z-form-row ${"z-form-label-" + labelLayout}`}>
 						<TransitionGroup component={null} enter={true} exit={true} appear={true}>
 							{this.getFormItems()}
 						</TransitionGroup>

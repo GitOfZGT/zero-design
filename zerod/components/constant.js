@@ -594,3 +594,42 @@ export function const_searchFormNode() {
 		) : null;
 	}
 }
+
+export const const_showRightModal = function(show, witch, content, scroll, onTransitionend, wrapperEl, width,mask) {
+	let opt = null;
+	if (dataType.isObject(show)) {
+		opt = show;
+		show = opt.show;
+		witch = opt.modal;
+		content = opt.content;
+		scroll = opt.scroll;
+		onTransitionend = opt.onTransitionend;
+		wrapperEl = opt.wrapperEl;
+		width = opt.width;
+		mask=opt.mask;
+	}
+	this.RightModalsRef.current.methods.changeModals(
+		{
+			show,
+			content,
+			scroll,
+			witch,
+			onTransitionend,
+			width,
+			mask,
+		},
+		wrapperEl ? wrapperEl : this.defaultWrapper ? this.defaultWrapper : document.body,
+	);
+};
+export const const_showModalLoading = function(show, witch) {
+	const modal = this.RightModalsRef.current.methods.findModal(witch);
+	modal && modal.ref.current.methods.showModalLoading(show);
+};
+export const const_getModalScrollInstance = function(witch) {
+	const modal = this.RightModalsRef.current.methods.findModal(witch);
+	return modal && modal.ref.current.methods.getScrollInstance();
+};
+export const const_getScrollAreaWrapperEl = function(witch) {
+	const modal = this.RightModalsRef.current.methods.findModal(witch);
+	return modal && modal.ref.current.methods.getWrapperEl();
+};

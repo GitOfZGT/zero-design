@@ -7,26 +7,3 @@
 		height: 0;
 	}
 }
-
-$--row-gutter: 6px;
-@include z("form-row") {
-	:global {
-		.ant-form-item-children,.ant-input-number{
-			width: 100%;
-			display: block;
-		}
-		.ant-calendar-picker{
-			width:100% !important;
-		}
-		.ant-form-explain, .ant-form-extra{
-			font-size: 12px;
-		}
-
-	}
-	margin-left: -$--row-gutter;
-	margin-right: -$--row-gutter;
-	& > div {
-		padding-left: $--row-gutter;
-		padding-right: $--row-gutter;
-	}
-}

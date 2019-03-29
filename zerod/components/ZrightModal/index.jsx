@@ -4,16 +4,18 @@ import PropTypes from "prop-types";
 import { Icon } from "antd";
 
 import cssClass from "./style.scss";
-import Zlayout from "../Zlayout";
+// import Zlayout from "../Zlayout";
 import ZpageLoading from "../ZpageLoading";
 import { once } from "../zTool";
-
+import RightModals from "./RightModals";
+import ModalContent from "./ModalContent";
 export class ZrightModal extends ZpureComponent {
 	static propTypes = {
 		show: PropTypes.bool,
 		onClose: PropTypes.func,
 		getWrapperEl: PropTypes.func, //
 		showLoading: PropTypes.bool,
+		mask: PropTypes.bool,
 		scroll: PropTypes.bool,
 		getScrollInstance: PropTypes.func,
 		onTransitionend: PropTypes.func,
@@ -24,6 +26,7 @@ export class ZrightModal extends ZpureComponent {
 	};
 	static defaultProps = {
 		scroll: true,
+		mask: true,
 		show: false,
 		zIndex: 999,
 		width: "90%",
@@ -70,12 +73,14 @@ export class ZrightModal extends ZpureComponent {
 					this.setState({
 						transparent: true,
 					});
-					once(this.coverElRef.current, "transitionend", () => {
-						this.setState({
-							showCover: false,
-						});
-						this.showAfter();
-					});
+					this.props.mask
+						? once(this.coverElRef.current, "transitionend", () => {
+								this.setState({
+									showCover: false,
+								});
+								this.showAfter();
+						  })
+						: this.showAfter();
 				}, 100);
 			}
 			document.documentElement.style.overflow = "hidden";
@@ -92,12 +97,14 @@ export class ZrightModal extends ZpureComponent {
 		const { transparent } = this.state;
 		return (
 			<>
-				<div
-					ref={this.coverElRef}
-					className={`${cssClass["z-pop-cover"]} ${transparent ? cssClass["transparent"] : ""}`}
-					style={{ display: this.state.showCover ? "block" : "none", zIndex: this.props.zIndex - 1 }}
-					onClick={this.closeModal}
-				/>
+				{this.props.mask ? (
+					<div
+						ref={this.coverElRef}
+						className={`${cssClass["z-pop-cover"]} ${transparent ? cssClass["transparent"] : ""}`}
+						style={{ display: this.state.showCover ? "block" : "none", zIndex: this.props.zIndex - 1 }}
+						onClick={this.closeModal}
+					/>
+				) : null}
 				<div
 					ref={(el) => (this.boxEl = el)}
 					onClick={(e) => {
@@ -122,19 +129,6 @@ export class ZrightModal extends ZpureComponent {
 		);
 	}
 }
-class ModalContent extends React.PureComponent {
-	render() {
-		return (
-			<Zlayout>
-				<Zlayout.Zbody
-					getWrapperEl={this.props.getWrapperEl}
-					scroll={this.props.scroll}
-					getScrollInstance={this.props.getScrollInstance}
-				>
-					{this.props.children}
-				</Zlayout.Zbody>
-			</Zlayout>
-		);
-	}
-}
+
+ZrightModal.RightModals = RightModals;
 export default ZrightModal;

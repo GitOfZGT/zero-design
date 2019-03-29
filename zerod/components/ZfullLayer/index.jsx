@@ -5,14 +5,50 @@ import PropTypes from "prop-types";
 import cssClass from "./style.scss";
 import ZpageLoading from "../ZpageLoading";
 import { once } from "../zTool";
+import ModalContent from "../ZrightModal/ModalContent";
+import RightModals from "../ZrightModal/RightModals";
+import {
+	const_showRightModal,
+	const_showModalLoading,
+	const_getModalScrollInstance,
+	const_getScrollAreaWrapperEl,
+} from "../constant";
+import ZerodLayerContext from "../ZerodLayerContext";
 export class ZfullLayer extends ZpureComponent {
 	static propTypes = {
 		header: PropTypes.node,
 		children: PropTypes.node,
 		exportMethods: PropTypes.func,
+		// getWrapperEl: PropTypes.func,
+		// getScrollInstance: PropTypes.func,
+		scroll: PropTypes.bool,
+	};
+	static defaultProps = {
+		scroll: true,
 	};
 	isScale = false;
+	getWrapperEl = (el) => {
+		this.defaultWrapper = el;
+	};
+	getScrollInstance = (scroll) => {
+		this.layerSroll = scroll;
+	};
 	methods = {
+		showLayerRightModal: (show, witch, content, scroll, onTransitionend, wrapperEl, width) => {
+			const_showRightModal.call(this, show, witch, content, scroll, onTransitionend, wrapperEl, width);
+		},
+		showLayerModalLoading: (show, witch) => {
+			const_showModalLoading.call(this, show, witch);
+		},
+		getLayerModalScrollInstance: (witch) => {
+			return const_getModalScrollInstance.call(this, witch);
+		},
+		getLayerScrollAreaWrapperEl: (witch) => {
+			return const_getScrollAreaWrapperEl.call(this, witch);
+		},
+		showLoading: (show) => {
+			this.ZpageLoadingRef.current.methods.showLoading(show);
+		},
 		showLayer: (show, callback, scale) => {
 			if (show) {
 				this.setState(
@@ -71,9 +107,6 @@ export class ZfullLayer extends ZpureComponent {
 		closeLayer: () => {
 			this.methods.showLayer(false);
 		},
-		showLoading: (show) => {
-			this.ZpageLoadingRef.current.methods.showLoading(show);
-		},
 	};
 	componentDidMount() {
 		this.props.exportMethods && this.props.exportMethods(this.methods);
@@ -86,24 +119,34 @@ export class ZfullLayer extends ZpureComponent {
 	ZpageLoadingRef = React.createRef();
 	bodyElRef = React.createRef();
 	layerElRef = React.createRef();
+	RightModalsRef = React.createRef();
 	render() {
 		const { header, children } = this.props;
 		const { scale, show, transparent } = this.state;
 		return ReactDOM.createPortal(
-			<div
-				ref={this.layerElRef}
-				className={`z-full-layer ${transparent ? "transparent" : ""}`}
-				style={{ display: show ? "block" : "none" }}
-			>
-				<div className="z-full-layer-heading">{header}</div>
-				<div className={`z-full-layer-body ${scale ? "scale" : ""}`} ref={this.bodyElRef}>
-					{children}
+			<ZerodLayerContext.Provider value={this.methods}>
+				<div
+					ref={this.layerElRef}
+					className={`z-full-layer ${transparent ? "transparent" : ""}`}
+					style={{ display: show ? "block" : "none" }}
+				>
+					<div className="z-full-layer-heading">{header}</div>
+					<div className={`z-full-layer-body ${scale ? "scale" : ""}`} ref={this.bodyElRef}>
+						<ModalContent
+							getWrapperEl={this.getWrapperEl}
+							scroll={this.props.scroll}
+							getScrollInstance={this.getScrollInstance}
+						>
+							{children}
+						</ModalContent>
+					</div>
+					<div className="close" onClick={this.methods.closeLayer}>
+						<span className="text">×</span>
+					</div>
+					<ZpageLoading ref={this.ZpageLoadingRef} size="default" />
+					<RightModals ref={this.RightModalsRef} />
 				</div>
-				<div className="close" onClick={this.methods.closeLayer}>
-					<span className="text">×</span>
-				</div>
-				<ZpageLoading ref={this.ZpageLoadingRef} size="default" />
-			</div>,
+			</ZerodLayerContext.Provider>,
 			document.body,
 		);
 	}

@@ -17,6 +17,8 @@ this.props.showRightModal({
 	modal: "mainModal",//modal也可以不写，内部会随机一个
 	content: <div>内容</div>,
 	scroll: true,
+	width:null,//自定义宽度 "400px"||"50%"
+	mask:true,//是否显示遮罩层
 	onTransitionend: (show) => {},
 	// wrapperEl:document.body
 });
@@ -184,9 +186,9 @@ return <OutPut />;
 
 getSideMenuData()返回的是一个数组
 
-## 获取滚动条的实例：getScrollInstance(witch)
+## 获取滚动条的实例：getScrollInstance(modal)
 
-getScrollInstance 方法有一个参数，`witch`:哪个地方的滚动条: "mainRoute" | 与 showRightModal()的 modal 属性对应
+getScrollInstance 方法有一个参数，`modal`:哪个地方的滚动条: "mainRoute" | 与 showRightModal()的 modal 属性对应
 
 <div class="z-doc-titles"></div>
 
@@ -198,9 +200,9 @@ getScrollInstance 方法有一个参数，`witch`:哪个地方的滚动条: "mai
 
 <div class="z-doc-titles"></div>
 
-## 获取滚动条区域的包裹元素：getScrollAreaWrapperEl(witch)
+## 获取滚动条区域的包裹元素：getScrollAreaWrapperEl(modal)
 
-getScrollAreaWrapperEl 方法有一个参数，`witch`:哪个地方的滚动条: "mainRoute" | 与 showRightModal()的 modal 属性对应
+getScrollAreaWrapperEl 方法有一个参数，`modal`:哪个地方的滚动条: "mainRoute" | 与 showRightModal()的 modal 属性对应
 
 当需要某块内容绝对定位于主要内容之上，但不想受滚动条滚动时，可用这方法获取对应得`wrapperEl`，然后使用`ReactDOM.createPortal(内容, wrapperEl)`将内容插入到`wrapperEl`内
 

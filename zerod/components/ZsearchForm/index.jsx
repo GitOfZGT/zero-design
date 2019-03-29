@@ -131,6 +131,9 @@ export const ZsearchForm = Form.create()(
 			) {
 				this.execAsync();
 			}
+			if(this.props.form!==prevProps.form){
+				this.props.getFormInstance && this.props.getFormInstance(this.props.form, this.methods);
+			}
 			// if (this.props.hidden !== prevProps.hidden) {
 			// 	this.setAnimate();
 			// }
@@ -169,7 +172,7 @@ export const ZsearchForm = Form.create()(
 					className={`${cssClass["z-search-form"]} ${className ? className : ""}`}
 				>
 					<Form onSubmit={this.methods.handleSearch} className="z-padding-top-14">
-						<Row type="flex" className={`${cssClass["z-form-row"]} ${"z-form-label-" + labelLayout}`}>
+						<Row type="flex" className={`z-form-row ${"z-form-label-" + labelLayout}`}>
 							<TransitionGroup component={null} enter={true} exit={true} appear={true}>
 								{this.items}
 							</TransitionGroup>
