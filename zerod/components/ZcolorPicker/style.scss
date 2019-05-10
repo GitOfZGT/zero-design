@@ -29,13 +29,13 @@ $--p: 8px;
 		z-index: 2;
 		top: $--p;
 		left: $--p;
-		right:$--p;
+		right: $--p;
 		display: block;
 		// width: $--w - ($--p * 2) - 2;
 		height: $--w - ($--p * 2) - 2;
 		background-color: transparent;
 		outline: 0;
-		&:hover{
+		&:hover {
 			opacity: 0.8;
 		}
 	}
@@ -50,14 +50,16 @@ $--p: 8px;
 }
 
 @include z("picker") {
-	outline:none;
+	outline: none;
 	position: absolute;
 	box-sizing: content-box;
-	:global{
-		div,input,span{
-			box-sizing: content-box;
-		}
-		.flexbox-fix{
+	div,
+	input,
+	span {
+		box-sizing: content-box;
+	}
+	:global {
+		.flexbox-fix {
 			display: flex;
 			flex-wrap: wrap;
 		}

@@ -18,6 +18,7 @@ export class ZfullLayer extends ZpureComponent {
 	static propTypes = {
 		header: PropTypes.node,
 		children: PropTypes.node,
+		type: PropTypes.string,
 		exportMethods: PropTypes.func,
 		// getWrapperEl: PropTypes.func,
 		// getScrollInstance: PropTypes.func,
@@ -25,6 +26,7 @@ export class ZfullLayer extends ZpureComponent {
 	};
 	static defaultProps = {
 		scroll: true,
+		type: "dark",
 	};
 	isScale = false;
 	getWrapperEl = (el) => {
@@ -102,6 +104,9 @@ export class ZfullLayer extends ZpureComponent {
 				this.setState({
 					scale: false,
 				});
+				once(this.bodyElRef.current, "transitionend", () => {
+					this.layerSroll && this.layerSroll.refresh();
+				});
 			}, 10);
 		},
 		closeLayer: () => {
@@ -121,13 +126,13 @@ export class ZfullLayer extends ZpureComponent {
 	layerElRef = React.createRef();
 	RightModalsRef = React.createRef();
 	render() {
-		const { header, children } = this.props;
+		const { header, children, type } = this.props;
 		const { scale, show, transparent } = this.state;
 		return ReactDOM.createPortal(
 			<ZerodLayerContext.Provider value={this.methods}>
 				<div
 					ref={this.layerElRef}
-					className={`z-full-layer ${transparent ? "transparent" : ""}`}
+					className={`z-full-layer ${type} ${transparent ? "transparent" : ""}`}
 					style={{ display: show ? "block" : "none" }}
 				>
 					<div className="z-full-layer-heading">{header}</div>

@@ -37,8 +37,8 @@
 			}
         }
         .z-full-layer-heading{
-            height: $--top;
-            padding:0 $--top 0 20px;
+			height: $--top;
+            // padding:0 $--top 0 20px;
         }
         .z-full-layer-body{
             height: calc(100% - #{$--top});
@@ -50,6 +50,16 @@
 				transform: scale(0);
 				opacity: 0;
 			}
-        }
+		}
+		&.normal .z-full-layer-heading{
+			border-bottom: 1px solid #cccccc;
+		}
+		&.normal .z-full-layer-heading,&.normal .z-full-layer-body{
+			background-color: white;
+		}
+		&.normal .close{
+			color: #666666;
+		}
 	}
+
 }

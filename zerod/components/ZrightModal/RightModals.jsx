@@ -2,10 +2,18 @@ import React from "react";
 import ReactDOM from "react-dom";
 // my component
 import ZrightModal from "./index";
-
-import { dataType, GenNonDuplicateID } from "../zTool/";
-
-export  class RightModals extends React.PureComponent {
+import { Skeleton } from "antd";
+import { dataType, GenNonDuplicateID ,getStyle} from "../zTool/";
+function getParentLen(wrapperEl) {
+	let parLen = 0;
+	let el = wrapperEl;
+	while (el && el.parentElement) {
+		el = el.parentElement;
+		parLen++;
+	}
+	return parLen;
+}
+export class RightModals extends React.PureComponent {
 	methods = {
 		closeAllModal: () => {
 			this.state.modals.forEach((modal) => {
@@ -63,6 +71,14 @@ export  class RightModals extends React.PureComponent {
 					return;
 				}
 				let len = 0;
+				const lasterModal = this.state.modals[this.state.modals.length - 1];
+				if (lasterModal) {
+					const parlen1 = getParentLen(lasterModal.wrapperEl);
+					const parlen2 = getParentLen(wrapperEl);
+					if (parlen1 < parlen2) {
+						wrapperEl = lasterModal.wrapperEl;
+					}
+				}
 				for (let index = 0; index < this.state.modals.length; index++) {
 					const element = this.state.modals[index];
 					if (element.wrapperEl == wrapperEl) {
@@ -76,7 +92,16 @@ export  class RightModals extends React.PureComponent {
 					});
 				}
 				const width = opt.width ? opt.width : 94 - len * 6 + "%";
-				const zIndex = 99 + len * 6;
+				let baseZindex=9;
+				if(wrapperEl&&wrapperEl.children){
+					Array.prototype.slice.call(wrapperEl.children).forEach(child=>{
+						const elZindex=Number(getStyle(child,"z-index"));
+						if(baseZindex<elZindex){
+							baseZindex=elZindex;
+						}
+					})
+				}
+				const zIndex = baseZindex + 1 + len * 6;
 				this.setState(
 					{
 						modals: [
@@ -114,11 +139,17 @@ export  class RightModals extends React.PureComponent {
 			}
 		},
 	};
-	onBeforeClose = (props) => {
+	onBeforeClose = (props, close) => {
 		const index = this.state.modals.findIndex((item) => item.id == props.id);
 		if (index == this.state.modals.length - 1 && this.state.modals.length > 1) {
 			const modalEls = this.methods.getModalEls(props.wrapperEl);
 			modalEls[this.state.modals.length - 2].previousElementSibling.style.backgroundColor = "";
+		}
+		if (index > -1) {
+			const bclose = this.state.modals[index];
+			return typeof bclose.options.onBeforeClose == "function"
+				? bclose.options.onBeforeClose(bclose.options, close)
+				: true;
 		}
 	};
 	state = {
@@ -143,9 +174,23 @@ export  class RightModals extends React.PureComponent {
 }
 
 class RightModalSelf extends React.PureComponent {
+	content = null;
+	onTransitionend = () => {};
 	methods = {
+		setContent: (show) => {
+			this.methods.showModalLoading(false);
+			if (show) {
+				this.setState({
+					content: this.content,
+				});
+			}
+			dataType.isFunction(this.onTransitionend) && this.onTransitionend(show, this.state);
+		},
 		showModal: (opt) => {
-			this.setState(opt);
+			this.content = opt.content;
+			this.onTransitionend = opt.onTransitionend;
+			this.methods.showModalLoading(true);
+			this.setState({ ...opt, content: null, onTransitionend: null });
 		},
 		showModalLoading: (show) => {
 			this.modalRef.current && this.modalRef.current.methods.showLoading(show);
@@ -157,7 +202,16 @@ class RightModalSelf extends React.PureComponent {
 			return { wrapperEl: this.wrapperEl, methods: this.wrapperMethods };
 		},
 		close: () => {
-			this.props.onBeforeClose && this.props.onBeforeClose(this.props);
+			let closed =
+				this.props.onBeforeClose &&
+				this.props.onBeforeClose(this.props, () => {
+					this.setState({
+						show: false,
+					});
+				});
+			if (dataType.isBoolean(closed) && !closed) {
+				return;
+			}
 			this.setState({
 				show: false,
 			});
@@ -169,9 +223,9 @@ class RightModalSelf extends React.PureComponent {
 		width: "90%",
 		show: false,
 		scroll: true,
-		onTransitionend: () => {},
+		// onTransitionend: () => {},
 		content: null,
-		mask:true,
+		mask: true,
 	};
 	modalRef = React.createRef();
 	getScrollInstance = (instance) => (this.ScrollInstance = instance);
@@ -180,10 +234,10 @@ class RightModalSelf extends React.PureComponent {
 		this.wrapperMethods = method;
 	};
 	render() {
-		const { witch, zIndex, width, show, scroll, content, onTransitionend ,mask} = this.state;
-		const newOnTransitionend = (show) => {
-			dataType.isFunction(onTransitionend) && onTransitionend(show, this.state);
-		};
+		const { witch, zIndex, width, show, scroll, content, mask } = this.state;
+		// const newOnTransitionend = (show) => {
+		// 	dataType.isFunction(onTransitionend) && onTransitionend(show, this.state);
+		// };
 		return (
 			<ZrightModal
 				ref={this.modalRef}
@@ -194,13 +248,27 @@ class RightModalSelf extends React.PureComponent {
 				scroll={scroll}
 				getScrollInstance={this.getScrollInstance}
 				onClose={this.methods.close}
-				onTransitionend={newOnTransitionend}
+				onTransitionend={this.methods.setContent}
 				getWrapperEl={this.getWrapperEl}
 				mask={mask}
 			>
-				{content}
+				{content ? (
+					content
+				) : (
+					<div className="z-padding-20">
+						{new Array(4).fill(1).map((a, i) => {
+							return (
+								<div className="z-panel z-margin-bottom-20" key={i}>
+									<div className="z-panel-body">
+										<Skeleton active avatar />
+									</div>
+								</div>
+							);
+						})}
+					</div>
+				)}
 			</ZrightModal>
 		);
 	}
 }
-export default  RightModals;
+export default RightModals;

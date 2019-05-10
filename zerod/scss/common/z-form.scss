@@ -30,7 +30,7 @@
 			outline: none;
 			transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
 			min-height: 38px;
-			padding:0 15px;
+			padding: 0 15px;
 			line-height: 38px;
 		}
 	}
@@ -55,7 +55,9 @@
 	}
 	.z-form-label-inline {
 		.z-form-item {
+			margin-bottom: 12px;
 			.ant-form-item-label {
+				border-radius: 4px 4px 0 0;
 				padding: 0 6px;
 				position: absolute;
 				line-height: 1.4;
@@ -71,6 +73,7 @@
 					color: #b7b9bc;
 				}
 			}
+
 			.ant-form-item-label label:after {
 				display: none;
 			}
@@ -87,6 +90,14 @@
 				// 	color: #80868b;
 				// }
 			}
+			&.has-disabled {
+				.ant-form-item-label {
+					background-color: #f5f5f5;
+					label {
+						color: #6C6C6C;
+					}
+				}
+			}
 			&.focus .ant-form-item-label label {
 				color: #2f6baa;
 			}
@@ -102,7 +113,7 @@
 				right: 11px;
 			}
 			&.ant-form-item-with-help {
-				margin-bottom: 24px;
+				margin-bottom: 12px;
 			}
 		}
 		// .ant-form-item,

@@ -6,6 +6,7 @@ import { deepCopy } from "../zTool";
 export class ZlabelInput extends ZpureComponent {
 	static propTypes = {
 		className: PropTypes.string,
+		size: PropTypes.string,
 		onChange: PropTypes.func,
 		value: PropTypes.object,
 		labelPlaceholder: PropTypes.string,
@@ -42,6 +43,7 @@ export class ZlabelInput extends ZpureComponent {
 			style,
 			labelSpan,
 			valueSpan,
+			size
 		} = this.props;
 		const labelValue = value ? value : {};
 		const _label = labelValue.label ? labelValue.label : "";
@@ -56,6 +58,7 @@ export class ZlabelInput extends ZpureComponent {
 						placeholder={labelPlaceholder}
 						onChange={this.methods.labelChange}
 						disabled={disabled}
+						size={size}
 					/>
 				</Col>
 				<Col span={valueSpan}>
@@ -65,6 +68,7 @@ export class ZlabelInput extends ZpureComponent {
 						placeholder={valuePlaceholder}
 						onChange={this.methods.valueChange}
 						disabled={disabled}
+						size={size}
 					/>
 				</Col>
 			</Input.Group>

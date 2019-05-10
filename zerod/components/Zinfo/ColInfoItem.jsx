@@ -45,7 +45,7 @@ class ColInfoItem extends React.PureComponent {
 		const span = const_itemSpan(control, item.span, item.defaultSpan);
 		return (
 			<Col {...span}>
-				<div className="z-info z-margin-bottom-20 is-border-right">
+				<div className="z-info z-margin-bottom--1 is-border-right">
 					<div
 						className="z-info-left z-padding-bottom-10"
 						style={{ width: item.width ? item.width : "160px" }}

@@ -6,7 +6,29 @@
 
 `zerod` 需要搭配`zerod-admin-webpack`脚手架使用
 
-# zerod-admin-webpack 脚手架 v1.2.1
+安装`zerod`会同时安装以下第三方依赖包：
+
+```json
+{
+	"dependencies": {
+		"contra": "1.9.4",
+		"crossvent": "1.5.4",
+		"iscroll": "^5.2.0",
+		"viewerjs": "^1.2.0",
+		"prismjs": "^1.15.0",
+		"swiper": "^4.3.5",
+		"react-color": "^2.14.1",
+		"lodash.debounce": "^4.0.8",
+		"lodash.throttle": "^4.1.1",
+		"lodash.merge": "^4.6.1",
+		"uuid": "^3.3.2",
+		"blueimp-md5": "^2.10.0",
+		"js-base64": "^2.5.1"
+	}
+}
+```
+
+# zerod-admin-webpack 脚手架 v1.2.3
 
 基于 `react + react-router + redux + react-redux + antd + zerod + scss` 的 webpack4 前端开发环境
 
@@ -37,9 +59,12 @@
 
 生成的 vendor.manifest.json 和 vendor.dll.\*.js 都可以提交 git
 
-如果在开发中发现这个报错：“You are currently using minified code outside of NODE_ENV === "production". This means that you are running a slower development build of Redux.” 可以忽略，npm run build 后是不会有的  
+如果在开发中发现这个报错：“You are currently using minified code outside of NODE_ENV === "production". This means that you are running a slower development build of Redux.” 可以忽略，npm run build 后是不会有的
 
-偶热发现，cnpm install 安装的依赖包依赖链比 npm install 安装的要长的多，所以 npm install 的，运行或打包相对来说快的多。  
+偶热发现，cnpm install 安装的依赖包依赖链比 npm install 安装的要长的多，所以 npm install 的，运行或打包相对来说快的多。
+
+2019-03-28 v1.2.2 babel-polyfill 改用@babel/polyfill，修复@babel/\*更新后报错问题  
+2019-04-20 v1.2.3 加入 Eslint 检测代码规范  
 
 <div class="z-doc-titles"></div>
 
@@ -122,3 +147,5 @@
 5、从私服安装最新 zerod: `npm run npm-zerod`
 
 6、`npm run init` (此命令包含 `rimraf node_modules & npm run npm-zerod & cnpm install & npm run dll`)
+
+7、`npm run eslint`： 全局检测代码规范 前提先要全局安装 `npm install eslint eslint-plugin-react eslint-plugin-react-hooks -g`一次

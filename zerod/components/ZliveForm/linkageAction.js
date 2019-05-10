@@ -1,4 +1,5 @@
 import { arrayFilterBy, dataType } from "../zTool";
+import moment from "moment";
 import controls from "./controls";
 function concatKeys(values, arr, a, d) {
 	if (Array.isArray(values[a.src.fieldKey])) {
@@ -11,6 +12,11 @@ function concatKeys(values, arr, a, d) {
 		}
 	} else if (d.srcValue == values[a.src.fieldKey]) {
 		arr = arr.concat(d.fields);
+	} else if (a.linkageType === "6") {
+		arr = arr.concat({
+			srcFieldKey: a.src.fieldKey,
+			fields: d.fields,
+		});
 	}
 	return arr;
 }
@@ -28,6 +34,7 @@ const initialValueLinkageAction = function(ages = [], getGroupsFn, seftItem) {
 		formObjs.forEach((o) => {
 			values = { ...values, ...o.form.getFieldsValue() };
 		});
+		let cardGetBirthdayKeys = [];
 		let groupHiddenIds = [];
 		let hiddenKeys = [];
 		let disabledKeys = [];
@@ -39,6 +46,12 @@ const initialValueLinkageAction = function(ages = [], getGroupsFn, seftItem) {
 		ages.forEach((a) => {
 			if (values.hasOwnProperty(a.src.fieldKey)) {
 				switch (a.linkageType) {
+					//输入身份证自动联动生日
+					case "6":
+						a.dist.forEach((d) => {
+							cardGetBirthdayKeys = concatKeys(values, cardGetBirthdayKeys, a, d);
+						});
+						break;
 					//隐藏
 					case "5.1":
 						a.dist.forEach((d) => {
@@ -119,7 +132,7 @@ const initialValueLinkageAction = function(ages = [], getGroupsFn, seftItem) {
 				const control =
 					disabledFields.length > 0
 						? controls[e.fieldType].getControl(e, ages, getGroupsFn, {
-								disabled: disabledFields.length > 0,
+								disabled: disabledFields.length > 0 || e.disabled,
 						  })
 						: null;
 				const options =
@@ -150,7 +163,29 @@ const initialValueLinkageAction = function(ages = [], getGroupsFn, seftItem) {
 			const resetSelect = selectOptions.map((item) => item.fieldKey);
 			o.form.validateFields([...resetDisable, ...resetNoRequired]);
 			o.form.resetFields([...resetDisable, ...(hasClearSelect ? resetSelect : [])]);
+			//处理身份证号码获取生日联动到其他控件：
+			if (cardGetBirthdayKeys.length) {
+				cardGetBirthdayKeys.forEach((card) => {
+					if (!card.srcFieldKey) {
+						return;
+					}
+					const formValues = o.form.getFieldsValue();
+					let birthday = values[card.srcFieldKey];
+					card.fields.forEach((field) => {
+						if (formValues.hasOwnProperty(field.fieldKey)) {
+							const val = birthday && birthday.length > 14 ? birthday.substring(6, 14) : "";
+							o.form.setFieldsValue({
+								[field.fieldKey]:
+									field.fieldType == 5 ? moment(stringJoinSyml(val)) : stringJoinSyml(val),
+							});
+						}
+					});
+				});
+			}
 		});
-	}, 10);
+	}, 17);
 };
+function stringJoinSyml(str) {
+	return str.length === 8 ? str.substring(0, 4) + "-" + str.substring(4, 6) + "-" + str.substring(6, 8) : "";
+}
 export default initialValueLinkageAction;

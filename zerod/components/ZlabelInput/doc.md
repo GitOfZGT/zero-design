@@ -86,5 +86,11 @@ class Myjavascript extends ZpureComponent {
 			<td>number</td>
 			<td>14</td>
 		</tr>
+		<tr>
+			<td>size</td>
+			<td></td>
+			<td>number</td>
+			<td>14</td>
+		</tr>
 	</tbody>
 </table>

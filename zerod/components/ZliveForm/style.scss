@@ -1,0 +1,103 @@
+@import "../../scssMixin/generateClassName";
+$--border-color: #89cbfa;
+:global {
+	@include z("live-form-item-clone") {
+		padding: 36px 10px 0 !important;
+		position: absolute !important;
+		border: 1px dashed $--border-color;
+		z-index: 9999;
+		background-color: rgba(255,255,255,0.6);
+		.z-live-tool {
+			display: flex;
+		}
+	}
+	@include z("live-form") {
+		[class*="ant-col-"] {
+			padding: 36px 10px 0;
+			border-width: 1px;
+			border-style: dashed;
+			border-color: #dedede;
+			&:hover {
+				border-color: $--border-color;
+				@include z("live-tool") {
+					display: flex;
+				}
+			}
+			&.gu-transit {
+				border-color: rgba(0, 0, 0,1);
+				background-color:  rgba(0, 0, 0,0.1);
+			}
+			// &.z-ex-moved {
+			// 	border-color: #e74c3c;
+			// }
+		}
+		.z-view-form-panel {
+			border-width: 1px;
+			border-style: dashed;
+			border-color: transparent;
+			&:hover {
+				border-color: $--border-color;
+			}
+		}
+		.ant-form-item {
+			margin-bottom: 10px;
+		}
+	}
+
+	
+	@include z("live-tool") {
+		display: none;
+		justify-content: space-between;
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		z-index: 9;
+		[data-handle] {
+			cursor: move;
+		}
+	}
+	.z-live-tool-item {
+		border-bottom: 1px dashed $--border-color;
+		height: 26px;
+		width: 26px;
+		text-align: center;
+		line-height: 26px;
+		cursor: pointer;
+		display: inline-block;
+		&.all-border {
+			border: 1px dashed $--border-color;
+		}
+		&.left-item {
+			border-right: 1px dashed $--border-color;
+		}
+		&.right-item {
+			border-left: 1px dashed $--border-color;
+		}
+	}
+	.z-liveform-upload-wrapper{
+		display: block;
+		border:1px solid hsl(0, 0%, 85%);
+		border-radius: 4px;
+		padding:15px;
+	}
+	.z-liveform-upload{
+		
+		.ant-upload.ant-upload-select{
+			display: block;
+		}
+	}
+	.z-liveform-upload-btn{
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		height: 38px;
+		border:1px solid hsl(0, 0%, 85%);
+		border-radius: 4px;
+		transition: all 0.25s ease;
+		&:hover{
+			border-color: #5186b8;
+			cursor: pointer;
+		}
+	}
+}

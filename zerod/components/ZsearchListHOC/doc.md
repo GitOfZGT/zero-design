@@ -11,7 +11,8 @@
 <div class="z-demo-box" data-render="demo1" data-title="此demo结合ZeditSimpleFormHOC、ZdetailSimpleBaseHOC的完整示例"></div>
 
 ```jsx
-import React from "react";import ZpureComponent from "zerod/components/ZpureComponent";
+import React from "react";
+import ZpureComponent from "zerod/components/ZpureComponent";
 import { Input, message } from "antd";
 import { ZsearchListHOC, zTool } from "zerod";
 
@@ -23,23 +24,13 @@ import getDetailPage from "./getDetailPage.js";
 const pageConfig = {
 	pageHeader: {
 		show: true,
-		trademark: (
-			<img
-				src="https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png"
-				width="60"
-				className="z-margin-right-15"
-			/>
-		),
+		trademark: <img src="https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png" width="60" className="z-margin-right-15" />,
 		// array>[object] | null,如果是null则不显示面包屑
-		breadcrumbRoutes: [
-			{ path: "config", name: "案例", link: false },
-			{ path: "serviceWithTableList", name: "表格列表", link: true },
-		],
+		breadcrumbRoutes: [{ path: "config", name: "案例", link: false }, { path: "serviceWithTableList", name: "表格列表", link: true }],
 		// any
 		title: "服务器配置",
 		// any
-		content:
-			"微服务的定义，维护其配置。除了Eureka Service及Config Center两种服务不在这里配置，其他服务都必须在此定义和配置！",
+		content: "微服务的定义，维护其配置。除了Eureka Service及Config Center两种服务不在这里配置，其他服务都必须在此定义和配置！",
 		// element | node | function
 		rightMoreContent: <div>右边内容</div>,
 	},
@@ -364,7 +355,7 @@ const pageConfig = {
 		<tr>
 			<td><i class="zero-icon zerod-shengchangzhouqi"></i> actionRender</td>
 			<td>操作区的render,可以自定义操作按钮</td>
-			<td>(text, record,index,tool,isListCard)=>{return [按钮1,按钮2]}</td>
+			<td>(text, record,index,tool,isListCard,getDiffBtn)=>{return [按钮1,按钮2]}</td>
 			<td>--</td>
 		</tr>
 		<tr>
@@ -503,6 +494,12 @@ const pageConfig = {
 			<td>exportSomething</td>
 			<td>是一个获取tool的钩子，相当于组件的componentDidMount</td>
 			<td>function(tool){ myTool=tool }</td>
+			<td>--</td>
+		</tr>
+		<tr>
+			<td>addCustomBtnsRender</td>
+			<td>操作列,可在内置默认的详情、修改、删除按钮之后追加自定义按钮</td>
+			<td>(text, record,index,tool,isListCard,getDiffBtn)=>{return [getDiffBtn("primary","新按钮",(e)=>{}),getDiffBtn("primary","新按钮",(e)=>{})]}</td>
 			<td>--</td>
 		</tr>
 	</tbody>

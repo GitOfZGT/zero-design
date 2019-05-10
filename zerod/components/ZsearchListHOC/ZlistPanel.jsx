@@ -3,16 +3,7 @@ import ZpureComponent from "../ZpureComponent";
 import "../../zero-icon/iconfont.css";
 import { withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
-import {
-	const_getPanleHeader,
-	const_getListConfig,
-	const_getInsertLocation,
-	const_getMainTool,
-	const_getMethods,
-	const_extendPanelFormConfig,
-	const_getPanelDefaultFormItems,
-	const_searchFormNode,
-} from "../constant";
+import { const_getPanleHeader, const_getListConfig, const_getInsertLocation, const_getMainTool, const_getMethods, const_extendPanelFormConfig, const_getPanelDefaultFormItems, const_searchFormNode } from "../constant";
 import { Button, Icon, Divider, Dropdown, Menu, Modal } from "antd";
 
 import cssClass from "./style.scss";
@@ -34,13 +25,7 @@ class ZlistPanel extends ZpureComponent {
 		cardCoverRender: PropTypes.func, // listType=="card"时的一个前置render,
 		panelBeforeRender: PropTypes.func,
 		panelAfterRender: PropTypes.func,
-		panelHeader: PropTypes.oneOfType([
-			PropTypes.string,
-			PropTypes.number,
-			PropTypes.func,
-			PropTypes.element,
-			PropTypes.node,
-		]), //面板title,可以自定义
+		panelHeader: PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.func, PropTypes.element, PropTypes.node]), //面板title,可以自定义
 		moreContentRender: PropTypes.func,
 		searchForm: PropTypes.object,
 		colFormItems: PropTypes.arrayOf(PropTypes.object), // 搜索表单列map数据数据,同searchForm.items （版本兼容）
@@ -51,6 +36,7 @@ class ZlistPanel extends ZpureComponent {
 		actionColumnWidth: PropTypes.oneOfType([PropTypes.string, PropTypes.number]), //表格操作列的宽度
 		actionDataIndex: PropTypes.any, // 操作列的key
 		actionRender: PropTypes.func, // 操作列的render,可以自定义操作列的按钮
+		addCustomBtnsRender: PropTypes.func, // 操作列,可在内置默认的详情、修改、删除按钮之后追加自定义按钮
 		updateBtnPermCod: PropTypes.string, // 修改按钮权限控制代码
 		deleteBtnPermCod: PropTypes.string, // 删除按钮权限控制代码
 		showDetailBtn: PropTypes.oneOfType([PropTypes.func, PropTypes.bool]), // 是否显示详情按钮
@@ -84,14 +70,8 @@ class ZlistPanel extends ZpureComponent {
 		this.hasMoreMenu &&
 			this.props.moreBtnMap.forEach((item) => {
 				const { show, disbaled, name, ...others } = item;
-				const _show =
-					typeof show == "function" ? show(record, index, item, tool) : show === undefined ? true : show;
-				const _disbaled =
-					typeof disbaled == "function"
-						? disbaled(record, index, item, tool)
-						: disbaled === undefined
-						? false
-						: disbaled;
+				const _show = typeof show == "function" ? show(record, index, item, tool) : show === undefined ? true : show;
+				const _disbaled = typeof disbaled == "function" ? disbaled(record, index, item, tool) : disbaled === undefined ? false : disbaled;
 				if (this.props.moreBtnType == "rounding") {
 					items.push({
 						...item,
@@ -106,13 +86,7 @@ class ZlistPanel extends ZpureComponent {
 						</Menu.Item>,
 					);
 			});
-		return this.props.moreBtnType == "rounding" ? (
-			items
-		) : items.length ? (
-			<Menu onClick={onClick}>{items}</Menu>
-		) : (
-			<span />
-		);
+		return this.props.moreBtnType == "rounding" ? items : items.length ? <Menu onClick={onClick}>{items}</Menu> : <span />;
 	};
 
 	methods = {
@@ -184,9 +158,7 @@ class ZlistPanel extends ZpureComponent {
 				this.page.pageSize = pagination.pageSize;
 			}
 			this.methods.getListData();
-			this.props.tableParams &&
-				this.props.tableParams.onChange &&
-				this.props.tableParams.onChange(pagination, filters, sorter, this.getExportSomething());
+			this.props.tableParams && this.props.tableParams.onChange && this.props.tableParams.onChange(pagination, filters, sorter, this.getExportSomething());
 		},
 		// 查询
 		onSearch: (query) => {
@@ -341,44 +313,31 @@ class ZlistPanel extends ZpureComponent {
 			});
 		},
 	};
-	getDiffBtn(type, btnName, onClick, disabled) {
+	getDiffBtn = (type, btnName, onClick, disabled) => {
+		const clickfn = (e) => {
+			e.stopPropagation();
+			typeof onClick == "function" && onClick(e);
+		};
 		switch (this.props.listType) {
 			case "table":
 			case "card":
 				return (
-					<Zbutton disabled={disabled} size="small" type={type} onClick={onClick}>
+					<Zbutton key={btnName} disabled={disabled} size="small" type={type} onClick={clickfn}>
 						{btnName}
 					</Zbutton>
 				);
 			case "simple":
 				return (
-					<a
-						className={`z-text-underline-hover ${!disabled ? "z-text-blue" : "z-text-gray"} ${
-							cssClass["z-simple-link"]
-						}`}
-						href="javascript:void(0)"
-						onClick={!disabled ? onClick : () => {}}
-					>
+					<a key={btnName} className={`z-text-underline-hover ${!disabled ? "z-text-blue" : "z-text-gray"} ${cssClass["z-simple-link"]}`} href="javascript:void(0)" onClick={!disabled ? clickfn : () => {}}>
 						{btnName}
 					</a>
 				);
 		}
-	}
+	};
 	actionColKey = this.props.actionDataIndex + "actionBtns";
 	actionBtns() {
-		const {
-			showDetailBtn,
-			showUpdateBtn,
-			showDeleteBtn,
-			detailBtnDisabled,
-			updateBtnDisabled,
-			deleteBtnDisabled,
-		} = this.props;
-		return showDetailBtn ||
-			showUpdateBtn ||
-			showDeleteBtn ||
-			this.hasMoreMenu ||
-			typeof this.props.actionRender === "function"
+		const { showDetailBtn, showUpdateBtn, showDeleteBtn, detailBtnDisabled, updateBtnDisabled, deleteBtnDisabled } = this.props;
+		return showDetailBtn || showUpdateBtn || showDeleteBtn || this.hasMoreMenu || typeof this.props.actionRender === "function"
 			? [
 					{
 						title: "操作",
@@ -388,75 +347,62 @@ class ZlistPanel extends ZpureComponent {
 						render: (text, record, index) => {
 							const tool = this.getExportSomething();
 							if (typeof this.props.actionRender === "function") {
-								return this.props.actionRender(text, record, index, tool, this.props.listType);
+								return this.props.actionRender(text, record, index, tool, this.props.listType, this.getDiffBtn);
 							}
-							const _showDetailBtn =
-								typeof showDetailBtn == "function" ? showDetailBtn(record, index, tool) : showDetailBtn;
-							const _showUpdateBtn =
-								typeof showUpdateBtn == "function" ? showUpdateBtn(record, index, tool) : showUpdateBtn;
-							const _showDeleteBtn =
-								typeof showDeleteBtn == "function" ? showDeleteBtn(record, index, tool) : showDeleteBtn;
+							let customBtns = [];
+							if (typeof this.props.addCustomBtnsRender === "function") {
+								customBtns = this.props.addCustomBtnsRender(text, record, index, tool, this.props.listType, this.getDiffBtn);
+							}
 
-							const _detailBtnDisabled =
-								typeof detailBtnDisabled == "function"
-									? detailBtnDisabled(record, index, tool)
-									: detailBtnDisabled;
-							const _updateBtnDisabled =
-								typeof updateBtnDisabled == "function"
-									? updateBtnDisabled(record, index, tool)
-									: updateBtnDisabled;
-							const _deleteBtnDisabled =
-								typeof deleteBtnDisabled == "function"
-									? deleteBtnDisabled(record, index, tool)
-									: deleteBtnDisabled;
+							const _showDetailBtn = typeof showDetailBtn == "function" ? showDetailBtn(record, index, tool) : showDetailBtn;
+							const _showUpdateBtn = typeof showUpdateBtn == "function" ? showUpdateBtn(record, index, tool) : showUpdateBtn;
+							const _showDeleteBtn = typeof showDeleteBtn == "function" ? showDeleteBtn(record, index, tool) : showDeleteBtn;
+
+							const _detailBtnDisabled = typeof detailBtnDisabled == "function" ? detailBtnDisabled(record, index, tool) : detailBtnDisabled;
+							const _updateBtnDisabled = typeof updateBtnDisabled == "function" ? updateBtnDisabled(record, index, tool) : updateBtnDisabled;
+							const _deleteBtnDisabled = typeof deleteBtnDisabled == "function" ? deleteBtnDisabled(record, index, tool) : deleteBtnDisabled;
 
 							const detailBtnName = "详情";
-							const detailBtn = (
-								<span key="detail">
-									{this.getDiffBtn(
-										"default",
-										detailBtnName,
-										(e) => {
-											e.stopPropagation();
-											this.methods.onDetail(record);
-										},
-										_detailBtnDisabled,
-									)}
-									{_showUpdateBtn && !this.state.isListCard ? <Divider type="vertical" /> : null}
-								</span>
-							);
+							const detailBtn =
+								// <span key="detail">
+								this.getDiffBtn(
+									"default",
+									detailBtnName,
+									(e) => {
+										this.methods.onDetail(record);
+									},
+									_detailBtnDisabled,
+								);
+								// {_showUpdateBtn && !this.state.isListCard ? <Divider type="vertical" /> : null}
+								// </span>
 							const updateBtnName = "修改";
-							const updateBtn = (
-								<span key="update">
-									{this.getDiffBtn(
-										"primary",
-										updateBtnName,
-										(e) => {
-											e.stopPropagation();
-											this.methods.onUpdate(record);
-										},
-										_updateBtnDisabled,
-									)}
-									{_showDeleteBtn && !this.state.isListCard ? <Divider type="vertical" /> : null}
-								</span>
-							);
+							const updateBtn =
+								// <span key="update">
+								this.getDiffBtn(
+									"primary",
+									updateBtnName,
+									(e) => {
+										this.methods.onUpdate(record);
+									},
+									_updateBtnDisabled,
+								);
+								// 	{_showDeleteBtn && !this.state.isListCard ? <Divider type="vertical" /> : null}
+								// </span>
 							const deleteBtnName = "删除";
-							const deleteBtn = (
-								<span key="delete">
-									{this.getDiffBtn(
-										"danger",
-										deleteBtnName,
-										(e) => {
-											e.stopPropagation();
-											this.methods.onDelete(text, record);
-										},
-										_deleteBtnDisabled,
-									)}
-									{this.hasMoreMenu && !this.state.isListCard ? <Divider type="vertical" /> : null}
-								</span>
-							);
+							const deleteBtn =
+								// <span key="delete">
+								this.getDiffBtn(
+									"danger",
+									deleteBtnName,
+									(e) => {
+										this.methods.onDelete(text, record);
+									},
+									_deleteBtnDisabled,
+								);
+								// 	{this.hasMoreMenu && !this.state.isListCard ? <Divider type="vertical" /> : null}
+								// </span>
 
-							const btns = [];
+							let btns = [];
 
 							_showDetailBtn && btns.push(detailBtn);
 							_showUpdateBtn && btns.push(updateBtn);
@@ -480,35 +426,37 @@ class ZlistPanel extends ZpureComponent {
 							);
 							const onVisibleChange = (show) => {
 								if (record.moreIconEl) {
-									show
-										? removeClass(record.moreIconEl, "is-down")
-										: addClass(record.moreIconEl, "is-down");
+									show ? removeClass(record.moreIconEl, "is-down") : addClass(record.moreIconEl, "is-down");
 								}
 							};
 							const moreBtn =
 								this.props.moreBtnType == "rounding" ? (
-									<ZroundingButton
-										key="more"
-										items={this.moreMenu(record, index)}
-										onVisibleChange={onVisibleChange}
-									>
+									<ZroundingButton key="more" items={this.moreMenu(record, index)} onVisibleChange={onVisibleChange}>
 										{this.getDiffBtn("default", moreBtnName, (e) => e.stopPropagation())}
 									</ZroundingButton>
 								) : (
-									<Dropdown
-										key="more"
-										overlay={this.moreMenu(record, index)}
-										trigger={["click"]}
-										placement="bottomRight"
-										onVisibleChange={onVisibleChange}
-									>
+									<Dropdown key="more" overlay={this.moreMenu(record, index)} trigger={["click"]} placement="bottomRight" onVisibleChange={onVisibleChange}>
 										{this.getDiffBtn("default", moreBtnName, (e) => e.stopPropagation())}
 									</Dropdown>
 								);
 							if (this.hasMoreMenu) {
 								btns.push(moreBtn);
 							}
-
+							if (Array.isArray(customBtns)) btns = btns.concat(customBtns);
+							if (!this.state.isListCard) {
+								btns = btns.map((btn, i) => {
+									if (i !== 0)
+										return (
+											<span key={i}>
+												<Divider type="vertical" />
+												{btn}
+											</span>
+										);
+									else {
+										return btn;
+									}
+								});
+							}
 							return this.state.isListCard
 								? btns
 								: btns.map((btn) => {
@@ -582,19 +530,11 @@ class ZlistPanel extends ZpureComponent {
 	}
 	getSearchFormMethods = (methods) => (this.ZsearchFormMethods = methods);
 	render() {
-		this.showPagination =
-			typeof this.props.showPagination === "function"
-				? this.props.showPagination(this.getExportSomething())
-				: this.props.showPagination;
+		this.showPagination = typeof this.props.showPagination === "function" ? this.props.showPagination(this.getExportSomething()) : this.props.showPagination;
 		this.moreBtn =
 			this.isInfinite && this.showPagination && this.state.listData.length ? (
 				<div>
-					<Button
-						type="dashed"
-						className={cssClass["z-list-block-btn"]}
-						disabled={this.state.noMore}
-						onClick={this.methods.infiniteLoader}
-					>
+					<Button type="dashed" className={cssClass["z-list-block-btn"]} disabled={this.state.noMore} onClick={this.methods.infiniteLoader}>
 						{this.state.noMore ? "没有更多数据" : "下一页"}
 					</Button>
 					{this.props.moreContentRender && this.props.moreContentRender(this.getExportSomething())}

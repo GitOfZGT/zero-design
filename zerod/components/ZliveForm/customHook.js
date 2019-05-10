@@ -40,18 +40,28 @@ export function useGetOtherFormsCallback(formGroups) {
 		[formGroups],
 	);
 }
+
+export function getEachFormMethod(formGroups, isAll) {
+	let subForm = isAll ? [] : null;
+	for (let index = 0; index < formGroups.length; index++) {
+		const g = formGroups[index];
+		if (g.groupRef.current.getShowState()) {
+			if (isAll) {
+				subForm.push(g.groupRef.current.getForm());
+			} else {
+				subForm = g.groupRef.current.getForm();
+				break;
+			}
+		}
+	}
+	return subForm;
+}
+
 //返回执行formGroups中任意一个非隐藏的onSubmit的callback
 export function useDoSubmitCallback(formGroups) {
 	return useCallback(
 		(e) => {
-			let subForm = null;
-			for (let index = 0; index < formGroups.length; index++) {
-				const g = formGroups[index];
-				if (g.groupRef.current.getShowState()) {
-					subForm = g.groupRef.current.getForm();
-					break;
-				}
-			}
+			const subForm = getEachFormMethod(formGroups);
 			if (subForm) {
 				subForm.methods.onSubmit(e);
 			}
@@ -66,7 +76,7 @@ const buttonType = {
 	4: "danger",
 };
 //返回渲染提交按钮的函数
-export function useSubmitBtn(formData,formGroups) {
+export function useSubmitBtn(formData, formGroups) {
 	const doSubmit = useDoSubmitCallback(formGroups);
 	return useCallback(() => {
 		return formData && dataType.isArray(formData.buttonList) ? (

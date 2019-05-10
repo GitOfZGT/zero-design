@@ -23,6 +23,7 @@ export const Zform = Form.create()(
 			defaultSpan: PropTypes.oneOfType([PropTypes.number, PropTypes.object]),
 			submitBtnRender: PropTypes.func,
 			afterItemsRendered: PropTypes.func, // 表单控件渲染完的回调
+			colContentRender: PropTypes.func, //
 			otherForms: PropTypes.func, // 取得其他表单对象
 			confirm: PropTypes.object, // antd 的 modal 参数
 		};
@@ -109,12 +110,12 @@ export const Zform = Form.create()(
 				// 	}
 				// });
 			},
-			changeFormItems: (newItems, part = false) => {
-				const_changeFormItems.call(this, newItems, part);
+			changeFormItems: (newItems, part = false,callback) => {
+				const_changeFormItems.call(this, newItems, part,callback);
 			},
-			getInsideItems:()=>{
+			getInsideItems: () => {
 				return this.state.items;
-			}
+			},
 		};
 		setFieldsValue(values) {
 			values = values ? values : this.props.formDefaultValues;
@@ -155,19 +156,21 @@ export const Zform = Form.create()(
 			if (this.props.items !== prevProps.items && !this.allAsync.length) {
 				this.execAsync();
 			}
-			if(this.props.form!==prevProps.form){
+			if (this.props.form !== prevProps.form) {
 				this.props.getFormInstance && this.props.getFormInstance(this.props.form, this.methods);
 			}
 		}
 		componentWillUnmount() {
+			//组件卸载标识，用在异步回调阻止任何setState操作
 			this.unmounted = true;
 		}
 		getFormItems() {
-			// const { getFieldDecorator } = this.props.form;
 			const formItems = this.state.items.map((item, i) => {
 				return (
 					<CSSTransition key={item.key} timeout={animateTimout.flipInTime} classNames="fadeIn-to-down">
 						<ColFormItem
+							key={item.key}
+							colContentRender={this.props.colContentRender}
 							loading={item.loading}
 							form={this.props.form}
 							changeFormItems={this.methods.changeFormItems}

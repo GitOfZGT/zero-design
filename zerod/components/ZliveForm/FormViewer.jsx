@@ -1,45 +1,70 @@
 import React, { useState, useEffect, useRef, useImperativeHandle, useCallback } from "react";
 import { dataType } from "../zTool";
+import PropTypes from "prop-types";
 import controls from "./controls";
+import "./style.scss";
 import {
 	useGetGroupsCallback,
 	useLinkageCallback,
 	useGetOtherFormsCallback,
-	useSubmitBtn,
+	// useSubmitBtn,
+	getEachFormMethod,
+	useDoSubmitCallback,
 } from "./customHook";
 import FormGroup from "./FormGroup";
+export function getFormItem(field, group, linkage, getGroupsFn, imperative, customOnChange, customFormRules) {
+	const getRules = customFormRules ? customFormRules[field.fieldKey] : null;
+	const newField = {
+		...field,
+		groupId: group.id,
+		seq: field.seq,
+		key: field.fieldKey,
+		label: field.label,
+		span: field.span,
+		labelFocused: [8, 9, 11].includes(field.fieldType),
+		imperative,
+		customOnChange,
+	};
+	newField.options = controls[field.fieldType].getOptions(
+		newField,
+		typeof getRules === "function" ? getRules(newField, imperative) : [],
+	);
+
+	newField.render = () => {
+		return controls[newField.fieldType].getControl(newField, linkage, getGroupsFn, { disabled: field.disabled });
+	};
+	return newField;
+}
+export function getGroupItem(item, linkage, getGroupsFn, imperative, customOnChange, customFormRules) {
+	const formItems = item.formFieldInfoList.map((field) => {
+		return getFormItem(field, item, linkage, getGroupsFn, imperative, customOnChange, customFormRules);
+	});
+	formItems.sort(sortList);
+	return {
+		groupRef: React.createRef(),
+		seq: item.seq,
+		id: item.id,
+		name: item.name,
+		formItems,
+	};
+}
 function sortList(o1, o2) {
 	const v1 = o1.hasOwnProperty("seq") ? o1["seq"] : 0;
 	const v2 = o2.hasOwnProperty("seq") ? o2["seq"] : 0;
 	return v1 - v2;
 }
-function translateGroups(formData, getGroupsFn) {
-	if (dataType.isObject(formData)) {
+
+function translateGroups(formData, getGroupsFn, linkage, imperative) {
+	if (dataType.isObject(formData) && Array.isArray(formData.sectionList)) {
 		const groups = formData.sectionList.map((item) => {
-			const formItems = item.formFieldInfoList.map((field) => {
-				const render = () => {
-					return controls[field.fieldType].getControl(field, formData.linkages, getGroupsFn);
-				};
-				const options = controls[field.fieldType].getOptions(field);
-				return {
-					...field,
-					seq: field.seq,
-					key: field.fieldKey,
-					label: field.label,
-					span: field.span,
-					labelFocused: [8, 9, 11].includes(field.fieldType),
-					render,
-					options,
-				};
-			});
-			formItems.sort(sortList);
-			return {
-				groupRef: React.createRef(),
-				seq: item.seq,
-				id: item.id,
-				name: item.name,
-				formItems,
-			};
+			return getGroupItem(
+				item,
+				linkage && formData.linkages ? formData.linkages : null,
+				getGroupsFn,
+				imperative,
+				formData.customOnChange,
+				formData.customFormRules,
+			);
 		});
 
 		groups.sort(sortList);
@@ -49,40 +74,93 @@ function translateGroups(formData, getGroupsFn) {
 	}
 }
 
-
 //formData: {id:1,name:"表",labelLayout:"",code:"dog_check_in_form",sectionList: [{id:"12",name:"名称",seq:1,formFieldInfoList:[{config:"{}",fieldKey:"name",fieldType:1,id:333,initialValue:"",label:"名称",required:1,span:8,regularExpression:null,seq:1,placeholder:"",errorMsg:""}]}]}
-const FormViewer = React.memo(
-	React.forwardRef(function({ formData, onSubmit }, ref) {
-		const [formGroups, setFormGroups] = useState([]);
-		const getOtherForms = useGetOtherFormsCallback(formGroups);
-		const submitBtnRender = useSubmitBtn(formData, formGroups);
-		const getGroupsFn = useGetGroupsCallback(formGroups);
-		useEffect(() => {
-			setFormGroups(translateGroups(formData, getGroupsFn));
-		}, [formData]);
-		const doLinkage = useLinkageCallback(formGroups, formData, getGroupsFn);
-		return (
-			<div className="z-padding-20 app-body">
-				<div className="z-panel">
-					{formGroups.map((form, i) => {
-						return (
-							<FormGroup
-								onSubmit={onSubmit}
-								doLinkage={doLinkage}
-								key={form.id}
-								labelLayout={form.labelLayout}
-								name={form.name}
-								ref={form.groupRef}
-								formItems={form.formItems}
-								getOtherForms={getOtherForms}
-							/>
-						);
-					})}
-					{submitBtnRender()}
-				</div>
+const FormViewer = React.forwardRef(function(
+	{
+		formData,
+		formValues,
+		onSubmit,
+		groupTitleRightRender,
+		className,
+		onFormGroupsChange,
+		linkage,
+		groupChildrenRender,
+		submitBtnRender,
+		title,
+	},
+	ref,
+) {
+	const _linkage = dataType.isBoolean(linkage) ? linkage : true;
+	const [formGroups, setFormGroups] = useState([]);
+	const getOtherForms = useGetOtherFormsCallback(formGroups);
+	// const submitBtnRender = useSubmitBtn(formData, formGroups);
+	const getGroupsFn = useGetGroupsCallback(formGroups);
+	const doSubmit = useDoSubmitCallback(formGroups);
+	const imperativeRef = useRef();
+	imperativeRef.current = () => {
+		return {
+			getFormGroups: () => {
+				return formGroups;
+			},
+			setFormGroups,
+			getEachFormMethod: () => {
+				return getEachFormMethod(formGroups, true);
+			},
+		};
+	};
+	//formData改变时==>处理数据
+	useEffect(() => {
+		setFormGroups(translateGroups(formData, getGroupsFn, _linkage, imperativeRef));
+	}, [formData]);
+	//formGroups改变时==>调用onFormGroupsChange
+	useEffect(() => {
+		dataType.isFunction(onFormGroupsChange) && onFormGroupsChange(formGroups);
+	}, [formGroups]);
+	const doLinkage = _linkage ? useLinkageCallback(formGroups, formData, getGroupsFn) : null;
+	useImperativeHandle(ref, imperativeRef.current);
+	const titleText =
+		dataType.isBoolean(title) && !title ? "" : title ? title : formData && formData.name ? formData.name : "";
+	return (
+		<div className="z-padding-20">
+			<div className={`z-panel ${className ? className : ""}`}>
+				{titleText ? (
+					<div className="z-panel-body z-padding-bottom-0-important z-text-center">
+						<h2>{titleText}</h2>
+					</div>
+				) : null}
+				{formGroups.map((group, i) => {
+					return (
+						<FormGroup
+							titleRightRender={groupTitleRightRender}
+							group={group}
+							onSubmit={onSubmit}
+							doLinkage={doLinkage}
+							key={group.id}
+							labelLayout={group.labelLayout}
+							name={group.name}
+							ref={group.groupRef}
+							formItems={group.formItems}
+							getOtherForms={getOtherForms}
+							formValues={formValues}
+						>
+							{typeof groupChildrenRender == "function" && groupChildrenRender(group)}
+						</FormGroup>
+					);
+				})}
+				{typeof submitBtnRender == "function" ? submitBtnRender(doSubmit) : null}
 			</div>
-		);
-	}),
-);
-
-export default FormViewer;
+		</div>
+	);
+});
+FormViewer.propTypes = {
+	formData: PropTypes.object,
+	formValues: PropTypes.object,
+	onSubmit: PropTypes.func,
+	groupTitleRightRender: PropTypes.func,
+	className: PropTypes.string,
+	onFormGroupsChange: PropTypes.func,
+	linkage: PropTypes.bool,
+	groupChildrenRender: PropTypes.func,
+	submitBtnRender: PropTypes.func,
+};
+export default React.memo(FormViewer);

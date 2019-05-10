@@ -1,10 +1,10 @@
 import React from "react";import ZpureComponent from "../ZpureComponent";
 import { Row, Col, Icon, Button, message, Modal } from "antd";
 import PropTypes from "prop-types";
-import dragula from "dragula";
+import "../../dragula/dragula.css";
+import dragula from "../../dragula/dragula";
 import cssClass from "./style.scss";
-import "dragula/dist/dragula.min.css";
-import "../../zero-icon/iconfont.css";
+// import "../../zero-icon/iconfont.css";
 import {
 	BuildScroll,
 	listenDivSizeChange,

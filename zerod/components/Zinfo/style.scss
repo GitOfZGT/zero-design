@@ -1,6 +1,6 @@
 @import '../../scssMixin/generateClassName';
 
-$--row-gutter: 8px;
+$--row-gutter: 0px;
 @include z("info-row") {
 	margin-left: -$--row-gutter;
 	margin-right: -$--row-gutter;

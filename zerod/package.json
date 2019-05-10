@@ -1,6 +1,6 @@
 {
 	"name": "zerod",
-	"version": "0.0.96",
+	"version": "0.0.99",
 	"description": "react+antd+scss的扩展组件，结合zerod-admin-web脚手架使用",
 	"author": "zgt",
 	"main": "index.js",
@@ -15,7 +15,8 @@
 		}
 	],
 	"dependencies": {
-		"dragula": "^3.7.2",
+		"contra": "1.9.4",
+		"crossvent": "1.5.4",
 		"iscroll": "^5.2.0",
 		"viewerjs": "^1.2.0",
 		"prismjs": "^1.15.0",
@@ -23,7 +24,10 @@
 		"react-color": "^2.14.1",
 		"lodash.debounce": "^4.0.8",
 		"lodash.throttle": "^4.1.1",
-		"lodash.merge": "^4.6.1"
+		"lodash.merge": "^4.6.1",
+		"uuid": "^3.3.2",
+		"blueimp-md5": "^2.10.0",
+		"js-base64": "^2.5.1"
 	},
 	"peerDependencies": {
 		"react": ">=16.0.0",

@@ -8,6 +8,10 @@
 
 控件联动功能有：1、单选/多选控制其他控件禁用，2、单选/多选控制其他控件必填，3、单选/多选控制其控件非必填，4、单选/多选 控制 其他单选/多选的选择项，5.1、单选/多选控制一个组隐藏，5.2、单选/多选控制其他控件隐藏
 
+2、ZliveForm 的例子
+
+<div class="z-demo-box" data-render="demo0" data-title="ZliveForm的例子"></div>
+
 1、ZliveForm.FormViewer 的例子
 
 <div class="z-demo-box" data-render="demo1" data-title="ZliveForm.FormViewer的例子"></div>
@@ -29,16 +33,25 @@ class Myjavascript extends React.PureComponent {
 }
 ```
 
-
-
 <div class="z-doc-titles"></div>
 
 ## ZliveForm.FormViewer 的 props
 
-| 参数     | 说明                                                                    | 类型                                       | 默认值 |
-| -------- | ----------------------------------------------------------------------- | ------------------------------------------ | ------ |
-| formData | 渲染整个表单的数据                                                      | object                                     | --     |
-| onSubmit | submit 类型的按钮触发表单验证通过后的确定回调函数，同/Zform 的 onSubmit | function(values){return Promise.resolve()} | --     |
+可追 `className`
+
+| 参数            | 说明                                                                                                                                       | 类型                                       | 默认值 |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------ | ------ |
+| formData        | 渲染整个表单的数据                                                                                                                         | object                                     | --     |
+| formValues      | 表单字段对应的值                                                                                                                           | object                                     | --     |
+| onSubmit        | submit 类型的按钮触发表单验证通过后的确定回调函数，同/Zform 的 onSubmit                                                                    | function(values){return Promise.resolve()} | --     |
+| submitBtnRender | 表单之下的渲染函数，可以渲染一个或多个按钮，或者其他内容。提供了一个 submit 函数，可以直接绑定给提交按钮 click 等,触发后会用 onSubmit 回调 | (submit)=>{return ReactNode}               | --     |
+| linkage         | 是否启用联动功能 (联动的前提 formData 中存在 linkages 配置)                                                                                | boolean                                    | true   |
+
+## ZliveForm.FormViewer 实例方法 (通过 Ref 取得)
+
+| 参数              | 说明                                     | 使用                | 返回值           |
+| ----------------- | ---------------------------------------- | ------------------- | ---------------- |
+| getEachFormMethod | 获取所有 Zform 的 form 实例和 methods    | getEachFormMethod() | [{form,methods}] |
 
 ## formData 基本结构
 
@@ -247,6 +260,21 @@ class Myjavascript extends React.PureComponent {
 				}
 			]
 		}
-	]
+	],
+	"customOnChange": {
+		"dogType": function(field, imperativeRef, e) {
+			console.log("dogType", field, imperativeRef.current(), e);
+		}
+	},
+	"customFormRules": {
+		"dogName": function(field, imperativeRef) {
+			console.log("dogName", field, imperativeRef.current());
+			return [
+				{
+					"validator": (rule, value, callback) => {}
+				}
+			];
+		}
+	}
 }
 ```

@@ -17,7 +17,7 @@ export default function tableTemplate() {
 
 	const _expandedRowKeys =
 		typeof expandedRowKeys == "function"
-			? expandedRowKeys()
+			? expandedRowKeys(tool)
 			: Array.isArray(expandedRowKeys)
 			? expandedRowKeys
 			: this.state.expandedRowKeys;
@@ -31,6 +31,16 @@ export default function tableTemplate() {
 						expandedRowKeys: expandedRows,
 					});
 			  };
+	const _others={};
+	Object.keys(others).forEach(key=>{
+		if(typeof others[key] =="function"){
+			_others[key]=(...rest)=>{
+				return others[key](...rest,tool);
+			}
+		}else{
+			_others[key]=others[key];
+		}
+	})
 	return (
 		<Zlayout.Template>
 			{this.props.panelBeforeRender && this.props.panelBeforeRender(tool)}
@@ -48,7 +58,7 @@ export default function tableTemplate() {
 							onChange={this.methods.onTableChange}
 							expandedRowKeys={_expandedRowKeys}
 							onExpandedRowsChange={_onExpandedRowsChange}
-							{...others}
+							{..._others}
 						/>
 					</div>
 					{this.moreBtn}

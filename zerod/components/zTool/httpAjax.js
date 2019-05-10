@@ -1,5 +1,73 @@
 import "./Promise-extend.js";
 import axios from "axios";
+import uuidv4 from "uuid/v4";
+import { Base64 } from "js-base64";
+import md5 from "blueimp-md5";
+function formatNumber(str, t = 2) {
+	str = str.toString();
+	while (str.length < t) {
+		str = "0" + str;
+	}
+	return str;
+}
+//随机产生不重复id
+function GenNonDuplicateID(randomLength = 8) {
+	let id = Number(
+		Math.random()
+			.toString()
+			.substr(3, randomLength) + Date.now(),
+	).toString();
+	return id;
+};
+//生成与后台协定的 X-Auth-Info
+function getAuth(token = "123") {
+	const key = GenNonDuplicateID().toString();
+	const md5Key = md5(key);
+	const md5Token = md5(token);
+	let str = "";
+	for (let index = 0; index < md5Key.length; index += 2) {
+		const element = md5Key[index];
+		str += element;
+	}
+	return `${md5Token},${key},${Base64.encode(`${md5Token}${str}`)}`;
+}
+//生成与后台协定的 X-Channel-Info
+function getChannel(Auth) {
+	const uuid = uuidv4();
+	// console.log("uuid", uuid);
+	const date = new Date();
+	const year = date.getFullYear();
+	const month = date.getMonth() + 1;
+	const day = date.getDate();
+	const hour = date.getHours();
+	const minute = date.getMinutes();
+	const second = date.getSeconds();
+	const Msecond = date.getUTCMilliseconds();
+	const str = `${year}${formatNumber(month)}${formatNumber(day)}${formatNumber(hour)}${formatNumber(
+		minute,
+	)}${formatNumber(second)}${formatNumber(Msecond, 3)}`;
+	// console.log("timer", str);
+	const tmp = `${uuid},${str},${md5(Auth)}`;
+	const signature = Base64.encode(tmp);
+	return `${uuid},${str},${signature}`;
+}
+
+function getHeaders() {
+	let userinfo = {};
+	try {
+		userinfo = JSON.parse(localStorage.getItem("main_save_userInfo"));
+	} catch (e) {}
+	if (userinfo && userinfo.token) {
+		const Auth = getAuth(userinfo.token);
+		return {
+			"X-Token": userinfo.token,
+			"X-Auth-Info": Auth,
+			"X-Channel-Info": getChannel(Auth),
+		};
+	}
+	return null;
+}
+
 // import {const_notification} from '../constant';
 /**
  *
@@ -10,6 +78,16 @@ import axios from "axios";
  */
 function httpAjax(method, url, query, config, noCallback) {
 	config = config ? config : {};
+	const headers = getHeaders();
+	if (headers) {
+		config = {
+			...config,
+			headers: {
+				...(Object.prototype.toString.call(config.headers) == "[object Object]" ? config.headers : {}),
+				...headers,
+			},
+		};
+	}
 	method = method.toLowerCase(); //转小写
 	switch (method) {
 		case "get":
@@ -111,8 +189,8 @@ axios.patch(url[, data[, config]]) */
     method: 'get', // default
     // 基础url前缀
     baseURL: 'https://some-domain.com/api/',
-  　　
-  　　　　
+
+
     transformRequest: [function (data) {
       // 这里可以在发送请求之前对请求数据做处理，比如form-data格式化等，这里可以使用开头引入的Qs（这个模块在安装axios的时候就已经安装了，不需要另外安装）
   　　data = Qs.stringify({});

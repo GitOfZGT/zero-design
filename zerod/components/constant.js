@@ -263,7 +263,7 @@ export const const_execAsync = function(callback) {
 		callback(this.props.form, this.methods);
 	}
 };
-export function const_changeFormItems(newItems, part = false) {
+export function const_changeFormItems(newItems, part = false,callback) {
 	if (part) {
 		//part 表示局部
 		let itemsKeys = [],
@@ -285,10 +285,10 @@ export function const_changeFormItems(newItems, part = false) {
 					return;
 				}
 				if (theItem.hasOwnProperty("show")) {
-					formItem.methods.showItem(theItem.show);
+					formItem.methods.showItem(theItem.show,callback);
 				}
 				if (theItem.hasOwnProperty("newItem")) {
-					formItem.methods.changeItem(theItem.newItem);
+					formItem.methods.changeItem(theItem.newItem,callback);
 					// newItem={
 					// 	control:<Input></Input>,
 					// 	span:{lg:12},

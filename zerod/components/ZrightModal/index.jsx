@@ -80,7 +80,7 @@ export class ZrightModal extends ZpureComponent {
 								});
 								this.showAfter();
 						  })
-						: this.showAfter();
+						: once(this.boxEl, "transitionend", this.showAfter);;
 				}, 100);
 			}
 			document.documentElement.style.overflow = "hidden";
@@ -114,12 +114,12 @@ export class ZrightModal extends ZpureComponent {
 					style={{ width: this.props.width, zIndex: this.props.zIndex }}
 					data-zgt_modal={this.props.name}
 				>
-					<ModalContent
+					{this.props.scroll?<ModalContent
 						getWrapperEl={this.props.getWrapperEl}
 						scroll={this.props.scroll}
 						getScrollInstance={this.props.getScrollInstance}
 						children={this.props.children}
-					/>
+					/>:this.props.children}
 					<div className={`${cssClass["z-pop-close"]} z-flex-items-v-center`}>
 						<Icon type="right" className={`${cssClass["z-btn"]}`} onClick={this.closeModal} />
 					</div>

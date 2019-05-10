@@ -103,11 +103,11 @@ class Myjavascript extends React.PureComponent {
 | children      | 主体区域内容                                                    | ReactNode           | --     |
 | exportMethods | 在 componentDidMount 导出组件内部可调用的方法，methods 请往下看 | function(methods){} | --     |
 | scroll        | 主体区域内容是否需要滚动条                                      | boolean             | true   |
+| type          | 主题                                                            | normal \| dark      | dark   |
 
 注： header 和 children 两个内容区域通信，请使用 `React.createRef()`
 
 一般场景只允许同时打开一个`ZfullLayer`
-
 
 ## methods 同 ZerodLayerContext 提供的内容如： methods.showLayer(true,null,true)();
 

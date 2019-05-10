@@ -73,7 +73,7 @@
 
 @include z("main-logo") {
 	white-space: nowrap;
-
+	overflow: hidden;
 	@include logoTheme("light", $--main-logo-light-bg);
 	@include logoTheme("dark", $--main-logo-dark-bg);
 	@include logoTheme("mazarine", $--main-logo-mazarine-bg);
@@ -113,6 +113,7 @@
 @include z("main-header") {
 	background-color: white;
 	border-bottom: 1px solid #e3e6ea;
+	
 }
 
 @include z("main-body") {

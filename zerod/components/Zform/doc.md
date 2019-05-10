@@ -382,3 +382,73 @@ changeFormItems(
 	true,
 );
 ```
+
+## 辅助
+
+在`zerod/components/Zform/controls.js`提供了 `getControl(name,config)`和`getOptions(config)` 两个方法
+
+在如下的 items 结构中 render 和 options 内容可用`getControl`和`getOptions`获取：
+
+```jsx
+import { getControl, getOptions } from "zerod/components/Zform/controls";
+const items = [
+	{
+		key: "numberPlate",
+		label: "车牌号码",
+		render: (form) => {
+			return getControl("Input", { placeholder: "请输入车牌号码" });
+		},
+		options: getOptions({
+			required: true,
+			requiredMsg: "请输入车牌号码！",
+			rules: [
+				{
+					pattern: /^.{1,10}$/,
+					message: "车牌号码必须为长度1到10位的字符！",
+				},
+			],
+			initialValue: "",
+		}),
+	},
+	{
+		key: "vehicleType",
+		label: "车辆类别",
+		render: (form) => {
+			return getControl("Select", {
+				selectList: [
+					{ label: "人货车", value: "0" },
+					{ label: "的士头", value: "1" },
+					{ label: "小汽车", value: "2" },
+					{ label: "其他", value: "3" },
+				],
+				placeholder: "请选择车辆类别",
+			});
+		},
+		options: getOptions({ required: true, requiredMsg: "请选择车辆类别" }),
+	},
+];
+```
+
+## getControl(name,config)中
+
+`name`可选：`Input`,`TextArea`,`Select`,`Checkbox`,`InputNumber`,`DatePicker`,`Radio`,`Checkbox.Group`,`Radio.Group`,`TimePicker`,`Upload`,`TreeSelect`,`Mention`,
+`RangePicker`,`MonthPicker`,`Rate`,`AutoComplete`（在 antd-design 可找到对应的表单控件）
+
+```js
+getControl("Select", {
+	selectList: [{ label: "label", value: "value" }], //当`Select`、`Checkbox.Group`、`Radio.Group`时的选项数据
+	//...antd-design 可找到对应的表单控件的更多属性
+});
+```
+
+## getOptions(config) 中
+
+```js
+getOptions({
+	required: true, //是否必填规则
+	requiredMsg: "请选择车辆类别", //是否必填规则的错误提示
+	rules: [], //其他规则
+	initialValue: "initialValue", //控件初始值
+	//...更多属性同items结构的options
+});
+```

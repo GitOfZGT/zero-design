@@ -3,32 +3,41 @@ import { Col, Form, Input } from "antd";
 import ZpageLoading from "../ZpageLoading";
 import { const_itemSpan } from "../constant";
 import { dataType } from "../zTool";
+function itemTostring(item) {
+	if (dataType.isObject(item)) return JSON.stringify({ ...item, control: null, defaultSpan: null ,render:null,ref:null,options:null});
+	else return "";
+}
 class ColFormItem extends React.PureComponent {
 	static defaultProps = {
 		item: {},
+		// colContentRender:()=>{}
 	};
 	methods = {
+		//手动显示loading
 		showLoading: (show) => {
 			this.setState({
 				loading: show,
 			});
 		},
+		//获取当前item对象
 		getStateItem: () => this.state.item,
-		changeItem: (newItem) => {
+		//手动改变item对象属性
+		changeItem: (newItem,callback) => {
 			if (dataType.isObject(newItem)) {
 				this.setState({
 					item: { ...this.state.item, ...newItem },
-				});
+				},callback);
 			} else if (newItem == "reset") {
 				this.setState({
 					item: this.props.item,
-				});
+				},callback);
 			}
 		},
-		showItem: (show) => {
+		//手动控制控件是否显示
+		showItem: (show,callback) => {
 			this.setState({
 				show,
-			});
+			},callback);
 		},
 	};
 	state = {
@@ -60,7 +69,7 @@ class ColFormItem extends React.PureComponent {
 					this.setState({
 						focus: false,
 					});
-					control.props.onFocus && control.props.onFocus(e);
+					control.props.onBlur && control.props.onBlur(e);
 				},
 			});
 			return newControl;
@@ -98,11 +107,11 @@ class ColFormItem extends React.PureComponent {
 		}
 		const loader = <ZpageLoading showLoading={this.state.loading} size="small" />;
 		return (
-			<Col {...span} className={item.className}>
+			<Col {...span} className={item.className} data-item={itemTostring(item)}>
 				{isFormItem ? (
 					<Form.Item
 						label={!this.state.loading ? item.label : this.props.labelLayout != "inline" ? "加载中" : ""}
-						className={`z-form-item ${formItemClassName}`}
+						className={`z-form-item ${formItemClassName} ${control.props.disabled?"has-disabled":""}`}
 					>
 						{loader}
 						{this.state.loading ? <Input placeholder="加载中..." disabled /> : control}
@@ -113,6 +122,9 @@ class ColFormItem extends React.PureComponent {
 						{control}
 					</div>
 				)}
+				{dataType.isFunction(this.props.colContentRender)
+					? this.props.colContentRender(item, this.props.form)
+					: null}
 			</Col>
 		);
 	}

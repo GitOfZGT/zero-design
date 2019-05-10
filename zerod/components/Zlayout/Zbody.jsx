@@ -1,8 +1,9 @@
-import React from "react";import ZpureComponent from "../ZpureComponent";
+import React from "react";
+import ZpureComponent from "../ZpureComponent";
 import PropTypes from "prop-types";
 import cssClass from "./style.scss";
 import "../../zero-icon/iconfont.css";
-import { BuildScroll, listenDivSizeChange, addClass, removeClass ,once} from "../zTool";
+import { BuildScroll, listenDivSizeChange, addClass, removeClass, once } from "../zTool";
 class Zbody extends ZpureComponent {
 	static propTypes = {
 		className: PropTypes.string,
@@ -17,25 +18,25 @@ class Zbody extends ZpureComponent {
 	};
 	hasShowToTop = false;
 	backToTop = () => {
-		this.scroollInstance.scroll.scrollTo(0,0,200);
+		this.scroollInstance.scroll.scrollTo(0, 0, 200);
 	};
 	showBackToTop = () => {
 		if (this.scroollInstance.scroll.y < -100) {
 			if (!this.hasShowToTop) {
-				addClass(this.toTopBtnEl,cssClass['is-animate-start']);
+				addClass(this.toTopBtnEl, cssClass["is-animate-start"]);
 				removeClass(this.toTopBtnEl, cssClass["is-hide"]);
 				this.hasShowToTop = true;
 				setTimeout(() => {
 					addClass(this.toTopBtnEl, `fadeIn-to-down-enter`);
-					once(this.toTopBtnEl,"animationend",()=>{
-						addClass(this.toTopBtnEl,cssClass['is-opacity']);
-						removeClass(this.toTopBtnEl,`fadeIn-to-down-enter ${cssClass['is-animate-start']}`)
-					})
-				},10);
+					once(this.toTopBtnEl, "animationend", () => {
+						addClass(this.toTopBtnEl, cssClass["is-opacity"]);
+						removeClass(this.toTopBtnEl, `fadeIn-to-down-enter ${cssClass["is-animate-start"]}`);
+					});
+				}, 10);
 			}
 		} else {
 			if (this.hasShowToTop) {
-				removeClass(this.toTopBtnEl, `${cssClass['is-opacity']}`);
+				removeClass(this.toTopBtnEl, `${cssClass["is-opacity"]}`);
 				addClass(this.toTopBtnEl, cssClass["is-hide"]);
 				this.hasShowToTop = false;
 			}
@@ -50,12 +51,19 @@ class Zbody extends ZpureComponent {
 			if (el.parentElement == this.bodyEl) this.bodyEl.removeChild(el);
 		});
 		if (this.props.scroll) {
-			this.scroollInstance = new BuildScroll(this.bodyEl, { scrollbars: "custom" });
+			this.scroollInstance = new BuildScroll(this.bodyEl, { scrollbars: "custom", disablePointer: false, disableMouse: false });
 			listenDivSizeChange(this._contentEl, this.scroollInstance.refresh);
 			listenDivSizeChange(this.bodyEl, this.scroollInstance.refresh);
 			this.scroollInstance.scroll.on("scrollEnd", this.showBackToTop);
 			this.props.getScrollInstance && this.props.getScrollInstance(this.scroollInstance);
+			this._initEvents();
 		}
+	};
+	disbleEvent = false;
+	_initEvents = () => {
+		this.scroollInstance && this.scroollInstance.scroll._initEvents(!this.disbleEvent);
+		this.disbleEvent = !this.disbleEvent;
+		this._contentEl.style.cursor = !this.disbleEvent ? "grab":"default" ;
 	};
 	metods = {
 		setScrollAreaStyle: (style) => {
@@ -99,26 +107,10 @@ class Zbody extends ZpureComponent {
 		}
 	}
 	render() {
-		const {
-			scroll,
-			className,
-			children,
-			insertToScrollWraper,
-			getScrollInstance,
-			getWrapperEl,
-			...others
-		} = this.props;
+		const { scroll, className, children, insertToScrollWraper, getScrollInstance, getWrapperEl, ...others } = this.props;
 		return (
-			<section
-				{...others}
-				className={`${cssClass["z-layout-body"]} ${className ? className : ""}`}
-				ref={(el) => (this.wrapperEl = el)}
-			>
-				<section
-					style={this.state.scrollAreaStyle}
-					className={`${cssClass["z-body-scroll"]} z-scroll-color ${this.state.scrollAreaClassName}`}
-					ref={(el) => (this.bodyEl = el)}
-				>
+			<section {...others} className={`${cssClass["z-layout-body"]} ${className ? className : ""}`} ref={(el) => (this.wrapperEl = el)}>
+				<section style={this.state.scrollAreaStyle} className={`${cssClass["z-body-scroll"]} z-scroll-color ${this.state.scrollAreaClassName}`} ref={(el) => (this.bodyEl = el)}>
 					{scroll ? (
 						<div ref={(el) => (this._contentEl = el)}>
 							<section>{children}</section>
@@ -128,13 +120,7 @@ class Zbody extends ZpureComponent {
 					)}
 				</section>
 				{typeof insertToScrollWraper === "function" ? insertToScrollWraper() : insertToScrollWraper}
-				<i
-					className={`${cssClass["z-to-top"]} ${
-						this.hasShowToTop ? "" : cssClass["is-hide"]
-					} z-toTop-btn zero-icon zerod-top`}
-					ref={(el) => (this.toTopBtnEl = el)}
-					onClick={this.backToTop}
-				/>
+				<i className={`${cssClass["z-to-top"]} ${this.hasShowToTop ? "" : cssClass["is-hide"]} z-toTop-btn zero-icon zerod-top`} ref={(el) => (this.toTopBtnEl = el)} onClick={this.backToTop} />
 			</section>
 		);
 	}

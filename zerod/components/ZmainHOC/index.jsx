@@ -121,6 +121,7 @@ export function ZmainHOC(pageConfig, mounted) {
 			isCollapse: false, //侧边栏折叠状态
 			show_mainRoute_Loading: false, // 路由页面的loading
 		};
+		temporaryStorage={};
 		setNavRoutes({ menuData, mainRoutes }) {
 			let newNav = [];
 			mainRoutes = mainRoutes ? mainRoutes : this.config.mainRoutes;
@@ -186,7 +187,7 @@ export function ZmainHOC(pageConfig, mounted) {
 		};
 		methods = {
 			getTemporaryStorage: () => {
-				return deepCopy(this.temporaryStorage);
+				return this.temporaryStorage;
 			},
 			setTemporaryStorage: (data) => {
 				this.temporaryStorage = Object.assign(this.TemporaryStorage ? this.temporaryStorage : {}, data);
@@ -256,7 +257,11 @@ export function ZmainHOC(pageConfig, mounted) {
 					// return modal && modal.ref.current.methods.getScrollInstance();
 				}
 			},
-			getScrollAreaWrapperEl: (witch) => {
+            getScrollAreaWrapperEl: (witch) => {
+				if (witch == "mainRoute") {
+					const { wrapper_name, wrapperMethods_name } = getConstNames(witch);
+					return { wrapperEl: this[wrapper_name], methods: this[wrapperMethods_name] };
+				}
 				return const_getScrollAreaWrapperEl.call(this, witch);
 				// const modal = this.RightModalsRef.current.methods.findModal(witch);
 				// return modal && modal.ref.current.methods.getWrapperEl();
@@ -292,7 +297,13 @@ export function ZmainHOC(pageConfig, mounted) {
 			}
 		}
 		setInitData = (userInfo = {}, menuData = [], mapKeys, mainRoutes) => {
-			//已经登录了保存数据
+			//已经登录了，保存数据
+			try {
+				localStorage.setItem("main_save_userInfo", JSON.stringify(userInfo));
+			} catch (e) {
+				console.error(e);
+			}
+
 			this.methods.saveUserInfo(userInfo);
 			this.setSideMenu({ menuData, mapKeys, mainRoutes });
 			this.setState({
@@ -314,7 +325,7 @@ export function ZmainHOC(pageConfig, mounted) {
 					<div className="z-padding-top-10">
 						<ZsideMenu
 							menuData={this.sideMenuData}
-							collapsed={isCollapse}
+							collapsed={false}
 							theme={theme}
 							openAllSubmenu={openAllSubmenu}
 							onSelect={onSelect}
@@ -434,7 +445,7 @@ class MainLeft extends React.PureComponent {
 	};
 	render() {
 		const { collapseToggleEnd, theme, openAllSubmenu, onSelect, logo } = this.props;
-		const leftWidth = this.state.isCollapse ? 80 : this.props.leftExpandWidth;
+		const leftWidth = this.state.isCollapse ? 0: this.props.leftExpandWidth;
 		return (
 			<Zlayout
 				onTransitionend={collapseToggleEnd}

@@ -63,8 +63,8 @@ export const ZsearchForm = Form.create()(
 			expandToggle: () => {
 				this.setState({ expand: !this.state.expand });
 			},
-			changeFormItems: (newItems, part = false) => {
-				const_changeFormItems.call(this, newItems, part);
+			changeFormItems: (newItems, part = false,callback) => {
+				const_changeFormItems.call(this, newItems, part,callback);
 			},
 		};
 		config = {
@@ -95,14 +95,19 @@ export const ZsearchForm = Form.create()(
 			);
 		}
 		hidden = this.props.hidden;
-		setAnimate = (callback) => {
+		setAnimate = (callback, init) => {
 			if (this.hidden) {
-				this.formEl.style.height = (this.formEl.scrollHeight > 0 ? this.formEl.scrollHeight : 1) + "px";
-				setTimeout(() => {
+				if (init) {
 					this.formEl.style.height = "0px";
 					this.hidden = false;
-					callback && callback(this.hidden);
-				}, 10);
+				} else {
+					this.formEl.style.height = (this.formEl.scrollHeight > 0 ? this.formEl.scrollHeight : 1) + "px";
+					setTimeout(() => {
+						this.formEl.style.height = "0px";
+						this.hidden = false;
+						callback && callback(this.hidden);
+					}, 10);
+				}
 			} else {
 				this.formEl.style.height = "0px";
 				setTimeout(() => {
@@ -119,7 +124,7 @@ export const ZsearchForm = Form.create()(
 			this.props.getFormInstance && this.props.getFormInstance(this.props.form, this.methods);
 			this.props.exportMethods && this.props.exportMethods(this.methods);
 			this.execAsync();
-			this.setAnimate();
+			this.setAnimate(null, true);
 		}
 		componentDidUpdate(prevProps, prevState) {
 			if (this.props.formDefaultValues !== prevProps.formDefaultValues) {
@@ -131,7 +136,7 @@ export const ZsearchForm = Form.create()(
 			) {
 				this.execAsync();
 			}
-			if(this.props.form!==prevProps.form){
+			if (this.props.form !== prevProps.form) {
 				this.props.getFormInstance && this.props.getFormInstance(this.props.form, this.methods);
 			}
 			// if (this.props.hidden !== prevProps.hidden) {
@@ -139,19 +144,16 @@ export const ZsearchForm = Form.create()(
 			// }
 		}
 		componentWillUnmount() {
+			//组件卸载标识，用在异步回调阻止任何setState操作
 			this.unmounted = true;
 		}
 		getFormItems() {
-			// const { getFieldDecorator } = this.props.form;
 			const items = this.state.expand ? this.state.items : this.state.items.slice(0, this.config.collapseCount);
 			return items.map((item, i) => {
 				return (
-					<CSSTransition
-						key={item.key}
-						timeout={animateTimout.flipInTime}
-						classNames="fadeIn-to-down"
-					>
+					<CSSTransition key={item.key} timeout={animateTimout.flipInTime} classNames="fadeIn-to-down">
 						<ColFormItem
+							key={item.key}
 							loading={item.loading}
 							form={this.props.form}
 							changeFormItems={this.methods.changeFormItems}
@@ -201,7 +203,6 @@ export const ZsearchForm = Form.create()(
 											</Button>
 										) : null}
 									</div>
-									
 								</Col>
 							) : null}
 						</Row>
