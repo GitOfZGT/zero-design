@@ -6,7 +6,7 @@ $--border-color: #89cbfa;
 		position: absolute !important;
 		border: 1px dashed $--border-color;
 		z-index: 9999;
-		background-color: rgba(255,255,255,0.6);
+		background-color: rgba(255, 255, 255, 0.6);
 		.z-live-tool {
 			display: flex;
 		}
@@ -24,8 +24,8 @@ $--border-color: #89cbfa;
 				}
 			}
 			&.gu-transit {
-				border-color: rgba(0, 0, 0,1);
-				background-color:  rgba(0, 0, 0,0.1);
+				border-color: rgba(0, 0, 0, 1);
+				background-color: rgba(0, 0, 0, 0.1);
 			}
 			// &.z-ex-moved {
 			// 	border-color: #e74c3c;
@@ -44,7 +44,6 @@ $--border-color: #89cbfa;
 		}
 	}
 
-	
 	@include z("live-tool") {
 		display: none;
 		justify-content: space-between;
@@ -75,27 +74,45 @@ $--border-color: #89cbfa;
 			border-left: 1px dashed $--border-color;
 		}
 	}
-	.z-liveform-upload-wrapper{
+	.z-liveform-upload-wrapper {
 		display: block;
-		border:1px solid hsl(0, 0%, 85%);
+		border: 1px solid hsl(0, 0%, 85%);
 		border-radius: 4px;
-		padding:15px;
+		padding: 15px;
 	}
-	.z-liveform-upload{
-		
-		.ant-upload.ant-upload-select{
+	.z-liveform-upload {
+		.ant-upload.ant-upload-select {
 			display: block;
 		}
+		$--done-w: 30px;
+		$--done-color: #038900;
+		.ant-upload-list-item-done {
+			&::before {
+				display: block;
+				border-radius: $--done-w / 2;
+				width: $--done-w;
+				text-align: center;
+				line-height: $--done-w;
+				height: $--done-w;
+				// background-color: lighten($--done-color, 60%);
+				color: $--done-color;
+				position: absolute;
+				top: 50%;
+				right: 30px;
+				transform: translate(0, -50%);
+				content: "✔";
+			}
+		}
 	}
-	.z-liveform-upload-btn{
+	.z-liveform-upload-btn {
 		display: flex;
 		align-items: center;
 		justify-content: center;
 		height: 38px;
-		border:1px solid hsl(0, 0%, 85%);
+		border: 1px solid hsl(0, 0%, 85%);
 		border-radius: 4px;
 		transition: all 0.25s ease;
-		&:hover{
+		&:hover {
 			border-color: #5186b8;
 			cursor: pointer;
 		}

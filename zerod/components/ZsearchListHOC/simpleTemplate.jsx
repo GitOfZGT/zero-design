@@ -25,6 +25,7 @@ export default function simpleTemplate() {
 			sorters.push(
 				<ZsorterBtn
 					key={col.dataIndex}
+					defaultSortOrder={col.defaultSortOrder}
 					onClick={(order, e) => {
 						this.methods.onTableChange(
 							null,

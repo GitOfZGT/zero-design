@@ -3,7 +3,16 @@ import ZpureComponent from "../ZpureComponent";
 import "../../zero-icon/iconfont.css";
 import { withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
-import { const_getPanleHeader, const_getListConfig, const_getInsertLocation, const_getMainTool, const_getMethods, const_extendPanelFormConfig, const_getPanelDefaultFormItems, const_searchFormNode } from "../constant";
+import {
+	const_getPanleHeader,
+	const_getListConfig,
+	const_getInsertLocation,
+	const_getMainTool,
+	const_getMethods,
+	const_extendPanelFormConfig,
+	const_getPanelDefaultFormItems,
+	const_searchFormNode,
+} from "../constant";
 import { Button, Icon, Divider, Dropdown, Menu, Modal } from "antd";
 
 import cssClass from "./style.scss";
@@ -18,6 +27,11 @@ import simpleTemplate from "./simpleTemplate";
 let defaultConfig = const_getListConfig("list", "ZlistPanel");
 import { ZroundingButton } from "../ZroundingButton";
 import { Zbutton } from "../Zbutton";
+
+const sortTypeName = {
+	ascend: "ASC",
+	descend: "DESC",
+};
 class ZlistPanel extends ZpureComponent {
 	static propTypes = {
 		listType: PropTypes.string, // table | card
@@ -25,7 +39,13 @@ class ZlistPanel extends ZpureComponent {
 		cardCoverRender: PropTypes.func, // listType=="card"时的一个前置render,
 		panelBeforeRender: PropTypes.func,
 		panelAfterRender: PropTypes.func,
-		panelHeader: PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.func, PropTypes.element, PropTypes.node]), //面板title,可以自定义
+		panelHeader: PropTypes.oneOfType([
+			PropTypes.string,
+			PropTypes.number,
+			PropTypes.func,
+			PropTypes.element,
+			PropTypes.node,
+		]), //面板title,可以自定义
 		moreContentRender: PropTypes.func,
 		searchForm: PropTypes.object,
 		colFormItems: PropTypes.arrayOf(PropTypes.object), // 搜索表单列map数据数据,同searchForm.items （版本兼容）
@@ -70,8 +90,14 @@ class ZlistPanel extends ZpureComponent {
 		this.hasMoreMenu &&
 			this.props.moreBtnMap.forEach((item) => {
 				const { show, disbaled, name, ...others } = item;
-				const _show = typeof show == "function" ? show(record, index, item, tool) : show === undefined ? true : show;
-				const _disbaled = typeof disbaled == "function" ? disbaled(record, index, item, tool) : disbaled === undefined ? false : disbaled;
+				const _show =
+					typeof show == "function" ? show(record, index, item, tool) : show === undefined ? true : show;
+				const _disbaled =
+					typeof disbaled == "function"
+						? disbaled(record, index, item, tool)
+						: disbaled === undefined
+						? false
+						: disbaled;
 				if (this.props.moreBtnType == "rounding") {
 					items.push({
 						...item,
@@ -86,7 +112,13 @@ class ZlistPanel extends ZpureComponent {
 						</Menu.Item>,
 					);
 			});
-		return this.props.moreBtnType == "rounding" ? items : items.length ? <Menu onClick={onClick}>{items}</Menu> : <span />;
+		return this.props.moreBtnType == "rounding" ? (
+			items
+		) : items.length ? (
+			<Menu onClick={onClick}>{items}</Menu>
+		) : (
+			<span />
+		);
 	};
 
 	methods = {
@@ -116,7 +148,7 @@ class ZlistPanel extends ZpureComponent {
 							currPage: this.page.pageNumber,
 							pageSize: this.page.pageSize,
 							sortFieldName: this.sorter.field,
-							sortType: this.sorter.order === "descend" ? "DESC" : "ASC",
+							sortType: sortTypeName[this.sorter.order],
 						},
 						querys,
 					),
@@ -158,7 +190,9 @@ class ZlistPanel extends ZpureComponent {
 				this.page.pageSize = pagination.pageSize;
 			}
 			this.methods.getListData();
-			this.props.tableParams && this.props.tableParams.onChange && this.props.tableParams.onChange(pagination, filters, sorter, this.getExportSomething());
+			this.props.tableParams &&
+				this.props.tableParams.onChange &&
+				this.props.tableParams.onChange(pagination, filters, sorter, this.getExportSomething());
 		},
 		// 查询
 		onSearch: (query) => {
@@ -328,7 +362,14 @@ class ZlistPanel extends ZpureComponent {
 				);
 			case "simple":
 				return (
-					<a key={btnName} className={`z-text-underline-hover ${!disabled ? "z-text-blue" : "z-text-gray"} ${cssClass["z-simple-link"]}`} href="javascript:void(0)" onClick={!disabled ? clickfn : () => {}}>
+					<a
+						key={btnName}
+						className={`z-text-underline-hover ${!disabled ? "z-text-blue" : "z-text-gray"} ${
+							cssClass["z-simple-link"]
+						}`}
+						href="javascript:void(0)"
+						onClick={!disabled ? clickfn : () => {}}
+					>
 						{btnName}
 					</a>
 				);
@@ -336,8 +377,19 @@ class ZlistPanel extends ZpureComponent {
 	};
 	actionColKey = this.props.actionDataIndex + "actionBtns";
 	actionBtns() {
-		const { showDetailBtn, showUpdateBtn, showDeleteBtn, detailBtnDisabled, updateBtnDisabled, deleteBtnDisabled } = this.props;
-		return showDetailBtn || showUpdateBtn || showDeleteBtn || this.hasMoreMenu || typeof this.props.actionRender === "function"
+		const {
+			showDetailBtn,
+			showUpdateBtn,
+			showDeleteBtn,
+			detailBtnDisabled,
+			updateBtnDisabled,
+			deleteBtnDisabled,
+		} = this.props;
+		return showDetailBtn ||
+			showUpdateBtn ||
+			showDeleteBtn ||
+			this.hasMoreMenu ||
+			typeof this.props.actionRender === "function"
 			? [
 					{
 						title: "操作",
@@ -347,20 +399,46 @@ class ZlistPanel extends ZpureComponent {
 						render: (text, record, index) => {
 							const tool = this.getExportSomething();
 							if (typeof this.props.actionRender === "function") {
-								return this.props.actionRender(text, record, index, tool, this.props.listType, this.getDiffBtn);
+								return this.props.actionRender(
+									text,
+									record,
+									index,
+									tool,
+									this.props.listType,
+									this.getDiffBtn,
+								);
 							}
 							let customBtns = [];
 							if (typeof this.props.addCustomBtnsRender === "function") {
-								customBtns = this.props.addCustomBtnsRender(text, record, index, tool, this.props.listType, this.getDiffBtn);
+								customBtns = this.props.addCustomBtnsRender(
+									text,
+									record,
+									index,
+									tool,
+									this.props.listType,
+									this.getDiffBtn,
+								);
 							}
 
-							const _showDetailBtn = typeof showDetailBtn == "function" ? showDetailBtn(record, index, tool) : showDetailBtn;
-							const _showUpdateBtn = typeof showUpdateBtn == "function" ? showUpdateBtn(record, index, tool) : showUpdateBtn;
-							const _showDeleteBtn = typeof showDeleteBtn == "function" ? showDeleteBtn(record, index, tool) : showDeleteBtn;
+							const _showDetailBtn =
+								typeof showDetailBtn == "function" ? showDetailBtn(record, index, tool) : showDetailBtn;
+							const _showUpdateBtn =
+								typeof showUpdateBtn == "function" ? showUpdateBtn(record, index, tool) : showUpdateBtn;
+							const _showDeleteBtn =
+								typeof showDeleteBtn == "function" ? showDeleteBtn(record, index, tool) : showDeleteBtn;
 
-							const _detailBtnDisabled = typeof detailBtnDisabled == "function" ? detailBtnDisabled(record, index, tool) : detailBtnDisabled;
-							const _updateBtnDisabled = typeof updateBtnDisabled == "function" ? updateBtnDisabled(record, index, tool) : updateBtnDisabled;
-							const _deleteBtnDisabled = typeof deleteBtnDisabled == "function" ? deleteBtnDisabled(record, index, tool) : deleteBtnDisabled;
+							const _detailBtnDisabled =
+								typeof detailBtnDisabled == "function"
+									? detailBtnDisabled(record, index, tool)
+									: detailBtnDisabled;
+							const _updateBtnDisabled =
+								typeof updateBtnDisabled == "function"
+									? updateBtnDisabled(record, index, tool)
+									: updateBtnDisabled;
+							const _deleteBtnDisabled =
+								typeof deleteBtnDisabled == "function"
+									? deleteBtnDisabled(record, index, tool)
+									: deleteBtnDisabled;
 
 							const detailBtnName = "详情";
 							const detailBtn =
@@ -373,8 +451,8 @@ class ZlistPanel extends ZpureComponent {
 									},
 									_detailBtnDisabled,
 								);
-								// {_showUpdateBtn && !this.state.isListCard ? <Divider type="vertical" /> : null}
-								// </span>
+							// {_showUpdateBtn && !this.state.isListCard ? <Divider type="vertical" /> : null}
+							// </span>
 							const updateBtnName = "修改";
 							const updateBtn =
 								// <span key="update">
@@ -386,8 +464,8 @@ class ZlistPanel extends ZpureComponent {
 									},
 									_updateBtnDisabled,
 								);
-								// 	{_showDeleteBtn && !this.state.isListCard ? <Divider type="vertical" /> : null}
-								// </span>
+							// 	{_showDeleteBtn && !this.state.isListCard ? <Divider type="vertical" /> : null}
+							// </span>
 							const deleteBtnName = "删除";
 							const deleteBtn =
 								// <span key="delete">
@@ -399,8 +477,8 @@ class ZlistPanel extends ZpureComponent {
 									},
 									_deleteBtnDisabled,
 								);
-								// 	{this.hasMoreMenu && !this.state.isListCard ? <Divider type="vertical" /> : null}
-								// </span>
+							// 	{this.hasMoreMenu && !this.state.isListCard ? <Divider type="vertical" /> : null}
+							// </span>
 
 							let btns = [];
 
@@ -426,16 +504,28 @@ class ZlistPanel extends ZpureComponent {
 							);
 							const onVisibleChange = (show) => {
 								if (record.moreIconEl) {
-									show ? removeClass(record.moreIconEl, "is-down") : addClass(record.moreIconEl, "is-down");
+									show
+										? removeClass(record.moreIconEl, "is-down")
+										: addClass(record.moreIconEl, "is-down");
 								}
 							};
 							const moreBtn =
 								this.props.moreBtnType == "rounding" ? (
-									<ZroundingButton key="more" items={this.moreMenu(record, index)} onVisibleChange={onVisibleChange}>
+									<ZroundingButton
+										key="more"
+										items={this.moreMenu(record, index)}
+										onVisibleChange={onVisibleChange}
+									>
 										{this.getDiffBtn("default", moreBtnName, (e) => e.stopPropagation())}
 									</ZroundingButton>
 								) : (
-									<Dropdown key="more" overlay={this.moreMenu(record, index)} trigger={["click"]} placement="bottomRight" onVisibleChange={onVisibleChange}>
+									<Dropdown
+										key="more"
+										overlay={this.moreMenu(record, index)}
+										trigger={["click"]}
+										placement="bottomRight"
+										onVisibleChange={onVisibleChange}
+									>
 										{this.getDiffBtn("default", moreBtnName, (e) => e.stopPropagation())}
 									</Dropdown>
 								);
@@ -522,7 +612,11 @@ class ZlistPanel extends ZpureComponent {
 		totalPage: 1,
 	};
 	searchQuery = null;
-	sorter = {};
+	defaultSorter = this.state.tableColumns.find((item) => item.defaultSortOrder);
+	sorter = {
+		field: this.defaultSorter ? this.defaultSorter.dataIndex : "",
+		order: this.defaultSorter ? this.defaultSorter.defaultSortOrder : "",
+	};
 	componentDidMount() {
 		this.props.exportSomething && this.props.exportSomething(this.getExportSomething());
 		this.insertLocation = const_getInsertLocation(this.hocWrapperEl);
@@ -530,11 +624,19 @@ class ZlistPanel extends ZpureComponent {
 	}
 	getSearchFormMethods = (methods) => (this.ZsearchFormMethods = methods);
 	render() {
-		this.showPagination = typeof this.props.showPagination === "function" ? this.props.showPagination(this.getExportSomething()) : this.props.showPagination;
+		this.showPagination =
+			typeof this.props.showPagination === "function"
+				? this.props.showPagination(this.getExportSomething())
+				: this.props.showPagination;
 		this.moreBtn =
 			this.isInfinite && this.showPagination && this.state.listData.length ? (
 				<div>
-					<Button type="dashed" className={cssClass["z-list-block-btn"]} disabled={this.state.noMore} onClick={this.methods.infiniteLoader}>
+					<Button
+						type="dashed"
+						className={cssClass["z-list-block-btn"]}
+						disabled={this.state.noMore}
+						onClick={this.methods.infiniteLoader}
+					>
 						{this.state.noMore ? "没有更多数据" : "下一页"}
 					</Button>
 					{this.props.moreContentRender && this.props.moreContentRender(this.getExportSomething())}

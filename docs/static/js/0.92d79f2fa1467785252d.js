@@ -37611,8 +37611,8 @@ function (_ZpureComponent) {
 
     _this = possibleConstructorReturn_default()(this, (_getPrototypeOf2 = getPrototypeOf_default()(ZsorterBtn)).call.apply(_getPrototypeOf2, [this].concat(args)));
     _this.state = {
-      ascendOn: false,
-      descendOn: false
+      ascendOn: _this.props.defaultSortOrder === "ascend",
+      descendOn: _this.props.defaultSortOrder === "descend"
     };
     _this.methods = {
       asdendClick: function asdendClick(e) {
@@ -37664,7 +37664,8 @@ function (_ZpureComponent) {
   return ZsorterBtn;
 }(ZpureComponent["a" /* default */]);
 ZsorterBtn_ZsorterBtn.propTypes = {
-  onClick: _prop_types_15_7_2_prop_typesfrom_dll_reference_dll_vendor_e823eb2f1294e4241445_default.a.func
+  onClick: _prop_types_15_7_2_prop_typesfrom_dll_reference_dll_vendor_e823eb2f1294e4241445_default.a.func,
+  defaultSortOrder: _prop_types_15_7_2_prop_typesfrom_dll_reference_dll_vendor_e823eb2f1294e4241445_default.a.string
 };
 /* harmony default export */ var components_ZsorterBtn = (ZsorterBtn_ZsorterBtn);
 // CONCATENATED MODULE: ./node_modules/zerod/components/ZsearchListHOC/cardTemplate.jsx
@@ -37705,6 +37706,7 @@ function cardTemplate() {
     if (col.sorter) {
       sorters.push(_react_16_8_6_reactfrom_dll_reference_dll_vendor_e823eb2f1294e4241445_default.a.createElement(ZsorterBtn_ZsorterBtn, {
         key: col.dataIndex,
+        defaultSortOrder: col.defaultSortOrder,
         onClick: function onClick(order, e) {
           _this.methods.onTableChange(null, null, order ? {
             column: col,
@@ -37830,6 +37832,7 @@ function simpleTemplate() {
     if (col.sorter) {
       sorters.push(_react_16_8_6_reactfrom_dll_reference_dll_vendor_e823eb2f1294e4241445_default.a.createElement(ZsorterBtn_ZsorterBtn, {
         key: col.dataIndex,
+        defaultSortOrder: col.defaultSortOrder,
         onClick: function onClick(order, e) {
           _this.methods.onTableChange(null, null, order ? {
             column: col,
@@ -37963,6 +37966,10 @@ var Zbutton = __webpack_require__("nhtL");
 var ZlistPanel_defaultConfig = Object(constant["g" /* const_getListConfig */])("list", "ZlistPanel");
 
 
+var sortTypeName = {
+  ascend: "ASC",
+  descend: "DESC"
+};
 
 var ZlistPanel_ZlistPanel =
 /*#__PURE__*/
@@ -38040,7 +38047,7 @@ function (_ZpureComponent) {
           currPage: _this.page.pageNumber,
           pageSize: _this.page.pageSize,
           sortFieldName: _this.sorter.field,
-          sortType: _this.sorter.order === "descend" ? "DESC" : "ASC"
+          sortType: sortTypeName[_this.sorter.order]
         }, querys), _this.sorter, _this.getExportSomething()).then(function (re) {
           var data = re.data;
           var dataKeys = _this.props.responseKeys.listType;
@@ -38337,7 +38344,13 @@ function (_ZpureComponent) {
       totalPage: 1
     };
     _this.searchQuery = null;
-    _this.sorter = {};
+    _this.defaultSorter = _this.state.tableColumns.find(function (item) {
+      return item.defaultSortOrder;
+    });
+    _this.sorter = {
+      field: _this.defaultSorter ? _this.defaultSorter.dataIndex : "",
+      order: _this.defaultSorter ? _this.defaultSorter.defaultSortOrder : ""
+    };
 
     _this.getSearchFormMethods = function (methods) {
       return _this.ZsearchFormMethods = methods;
@@ -46535,4 +46548,4 @@ module.exports = warning;
 /***/ })
 
 }]);
-//# sourceMappingURL=0.f27b0531d23d733cd6b1.js.map
+//# sourceMappingURL=0.92d79f2fa1467785252d.js.map

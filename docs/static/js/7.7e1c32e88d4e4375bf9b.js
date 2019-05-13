@@ -10965,6 +10965,12 @@ var zTool = __webpack_require__("/sSO");
 var _prop_types_15_7_2_prop_typesfrom_dll_reference_dll_vendor_e823eb2f1294e4241445 = __webpack_require__("EH+i");
 var _prop_types_15_7_2_prop_typesfrom_dll_reference_dll_vendor_e823eb2f1294e4241445_default = /*#__PURE__*/__webpack_require__.n(_prop_types_15_7_2_prop_typesfrom_dll_reference_dll_vendor_e823eb2f1294e4241445);
 
+// EXTERNAL MODULE: ./node_modules/_antd@3.16.4@antd/es/modal/index.js + 7 modules
+var modal = __webpack_require__("X8M2");
+
+// EXTERNAL MODULE: ./node_modules/_antd@3.16.4@antd/es/message/index.js
+var es_message = __webpack_require__("nMT3");
+
 // EXTERNAL MODULE: ./node_modules/_@babel_runtime-corejs2@7.4.3@@babel/runtime-corejs2/helpers/defineProperty.js
 var defineProperty = __webpack_require__("a4hU");
 var defineProperty_default = /*#__PURE__*/__webpack_require__.n(defineProperty);
@@ -21605,6 +21611,9 @@ var ZerodMainContext = __webpack_require__("MaNN");
 
 
 
+
+
+
 var controls_getOptionsRules = function getOptionsRules(e) {
   var rules = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
   var reg = typeof e.regularExpression === "string" ? e.regularExpression.replace(/((^\/)|(\/$))/g, "") : "";
@@ -21924,9 +21933,22 @@ var controls_controls = {
   }
 };
 /* harmony default export */ var ZliveForm_controls = (controls_controls);
+
+function getFileUids(files, key) {
+  return files.map(function (file) {
+    return key ? file[key] : file.uid;
+  });
+} //上传文件组件(多文件)
+
+
 var ZeroUpload = ZerodMainContext["a" /* default */].setConsumer(_react_16_8_6_reactfrom_dll_reference_dll_vendor_e823eb2f1294e4241445_default.a.memo(_react_16_8_6_reactfrom_dll_reference_dll_vendor_e823eb2f1294e4241445_default.a.forwardRef(function (props, ref) {
   var config = props.config,
-      getUserInfo = props.getUserInfo;
+      getUserInfo = props.getUserInfo,
+      getInsertLocation = props.getInsertLocation,
+      showModalLoading = props.showModalLoading,
+      value = props.value,
+      onChange = props.onChange;
+  var wrapperElRef = Object(_react_16_8_6_reactfrom_dll_reference_dll_vendor_e823eb2f1294e4241445["useRef"])(null); //fileList：上传文件的列表数据，setTruefileList：文件数据流
 
   var _useState = Object(_react_16_8_6_reactfrom_dll_reference_dll_vendor_e823eb2f1294e4241445["useState"])({
     fileList: [],
@@ -21934,32 +21956,83 @@ var ZeroUpload = ZerodMainContext["a" /* default */].setConsumer(_react_16_8_6_r
   }),
       _useState2 = slicedToArray_default()(_useState, 2),
       fileState = _useState2[0],
-      setFileState = _useState2[1];
+      setFileState = _useState2[1]; //保存已上传文件的uid和服务id
 
-  var uploadButton = _react_16_8_6_reactfrom_dll_reference_dll_vendor_e823eb2f1294e4241445_default.a.createElement("div", {
-    className: "z-liveform-upload-btn"
-  }, _react_16_8_6_reactfrom_dll_reference_dll_vendor_e823eb2f1294e4241445_default.a.createElement("span", null, _react_16_8_6_reactfrom_dll_reference_dll_vendor_e823eb2f1294e4241445_default.a.createElement(es_icon["a" /* default */], {
-    type: "upload"
-  }), " \u9009\u62E9\u6587\u4EF6"));
+
+  var hasUploadDoneServerIdsRef = Object(_react_16_8_6_reactfrom_dll_reference_dll_vendor_e823eb2f1294e4241445["useRef"])([]);
+  var noUploader = fileState.setTruefileList.filter(function (file) {
+    return !getFileUids(hasUploadDoneServerIdsRef.current).includes(file.uid);
+  }); //获取调用showModalLoading的第二个参数
+
+  var modalRef = Object(_react_16_8_6_reactfrom_dll_reference_dll_vendor_e823eb2f1294e4241445["useRef"])("");
+  Object(_react_16_8_6_reactfrom_dll_reference_dll_vendor_e823eb2f1294e4241445["useEffect"])(function () {
+    modalRef.current = getInsertLocation(wrapperElRef.current);
+  }, []); //处理value
+
+  Object(_react_16_8_6_reactfrom_dll_reference_dll_vendor_e823eb2f1294e4241445["useEffect"])(function () {
+    if (!is_array_default()(value)) {
+      return;
+    }
+
+    var hasGetDetailIds = value.filter(function (id) {
+      return !getFileUids(hasUploadDoneServerIdsRef.current, "serverId").includes(id);
+    });
+
+    if (hasGetDetailIds.length) {}
+  }, [value]); //确认上传事件
 
   var handleUpload = function handleUpload() {
     if (config.url) {
       var userinfo = getUserInfo();
       console.log("userinfo---", userinfo);
-      Object(zTool["k" /* httpAjax */])("post", config.url, {
-        files: fileState.setTruefileList
+      var formData = new FormData();
+      noUploader.forEach(function (file) {
+        formData.append("files", file);
       });
+
+      if (noUploader.length) {
+        showModalLoading(true, modalRef.current);
+        Object(zTool["k" /* httpAjax */])("post", config.url, formData).then(function (re) {
+          hasUploadDoneServerIdsRef.current = [].concat(toConsumableArray_default()(hasUploadDoneServerIdsRef.current), toConsumableArray_default()(re.data.map(function (server, i) {
+            return {
+              uid: noUploader[i].uid,
+              serverId: server.id
+            };
+          })));
+          setFileState(objectSpread_default()({}, fileState, {
+            fileList: fileState.fileList.map(function (file) {
+              return objectSpread_default()({}, file, {
+                status: getFileUids(hasUploadDoneServerIdsRef.current).includes(file.uid) ? "done" : "undetermined"
+              });
+            })
+          }));
+
+          es_message["a" /* default */].success("上传成功。");
+        }).catch(function (re) {
+          es_message["a" /* default */].error(re && re.msg ? re.msg : "上传失败。");
+        }).finally(function () {
+          showModalLoading(false, modalRef.current);
+        });
+      }
     }
-  };
+  }; //确认上传按钮
+
 
   var commitButton = _react_16_8_6_reactfrom_dll_reference_dll_vendor_e823eb2f1294e4241445_default.a.createElement("div", {
     className: "z-liveform-upload-btn z-margin-top-10",
     onClick: handleUpload
   }, _react_16_8_6_reactfrom_dll_reference_dll_vendor_e823eb2f1294e4241445_default.a.createElement("span", null, _react_16_8_6_reactfrom_dll_reference_dll_vendor_e823eb2f1294e4241445_default.a.createElement(es_icon["a" /* default */], {
     type: "check"
-  }), " \u4E0A\u4F20"));
+  }), " \u4E0A\u4F20")); //选文件按钮
+
+  var uploadButton = _react_16_8_6_reactfrom_dll_reference_dll_vendor_e823eb2f1294e4241445_default.a.createElement("div", {
+    className: "z-liveform-upload-btn"
+  }, _react_16_8_6_reactfrom_dll_reference_dll_vendor_e823eb2f1294e4241445_default.a.createElement("span", null, _react_16_8_6_reactfrom_dll_reference_dll_vendor_e823eb2f1294e4241445_default.a.createElement(es_icon["a" /* default */], {
+    type: "upload"
+  }), " \u9009\u62E9\u6587\u4EF6"));
   return _react_16_8_6_reactfrom_dll_reference_dll_vendor_e823eb2f1294e4241445_default.a.createElement("div", {
-    className: "z-liveform-upload-wrapper"
+    className: "z-liveform-upload-wrapper",
+    ref: wrapperElRef
   }, controls_getControl("Upload", {
     children: uploadButton,
     multiple: config.multiple,
@@ -21973,20 +22046,46 @@ var ZeroUpload = ZerodMainContext["a" /* default */].setConsumer(_react_16_8_6_r
     onPreview: function onPreview(file) {
       console.log("----", file);
     },
+    //移除
     onRemove: function onRemove(file) {
-      var index = fileState.fileList.findIndex(function (item) {
-        return item.uid === file.uid;
-      });
-
-      if (index > -1) {
-        fileState.fileList.splice(index, 1);
-        fileState.setTruefileList.splice(index, 1);
-        setFileState({
-          fileList: toConsumableArray_default()(fileState.fileList),
-          setTruefileList: toConsumableArray_default()(fileState.setTruefileList)
+      function removeFlieFromList() {
+        var index = fileState.fileList.findIndex(function (item) {
+          return item.uid === file.uid;
         });
+        var serverIndex = hasUploadDoneServerIdsRef.current.findIndex(function (item) {
+          return item.uid === file.uid;
+        });
+
+        if (serverIndex > -1) {
+          hasUploadDoneServerIdsRef.current.splice(serverIndex, 1);
+        }
+
+        if (index > -1) {
+          fileState.fileList.splice(index, 1);
+          fileState.setTruefileList.splice(index, 1);
+          setFileState({
+            fileList: toConsumableArray_default()(fileState.fileList),
+            setTruefileList: toConsumableArray_default()(fileState.setTruefileList)
+          });
+        }
+      }
+
+      if (getFileUids(hasUploadDoneServerIdsRef.current).includes(file.uid)) {
+        modal["a" /* default */].confirm({
+          title: "此文件已上传到服务器，确定从列表中移除?",
+          content: "",
+          okText: "确定",
+          okType: "danger",
+          cancelText: "取消",
+          onOk: function onOk() {
+            removeFlieFromList();
+          }
+        });
+      } else {
+        removeFlieFromList();
       }
     },
+    //取消自动上传，实现手动上传
     beforeUpload: function beforeUpload(file) {
       var reader = new FileReader();
       reader.readAsDataURL(file);
@@ -21996,7 +22095,7 @@ var ZeroUpload = ZerodMainContext["a" /* default */].setConsumer(_react_16_8_6_r
           fileList: [].concat(toConsumableArray_default()(fileState.fileList), [{
             uid: file.uid,
             name: file.name,
-            // status: "done",
+            status: "undetermined",
             type: file.type,
             url: reader.result
           }]),
@@ -22006,7 +22105,7 @@ var ZeroUpload = ZerodMainContext["a" /* default */].setConsumer(_react_16_8_6_r
 
       return false;
     }
-  }), fileState.fileList.length ? commitButton : null);
+  }), noUploader.length ? commitButton : null);
 })));
 // EXTERNAL MODULE: ./node_modules/zerod/components/ZliveForm/style.scss
 var ZliveForm_style = __webpack_require__("dVQ/");
@@ -39332,4 +39431,4 @@ module.exports = keyCommandMoveSelectionToEndOfBlock;
 /***/ })
 
 }]);
-//# sourceMappingURL=7.092229b9ce2096163271.js.map
+//# sourceMappingURL=7.7e1c32e88d4e4375bf9b.js.map

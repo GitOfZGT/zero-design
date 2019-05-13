@@ -5,10 +5,11 @@ import { Tooltip ,Icon} from "antd";
 export class ZsorterBtn extends ZpureComponent {
 	static propTypes = {
 		onClick: PropTypes.func,
+		defaultSortOrder:PropTypes.string,
 	};
 	state = {
-		ascendOn: false,
-		descendOn: false,
+		ascendOn: this.props.defaultSortOrder==="ascend",
+		descendOn: this.props.defaultSortOrder==="descend",
 	};
 	methods = {
 		asdendClick: (e) => {

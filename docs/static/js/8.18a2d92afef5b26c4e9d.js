@@ -573,7 +573,8 @@ function getDemo(pageConfig) {
       tableColumns: [{
         title: "服务名称",
         dataIndex: "serviceName",
-        sorter: true
+        sorter: true,
+        defaultSortOrder: "ascend"
       }, {
         title: "服务编码",
         dataIndex: "serviceCode",
@@ -681,7 +682,8 @@ function getDemo(pageConfig) {
         message["a" /* default */].success("\u60A8\u5F53\u524D\u70B9\u51FB\u7684\u662F[".concat(record.serviceName, "]\u8FD9\u6761\u6570\u636E"));
       },
       // 获取列表数据的后台接口函数，其必须内部返回Promise
-      listApiInterface: function listApiInterface(query) {
+      listApiInterface: function listApiInterface(query, sorter, tool) {
+        console.log(query, sorter, tool);
         return App_api["a" /* default */].config.getServiceList(assign_default()(query, {
           servcieName: query.serviceName
         })); //处理字段名
@@ -873,4 +875,4 @@ module.exports = (__webpack_require__("sG4F"))(313);
 /***/ })
 
 }]);
-//# sourceMappingURL=8.4368291ecf8713f0dc53.js.map
+//# sourceMappingURL=8.18a2d92afef5b26c4e9d.js.map
