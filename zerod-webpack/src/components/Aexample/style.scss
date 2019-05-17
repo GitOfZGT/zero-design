@@ -1,0 +1,12 @@
+@import '~zerod/scssMixin/generateClassName';
+
+@include z('page-header'){
+    background-color: white;
+    padding:16px 32px 0;
+    @at-root{
+        @include z('page-header-title'){
+            font-size: 20px;
+            color: rgba(0, 0, 0, 0.85);
+        }
+    }
+}
