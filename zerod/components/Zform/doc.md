@@ -266,6 +266,12 @@ class Myjavascript extends React.PureComponent {
 			<td>object</td>
 			<td>--</td>
 		</tr>
+		 <tr>
+			<td>initAnimation</td>
+			<td>渲染items是否初始化动画</td>
+			<td>boolean</td>
+			<td>true</td>
+		</tr>
 	</tbody>
 </table>
 
@@ -432,7 +438,7 @@ const items = [
 ## getControl(name,config)中
 
 `name`可选：`Input`,`TextArea`,`Select`,`Checkbox`,`InputNumber`,`DatePicker`,`Radio`,`Checkbox.Group`,`Radio.Group`,`TimePicker`,`Upload`,`TreeSelect`,`Mention`,
-`RangePicker`,`MonthPicker`,`Rate`,`AutoComplete`（在 antd-design 可找到对应的表单控件）
+`RangePicker`,`MonthPicker`,`Rate`,`AutoComplete`（在 antd-design 可找到对应的表单控件）,`TreeInput`(就是ZtreeInput)
 
 ```js
 getControl("Select", {

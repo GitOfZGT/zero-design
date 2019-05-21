@@ -621,9 +621,9 @@ export const const_showRightModal = function(show, witch, content, scroll, onTra
 		wrapperEl ? wrapperEl : this.defaultWrapper ? this.defaultWrapper : document.body,
 	);
 };
-export const const_showModalLoading = function(show, witch) {
+export const const_showModalLoading = function(show, witch,tip) {
 	const modal = this.RightModalsRef.current.methods.findModal(witch);
-	modal && modal.ref.current.methods.showModalLoading(show);
+	modal && modal.ref.current.methods.showModalLoading(show,tip);
 };
 export const const_getModalScrollInstance = function(witch) {
 	const modal = this.RightModalsRef.current.methods.findModal(witch);

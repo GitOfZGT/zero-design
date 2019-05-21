@@ -14,6 +14,7 @@ import {
 	AutoComplete,
 } from "antd";
 import { dataType, deepCopy } from "../zTool";
+import TreeInput from '../ZtreeInput';
 const { RangePicker, MonthPicker,WeekPicker } = DatePicker;
 export const getOptions = function(e) {
 	return {
@@ -47,6 +48,7 @@ const controls = {
 	WeekPicker,
 	Rate,
 	AutoComplete,
+	TreeInput
 };
 function getSelects(Control, Option, opt) {
 	const selectList = opt.selectList;

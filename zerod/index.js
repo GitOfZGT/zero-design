@@ -44,3 +44,4 @@ export { default as ZschedulingTable } from "./components/ZschedulingTable";
 export { default as ZpopoverButton } from "./components/ZpopoverButton";
 export { default as ZliveForm } from "./components/ZliveForm";
 export { default as ZerodLayerContext } from "./components/ZerodLayerContext";
+export { default as ZtreeInput } from "./components/ZtreeInput";

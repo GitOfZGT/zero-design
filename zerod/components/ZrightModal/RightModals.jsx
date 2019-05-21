@@ -3,7 +3,7 @@ import ReactDOM from "react-dom";
 // my component
 import ZrightModal from "./index";
 import { Skeleton } from "antd";
-import { dataType, GenNonDuplicateID ,getStyle} from "../zTool/";
+import { dataType, GenNonDuplicateID, getStyle } from "../zTool/";
 function getParentLen(wrapperEl) {
 	let parLen = 0;
 	let el = wrapperEl;
@@ -92,14 +92,14 @@ export class RightModals extends React.PureComponent {
 					});
 				}
 				const width = opt.width ? opt.width : 94 - len * 6 + "%";
-				let baseZindex=9;
-				if(wrapperEl&&wrapperEl.children){
-					Array.prototype.slice.call(wrapperEl.children).forEach(child=>{
-						const elZindex=Number(getStyle(child,"z-index"));
-						if(baseZindex<elZindex){
-							baseZindex=elZindex;
+				let baseZindex = 9;
+				if (wrapperEl && wrapperEl.children) {
+					Array.prototype.slice.call(wrapperEl.children).forEach((child) => {
+						const elZindex = Number(getStyle(child, "z-index"));
+						if (baseZindex < elZindex) {
+							baseZindex = elZindex;
 						}
-					})
+					});
 				}
 				const zIndex = baseZindex + 1 + len * 6;
 				this.setState(
@@ -192,8 +192,8 @@ class RightModalSelf extends React.PureComponent {
 			this.methods.showModalLoading(true);
 			this.setState({ ...opt, content: null, onTransitionend: null });
 		},
-		showModalLoading: (show) => {
-			this.modalRef.current && this.modalRef.current.methods.showLoading(show);
+		showModalLoading: (show, tip) => {
+			this.modalRef.current && this.modalRef.current.methods.showLoading(show, tip);
 		},
 		getScrollInstance: () => {
 			return this.ScrollInstance;
@@ -228,7 +228,9 @@ class RightModalSelf extends React.PureComponent {
 		mask: true,
 	};
 	modalRef = React.createRef();
-	getScrollInstance = (instance) => (this.ScrollInstance = instance);
+	getScrollInstance = (instance) => {
+		this.ScrollInstance = instance;
+	};
 	getWrapperEl = (el, method) => {
 		this.wrapperEl = el;
 		this.wrapperMethods = method;

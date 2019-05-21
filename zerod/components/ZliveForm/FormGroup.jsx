@@ -1,22 +1,12 @@
 import React, { useState, useEffect, useRef, useImperativeHandle, useCallback } from "react";
 import Zform from "../Zform";
 import FormContext from "./FormContext";
-import { dataType } from "zerod/components/zTool";
+
+
 const MyForm = FormContext.setConsumer(Zform);
 const FormGroup = React.memo(
 	React.forwardRef(function(
-		{
-			name,
-			formItems,
-			getOtherForms,
-			labelLayout,
-			doLinkage,
-			onSubmit,
-			group,
-			titleRightRender,
-			children,
-			formValues,
-		},
+		{ formItems, getOtherForms, labelLayout, doLinkage, onSubmit, group,titleLeftRender, titleRightRender, children, formValues },
 		ref,
 	) {
 		const domRef = useRef();
@@ -60,11 +50,28 @@ const FormGroup = React.memo(
 				doLinkage && doLinkage();
 			}
 		}, [show]);
+
+		const [groupName, setGroupName] = useState();
+		useEffect(() => {
+			setGroupName(group.name);
+		}, [group.name]);
+		const nameChange = useCallback(
+			(val) => {
+				group.name = val;
+				setGroupName(val);
+			},
+			[group, setGroupName],
+		);
+		// console.log("--groups--" + group.id, stateFormItems);
 		return show ? (
 			<div className="z-view-form-panel" ref={domRef}>
 				<div className="z-panel-heading z-flex-space-between">
-					<div>{name}</div>
-					<div>{dataType.isFunction(titleRightRender) && titleRightRender(group)}</div>
+					<div className="z-flex-items-v-center">
+						{typeof titleLeftRender === "function" ? titleLeftRender(group,groupName,nameChange):<span>{groupName}</span>}
+					</div>
+					<div className="z-flex-items-v-center">
+						{typeof titleRightRender === "function" && titleRightRender(group)}
+					</div>
 				</div>
 				<div className="z-panel-body z-padding-bottom-0-important">
 					<MyForm

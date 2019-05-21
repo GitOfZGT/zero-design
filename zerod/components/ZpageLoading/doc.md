@@ -51,4 +51,4 @@ class Myjavascript extends ZpureComponent {
 
 | 参数        | 说明                                           | 使用                      | 返回值类型 |
 | ----------- | ---------------------------------------------- | ------------------------- | ---------- |
-| showLoading | ZpageLoading 在没有 showLoading 属性情况下使用 | methods.showLoading(show) | --         |
+| showLoading | ZpageLoading 在没有 showLoading 属性情况下使用 | methods.showLoading(show,tip) | --         |

@@ -4,11 +4,11 @@
 	@include z("form-row") {
 		.ant-form-item-children,
 		.ant-input-number {
-			width: 100%;
 			display: inline-block;
 		}
-		.ant-calendar-picker {
-			width: 100% !important;
+		.ant-calendar-picker,.ant-form-item-children,
+		.ant-input-number {
+			width: 100% ;
 		}
 		.ant-form-explain,
 		.ant-form-extra {

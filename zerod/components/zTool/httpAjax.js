@@ -3,6 +3,7 @@ import axios from "axios";
 import uuidv4 from "uuid/v4";
 import { Base64 } from "js-base64";
 import md5 from "blueimp-md5";
+import { message } from "antd";
 function formatNumber(str, t = 2) {
 	str = str.toString();
 	while (str.length < t) {
@@ -18,7 +19,7 @@ function GenNonDuplicateID(randomLength = 8) {
 			.substr(3, randomLength) + Date.now(),
 	).toString();
 	return id;
-};
+}
 //生成与后台协定的 X-Auth-Info
 function getAuth(token = "123") {
 	const key = GenNonDuplicateID().toString();
@@ -132,14 +133,18 @@ function httpAjax(method, url, query, config, noCallback) {
 		: new Promise((resolve, reject) => {
 				P &&
 					P.then((result) => {
-						if (result.data.code == 403403) {
+						if (result.data && result.data.code == 403403) {
 							// const_notification("notification").error(result.data.msg?result.data.msg:"用户未登录或身份已过期");
 							reject(result.data);
 							return;
 						}
 						// 后台请求返回的code=0是操作成功
-						result.data.code === 0 ? resolve(result.data) : reject(result.data);
+						result.data && result.data.code === 0 ? resolve(result.data) : reject(result.data);
 					}).catch((result) => {
+						if (result.data && (result.data.code === -1 || result.data.code === 500)) {
+							const msg = result.data.msg || result.data.data;
+							if (msg) message.error(msg);
+						}
 						// if (result.response.data.status === 499) {
 						// 	if (window.rootVue) {
 						// 		window.rootVue.$message.error("您的账号在别的地方登录");

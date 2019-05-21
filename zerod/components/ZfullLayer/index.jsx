@@ -12,6 +12,7 @@ import {
 	const_showModalLoading,
 	const_getModalScrollInstance,
 	const_getScrollAreaWrapperEl,
+	const_getInsertLocation,
 } from "../constant";
 import ZerodLayerContext from "../ZerodLayerContext";
 export class ZfullLayer extends ZpureComponent {
@@ -29,10 +30,10 @@ export class ZfullLayer extends ZpureComponent {
 		type: "dark",
 	};
 	isScale = false;
-	getWrapperEl = (el) => {
+	getWrapperEl = el => {
 		this.defaultWrapper = el;
 	};
-	getScrollInstance = (scroll) => {
+	getScrollInstance = scroll => {
 		this.layerSroll = scroll;
 	};
 	methods = {
@@ -40,15 +41,20 @@ export class ZfullLayer extends ZpureComponent {
 			const_showRightModal.call(this, show, witch, content, scroll, onTransitionend, wrapperEl, width);
 		},
 		showLayerModalLoading: (show, witch) => {
+			if (witch === "mainRoute") {
+				this.methods.showLoading(show);
+				return;
+			}
 			const_showModalLoading.call(this, show, witch);
 		},
-		getLayerModalScrollInstance: (witch) => {
+		getLayerModalInsertLocation: const_getInsertLocation,
+		getLayerModalScrollInstance: witch => {
 			return const_getModalScrollInstance.call(this, witch);
 		},
-		getLayerScrollAreaWrapperEl: (witch) => {
+		getLayerScrollAreaWrapperEl: witch => {
 			return const_getScrollAreaWrapperEl.call(this, witch);
 		},
-		showLoading: (show) => {
+		showLoading: show => {
 			this.ZpageLoadingRef.current.methods.showLoading(show);
 		},
 		showLayer: (show, callback, scale) => {
@@ -137,13 +143,15 @@ export class ZfullLayer extends ZpureComponent {
 				>
 					<div className="z-full-layer-heading">{header}</div>
 					<div className={`z-full-layer-body ${scale ? "scale" : ""}`} ref={this.bodyElRef}>
-						<ModalContent
-							getWrapperEl={this.getWrapperEl}
-							scroll={this.props.scroll}
-							getScrollInstance={this.getScrollInstance}
-						>
-							{children}
-						</ModalContent>
+						{show ? (
+							<ModalContent
+								getWrapperEl={this.getWrapperEl}
+								scroll={this.props.scroll}
+								getScrollInstance={this.getScrollInstance}
+							>
+								{children}
+							</ModalContent>
+						) : null}
 					</div>
 					<div className="close" onClick={this.methods.closeLayer}>
 						<span className="text">×</span>

@@ -2,9 +2,9 @@
 
 # 查询表单：ZsearchForm
 
-`ZsearchForm`是有栅栏布局的横向排版的，将`antd`的`Form`、`Form.item` 的结构转成数据结构直接渲染的方式，并且带有查询、重置、折叠按钮  
+`ZsearchForm`是有栅栏布局的横向排版的，将`antd`的`Form`、`Form.item` 的结构转成数据结构直接渲染的方式，并且带有查询、重置、折叠按钮
 
-继承了React.PureComponent  
+继承了 React.PureComponent
 
 1、基本使用
 
@@ -177,6 +177,12 @@ class Myjavascript extends React.PureComponent {
 			<td>label的布局方式</a></td>
 			<td>'horizontal'|'vertical'|'inline'</td>
 			<td>'vertical'</td>
+			 <tr>
+			<td>initAnimation</td>
+			<td>渲染items是否初始化动画</td>
+			<td>boolean</td>
+			<td>true</td>
+		</tr>
 		</tr>
 	</tbody>
 </table>
@@ -248,7 +254,7 @@ class Myjavascript extends React.PureComponent {
 
 ## changeFormItems
 
-changeFormItems 是一个方法，主要用于局部改变 items，实现表单控件之间交互联动。但不能直接在 render 函数中使用，应在控件的事件当中。changeFormItems除了在items里的render参数中，还存在于getFormInstance函数的methods参数里。
+changeFormItems 是一个方法，主要用于局部改变 items，实现表单控件之间交互联动。但不能直接在 render 函数中使用，应在控件的事件当中。changeFormItems 除了在 items 里的 render 参数中，还存在于 getFormInstance 函数的 methods 参数里。
 
 changeFormItems 需要两个参数：`newItems`：array | object 和 `part` : boolean
 

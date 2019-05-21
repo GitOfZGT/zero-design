@@ -4,7 +4,8 @@ import ZpageLoading from "../ZpageLoading";
 import { const_itemSpan } from "../constant";
 import { dataType } from "../zTool";
 function itemTostring(item) {
-	if (dataType.isObject(item)) return JSON.stringify({ ...item, control: null, defaultSpan: null ,render:null,ref:null,options:null});
+	if (dataType.isObject(item))
+		return JSON.stringify({ ...item, control: null, defaultSpan: null, render: null, ref: null, options: null });
 	else return "";
 }
 class ColFormItem extends React.PureComponent {
@@ -22,22 +23,31 @@ class ColFormItem extends React.PureComponent {
 		//获取当前item对象
 		getStateItem: () => this.state.item,
 		//手动改变item对象属性
-		changeItem: (newItem,callback) => {
+		changeItem: (newItem, callback) => {
 			if (dataType.isObject(newItem)) {
-				this.setState({
-					item: { ...this.state.item, ...newItem },
-				},callback);
+				this.setState(
+					{
+						item: { ...this.state.item, ...newItem },
+					},
+					callback,
+				);
 			} else if (newItem == "reset") {
-				this.setState({
-					item: this.props.item,
-				},callback);
+				this.setState(
+					{
+						item: this.props.item,
+					},
+					callback,
+				);
 			}
 		},
 		//手动控制控件是否显示
-		showItem: (show,callback) => {
-			this.setState({
-				show,
-			},callback);
+		showItem: (show, callback) => {
+			this.setState(
+				{
+					show,
+				},
+				callback,
+			);
 		},
 	};
 	state = {
@@ -92,6 +102,7 @@ class ColFormItem extends React.PureComponent {
 			control = getFieldDecorator(item.key, dataType.isFunction(item.options) ? item.options() : item.options)(
 				control,
 			);
+			const labelFocused = (control.props && control.props.disabled) || item.labelFocused;
 			if (this.props.labelLayout == "inline") {
 				control = this.getInlineControl(control);
 				formItemClassName = `${
@@ -99,7 +110,7 @@ class ColFormItem extends React.PureComponent {
 						control.props.value !== undefined &&
 						control.props.value !== "" &&
 						control.props.value !== null) ||
-					item.labelFocused
+					labelFocused
 						? "has-value"
 						: ""
 				} ${this.state.focus ? "focus" : ""}`;
@@ -111,7 +122,9 @@ class ColFormItem extends React.PureComponent {
 				{isFormItem ? (
 					<Form.Item
 						label={!this.state.loading ? item.label : this.props.labelLayout != "inline" ? "加载中" : ""}
-						className={`z-form-item ${formItemClassName} ${control.props.disabled?"has-disabled":""}`}
+						className={`z-form-item ${formItemClassName} ${
+							control.props && control.props.disabled ? "has-disabled" : ""
+						}`}
 					>
 						{loader}
 						{this.state.loading ? <Input placeholder="加载中..." disabled /> : control}

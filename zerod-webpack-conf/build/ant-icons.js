@@ -96,4 +96,20 @@ export {
 export {
     default as DeleteOutline,
 } from '@ant-design/icons/lib/outline/DeleteOutline';
+export {
+    default as FormOutline,
+} from '@ant-design/icons/lib/outline/FormOutline';
+export {
+    default as ArrowUpOutline,
+} from '@ant-design/icons/lib/outline/ArrowUpOutline';
+export {
+    default as ArrowDownOutline,
+} from '@ant-design/icons/lib/outline/ArrowDownOutline';
+export {
+    default as ArrowLeftOutline,
+} from '@ant-design/icons/lib/outline/ArrowLeftOutline';
+export {
+    default as ArrowRightOutline,
+} from '@ant-design/icons/lib/outline/ArrowRightOutline';
+
 export * from "@/ant-icons";

@@ -431,7 +431,11 @@ pageConfig 中的一些函数如`moreContentRender`提供了`tool`参数出来�
 
 ### tool.getFormInstance
 
-是一个函数，可以 const myform=tool.getFormInstance()取得 antd 中经 Form.create() 包装过的组件自带的 this.props.form 属性 ；<a href="https://ant.design/components/form-cn/" target="_blank"> 更多请查看 antd 的 Form</a>
+是一个方法，可以 const myform=tool.getFormInstance()取得 antd 中经 Form.create() 包装过的组件自带的 this.props.form 属性;<a href="https://ant.design/components/form-cn/" target="_blank"> 更多请查看 antd 的 Form</a>
+
+### tool.getFormMethods
+
+是一个方法，可以 const myMethods=tool.getFormMethods()取得 Zform 中的methods属性;
 
 ### tool.methods
 

@@ -11,7 +11,7 @@ export function useGetGroupsCallback(formGroups) {
 
 	return useCallback(() => {
 		return groupsRef.current;
-	}, [groupsRef]);
+	}, [groupsRef.current]);
 }
 //返回执行linkageAction的callback
 export function useLinkageCallback(formGroups, formData, getGroupsFn) {

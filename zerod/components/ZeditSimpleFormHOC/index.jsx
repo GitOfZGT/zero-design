@@ -1,6 +1,13 @@
-import React from "react";import ZpureComponent from "../ZpureComponent";
+import React from "react";
+import ZpureComponent from "../ZpureComponent";
 import { withRouter } from "react-router-dom";
-import { const_getInsertLocation, const_getMainTool, const_getMethods ,const_getPageWrapperProps,const_extendArguments} from "../constant";
+import {
+	const_getInsertLocation,
+	const_getMainTool,
+	const_getMethods,
+	const_getPageWrapperProps,
+	const_extendArguments,
+} from "../constant";
 import PropTypes from "prop-types";
 import { Zform } from "../Zform";
 // import { Input } from "antd";
@@ -80,7 +87,7 @@ export function ZeditSimpleFormHOC(pageConfig) {
 		panelAfterRender: (detail, tool) => {
 			return null;
 		},
-		exportSomething:null,
+		exportSomething: null,
 	};
 	defaultConfig = mergeConfig(defaultConfig, pageConfig);
 	class myForm extends ZpureComponent {
@@ -103,7 +110,8 @@ export function ZeditSimpleFormHOC(pageConfig) {
 					.then((re) => {
 						const valueData = {};
 						this.config.form.items.forEach((item) => {
-							valueData[item.key] = re.data[item.detailKey ? item.detailKey : item.key];
+							const newVal = re.data[item.detailKey ? item.detailKey : item.key];
+							if (newVal !== undefined) valueData[item.key] = newVal;
 						});
 
 						this.setState(
@@ -111,7 +119,7 @@ export function ZeditSimpleFormHOC(pageConfig) {
 								detailData: re.data,
 							},
 							() => {
-								this.form.setFieldsValue(valueData);
+								if (Object.keys(valueData).length) this.form.setFieldsValue(valueData);
 							},
 						);
 					})
@@ -132,7 +140,7 @@ export function ZeditSimpleFormHOC(pageConfig) {
 					.submitApiInterface(values, this.props, this.tool)
 
 					.then((re) => {
-						this.methods.notice.success("保存成功");
+						this.methods.notice.success(re&&re.msg?re.msg:"保存成功");
 						typeof afterSuccess === "function" && afterSuccess(values, this.tool);
 					})
 					.catch((re) => {
@@ -149,13 +157,17 @@ export function ZeditSimpleFormHOC(pageConfig) {
 				<div className="z-panel-heading">{typeof heading == "function" ? heading(this.tool) : heading}</div>
 			) : null;
 		}
-		getFormInstance = (form) => {
+		getFormInstance = (form, methods) => {
 			this.form = form;
+			this.formMethods = methods;
 		};
 		tool = {
 			...const_getMainTool.call(this),
 			getFormInstance: () => {
 				return this.form;
+			},
+			getFormMethods: () => {
+				return this.formMethods;
 			},
 			submit: this.methods.onSubmit, //已在methods属性中提供，为了向下兼容
 			showLoading: this.methods.showLoading,
@@ -172,23 +184,22 @@ export function ZeditSimpleFormHOC(pageConfig) {
 			}
 		};
 		componentDidMount() {
-			typeof this.config.exportSomething=='function'&&this.config.exportSomething(this.tool);
+			typeof this.config.exportSomething == "function" && this.config.exportSomething(this.tool);
 			this.insertLocation = const_getInsertLocation(this.hocWrapperEl);
 		}
 		pageWraper = const_getPageWrapperProps(this.config);
 		getDefaultFormItems = () => {
-			const formItems=this.config.form.items? this.config.form.items
-			: []
-			return formItems.map(item=>{
+			const formItems = this.config.form.items ? this.config.form.items : [];
+			return formItems.map((item) => {
 				return {
 					...item,
-					render:(form,changeFormItems)=>{
-						return typeof item.render=='function'&&item.render(form,changeFormItems,this.tool)
-					}
-				}
+					render: (form, changeFormItems) => {
+						return typeof item.render == "function" && item.render(form, changeFormItems, this.tool);
+					},
+				};
 			});
 		};
-		formItems=this.getDefaultFormItems();
+		formItems = this.getDefaultFormItems();
 		render() {
 			const {
 				type,
@@ -210,9 +221,7 @@ export function ZeditSimpleFormHOC(pageConfig) {
 						this.hocWrapperEl = el;
 					}}
 				>
-					<PageWraper
-						{...this.pageWraper}
-					>
+					<PageWraper {...this.pageWraper}>
 						{typeof this.config.panelBeforeRender === "function" &&
 							this.config.panelBeforeRender(this.state.detailData, this.tool)}
 						<div className="z-panel">
@@ -220,7 +229,7 @@ export function ZeditSimpleFormHOC(pageConfig) {
 							<div className="z-panel-body">
 								<Zform
 									{...formOthers}
-									submitBtnRender={const_extendArguments(submitBtnRender,this.tool)}
+									submitBtnRender={const_extendArguments(submitBtnRender, this.tool)}
 									items={this.formItems}
 									onSubmit={this.methods.onSubmit}
 									getFormInstance={this.getFormInstance}

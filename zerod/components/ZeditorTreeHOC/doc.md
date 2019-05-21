@@ -232,7 +232,7 @@ export default ZeditorTreeHOC(pageConfig);
 		<tr>
 			<td>addChildPageRender</td>
 			<td>新增子节点按钮打开的页面渲染函数,如果函数return false,此函数相当于按钮点击事件的回调；tool参数是列表组件的内部提供的一些工具方法</td>
-			<td>function(tool){return ReacNode}</td>
+			<td>function(record,tool){return ReacNode}</td>
 			<td>--</td>
 		</tr>
 		<tr>

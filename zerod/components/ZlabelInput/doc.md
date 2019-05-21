@@ -88,9 +88,15 @@ class Myjavascript extends ZpureComponent {
 		</tr>
 		<tr>
 			<td>size</td>
-			<td></td>
-			<td>number</td>
-			<td>14</td>
+			<td>输入框的尺寸</td>
+			<td>default | small | large</td>
+			<td>default</td>
+		</tr>
+		<tr>
+			<td>sync</td>
+			<td>是否label输入和value输入同步</td>
+			<td>boolean</td>
+			<td>false</td>
 		</tr>
 	</tbody>
 </table>

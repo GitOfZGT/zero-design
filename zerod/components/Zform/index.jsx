@@ -26,6 +26,7 @@ export const Zform = Form.create()(
 			colContentRender: PropTypes.func, //
 			otherForms: PropTypes.func, // 取得其他表单对象
 			confirm: PropTypes.object, // antd 的 modal 参数
+			initAnimation: PropTypes.bool,
 		};
 		static defaultProps = {
 			confirm: {},
@@ -34,6 +35,7 @@ export const Zform = Form.create()(
 			defaultSpan: { xxl: 6, xl: 8, lg: 12, md: 24 },
 			submitBtnName: "保存",
 			labelLayout: "vertical",
+			initAnimation: true,
 		};
 		state = {
 			items: [],
@@ -110,8 +112,8 @@ export const Zform = Form.create()(
 				// 	}
 				// });
 			},
-			changeFormItems: (newItems, part = false,callback) => {
-				const_changeFormItems.call(this, newItems, part,callback);
+			changeFormItems: (newItems, part = false, callback) => {
+				const_changeFormItems.call(this, newItems, part, callback);
 			},
 			getInsideItems: () => {
 				return this.state.items;
@@ -125,7 +127,8 @@ export const Zform = Form.create()(
 					const value = values[key];
 					if (value !== undefined) newValues[key] = value;
 				});
-				this.props.form.setFieldsValue(newValues);
+				console.log("--zform",newValues)
+				if (Object.keys(newValues).length) this.props.form.setFieldsValue(newValues);
 			}
 		}
 		execAsync(newItems) {
@@ -164,27 +167,41 @@ export const Zform = Form.create()(
 			//组件卸载标识，用在异步回调阻止任何setState操作
 			this.unmounted = true;
 		}
-		getFormItems() {
+		getFormItems = () => {
 			const formItems = this.state.items.map((item, i) => {
-				return (
+				const colItem = (
+					<ColFormItem
+						key={item.key}
+						colContentRender={this.props.colContentRender}
+						loading={item.loading}
+						form={this.props.form}
+						changeFormItems={this.methods.changeFormItems}
+						item={item}
+						ref={item.ref}
+						labelLayout={this.props.labelLayout}
+					/>
+				);
+				return this.props.initAnimation ? (
 					<CSSTransition key={item.key} timeout={animateTimout.flipInTime} classNames="fadeIn-to-down">
-						<ColFormItem
-							key={item.key}
-							colContentRender={this.props.colContentRender}
-							loading={item.loading}
-							form={this.props.form}
-							changeFormItems={this.methods.changeFormItems}
-							item={item}
-							ref={item.ref}
-							labelLayout={this.props.labelLayout}
-						/>
+						{colItem}
 					</CSSTransition>
+				) : (
+					colItem
 				);
 			});
 			return formItems;
-		}
+		};
 		render() {
-			const { submitBtnName, onSubmit, className, style, submitBtnRender, labelLayout } = this.props;
+			const {
+				submitBtnName,
+				onSubmit,
+				className,
+				style,
+				submitBtnRender,
+				labelLayout,
+				initAnimation,
+			} = this.props;
+			const items = this.getFormItems();
 			return (
 				<Form
 					onSubmit={this.methods.onSubmit}
@@ -192,9 +209,14 @@ export const Zform = Form.create()(
 					style={style}
 				>
 					<Row type="flex" className={`z-form-row ${"z-form-label-" + labelLayout}`}>
-						<TransitionGroup component={null} enter={true} exit={true} appear={true}>
-							{this.getFormItems()}
-						</TransitionGroup>
+						{initAnimation ? (
+							<TransitionGroup component={null} enter={true} exit={true} appear={true}>
+								{items}
+							</TransitionGroup>
+						) : (
+							items
+						)}
+
 						{typeof submitBtnRender === "function" ? (
 							submitBtnRender(this.methods.onSubmit, this.props)
 						) : submitBtnName ? (

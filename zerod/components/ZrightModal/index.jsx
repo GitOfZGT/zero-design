@@ -87,8 +87,8 @@ export class ZrightModal extends ZpureComponent {
 		}
 	}
 	methods = {
-		showLoading: (show) => {
-			this.loadingRef.current.methods.showLoading(show);
+		showLoading: (show,tip) => {
+			this.loadingRef.current.methods.showLoading(show,tip);
 		},
 	};
 	loadingRef = React.createRef();

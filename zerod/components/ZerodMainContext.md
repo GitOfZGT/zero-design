@@ -84,9 +84,9 @@ const OutPut = ZerodMainContext.setConsumer(OpenModal);
 
 <div class="z-doc-titles"></div>
 
-## 显示主页路由区域 loading: showRouteLoading()
+## 显示主页路由区域 loading: showRouteLoading(show,tip)
 
-showRouteLoading 方法有一个参数，`show`:是否显示
+showRouteLoading 方法有一个参数，`show`:是否显示，`tip`:自定义文案
 
 <div class="z-demo-box" data-render="route-loading" data-title="this.props.showRouteLoading(true)"></div>
 
@@ -116,9 +116,9 @@ return <OutPut />;
 
 <div class="z-doc-titles"></div>
 
-## 显示右边窗口 loading: showModalLoading()
+## 显示右边窗口 loading: showModalLoading(show,modal,tip)
 
-showModalLoading 方法有两个参数，`show`:是否显示，`modal`: "mainModal" | 与 showRightModal()的 modal 属性对应
+showModalLoading 方法有两个参数，`show`:是否显示，`modal`: "mainModal" | 与 showRightModal()的 modal 属性对应，`tip`:自定义文案
 
 <div class="z-demo-box" data-render="modal-loading" data-title="this.props.showModalLoading(true, modal);"></div>
 

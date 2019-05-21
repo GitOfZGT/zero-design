@@ -12,6 +12,22 @@
 
 <div class="z-demo-box" data-render="demo0" data-title="ZliveForm的例子"></div>
 
+```jsx
+import React from "react";
+import { ZliveForm } from "zerod";
+import formData from "./formData";
+import linkages from "./linkages";
+class Myjavascript extends React.PureComponent {
+	formData = { ...formData, linkages };
+	onSave = (newFormData) => {
+		console.log(newFormData);
+	};
+	render() {
+		return <ZliveForm formData={this.formData} onSave={this.onSave} />;
+	}
+}
+```
+
 1、ZliveForm.FormViewer 的例子
 
 <div class="z-demo-box" data-render="demo1" data-title="ZliveForm.FormViewer的例子"></div>
@@ -32,6 +48,15 @@ class Myjavascript extends React.PureComponent {
 	}
 }
 ```
+
+<div class="z-doc-titles"></div>
+
+## ZliveForm 的 props
+
+| 参数     | 说明                                     | 类型                    | 默认值 |
+| -------- | ---------------------------------------- | ----------------------- | ------ |
+| formData | 渲染整个表单的数据                       | object                  | --     |
+| onSave   | 保存按钮的事件                           | function(newFormData){} | --     |
 
 <div class="z-doc-titles"></div>
 

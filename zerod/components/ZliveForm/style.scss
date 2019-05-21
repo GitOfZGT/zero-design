@@ -10,6 +10,16 @@ $--border-color: #89cbfa;
 		.z-live-tool {
 			display: flex;
 		}
+
+		.ant-form-item-children,
+		.ant-input-number {
+			display: inline-block;
+		}
+		.ant-calendar-picker,
+		.ant-form-item-children,
+		.ant-input-number , .ant-select{
+			width: 100%;
+		}
 	}
 	@include z("live-form") {
 		[class*="ant-col-"] {
@@ -56,14 +66,20 @@ $--border-color: #89cbfa;
 			cursor: move;
 		}
 	}
+	$--item-default: 26px;
+	$--item-sm: 20px;
 	.z-live-tool-item {
 		border-bottom: 1px dashed $--border-color;
-		height: 26px;
-		width: 26px;
+		height: $--item-default;
+		width: $--item-default;
 		text-align: center;
-		line-height: 26px;
+		line-height: $--item-default;
 		cursor: pointer;
 		display: inline-block;
+		color: darken($--border-color, 20%);
+		&:hover {
+			background-color: lighten($--border-color, 20%);
+		}
 		&.all-border {
 			border: 1px dashed $--border-color;
 		}
@@ -72,6 +88,29 @@ $--border-color: #89cbfa;
 		}
 		&.right-item {
 			border-left: 1px dashed $--border-color;
+		}
+
+		&.small {
+			font-size: 12px;
+			width: $--item-sm;
+			height: $--item-sm;
+			line-height: $--item-sm;
+		}
+		$--delete-color: #f48cc5;
+		&.delete {
+			border-color: $--delete-color;
+			color: darken($--delete-color, 20%);
+			&:hover {
+				background-color: lighten($--delete-color, 20%);
+			}
+		}
+		$--remove-color: #83ced8;
+		&.move {
+			border-color: $--remove-color;
+			color: darken($--remove-color, 20%);
+			&:hover {
+				background-color: lighten($--remove-color, 20%);
+			}
 		}
 	}
 	.z-liveform-upload-wrapper {
@@ -83,6 +122,19 @@ $--border-color: #89cbfa;
 	.z-liveform-upload {
 		.ant-upload.ant-upload-select {
 			display: block;
+		}
+		.ant-upload-list-item-undetermined {
+			// border-color: #4BAFF0;
+			&::before {
+				font-size: 12px;
+				display: block;
+				color: #e59b1a;
+				position: absolute;
+				top: 50%;
+				right: 30px;
+				transform: translate(0, -50%);
+				content: "待上传";
+			}
 		}
 		$--done-w: 30px;
 		$--done-color: #038900;
@@ -115,6 +167,42 @@ $--border-color: #89cbfa;
 		&:hover {
 			border-color: #5186b8;
 			cursor: pointer;
+		}
+	}
+	.z-group-insert {
+		transform: rotate(-45deg);
+	}
+}
+
+@include z("select-input") {
+	:global {
+		.z-label {
+			width: 100% !important;
+			// border-right:0;
+			.ant-select-selection {
+				border-top-right-radius: 0;
+				border-bottom-right-radius: 0;
+			}
+		}
+		.z-value {
+			// margin-left:-1px;
+			border-top-right-radius: 0;
+			border-bottom-right-radius: 0;
+			border-top-left-radius: 0;
+			border-bottom-left-radius: 0;
+		}
+		.z-name {
+			// margin-left:-1px;
+			border-top-left-radius: 0;
+			border-bottom-left-radius: 0;
+		}
+		[class*="col-"] {
+			padding: 0 !important;
+			margin: 0;
+		}
+
+		.hasvalue {
+			border-color: hsl(0, 0%, 85%);
 		}
 	}
 }

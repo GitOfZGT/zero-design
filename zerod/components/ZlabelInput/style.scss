@@ -14,5 +14,9 @@
 		 [class*="col-"]{
 			padding:0 !important;margin:0;
 		}
+
+		.hasvalue{
+			border-color: hsl(0, 0%, 85%);
+		}
 	}
 }

@@ -24,6 +24,7 @@ export const ZsearchForm = Form.create()(
 			formDefaultValues: PropTypes.object,
 			collapseCount: PropTypes.number,
 			afterItemsRendered: PropTypes.func, // 表单控件渲染完的回调
+			initAnimation: PropTypes.bool,
 		};
 		static defaultProps = {
 			defaultSpan: { xxl: 6, xl: 8, lg: 12, md: 24 },
@@ -31,6 +32,7 @@ export const ZsearchForm = Form.create()(
 			noCollapse: false,
 			hidden: false,
 			labelLayout: "vertical",
+			initAnimation: true,
 		};
 		state = {
 			expand: this.props.noCollapse,
@@ -63,8 +65,8 @@ export const ZsearchForm = Form.create()(
 			expandToggle: () => {
 				this.setState({ expand: !this.state.expand });
 			},
-			changeFormItems: (newItems, part = false,callback) => {
-				const_changeFormItems.call(this, newItems, part,callback);
+			changeFormItems: (newItems, part = false, callback) => {
+				const_changeFormItems.call(this, newItems, part, callback);
 			},
 		};
 		config = {
@@ -78,7 +80,7 @@ export const ZsearchForm = Form.create()(
 					const value = values[key];
 					if (value !== undefined) newValues[key] = value;
 				});
-				this.props.form.setFieldsValue(newValues);
+				if (Object.keys(newValues).length) this.props.form.setFieldsValue(newValues);
 			}
 		}
 
@@ -150,24 +152,29 @@ export const ZsearchForm = Form.create()(
 		getFormItems() {
 			const items = this.state.expand ? this.state.items : this.state.items.slice(0, this.config.collapseCount);
 			return items.map((item, i) => {
-				return (
+				const colItem = (
+					<ColFormItem
+						key={item.key}
+						loading={item.loading}
+						form={this.props.form}
+						changeFormItems={this.methods.changeFormItems}
+						item={item}
+						ref={item.ref}
+						labelLayout={this.props.labelLayout}
+					/>
+				);
+				return this.props.initAnimation ? (
 					<CSSTransition key={item.key} timeout={animateTimout.flipInTime} classNames="fadeIn-to-down">
-						<ColFormItem
-							key={item.key}
-							loading={item.loading}
-							form={this.props.form}
-							changeFormItems={this.methods.changeFormItems}
-							item={item}
-							ref={item.ref}
-							labelLayout={this.props.labelLayout}
-						/>
+						{colItem}
 					</CSSTransition>
+				) : (
+					colItem
 				);
 			});
 		}
 		render() {
 			this.items = this.getFormItems();
-			const { className, hidden, labelLayout } = this.props;
+			const { className, hidden, labelLayout, initAnimation } = this.props;
 			return (
 				<div
 					ref={(el) => (this.formEl = el)}
@@ -175,9 +182,13 @@ export const ZsearchForm = Form.create()(
 				>
 					<Form onSubmit={this.methods.handleSearch} className="z-padding-top-14">
 						<Row type="flex" className={`z-form-row ${"z-form-label-" + labelLayout}`}>
-							<TransitionGroup component={null} enter={true} exit={true} appear={true}>
-								{this.items}
-							</TransitionGroup>
+							{initAnimation ? (
+								<TransitionGroup component={null} enter={true} exit={true} appear={true}>
+									{this.items}
+								</TransitionGroup>
+							) : (
+								this.items
+							)}
 							{this.items.length ? (
 								<Col
 									{...(typeof this.props.defaultSpan == "number"

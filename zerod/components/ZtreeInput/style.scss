@@ -1,0 +1,75 @@
+@import "../../scssMixin/generateClassName";
+$--line-hor-w: 24px;
+$--line-color: #a79f9f;
+$--margin-bottom: 16px;
+$--padding-left: 8px;
+@include z("tree-root") {
+	border: 1px solid hsl(0, 0%, 85%);
+	border-radius: 4px;
+	padding: 16px;
+}
+@include z("tree-type") {
+	margin-bottom: $--margin-bottom/2;
+}
+@include z("option-group") {
+	padding-left: $--line-hor-w;
+	border-left: 1px dashed $--line-color;
+}
+@include z("option-item") {
+	line-height: normal;
+	position: relative;
+	padding: $--margin-bottom/2 $--padding-left;
+	left: -$--padding-left;
+	// margin:0 -$--padding-left;
+	&:hover {
+		background-color: #f0faff;
+	}
+	&::after {
+		content: "";
+		display: block;
+		width: $--line-hor-w;
+		border-top: 1px dotted $--line-color;
+		position: absolute;
+		top: 50%;
+		transform: translate(0, -50%);
+		left: -($--line-hor-w - $--padding-left);
+		z-index: 1;
+	}
+	&.first-item {
+		&::before {
+			content: "";
+			display: block;
+			width: $--line-hor-w + 1;
+			border-left: 1px dashed $--line-color;
+			position: absolute;
+			height: $--margin-bottom / 2;
+			left: -($--line-hor-w + 1 - $--padding-left);
+			top: -($--margin-bottom / 2);
+		}
+	}
+	font-size: 17px;
+	i {
+		margin-left: 6px;
+		transition: all 0.25s ease;
+		color: #509dea;
+		&:hover {
+			cursor: pointer;
+			transform: scale(1.2);
+		}
+		&.remove {
+			color: #af1e27;
+		}
+	}
+}
+@include z("add-siblings") {
+	margin-left: 0 !important;
+	position: absolute;
+	left: $--padding-left - 2;
+	transform: translate(-100%, -50%);
+	top: 50%;
+	cursor: pointer;
+	z-index: 2;
+	&:hover {
+		transform: translate(-100%, -50%) scale(1.2) !important ;
+	}
+}

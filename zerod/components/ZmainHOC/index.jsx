@@ -217,18 +217,18 @@ export function ZmainHOC(pageConfig, mounted) {
 				this.CollapseBtnRef.current.methods.changeCollapsed();
 			},
 			//是否显示loading
-			showRouteLoading: (show) => {
-				this.mainRoute_Loading_ref.current && this.mainRoute_Loading_ref.current.methods.showLoading(show);
+			showRouteLoading: (show,tip) => {
+				this.mainRoute_Loading_ref.current && this.mainRoute_Loading_ref.current.methods.showLoading(show,tip);
 				// this.setState({
 				// 	show_mainRoute_Loading: show, //true || false
 				// });
 			},
-			showModalLoading: (show, witch) => {
+			showModalLoading: (show, witch,tip) => {
 				const { loading_name } = getConstNames(witch);
 				if (loading_name == "show_mainRoute_Loading") {
-					this.methods.showRouteLoading(show);
+					this.methods.showRouteLoading(show,tip);
 				} else {
-					const_showModalLoading.call(this, show, witch);
+					const_showModalLoading.call(this, show, witch,tip);
 					// const modal = this.RightModalsRef.current.methods.findModal(witch);
 					// modal && modal.ref.current.methods.showModalLoading(show);
 				}

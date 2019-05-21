@@ -127,7 +127,7 @@ class TreeTitle extends React.PureComponent {
 		const _showDetailBtn = typeof showDetailBtn == "function" ? showDetailBtn(record, index, tool) : showDetailBtn;
 		const _showUpdateBtn = typeof showUpdateBtn == "function" ? showUpdateBtn(record, index, tool) : showUpdateBtn;
 		const _showAddChildBtn =
-			typeof showUpdateBtn == "function" ? showAddChildBtn(record, index, tool) : showAddChildBtn;
+			typeof showAddChildBtn == "function" ? showAddChildBtn(record, index, tool) : showAddChildBtn;
 		const _showDeleteBtn = typeof showDeleteBtn == "function" ? showDeleteBtn(record, index, tool) : showDeleteBtn;
 		const _detailBtnDisabled =
 			typeof detailBtnDisabled == "function" ? detailBtnDisabled(record, index, tool) : detailBtnDisabled;

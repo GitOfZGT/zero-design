@@ -1,4 +1,5 @@
-import React from "react";import ZpureComponent from "../ZpureComponent";
+import React from "react";
+import ZpureComponent from "../ZpureComponent";
 import PropTypes from "prop-types";
 import cssClass from "./style.scss";
 import { Input, Col } from "antd";
@@ -14,10 +15,12 @@ export class ZlabelInput extends ZpureComponent {
 		disabled: PropTypes.bool,
 		labelSpan: PropTypes.number,
 		valueSpan: PropTypes.number,
+		sync: PropTypes.bool,
 	};
 	static defaultProps = {
 		labelSpan: 10,
 		valueSpan: 14,
+		sync: false,
 	};
 	saveData = {
 		label: "",
@@ -26,10 +29,16 @@ export class ZlabelInput extends ZpureComponent {
 	methods = {
 		labelChange: (e) => {
 			this.saveData.label = e.target.value;
+			if (this.props.sync) {
+				this.saveData.value = e.target.value;
+			}
 			typeof this.props.onChange == "function" && this.props.onChange(deepCopy(this.saveData), e);
 		},
 		valueChange: (e) => {
 			this.saveData.value = e.target.value;
+			if (this.props.sync) {
+				this.saveData.label = e.target.value;
+			}
 			typeof this.props.onChange == "function" && this.props.onChange(deepCopy(this.saveData), e);
 		},
 	};
@@ -43,32 +52,35 @@ export class ZlabelInput extends ZpureComponent {
 			style,
 			labelSpan,
 			valueSpan,
-			size
+			size,
+			sync,
+			onChange,
+			...others
 		} = this.props;
 		const labelValue = value ? value : {};
 		const _label = labelValue.label ? labelValue.label : "";
 		const _value = labelValue.value ? labelValue.value : "";
 		this.saveData = labelValue;
 		return (
-			<Input.Group compact className={`${cssClass["z-label-input"]} ${className ? className : ""}`} style={style}>
+			<Input.Group compact className={`${cssClass["z-label-input"]} ${className ? className : ""}`} style={style} size={size}>
 				<Col span={labelSpan}>
 					<Input
-						className="z-label"
+						{...others}
+						className={`z-label ${_label?"hasvalue":""}`}
 						value={_label}
 						placeholder={labelPlaceholder}
 						onChange={this.methods.labelChange}
 						disabled={disabled}
-						size={size}
 					/>
 				</Col>
 				<Col span={valueSpan}>
 					<Input
-						className="z-value"
+						{...others}
+						className={`z-value ${_value?"hasvalue":""}`}
 						value={_value}
 						placeholder={valuePlaceholder}
 						onChange={this.methods.valueChange}
 						disabled={disabled}
-						size={size}
 					/>
 				</Col>
 			</Input.Group>

@@ -919,16 +919,27 @@ export const mergeConfig = (defaultConfig, theConfig) => {
 	}
 };
 
-export function itemsFromTree({ tree, sourceItem, item, keyObj, action }) {
+export function itemsFromTree({ tree, sourceItem, item, keyObj, action, parentItem, condition }) {
 	let finished = false;
 	keyObj = dataType.isObject(keyObj) ? keyObj : { id: "id", children: "children" };
 	for (let index = 0; index < tree.length; index++) {
 		const currentItem = tree[index];
-		if (currentItem[keyObj.id] === sourceItem[keyObj.id]) {
-			dataType.isFunction(action) && action({ tree, currentItem, item, index, keyObj });
+		if (
+			dataType.isFunction(condition)
+				? condition(currentItem[keyObj.id], sourceItem[keyObj.id])
+				: currentItem[keyObj.id] === sourceItem[keyObj.id]
+		) {
+			dataType.isFunction(action) && action({ tree, currentItem, item, index, keyObj, parentItem });
 			finished = true;
 		} else if (Array.isArray(currentItem[keyObj.children])) {
-			finished = itemsFromTree({ tree: currentItem[keyObj.children], sourceItem, item, keyObj, action });
+			finished = itemsFromTree({
+				tree: currentItem[keyObj.children],
+				sourceItem,
+				item,
+				keyObj,
+				action,
+				parentItem: currentItem,
+			});
 		}
 		if (finished) break;
 	}
