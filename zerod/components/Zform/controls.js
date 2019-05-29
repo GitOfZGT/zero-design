@@ -14,8 +14,8 @@ import {
 	AutoComplete,
 } from "antd";
 import { dataType, deepCopy } from "../zTool";
-import TreeInput from '../ZtreeInput';
-const { RangePicker, MonthPicker,WeekPicker } = DatePicker;
+import TreeInput from "../ZtreeInput";
+const { RangePicker, MonthPicker, WeekPicker } = DatePicker;
 export const getOptions = function(e) {
 	return {
 		...(dataType.isObject(e) ? e : {}),
@@ -48,41 +48,55 @@ const controls = {
 	WeekPicker,
 	Rate,
 	AutoComplete,
-	TreeInput
+	TreeInput,
 };
-function getSelects(Control, Option, opt) {
-	const selectList = opt.selectList;
-	opt = { ...opt, selectList: null };
+
+function recursionOption(selectList, Option, OptGroup, optLabelRender) {
 	return (
-		<Control {...opt}>
-			{Array.isArray(selectList) &&
-				selectList.map((item) => {
-					let label, value, key;
-					if (dataType.isObject(item)) {
-						label = item.label;
-						value = key = item.value;
-					} else {
-						label = value = key = item;
-					}
-					return (
-						<Option value={value} key={key}>
-							{label}
-						</Option>
-					);
-				})}
-		</Control>
+		Array.isArray(selectList) &&
+		selectList.map(item => {
+			let label, value, key;
+			if (dataType.isObject(item)) {
+				label = item.label;
+				value = key = item.value;
+			} else {
+				label = value = key = item;
+			}
+			if (item.group && OptGroup) {
+				return (
+					<OptGroup label={label} key={label}>
+						{Array.isArray(item.children) &&
+							recursionOption(item.children, Option, OptGroup, optLabelRender)}
+					</OptGroup>
+				);
+			} else {
+				return (
+					<Option value={value} key={key}>
+						{typeof optLabelRender === "function" ? optLabelRender(item) : label}
+					</Option>
+				);
+			}
+		})
 	);
 }
+
+function getSelects(Control, Option, OptGroup, opt) {
+	const selectList = opt.selectList;
+	const optLabelRender = opt.optLabelRender;
+	opt = { ...opt, selectList: undefined, optLabelRender: undefined };
+	return <Control {...opt}>{recursionOption(selectList, Option, OptGroup, optLabelRender)}</Control>;
+}
+
 export function getControl(name, opt = {}) {
 	// opt=deepCopy(opt);
 	let Control = controls[name];
 	switch (name) {
 		case "Select":
-			return getSelects(Control, Select.Option, opt);
+			return getSelects(Control, Select.Option, Select.OptGroup, opt);
 		case "Checkbox.Group":
-			return getSelects(Control, Checkbox, opt);
+			return getSelects(Control, Checkbox, null, opt);
 		case "Radio.Group":
-			return getSelects(Control, Radio, opt);
+			return getSelects(Control, Radio, null, opt);
 		default:
 			return <Control {...opt} />;
 	}

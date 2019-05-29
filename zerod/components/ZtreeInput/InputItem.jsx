@@ -18,29 +18,40 @@ const _InputItem = React.forwardRef(function InputItemCom(props, ref) {
 		sync,
 		onBlur,
 		multiple,
+		inputType,
 	} = props;
-	const [inputValue, setInputValue] = useState(null);
-	const inputChange = (val, e) => {
+	const [doubleValue, setDoubleValue] = useState(null);
+	const [singleValue, setSingleValue] = useState("");
+	const doubleChange = (val, e) => {
 		data.label = val.label;
 		data.value = val.value;
-		setInputValue(val);
+		setDoubleValue(val);
+	};
+	const singleChange = e => {
+		data.label = e.target.value;
+		data.value = e.target.value;
+		setSingleValue(e.target.value);
 	};
 	useEffect(() => {
-		setInputValue({ label: data.label, value: data.value });
+		if (inputType === "double") {
+			setDoubleValue({ label: data.label, value: data.value });
+		} else {
+			setSingleValue(data.value);
+		}
 	}, [data]);
-	const _onSibingsClick = (e) => {
+	const _onSibingsClick = e => {
 		onSibingsClick && onSibingsClick(e, data, index);
 	};
-	const _onMoveUp = (e) => {
+	const _onMoveUp = e => {
 		onMoveUp && onMoveUp(e, data, index);
 	};
-	const _onMoveDown = (e) => {
+	const _onMoveDown = e => {
 		onMoveDown && onMoveDown(e, data, index);
 	};
-	const _onRemove = (e) => {
+	const _onRemove = e => {
 		onRemove && onRemove(e, data, index);
 	};
-	const _onAddChild = (e) => {
+	const _onAddChild = e => {
 		onAddChild && onAddChild(e, data, index);
 	};
 	return (
@@ -55,17 +66,27 @@ const _InputItem = React.forwardRef(function InputItemCom(props, ref) {
 			) : null}
 			<div className="z-flex">
 				<div className="z-flex-1">
-					<ZlabelInput
-						labelSpan={12}
-						valueSpan={12}
-						size="small"
-						value={inputValue}
-						onChange={inputChange}
-						labelPlaceholder="Label"
-						valuePlaceholder="Value"
-						sync={sync}
-						onBlur={onBlur}
-					/>
+					{inputType === "double" ? (
+						<ZlabelInput
+							labelSpan={12}
+							valueSpan={12}
+							size="small"
+							value={doubleValue}
+							onChange={doubleChange}
+							labelPlaceholder="Label"
+							valuePlaceholder="Value"
+							sync={sync}
+							onBlur={onBlur}
+						/>
+					) : (
+						<Input
+							size="small"
+							placeholde="Value"
+							value={singleValue}
+							onChange={singleChange}
+							onBlur={onBlur}
+						/>
+					)}
 				</div>
 
 				<div className="z-flex-items-v-center">

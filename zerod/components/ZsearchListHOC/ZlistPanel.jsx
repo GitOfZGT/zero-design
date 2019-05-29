@@ -88,7 +88,7 @@ class ZlistPanel extends ZpureComponent {
 		const onClick = this.methods.handleMenuClick(record);
 		const items = [];
 		this.hasMoreMenu &&
-			this.props.moreBtnMap.forEach((item) => {
+			this.props.moreBtnMap.forEach(item => {
 				const { show, disbaled, name, ...others } = item;
 				const _show =
 					typeof show == "function" ? show(record, index, item, tool) : show === undefined ? true : show;
@@ -123,8 +123,8 @@ class ZlistPanel extends ZpureComponent {
 
 	methods = {
 		...const_getMethods.call(this),
-		handleMenuClick: (record) => {
-			return (item) => {
+		handleMenuClick: record => {
+			return item => {
 				if (item.key === "_delete") {
 					this.methods.onDelete(item.item.props.text, record);
 				} else {
@@ -140,47 +140,49 @@ class ZlistPanel extends ZpureComponent {
 				this.page.pageSize = moreQuery.pageSize ? moreQuery.pageSize : this.page.pageSize;
 				querys = Object.assign({}, querys, moreQuery);
 			}
-			this.methods.showLoading(true);
-			return this.props
-				.listApiInterface(
-					Object.assign(
-						{
-							currPage: this.page.pageNumber,
-							pageSize: this.page.pageSize,
-							sortFieldName: this.sorter.field,
-							sortType: sortTypeName[this.sorter.order],
-						},
-						querys,
-					),
-					this.sorter,
-					this.getExportSomething(),
-				)
-				.then((re) => {
-					const data = re.data;
-					const dataKeys = this.props.responseKeys.listType;
-					let list = [];
-					if (Array.isArray(data)) {
-						list = data;
-						this.page.totalCount = list.length;
-						this.page.totalPage = 1;
-					} else {
-						const listData = data[dataKeys["list"]];
-						if (listData === undefined) {
-							return Promise.reject({ msg: "接口返回的列表数据缺少列表数据" });
-						} else if (Array.isArray(listData)) {
-							list = listData;
-							this.page.totalCount = data[dataKeys["totalCount"]];
-							this.page.totalPage = data[dataKeys["totalPage"]];
+			const apiPromise = this.props.listApiInterface(
+				Object.assign(
+					{
+						currPage: this.page.pageNumber,
+						pageSize: this.page.pageSize,
+						sortFieldName: this.sorter.field,
+						sortType: sortTypeName[this.sorter.order],
+					},
+					querys,
+				),
+				this.sorter,
+				this.getExportSomething(),
+			);
+			if (dataType.isPromise(apiPromise)) {
+				this.methods.showLoading(true);
+				apiPromise
+					.then(re => {
+						const data = re.data;
+						const dataKeys = this.props.responseKeys.listType;
+						let list = [];
+						if (Array.isArray(data)) {
+							list = data;
+							this.page.totalCount = list.length;
+							this.page.totalPage = 1;
+						} else {
+							const listData = data[dataKeys["list"]];
+							if (listData === undefined) {
+								return Promise.reject({ msg: "接口返回的列表数据缺少列表数据" });
+							} else if (Array.isArray(listData)) {
+								list = listData;
+								this.page.totalCount = data[dataKeys["totalCount"]];
+								this.page.totalPage = data[dataKeys["totalPage"]];
+							}
 						}
-					}
-					this.methods.setDataState(list, merge);
-				})
-				.catch((re) => {
-					this.methods.notice.error(re && re.msg ? re.msg : "获取数据失败");
-				})
-				.finally((re) => {
-					this.methods.showLoading(false);
-				});
+						this.methods.setDataState(list, merge);
+					})
+					.catch(re => {
+						this.methods.notice.error(re && re.msg ? re.msg : "获取数据失败");
+					})
+					.finally(re => {
+						this.methods.showLoading(false);
+					});
+			}
 		},
 		//表格分页、排序等改变时触发
 		onTableChange: (pagination, filters, sorter) => {
@@ -195,7 +197,7 @@ class ZlistPanel extends ZpureComponent {
 				this.props.tableParams.onChange(pagination, filters, sorter, this.getExportSomething());
 		},
 		// 查询
-		onSearch: (query) => {
+		onSearch: query => {
 			this.searchQuery = query;
 			this.page.pageNumber = 1;
 			this.methods.getListData();
@@ -253,7 +255,7 @@ class ZlistPanel extends ZpureComponent {
 			}
 		},
 		//移除一条数据
-		removeOneData: (row) => {
+		removeOneData: row => {
 			// let key = this.props.tableParams.rowKey;
 			// key = key ? key : "id";
 			const list = this.methods.currentListData();
@@ -288,12 +290,12 @@ class ZlistPanel extends ZpureComponent {
 						return new Promise((resolve, rejects) => {
 							this.props
 								.deleteApiInterface(row, this.getExportSomething())
-								.then((re) => {
+								.then(re => {
 									this.methods.notice.success("删除成功");
 									this.methods.removeOneData(row);
 									resolve();
 								})
-								.catch((re) => {
+								.catch(re => {
 									this.methods.notice.error(re && re.msg ? re.msg : "删除失败");
 									rejects();
 								});
@@ -308,11 +310,11 @@ class ZlistPanel extends ZpureComponent {
 			const content = this.props.addPageRender(this.getExportSomething());
 			this.methods.openModal(content);
 		},
-		onUpdate: (record) => {
+		onUpdate: record => {
 			const content = this.props.updatePageRender(record, this.getExportSomething());
 			this.methods.openModal(content);
 		},
-		onDetail: (record) => {
+		onDetail: record => {
 			const content = this.props.detailPageRender(record, this.getExportSomething());
 			this.methods.openModal(content);
 		},
@@ -321,7 +323,7 @@ class ZlistPanel extends ZpureComponent {
 			this.methods.getListData(true);
 		},
 		openSearch: () => {
-			this.ZsearchFormMethods.unfold((show) => {
+			this.ZsearchFormMethods.unfold(show => {
 				this.setState({
 					expandedSearch: show,
 				});
@@ -341,14 +343,14 @@ class ZlistPanel extends ZpureComponent {
 				noMore,
 			});
 		},
-		checkColumnsChange: (checkValue) => {
+		checkColumnsChange: checkValue => {
 			this.setState({
 				tableColumns: this.getShowTableColumns(checkValue),
 			});
 		},
 	};
 	getDiffBtn = (type, btnName, onClick, disabled) => {
-		const clickfn = (e) => {
+		const clickfn = e => {
 			e.stopPropagation();
 			typeof onClick == "function" && onClick(e);
 		};
@@ -446,7 +448,7 @@ class ZlistPanel extends ZpureComponent {
 								this.getDiffBtn(
 									"default",
 									detailBtnName,
-									(e) => {
+									e => {
 										this.methods.onDetail(record);
 									},
 									_detailBtnDisabled,
@@ -459,7 +461,7 @@ class ZlistPanel extends ZpureComponent {
 								this.getDiffBtn(
 									"primary",
 									updateBtnName,
-									(e) => {
+									e => {
 										this.methods.onUpdate(record);
 									},
 									_updateBtnDisabled,
@@ -472,7 +474,7 @@ class ZlistPanel extends ZpureComponent {
 								this.getDiffBtn(
 									"danger",
 									deleteBtnName,
-									(e) => {
+									e => {
 										this.methods.onDelete(text, record);
 									},
 									_deleteBtnDisabled,
@@ -496,13 +498,13 @@ class ZlistPanel extends ZpureComponent {
 									<span>更多</span>
 									<i
 										className="zero-icon zerod-up z-open-btn is-down"
-										ref={(el) => {
+										ref={el => {
 											record.moreIconEl = el;
 										}}
 									/>
 								</span>
 							);
-							const onVisibleChange = (show) => {
+							const onVisibleChange = show => {
 								if (record.moreIconEl) {
 									show
 										? removeClass(record.moreIconEl, "is-down")
@@ -516,7 +518,7 @@ class ZlistPanel extends ZpureComponent {
 										items={this.moreMenu(record, index)}
 										onVisibleChange={onVisibleChange}
 									>
-										{this.getDiffBtn("default", moreBtnName, (e) => e.stopPropagation())}
+										{this.getDiffBtn("default", moreBtnName, e => e.stopPropagation())}
 									</ZroundingButton>
 								) : (
 									<Dropdown
@@ -526,7 +528,7 @@ class ZlistPanel extends ZpureComponent {
 										placement="bottomRight"
 										onVisibleChange={onVisibleChange}
 									>
-										{this.getDiffBtn("default", moreBtnName, (e) => e.stopPropagation())}
+										{this.getDiffBtn("default", moreBtnName, e => e.stopPropagation())}
 									</Dropdown>
 								);
 							if (this.hasMoreMenu) {
@@ -549,7 +551,7 @@ class ZlistPanel extends ZpureComponent {
 							}
 							return this.state.isListCard
 								? btns
-								: btns.map((btn) => {
+								: btns.map(btn => {
 										return btn;
 								  });
 						},
@@ -557,7 +559,7 @@ class ZlistPanel extends ZpureComponent {
 			  ]
 			: [];
 	}
-	tableColumns = [...this.props.tableColumns, ...this.actionBtns()].map((col) => {
+	tableColumns = [...this.props.tableColumns, ...this.actionBtns()].map(col => {
 		const colRender = col.render;
 		if (typeof colRender === "function") {
 			col.render = (text, record, index) => {
@@ -581,12 +583,12 @@ class ZlistPanel extends ZpureComponent {
 		};
 	}
 	checkColumnsValue = this.props.tableColumns
-		.filter((item) => {
+		.filter(item => {
 			return !(dataType.isBoolean(item.show) && !item.show);
 		})
-		.map((item) => item.dataIndex);
+		.map(item => item.dataIndex);
 	getShowTableColumns(checkValue) {
-		return this.tableColumns.filter((item) => {
+		return this.tableColumns.filter(item => {
 			return checkValue.includes(item.dataIndex) || item.dataIndex == this.actionColKey;
 		});
 	}
@@ -612,7 +614,7 @@ class ZlistPanel extends ZpureComponent {
 		totalPage: 1,
 	};
 	searchQuery = null;
-	defaultSorter = this.state.tableColumns.find((item) => item.defaultSortOrder);
+	defaultSorter = this.state.tableColumns.find(item => item.defaultSortOrder);
 	sorter = {
 		field: this.defaultSorter ? this.defaultSorter.dataIndex : "",
 		order: this.defaultSorter ? this.defaultSorter.defaultSortOrder : "",
@@ -622,7 +624,7 @@ class ZlistPanel extends ZpureComponent {
 		this.insertLocation = const_getInsertLocation(this.hocWrapperEl);
 		this.methods.onSearch();
 	}
-	getSearchFormMethods = (methods) => (this.ZsearchFormMethods = methods);
+	getSearchFormMethods = methods => (this.ZsearchFormMethods = methods);
 	render() {
 		this.showPagination =
 			typeof this.props.showPagination === "function"
@@ -670,7 +672,7 @@ class ZlistPanel extends ZpureComponent {
 		}
 		return (
 			<section
-				ref={(el) => {
+				ref={el => {
 					this.hocWrapperEl = el;
 				}}
 			>

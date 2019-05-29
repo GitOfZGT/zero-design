@@ -73,15 +73,15 @@ class Myjavascript extends ZpureComponent {
 		</tr>
         <tr>
 			<td>sourceKeys</td>
-			<td>定义leftSourceData和rightTargetData的key对象，默认：{name:"name",id:"id"}</td>
+			<td>定义leftSourceData和rightTargetData的key对象，默认：{ name: "name", id: "id", children: "children" }</td>
 			<td>object</td>
-			<td>{name:"name",id:"id"}</td>
+			<td>{ name: "name", id: "id", children: "children" }</td>
 		</tr>
         <tr>
 			<td>onChange</td>
 			<td>操作之后的回调，参数有 actionType：操作类型，rightData：操作之后右框数据，actionItem：当前操作的数据，sibligItem：当前操作位置下一个数据</td>
 			<td>(actionType, rightData, actionItem, sibligItem) => {}</td>
-			<td>{name:"name",id:"id"}</td>
+			<td>--</td>
 		</tr>
 		 <tr>
 			<td>repeated</td>

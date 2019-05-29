@@ -1,6 +1,7 @@
 @import "../../scssMixin/generateClassName";
 $--border-color: #89cbfa;
 :global {
+	
 	@include z("live-form-item-clone") {
 		padding: 36px 10px 0 !important;
 		position: absolute !important;
@@ -53,7 +54,6 @@ $--border-color: #89cbfa;
 			margin-bottom: 10px;
 		}
 	}
-
 	@include z("live-tool") {
 		display: none;
 		justify-content: space-between;
@@ -171,6 +171,49 @@ $--border-color: #89cbfa;
 	}
 	.z-group-insert {
 		transform: rotate(-45deg);
+	}
+
+	.z-linkage-tab{
+		position: absolute;
+		top:0;
+		width: 100%;
+		left:0;
+		background-color: white;
+		.ant-tabs-bar{
+			margin:0;
+		}
+	}
+	.z-linkage-line{
+		border-width: 0 1px 1px;
+		border-style: dashed;
+		border-color: #d9d9d9;
+		height: 140px;
+		text-align: left;
+		padding:6px 10px;
+		.ant-tag{
+			margin-bottom:5px;
+		}
+	}
+	.z-linkage-config{
+		.ant-select-selection-selected-value{
+			.ant-tag{
+				margin-top:1px;
+				font-size: 12px;
+				height: 18px;
+				line-height: 18px;
+				overflow: hidden;
+			}
+		}
+	}
+	.z-link-configured{
+		.ant-col{
+			border-bottom: 1px solid #dedede;
+			padding-top:10px;
+			padding-bottom: 10px;
+		}
+		.ant-tag{
+			margin-bottom:5px;
+		}
 	}
 }
 

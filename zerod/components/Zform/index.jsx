@@ -42,33 +42,45 @@ export const Zform = Form.create()(
 		};
 		allAsync = [];
 		methods = {
-			onSubmit: (e) => {
+			onSubmit: e => {
 				e.preventDefault();
 				const forms = dataType.isFunction(this.props.otherForms)
-					? this.props.otherForms(this.props.form).concat([this.props.form])
-					: [this.props.form];
+					? this.props.otherForms(this.form).concat([this.form])
+					: [this.form];
 				let formsValues = [];
-				const valideds = forms.map((form) => {
+				const valideds = forms.map(form => {
 					let valided = true;
-					form.validateFields((err, values) => {
-						if (err) {
-							valided = false;
-							return;
-						}
-						if (dataType.isObject(values)) {
-							Object.keys(values).forEach((key) => {
-								if (dataType.isString(values[key])) {
-									values[key] = values[key].trim();
-								}
-							});
-						}
-						formsValues.push(values);
-					});
+					form.validateFields(
+						form.zformItems
+							.filter(item => item.ref.current.state.show)
+							.map(item => {
+								return item.key;
+							}),
+						(err, values) => {
+							// console.log('--form',this.state.items);
+							if (err) {
+								valided = false;
+								return;
+							}
+							const newValues = {};
+							if (dataType.isObject(values)) {
+								Object.keys(values).forEach(key => {
+									if (dataType.isString(values[key])) {
+										//字符串类型的值去掉首尾空格
+										newValues[key] = values[key].trim();
+									} else {
+										newValues[key] = values[key];
+									}
+								});
+							}
+							formsValues.push(values);
+						},
+					);
 					return valided;
 				});
 				//有一个验证失败，就阻止
 				if (
-					valideds.some((valid) => {
+					valideds.some(valid => {
 						return !valid;
 					})
 				) {
@@ -80,7 +92,7 @@ export const Zform = Form.create()(
 					Modal.confirm({
 						title: "确定好提交了吗?",
 						content: content ? content : this.props.submitMsg,
-						onOk: (e) => {
+						onOk: e => {
 							return this.props.onSubmit
 								? this.props.onSubmit(formsValues.length == 1 ? formsValues[0] : formsValues)
 								: Promise.resolve();
@@ -90,27 +102,6 @@ export const Zform = Form.create()(
 				} else {
 					this.props.onSubmit && this.props.onSubmit(formsValues.length == 1 ? formsValues[0] : formsValues);
 				}
-				// this.props.form.validateFields((err, values) => {
-				// 	if (err) return;
-				// 	if (dataType.isObject(values)) {
-				// 		Object.keys(values).forEach((key) => {
-				// 			if (dataType.isString(values[key])) {
-				// 				values[key] = values[key].trim();
-				// 			}
-				// 		});
-				// 	}
-				// 	if (this.props.submitMsg) {
-				// 		Modal.confirm({
-				// 			title: "确定好提交了吗?",
-				// 			content: this.props.submitMsg,
-				// 			onOk: (e) => {
-				// 				return this.props.onSubmit ? this.props.onSubmit(values) : Promise.resolve();
-				// 			},
-				// 		});
-				// 	} else {
-				// 		this.props.onSubmit && this.props.onSubmit(values);
-				// 	}
-				// });
 			},
 			changeFormItems: (newItems, part = false, callback) => {
 				const_changeFormItems.call(this, newItems, part, callback);
@@ -123,31 +114,33 @@ export const Zform = Form.create()(
 			values = values ? values : this.props.formDefaultValues;
 			if (values && this.state.items.length) {
 				const newValues = {};
-				this.filedKeys.forEach((key) => {
+				this.filedKeys.forEach(key => {
 					const value = values[key];
 					if (value !== undefined) newValues[key] = value;
 				});
-				console.log("--zform",newValues)
-				if (Object.keys(newValues).length) this.props.form.setFieldsValue(newValues);
+				// console.log("--zform", newValues);
+				if (Object.keys(newValues).length) this.form.setFieldsValue(newValues);
 			}
 		}
 		execAsync(newItems) {
 			const_initItems.call(
 				this,
 				Array.isArray(newItems) ? newItems : this.props.items,
-				this.props.form,
+				this.form,
 				this.methods.changeFormItems,
 				() => {
 					const_execAsync.call(this, this.props.afterItemsRendered);
 				},
 			);
 		}
+		form = { ...this.props.form, zformItems: this.state.items };
 		componentDidMount() {
 			this.execAsync();
-			this.props.getFormInstance && this.props.getFormInstance(this.props.form, this.methods);
+			this.form = { ...this.props.form, zformItems: this.state.items };
+			this.props.getFormInstance && this.props.getFormInstance(this.form, this.methods);
 			this.props.getInbuiltTool &&
 				this.props.getInbuiltTool({
-					form: this.props.form,
+					form: this.form,
 					submit: this.methods.onSubmit,
 					...this.methods,
 				});
@@ -159,8 +152,9 @@ export const Zform = Form.create()(
 			if (this.props.items !== prevProps.items && !this.allAsync.length) {
 				this.execAsync();
 			}
-			if (this.props.form !== prevProps.form) {
-				this.props.getFormInstance && this.props.getFormInstance(this.props.form, this.methods);
+			if (this.props.form !== prevProps.form || this.state.items !== prevState.items) {
+				this.form = { ...this.props.form, zformItems: this.state.items };
+				this.props.getFormInstance && this.props.getFormInstance(this.form, this.methods);
 			}
 		}
 		componentWillUnmount() {
@@ -174,7 +168,7 @@ export const Zform = Form.create()(
 						key={item.key}
 						colContentRender={this.props.colContentRender}
 						loading={item.loading}
-						form={this.props.form}
+						form={this.form}
 						changeFormItems={this.methods.changeFormItems}
 						item={item}
 						ref={item.ref}

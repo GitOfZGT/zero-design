@@ -44,7 +44,7 @@ class Myjavascript extends ZpureComponent {
 	<tbody>
 		<tr>
 			<td>tabPanes</td>
-			<td>选项卡数据，数据结构有{tab ：标签title，key:对应Antd的Tabs组件 activeKey，content：string | ()=>内容 }</td>
+			<td>选项卡数据，数据结构有{tab ：tab名称，key:对应Antd的Tabs组件 activeKey，content：string | ()=>内容 }</td>
 			<td>array[object]</td>
 			<td>--</td>
 		</tr>

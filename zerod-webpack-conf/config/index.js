@@ -19,8 +19,13 @@ if (fs.existsSync(resolveCurrent(agepath))) {
 }
 // 共享代码包的名称
 const shareName = age.name;
-if (!/^(share\-)[a-z0-9]*/.test(shareName)) {
-    console.log(chalk.red(`share-code/package.json/name必须以share-开头`));
+if (
+    !/^(share\-)[a-z0-9]*/.test(shareName) &&
+    !/^(zerod\-)[a-z0-9]*/.test(shareName)
+) {
+    console.log(
+        chalk.red(`share-code/package.json/name必须以share-或者zerod-开头`),
+    );
     process.exit(1);
 }
 
@@ -41,7 +46,7 @@ const config = merge(
         'babel-includes': [
             resolveCurrent('src'),
             resolveNode_modules('zerod'),
-            /(node_modules(\\|\/)share\-.*)/,
+            /(node_modules(\\|\/)(share|zerod)\-.*)/,
             resolveNode_modules('webpack-dev-server/client'),
         ],
         //微信页面开发授权域名验证的文件，如： path.resolve(__dirname, '../MP_verify_P7fns4NGi17lbM0R.txt')
@@ -50,7 +55,7 @@ const config = merge(
         //scss变量提升
         scssVars: [],
         //增加加载器
-        loaders:[],
+        loaders: [],
         dll: {
             //除了package.json的dependencies，还需包含
             include: [],

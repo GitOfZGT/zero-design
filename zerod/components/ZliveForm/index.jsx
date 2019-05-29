@@ -64,7 +64,27 @@ function commitFormData(formViewerRef, layoutFormRef, linkageRef, onSave) {
 		typeof onSave === "function" && onSave(newFormData);
 	});
 }
-function useGetItems(formData, formViewerRef, layoutFormRef, showModal, onSave, layerRef, showViewerRef) {
+function useGetItems(
+	formData,
+	formViewerRef,
+	layoutFormRef,
+	showModal,
+	onSave,
+	layerRef,
+	showViewerRef,
+	formRenderedRef,
+) {
+	const hasCodeRef = useRef(false);
+	useEffect(() => {
+		if (layoutFormRef.current && formRenderedRef.current) {
+			layoutFormRef.current.setFieldsValue({
+				name: formData.name,
+				code: formData.code,
+				labelLayout: formData.labelLayout,
+			});
+		}
+		hasCodeRef.current = !!formData.code;
+	}, [formData, layoutFormRef.current, formRenderedRef.current]);
 	const linkageRef = useRef(formData.linkages);
 	const itemsRef = useRef([
 		{
@@ -84,7 +104,7 @@ function useGetItems(formData, formViewerRef, layoutFormRef, showModal, onSave, 
 			label: "表单编码",
 			span: 4,
 			render: (form, changeFormItems) => {
-				return controls["1"].getControl();
+				return controls["1"].getControl({}, undefined, undefined, { disabled: hasCodeRef.current });
 			},
 			options: controls["1"].getOptions({
 				required: true,
@@ -136,27 +156,21 @@ function useGetItems(formData, formViewerRef, layoutFormRef, showModal, onSave, 
 							type="primary"
 							className="z-margin-right-12"
 							onClick={() => {
-								showModal({
-									show: true,
-									modal: "linkageConfigModal",
-									content: (
-										<LinkageConfig
-											defaultValue={linkageRef.current}
-											onSubmit={values => {
-												let error = false;
-												try {
-													linkageRef.current = JSON.parse(values.linkages);
-												} catch (e) {
-													error = true;
-												}
-												if (error || !Array.isArray(linkageRef.current)) {
-													message.error("联动配置不是有效的JSON");
-												} else {
-													showModal(false, "linkageConfigModal");
-												}
-											}}
-										/>
-									),
+								commitFormData(formViewerRef, layoutFormRef, linkageRef, newFormData => {
+									showModal({
+										show: true,
+										modal: "linkageConfigModal",
+										content: (
+											<LinkageConfig
+												newFormData={newFormData}
+												defaultValue={linkageRef.current}
+												onChange={newLinkages => {
+													console.log(JSON.stringify(newLinkages))
+													linkageRef.current=newLinkages;
+												}}
+											/>
+										),
+									});
 								});
 							}}
 						>
@@ -282,7 +296,7 @@ function useFormProps(showModal, formViewerRef) {
 						openUpdateControl(showModal, props.group.id, formViewerRef, null, "add");
 					}}
 				>
-					+
+					<Icon type="plus" /> 添加控件
 				</Col>
 			);
 		},
@@ -305,12 +319,13 @@ function getGroupIndex(formViewerRef, group) {
 	return [newGroups, index];
 }
 
-function getNewGroupData() {
+function getNewGroupData(labelLayout) {
 	return {
 		additive: true,
 		name: "组名",
 		id: GenNonDuplicateID(),
 		formFieldInfoList: [],
+		labelLayout,
 	};
 }
 
@@ -334,12 +349,7 @@ const ShowFormViewer = React.memo(
 		});
 		return formData ? (
 			<div style={{ width: "90%", margin: "0 auto" }}>
-				<FormViewer
-					formData={formData}
-					formValues={{
-						pic: [3690, 3691, 3692],
-					}}
-				/>
+				<FormViewer formData={formData} />
 			</div>
 		) : (
 			<div style={{ height: "100px" }} />
@@ -361,12 +371,22 @@ const ZliveForm = ZerodMainContext.setConsumer(
 			? showLayerRightModal
 			: () => {};
 		if (!formData.sectionList || !formData.sectionList.length) {
-			formData.sectionList = [getNewGroupData()];
+			formData.sectionList = [getNewGroupData(formData.labelLayout)];
 		}
 		//FormGroup里面Zform的扩展属性
 		const formProps = useFormProps(showModal, formViewerRef);
 		//当前Zform的items
-		const items = useGetItems(formData, formViewerRef, layoutFormRef, showModal, onSave, layerRef, showViewerRef);
+		const formRenderedRef = useRef(false);
+		const items = useGetItems(
+			formData,
+			formViewerRef,
+			layoutFormRef,
+			showModal,
+			onSave,
+			layerRef,
+			showViewerRef,
+			formRenderedRef,
+		);
 		//存dragula的实例
 		const drakeRef = useRef(null);
 		//存拖动元素下一个元素
@@ -493,6 +513,9 @@ const ZliveForm = ZerodMainContext.setConsumer(
 								style={{ width: "100%" }}
 								submitBtnName=""
 								getFormInstance={getFormInstance}
+								afterItemsRendered={() => {
+									formRenderedRef.current = true;
+								}}
 							/>
 						</div>
 					</div>
@@ -512,7 +535,9 @@ const ZliveForm = ZerodMainContext.setConsumer(
 									<InsertGroupBtns
 										onInsertUp={() => {
 											const [newGroups, index] = getGroupIndex(formViewerRef, group);
-											const groupItem = getGroupItem(getNewGroupData());
+											const groupItem = getGroupItem(
+												getNewGroupData(layoutFormRef.current.getFieldValue("labelLayout")),
+											);
 											if (index === 0) {
 												newGroups.unshift(groupItem);
 											} else {
@@ -523,7 +548,9 @@ const ZliveForm = ZerodMainContext.setConsumer(
 										}}
 										onInsertDown={() => {
 											const [newGroups, index] = getGroupIndex(formViewerRef, group);
-											const groupItem = getGroupItem(getNewGroupData());
+											const groupItem = getGroupItem(
+												getNewGroupData(layoutFormRef.current.getFieldValue("labelLayout")),
+											);
 											if (index === newGroups.length - 1) {
 												newGroups.push(groupItem);
 											} else {

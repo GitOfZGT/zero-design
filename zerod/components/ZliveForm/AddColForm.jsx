@@ -23,7 +23,7 @@ const dateKeys = ["format"];
 const uploadKeys = ["url", "detailUrl"];
 
 //控件类型列表
-const controlList = [
+export const controlList = [
 	{
 		label: "单行输入", //控件类型名称
 		value: 1, //类型值
@@ -210,6 +210,7 @@ function useFormItems(groupId, formViewerRef,type) {
 		{
 			key: "maxLength",
 			label: "最大输入长度",
+			show:false,
 			render: (form, changeFormItems) => {
 				return getControl("InputNumber");
 			},
@@ -217,6 +218,7 @@ function useFormItems(groupId, formViewerRef,type) {
 		{
 			key: "minLength",
 			label: "最小输入长度",
+			show:false,
 			render: (form, changeFormItems) => {
 				return getControl("InputNumber");
 			},
@@ -225,6 +227,7 @@ function useFormItems(groupId, formViewerRef,type) {
 		{
 			key: "selectList",
 			label: "选项",
+			show:false,
 			labelFocused: true,
 			render: (form, changeFormItems) => {
 				return getControl("TreeInput", { multiple: false });
@@ -255,6 +258,7 @@ function useFormItems(groupId, formViewerRef,type) {
 		{
 			key: "format",
 			label: "格式",
+			show:false,
 			render: (form, changeFormItems) => {
 				return getControl("Select", {
 					selectList: Object.keys(dateFormats).map((key) => ({ label: key, value: key })),
@@ -265,6 +269,7 @@ function useFormItems(groupId, formViewerRef,type) {
 		{
 			key: "url",
 			label: "上传地址",
+			show:false,
 			labelFocused: true,
 			render: (form, changeFormItems) => {
 				return (
@@ -286,6 +291,7 @@ function useFormItems(groupId, formViewerRef,type) {
 		{
 			key: "detailUrl",
 			label: "获取已上传列表的地址",
+			show:false,
 			labelFocused: true,
 			render: (form, changeFormItems) => {
 				return (

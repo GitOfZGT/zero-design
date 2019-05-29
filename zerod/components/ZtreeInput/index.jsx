@@ -13,16 +13,18 @@ function getNewItem() {
 const propTypes = {
 	value: PropTypes.array,
 	onChange: PropTypes.func,
-	multiple:PropTypes.bool,
+	multiple: PropTypes.bool,
+	inputType: PropTypes.string,
 };
 
 const defaultProps = {
 	value: [],
-	multiple:true,
+	multiple: true,
+	inputType: "double",
 };
 
 function setId(arr) {
-	arr.forEach((item) => {
+	arr.forEach(item => {
 		if (item.id === undefined) {
 			item.id = GenNonDuplicateID();
 		}
@@ -33,7 +35,7 @@ function setId(arr) {
 }
 
 const _ZtreeInput = React.forwardRef(function(props, ref) {
-	const { value, onChange,multiple } = props;
+	const { value, onChange, multiple, inputType } = props;
 	const [sync, setSync] = useState(false);
 	useEffect(() => {
 		if (!value.length) onChange && onChange([getNewItem()]);
@@ -47,10 +49,11 @@ const _ZtreeInput = React.forwardRef(function(props, ref) {
 	return (
 		<InputContext.Provider
 			value={{
-				onBlur:()=>{
+				onBlur: () => {
 					onChange && onChange(value);
 				},
 				sync,
+				inputType,
 				multiple,
 				onSibingsClick: (e, data, index) => {
 					itemsFromTree({
@@ -114,15 +117,17 @@ const _ZtreeInput = React.forwardRef(function(props, ref) {
 			}}
 		>
 			<div className={cssClass["z-tree-root"]}>
-				<div className={cssClass["z-tree-type"]}>
-					<Checkbox
-						onChange={(e) => {
-							setSync(e.target.checked);
-						}}
-					>
-						左右同步输入(Label与Value同值)
-					</Checkbox>
-				</div>
+				{inputType === "double" ? (
+					<div className={cssClass["z-tree-type"]}>
+						<Checkbox
+							onChange={e => {
+								setSync(e.target.checked);
+							}}
+						>
+							左右同步输入(Label与Value同值)
+						</Checkbox>
+					</div>
+				) : null}
 				<InputGroup options={value} />
 			</div>
 		</InputContext.Provider>

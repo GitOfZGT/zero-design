@@ -12,10 +12,10 @@ const noticeMethod = {
 export const const_getMethods = function() {
 	return {
 		notice: const_notification(this.props.noticeType),
-		showLoading: (show) => {
+		showLoading: show => {
 			const_showLoading(this.insertLocation, this.props)(show);
 		},
-		openModal: (content) => {
+		openModal: content => {
 			content &&
 				this.props.showRightModal &&
 				this.props.showRightModal(true, const_getModalType(this.insertLocation), content);
@@ -43,7 +43,7 @@ const notice_names = ["success", "error", "info", "warning"];
 // const_notification("notification").success("内容")
 export const const_notification = function(noticeType = "message") {
 	const notice = {};
-	notice_names.forEach((name) => {
+	notice_names.forEach(name => {
 		notice[name] = function(content, newConfig = {}) {
 			const agur = {
 				...notice_config[noticeType],
@@ -76,7 +76,7 @@ export const const_getMainTool = function() {
 		"setTemporaryStorage",
 		"getScrollAreaWrapperEl",
 		"getInsertLocation",
-	].forEach((key) => {
+	].forEach(key => {
 		tool[key] = this.props[key];
 	});
 	return tool;
@@ -111,7 +111,7 @@ export const const_showLoading = (insertLocation, props) => {
 	};
 };
 
-export const const_getModalType = (insertLocation) => {
+export const const_getModalType = insertLocation => {
 	switch (insertLocation) {
 		case const_insertLocations.mainRoute:
 			return const_insertLocations.mainModal;
@@ -132,7 +132,7 @@ export const animateTimout = {
 };
 function addItemCss(classNames) {
 	let ht = "";
-	classNames.forEach((item) => {
+	classNames.forEach(item => {
 		ht += `.${item.className} .ant-form-item-label{width:${item.width} !important;white-space:normal !important;}`;
 	});
 	if (this.styleEl) {
@@ -144,7 +144,7 @@ function addItemCss(classNames) {
 	}
 }
 function const_extendItem(needRef, item, render, hasItemClass, renderArgument, changeItems, index) {
-	let control = (value) => value;
+	let control = value => value;
 	let loading = false;
 	let renderValue = null;
 	if (render) {
@@ -226,8 +226,8 @@ export const const_itemSpan = function(control, currentSpan, defaultSpan) {
 export const const_execAsync = function(callback) {
 	callback = dataType.isFunction(callback) ? callback : function() {};
 	if (this.allAsync.length) {
-		this.allAsync.forEach((asy) => {
-			asy.promise.then((control) => {
+		this.allAsync.forEach(asy => {
+			asy.promise.then(control => {
 				if (this.unmounted) return;
 				// console.log(control)
 				const formItem = this.state.items[asy.index].ref.current;
@@ -240,10 +240,10 @@ export const const_execAsync = function(callback) {
 			});
 		});
 		Promise.all(
-			this.allAsync.map((asy) => {
+			this.allAsync.map(asy => {
 				return asy.promise;
 			}),
-		).then((re) => {
+		).then(re => {
 			if (this.unmounted) return;
 			this.allAsync = [];
 			this.setFieldsValue();
@@ -263,7 +263,7 @@ export const const_execAsync = function(callback) {
 		callback(this.props.form, this.methods);
 	}
 };
-export function const_changeFormItems(newItems, part = false,callback) {
+export function const_changeFormItems(newItems, part = false, callback) {
 	if (part) {
 		//part 表示局部
 		let itemsKeys = [],
@@ -272,10 +272,11 @@ export function const_changeFormItems(newItems, part = false,callback) {
 			itemsKeys = [{ key: newItems.key }];
 			items = [newItems];
 		} else if (dataType.isArray(newItems)) {
-			itemsKeys = newItems.map((item) => ({ key: item.key }));
+			itemsKeys = newItems.map(item => ({ key: item.key }));
 			items = newItems;
 		}
 		const needChangeItems = arrayFilterBy(this.state.items, itemsKeys);
+		let promises = [];
 		needChangeItems.forEach((item, i) => {
 			const formItem = item.ref.current;
 			const theItem = arrayFilterBy(items, { key: item.key })[0];
@@ -285,10 +286,16 @@ export function const_changeFormItems(newItems, part = false,callback) {
 					return;
 				}
 				if (theItem.hasOwnProperty("show")) {
-					formItem.methods.showItem(theItem.show,callback);
+					const itemPromise = new Promise(function(resolve) {
+						formItem.methods.showItem(theItem.show, resolve);
+					});
+					promises.push(itemPromise);
 				}
 				if (theItem.hasOwnProperty("newItem")) {
-					formItem.methods.changeItem(theItem.newItem,callback);
+					const itemPromise = new Promise(function(resolve) {
+						formItem.methods.changeItem(theItem.newItem, resolve);
+					});
+					promises.push(itemPromise);
 					// newItem={
 					// 	control:<Input></Input>,
 					// 	span:{lg:12},
@@ -299,6 +306,11 @@ export function const_changeFormItems(newItems, part = false,callback) {
 				}
 			}
 		});
+		if (promises.length && typeof callback === "function") {
+			Promise.all(promises).then(callback);
+		} else {
+			promises = null;
+		}
 	} else {
 		this.execAsync(newItems);
 	}
@@ -350,8 +362,8 @@ export const const_getPanleHeader = function(hasControl) {
 									className={searchCssClass["z-control-group"]}
 									defaultValue={this.checkColumnsValue}
 									options={this.props.tableColumns
-										.filter((item) => item.dataIndex)
-										.map((item) => {
+										.filter(item => item.dataIndex)
+										.map(item => {
 											return { label: item.title, value: item.dataIndex };
 										})}
 									onChange={this.methods.checkColumnsChange}
@@ -393,7 +405,7 @@ const common_protos = {
 	showAddBtn: true,
 	// 新建按钮权限控制代码
 	addBtnPermCode: "",
-	addPageRender: (tool) => {
+	addPageRender: tool => {
 		return <div>新增页面</div>;
 	},
 	// 是否显示详情按钮
@@ -419,7 +431,7 @@ const common_protos = {
 	moreBtnType: "rounding", // rounding | menu
 	onMoreBtnClick: (item, record) => {},
 	// 删除按钮后台接口函数，其必须内部返回Promise
-	deleteApiInterface: (data) => Promise.resolve({ data: {} }),
+	deleteApiInterface: data => Promise.resolve({ data: {} }),
 	//用于接收列表内部一些东西的钩子 (obj)=>{}
 	exportSomething: null,
 	panelBeforeRender: null,
@@ -453,7 +465,7 @@ const private_protos = {
 	},
 	ZtreePanel: {
 		treeDataKeys: { name: "name", id: "id", children: "children" },
-		treeApiInterface: (query) => Promise.resolve({ data: [] }),
+		treeApiInterface: query => Promise.resolve({ data: [] }),
 		// childApiInterface: (query) => Promise.reject({ mag: "未提供后台接口" }),
 		childApiInterface: false,
 		treeProps: {},
@@ -512,7 +524,7 @@ export const const_getListConfig = (name, componentName) => {
 import { ZpageWrapperProps } from "./ZpageWrapper";
 export const const_getPageWrapperProps = function(config) {
 	const newProps = {};
-	Object.keys(ZpageWrapperProps).forEach((key) => {
+	Object.keys(ZpageWrapperProps).forEach(key => {
 		if (config[key] != undefined) {
 			newProps[key] = config[key];
 		}
@@ -531,7 +543,7 @@ export function const_extendPanelFormConfig() {
 	const config = this.props.searchForm;
 	if (config) {
 		const newConfig = {};
-		Object.keys(config).forEach((key) => {
+		Object.keys(config).forEach(key => {
 			if (dataType.isFunction(config[key])) {
 				newConfig[key] = const_extendArguments(config[key], this.getExportSomething());
 			} else {
@@ -549,7 +561,7 @@ export function const_getPanelDefaultFormItems() {
 		? this.searchFormConfig.items
 		: [];
 	const tool = this.getExportSomething();
-	return formItems.map((item) => {
+	return formItems.map(item => {
 		const options = dataType.isFunction(item.options) ? const_extendArguments(item.options, tool) : item.options;
 		return {
 			...item,
@@ -595,7 +607,7 @@ export function const_searchFormNode() {
 	}
 }
 
-export const const_showRightModal = function(show, witch, content, scroll, onTransitionend, wrapperEl, width,mask) {
+export const const_showRightModal = function(show, witch, content, scroll, onTransitionend, wrapperEl, width, mask) {
 	let opt = null;
 	if (dataType.isObject(show)) {
 		opt = show;
@@ -606,7 +618,7 @@ export const const_showRightModal = function(show, witch, content, scroll, onTra
 		onTransitionend = opt.onTransitionend;
 		wrapperEl = opt.wrapperEl;
 		width = opt.width;
-		mask=opt.mask;
+		mask = opt.mask;
 	}
 	this.RightModalsRef.current.methods.changeModals(
 		{
@@ -621,9 +633,9 @@ export const const_showRightModal = function(show, witch, content, scroll, onTra
 		wrapperEl ? wrapperEl : this.defaultWrapper ? this.defaultWrapper : document.body,
 	);
 };
-export const const_showModalLoading = function(show, witch,tip) {
+export const const_showModalLoading = function(show, witch, tip) {
 	const modal = this.RightModalsRef.current.methods.findModal(witch);
-	modal && modal.ref.current.methods.showModalLoading(show,tip);
+	modal && modal.ref.current.methods.showModalLoading(show, tip);
 };
 export const const_getModalScrollInstance = function(witch) {
 	const modal = this.RightModalsRef.current.methods.findModal(witch);

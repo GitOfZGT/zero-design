@@ -1,4 +1,5 @@
-import React from "react";import ZpureComponent from "../ZpureComponent";
+import React from "react";
+import ZpureComponent from "../ZpureComponent";
 import "../../zero-icon/iconfont.css";
 import { withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
@@ -75,31 +76,33 @@ class ZtreePanel extends ZpureComponent {
 	methods = {
 		...const_getMethods.call(this),
 		// 获取列表数据
-		loadTreeData: (moreQuery) => {
+		loadTreeData: moreQuery => {
 			let querys = this.searchQuery ? this.searchQuery : {};
 			if (dataType.isObject(moreQuery)) {
 				querys = Object.assign({}, querys, moreQuery);
 			}
-			this.methods.showLoading(true);
-			this.props.treeApiInterface &&
-				this.props
-					.treeApiInterface(querys, this.getExportSomething())
-					.then((re) => {
+			const apiPromise =
+				this.props.treeApiInterface && this.props.treeApiInterface(querys, this.getExportSomething());
+			if (dataType.isPromise(apiPromise)) {
+				this.methods.showLoading(true);
+				apiPromise
+					.then(re => {
 						this.setState({
 							treeData: re.data,
 						});
 					})
-					.catch((re) => {
+					.catch(re => {
 						this.methods.notice.error(re && re.msg ? re.msg : "获取数据失败");
 					})
-					.finally((re) => {
+					.finally(re => {
 						this.methods.showLoading(false);
 					});
+			}
 		},
-		loadChildData: (treeNode) => {
+		loadChildData: treeNode => {
 			const childrenKey = this.treeDataKeys.children;
 
-			return new Promise((resolve) => {
+			return new Promise(resolve => {
 				if (treeNode.props.children) {
 					resolve();
 					return;
@@ -107,7 +110,7 @@ class ZtreePanel extends ZpureComponent {
 				this.ayncChild &&
 					this.props
 						.childApiInterface(deepCopy(treeNode.props.dataRef), this.getExportSomething())
-						.then((re) => {
+						.then(re => {
 							treeNode.props.dataRef[childrenKey] = re.data;
 							this.setState({
 								treeData: [...this.state.treeData],
@@ -119,7 +122,7 @@ class ZtreePanel extends ZpureComponent {
 			});
 		},
 		// 查询
-		onSearch: (query) => {
+		onSearch: query => {
 			this.searchQuery = query;
 			this.methods.loadTreeData();
 		},
@@ -163,7 +166,7 @@ class ZtreePanel extends ZpureComponent {
 				action: replaceItemFromTree,
 			});
 		},
-		getDropType: (info) => {
+		getDropType: info => {
 			const dropKey = info.node.props.eventKey; //拖入的源key
 			const dragKey = info.dragNode.props.eventKey; //拖动对象的key
 			const dropPos = info.node.props.pos.split("-");
@@ -254,7 +257,7 @@ class ZtreePanel extends ZpureComponent {
 			insertBefore: insertBeforeItemFromTree,
 			insertAfter: insertAfterItemFromTree,
 		},
-		onDrop: (info) => {
+		onDrop: info => {
 			let { onDrop } = this.props.treeProps || {};
 			if (typeof onDrop == "function") {
 				const hasDrop = this.methods.getDropType(info);
@@ -279,7 +282,7 @@ class ZtreePanel extends ZpureComponent {
 			}
 		},
 		// 删除按钮触发
-		onDelete: (record) => {
+		onDelete: record => {
 			const text = record[this.treeDataKeys.name];
 			Modal.confirm({
 				title: `确认删除 ${text ? `[${text}]` : ""} 这条数据吗`,
@@ -291,12 +294,12 @@ class ZtreePanel extends ZpureComponent {
 					return new Promise((resolve, rejects) => {
 						this.props
 							.deleteApiInterface(record, this.getExportSomething())
-							.then((re) => {
+							.then(re => {
 								this.methods.notice.success("删除成功");
 								this.methods.removeOneData(record);
 								resolve();
 							})
-							.catch((re) => {
+							.catch(re => {
 								this.methods.notice.error(re && re.msg ? re.msg : "删除失败");
 								rejects();
 							});
@@ -308,20 +311,20 @@ class ZtreePanel extends ZpureComponent {
 			const content = this.props.addPageRender(this.getExportSomething());
 			this.methods.openModal(content);
 		},
-		onAddChild: (record) => {
+		onAddChild: record => {
 			const content = this.props.addChildPageRender(record, this.getExportSomething());
 			this.methods.openModal(content);
 		},
-		onUpdate: (record) => {
+		onUpdate: record => {
 			const content = this.props.updatePageRender(record, this.getExportSomething());
 			this.methods.openModal(content);
 		},
-		onDetail: (record) => {
+		onDetail: record => {
 			const content = this.props.detailPageRender(record, this.getExportSomething());
 			this.methods.openModal(content);
 		},
 		openSearch: () => {
-			this.ZsearchFormMethods.unfold((show) => {
+			this.ZsearchFormMethods.unfold(show => {
 				this.setState({
 					expandedSearch: show,
 				});
@@ -331,7 +334,7 @@ class ZtreePanel extends ZpureComponent {
 		currentTreeData: () => {
 			return this.state.treeData;
 		},
-		setDataState: (data) => {
+		setDataState: data => {
 			this.setState({
 				treeData: data,
 			});
@@ -404,13 +407,13 @@ class ZtreePanel extends ZpureComponent {
 		this.insertLocation = const_getInsertLocation(this.hocWrapperEl);
 		this.methods.onSearch();
 	}
-	getSearchFormMethods = (methods) => (this.ZsearchFormMethods = methods);
+	getSearchFormMethods = methods => (this.ZsearchFormMethods = methods);
 	render() {
 		const_searchFormNode.call(this);
 		const { showLine, loadData, onDrop, ...treeOthers } = this.props.treeProps || {};
 		return (
 			<section
-				ref={(el) => {
+				ref={el => {
 					this.hocWrapperEl = el;
 				}}
 			>
@@ -427,7 +430,7 @@ class ZtreePanel extends ZpureComponent {
 									loadData={this.ayncChild ? this.methods.loadChildData : undefined}
 									{...treeOthers}
 									autoExpandParent={false}
-									onRightClick={(e) => {
+									onRightClick={e => {
 										console.log(5);
 									}}
 								>

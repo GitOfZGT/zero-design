@@ -53,7 +53,7 @@ class ColFormItem extends React.PureComponent {
 	state = {
 		loading: this.props.loading,
 		item: this.props.item,
-		show: true,
+		show: dataType.isBoolean(this.props.item.show)?this.props.item.show:true,
 		focus: false,
 	};
 	componentDidUpdate(prevProps, prevState) {
@@ -88,7 +88,7 @@ class ColFormItem extends React.PureComponent {
 		}
 	};
 	render() {
-		if (!this.state.show) return null;
+		// if (!this.state.show) return null;
 		const { getFieldDecorator } = this.props.form;
 		const item = this.state.item;
 		let control =
@@ -118,7 +118,7 @@ class ColFormItem extends React.PureComponent {
 		}
 		const loader = <ZpageLoading showLoading={this.state.loading} size="small" />;
 		return (
-			<Col {...span} className={item.className} data-item={itemTostring(item)}>
+			<Col {...span} className={item.className} data-item={itemTostring(item)} style={{display:this.state.show?"":"none"}}>
 				{isFormItem ? (
 					<Form.Item
 						label={!this.state.loading ? item.label : this.props.labelLayout != "inline" ? "加载中" : ""}

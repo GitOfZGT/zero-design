@@ -1,4 +1,5 @@
-import React from "react";import ZpureComponent from "../ZpureComponent";
+import React from "react";
+import ZpureComponent from "../ZpureComponent";
 import { Row, Col, Icon, Button, message, Modal } from "antd";
 import PropTypes from "prop-types";
 import "../../dragula/dragula.css";
@@ -21,7 +22,8 @@ function getTransferTarget(target) {
 	let el = target;
 	while (
 		el &&
-		(typeof el.className !== "string" || (typeof el.className == "string" && !el.className.includes(cssClass["z-transfer-li"])))
+		(typeof el.className !== "string" ||
+			(typeof el.className == "string" && !el.className.includes(cssClass["z-transfer-li"])))
 	) {
 		if (el.parentElement) {
 			el = el.parentElement;
@@ -77,7 +79,7 @@ class ZTransfer extends ZpureComponent {
 				}
 			}
 		},
-		expandNext: (e) => {
+		expandNext: e => {
 			const el = getTransferTarget(e.target);
 			if (el.animating) {
 				return;
@@ -107,13 +109,13 @@ class ZTransfer extends ZpureComponent {
 				<header className={`${cssClass["z-transfer-heading"]}`}>{headerRender && headerRender()}</header>
 				<section
 					className={`${cssClass["z-transfer-body"]}`}
-					ref={(el) => {
+					ref={el => {
 						this.bodyEl = el;
 					}}
 				>
 					<div
 						className={`${cssClass["z-transfer-ul"]} ${cssClass["z-min-height"]}`}
-						ref={(el) => {
+						ref={el => {
 							this.contentEl = el;
 							getUlElement(el);
 						}}
@@ -171,7 +173,7 @@ export class ZoneWayTransfer extends ZpureComponent {
 		sourceKeys: { name: "name", id: "id", children: "children" },
 		leftSourceData: [],
 		rightTargetData: [],
-		onChange: (newData) => {},
+		onChange: newData => {},
 		repeated: true,
 		selectAllDisabled: false,
 		clearAllDisabled: false,
@@ -193,7 +195,7 @@ export class ZoneWayTransfer extends ZpureComponent {
 				},
 				item,
 				{
-					itemKey: GenNonDuplicateID() + "_" + i,
+					itemKey: item.itemKey ? item.itemKey : GenNonDuplicateID() + "_" + i,
 					children: null,
 					noChilds: isSub && !chids.length,
 				},
@@ -228,7 +230,7 @@ export class ZoneWayTransfer extends ZpureComponent {
 	}
 	methods = {
 		selectAll: () => {
-			const allData = this.getDefaultSourceData(this.state.leftSourceData).filter((data) => {
+			const allData = this.getDefaultSourceData(this.state.leftSourceData).filter(data => {
 				data.droged = true;
 				data.paddingLeft = _paddingLeft;
 				const hasAdd = !this.props.repeated
@@ -272,14 +274,14 @@ export class ZoneWayTransfer extends ZpureComponent {
 	render() {
 		return (
 			<Row gutter={16} className={this.props.className} style={this.props.style}>
-				<p style={{ marginBottom: "12px" }}>
+				{/* <p style={{ marginBottom: "12px" }}>
 					鼠标指针呈现类似 <i className="zero-icon zerod-move" />{" "}
 					即可拖动，从左框拖动到右框表示"选择"，右框中可上下拖动调整顺序，拖出右框可移除选项
-				</p>
+				</p> */}
 				<Col span={12}>
 					<ZTransfer
 						itemRender={this.props.leftItemRender}
-						getUlElement={(el) => {
+						getUlElement={el => {
 							this.leftUl = el;
 						}}
 						sourceData={this.state.leftSourceData}
@@ -288,7 +290,7 @@ export class ZoneWayTransfer extends ZpureComponent {
 							return (
 								<Template>
 									{typeof this.props.leftTitle == "function" ? (
-										leftTitle()
+										this.props.leftTitle()
 									) : (
 										<span>{this.props.leftTitle}</span>
 									)}
@@ -310,7 +312,7 @@ export class ZoneWayTransfer extends ZpureComponent {
 				<Col span={12}>
 					<ZTransfer
 						itemRender={this.props.rightItemRender}
-						getUlElement={(el) => {
+						getUlElement={el => {
 							this.rightUl = el;
 						}}
 						sourceData={this.state.rightTargetData}
@@ -346,7 +348,7 @@ export class ZoneWayTransfer extends ZpureComponent {
 			accepts: (el, target) => {
 				return target !== this.leftUl;
 			},
-			invalid: (el) => {
+			invalid: el => {
 				el = getTransferTarget(el);
 				return (
 					(typeof el.dataset.disabled === "boolean" ? el.dataset.disabled : el.dataset.disabled == "true") ||

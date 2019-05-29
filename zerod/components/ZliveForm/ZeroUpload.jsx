@@ -95,7 +95,7 @@ const MyUpload = React.forwardRef(function(props, ref) {
 		const hasGetDetailIds = value.filter(id => {
 			return !getFileUids(hasUploadDoneServerIdsRef.current, "serverId").includes(id);
 		});
-		console.log(modalRef.current)
+		// console.log(modalRef.current)
 		if (hasGetDetailIds.length) {
 			showLoading(true, modalRef.current, "获取文件中...");
 			httpAjax(config.detailUrlMethod ? config.detailUrlMethod : "post", config.detailUrl, {

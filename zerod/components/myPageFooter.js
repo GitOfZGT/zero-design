@@ -17,6 +17,6 @@ export const footerLinks = [
 ];
 export const footerCopyright = () => (
 	<div>
-		Copyright <Icon type="copyright" /> {new Date().getFullYear()} 华云中盛-政务事业部技术团队出品
+		华云中盛-政务事业部技术团队出品
 	</div>
 );

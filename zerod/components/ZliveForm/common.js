@@ -31,7 +31,7 @@ export function getFormItem(field, group, linkage, getGroupsFn, imperative, cust
 	};
 	return newField;
 }
-export function getGroupItem(item, linkage, getGroupsFn, imperative, customOnChange, customFormRules) {
+export function getGroupItem(item, linkage, getGroupsFn, imperative, customOnChange, customFormRules,labelLayout) {
 	const formItems = item.formFieldInfoList.map((field) => {
 		return getFormItem(field, item, linkage, getGroupsFn, imperative, customOnChange, customFormRules);
 	});
@@ -43,6 +43,7 @@ export function getGroupItem(item, linkage, getGroupsFn, imperative, customOnCha
 		id: item.id,
 		name: item.name,
 		formItems,
+		labelLayout,
 	};
 }
 
@@ -56,6 +57,7 @@ export function translateGroups(formData, getGroupsFn, linkage, imperative) {
 				imperative,
 				formData.customOnChange,
 				formData.customFormRules,
+				formData.labelLayout
 			);
 		});
 

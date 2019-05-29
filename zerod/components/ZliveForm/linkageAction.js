@@ -27,11 +27,11 @@ const initialValueLinkageAction = function(ages = [], getGroupsFn, seftItem) {
 		let formItems = [];
 		let formObjs = [];
 		const groups = getGroupsFn();
-		groups.forEach((g) => {
+		groups.forEach(g => {
 			formObjs.push(g.groupRef.current.getForm());
 		});
 		let values = {};
-		formObjs.forEach((o) => {
+		formObjs.forEach(o => {
 			values = { ...values, ...o.form.getFieldsValue() };
 		});
 		let cardGetBirthdayKeys = [];
@@ -43,48 +43,48 @@ const initialValueLinkageAction = function(ages = [], getGroupsFn, seftItem) {
 		let selectOptions = [];
 		let hasClearSelect = false;
 
-		ages.forEach((a) => {
+		ages.forEach(a => {
 			if (values.hasOwnProperty(a.src.fieldKey)) {
 				switch (a.linkageType) {
 					//输入身份证自动联动生日
 					case "6":
-						a.dist.forEach((d) => {
+						a.dist.forEach(d => {
 							cardGetBirthdayKeys = concatKeys(values, cardGetBirthdayKeys, a, d);
 						});
 						break;
 					//隐藏
 					case "5.1":
-						a.dist.forEach((d) => {
+						a.dist.forEach(d => {
 							groupHiddenIds = concatKeys(values, groupHiddenIds, a, d);
 						});
 						break;
 					case "5.2":
-						a.dist.forEach((d) => {
+						a.dist.forEach(d => {
 							hiddenKeys = concatKeys(values, hiddenKeys, a, d);
 						});
 						break;
 					//禁用
 					case "1":
-						a.dist.forEach((d) => {
+						a.dist.forEach(d => {
 							disabledKeys = concatKeys(values, disabledKeys, a, d);
 						});
 						break;
 					// 必填
 					case "2":
-						a.dist.forEach((d) => {
+						a.dist.forEach(d => {
 							requiredKeys = concatKeys(values, requiredKeys, a, d);
 						});
 						break;
 					// 非必填
 					case "3":
-						a.dist.forEach((d) => {
+						a.dist.forEach(d => {
 							noRequiredKeys = concatKeys(values, noRequiredKeys, a, d);
 						});
 						break;
 					// 控制选项
 					case "4":
 						hasClearSelect = seftItem && a.src.fieldKey == seftItem.fieldKey;
-						a.dist.forEach((d) => {
+						a.dist.forEach(d => {
 							selectOptions = concatKeys(values, selectOptions, a, d);
 						});
 						// console.log("selectOptions",selectOptions)
@@ -93,17 +93,19 @@ const initialValueLinkageAction = function(ages = [], getGroupsFn, seftItem) {
 			}
 		});
 		let newFormObjs = [];
-		groups.forEach((g) => {
-			const _groupHidden = arrayFilterBy(groupHiddenIds, { groupId: g.id });
-			g.groupRef.current.show(!_groupHidden.length);
-			if (!_groupHidden.length) {
+		groups.forEach(g => {
+			const findHideGroup = groupHiddenIds.findIndex(gh => {
+				return gh.groupName && gh.groupName === g.name;
+			});
+			g.groupRef.current.show(findHideGroup === -1);
+			if (findHideGroup === -1) {
 				formItems = formItems.concat(g.formItems);
 				newFormObjs.push(g.groupRef.current.getForm());
 			}
 		});
-
+		// console.log(selectOptions)
 		const newItems = [];
-		formItems.forEach((field) => {
+		formItems.forEach(field => {
 			const hiddenFields = arrayFilterBy(hiddenKeys, { fieldKey: field.fieldKey });
 			if (values.hasOwnProperty(field.fieldKey)) {
 				const disabledFields = arrayFilterBy(disabledKeys, { fieldKey: field.fieldKey });
@@ -128,10 +130,10 @@ const initialValueLinkageAction = function(ages = [], getGroupsFn, seftItem) {
 					}
 					e.config = { ...e.config, selectList: selectOptionsFields[0].options };
 				}
+				// console.log(selectOptionsFields,e)
 				// console.log(selectOptionsFields, field.fieldKey, values);
 				const control =
-					disabledFields.length > 0
-						? controls[e.fieldType].getControl(e, ages, getGroupsFn, {
+					disabledFields.length || selectOptionsFields.length ? controls[e.fieldType].getControl(e, ages, getGroupsFn, {
 								disabled: disabledFields.length > 0 || e.disabled,
 						  })
 						: null;
@@ -156,22 +158,22 @@ const initialValueLinkageAction = function(ages = [], getGroupsFn, seftItem) {
 				});
 			}
 		});
-		newFormObjs.forEach((o) => {
+		newFormObjs.forEach(o => {
 			o.methods.changeFormItems(newItems, true);
-			const resetDisable = disabledKeys.map((item) => item.fieldKey);
-			const resetNoRequired = noRequiredKeys.map((item) => item.fieldKey);
-			const resetSelect = selectOptions.map((item) => item.fieldKey);
+			const resetDisable = disabledKeys.map(item => item.fieldKey);
+			const resetNoRequired = noRequiredKeys.map(item => item.fieldKey);
+			const resetSelect = selectOptions.map(item => item.fieldKey);
 			o.form.validateFields([...resetDisable, ...resetNoRequired]);
 			o.form.resetFields([...resetDisable, ...(hasClearSelect ? resetSelect : [])]);
 			//处理身份证号码获取生日联动到其他控件：
 			if (cardGetBirthdayKeys.length) {
-				cardGetBirthdayKeys.forEach((card) => {
+				cardGetBirthdayKeys.forEach(card => {
 					if (!card.srcFieldKey) {
 						return;
 					}
 					const formValues = o.form.getFieldsValue();
 					let birthday = values[card.srcFieldKey];
-					card.fields.forEach((field) => {
+					card.fields.forEach(field => {
 						if (formValues.hasOwnProperty(field.fieldKey)) {
 							const val = birthday && birthday.length > 14 ? birthday.substring(6, 14) : "";
 							o.form.setFieldsValue({

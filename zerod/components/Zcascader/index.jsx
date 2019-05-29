@@ -1,14 +1,15 @@
-import React from "react";import ZpureComponent from "../ZpureComponent";
+import React from "react";
+import ZpureComponent from "../ZpureComponent";
 import ZpageLoading from "../ZpageLoading";
 import PropTypes from "prop-types";
 import cssClass from "./style.scss";
-import { hasClass, addClass, removeClass, getStyle } from "../zTool";
+import { hasClass, addClass, removeClass, getStyle, GenNonDuplicateID } from "../zTool";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
 import throttle from "lodash.throttle";
 const rotateClassName = cssClass["rotate-90"];
 const itemClassName = cssClass["z-cascader-item"];
 import { animateTimout } from "../constant";
-class ZcascaderItemGroup extends ZpureComponent {
+export class ZcascaderItemGroup extends ZpureComponent {
 	static propTypes = {
 		itemData: PropTypes.arrayOf(PropTypes.object),
 		itemKeys: PropTypes.object,
@@ -20,16 +21,9 @@ class ZcascaderItemGroup extends ZpureComponent {
 		itemData: [],
 	};
 	itemKeys = Object.assign({ name: "name", id: "id" }, this.props.itemKeys);
-	mostText = "";
-	getDefaultListData = (list) => {
-		let textLen = 0;
-		return list.map((item) => {
+	getDefaultListData = list => {
+		return list.map(item => {
 			const name = item[this.itemKeys.name];
-			if (name.length > textLen) {
-				this.mostText = name;
-			} else {
-				textLen = name.length;
-			}
 			return {
 				active: item.active,
 				disabled: item.disabled,
@@ -57,8 +51,8 @@ class ZcascaderItemGroup extends ZpureComponent {
 			this.setState({
 				animateEnter: true,
 				animateExit: false,
-				itemData: this.showLensData(),
 			});
+			this.setShowLens();
 		}
 	}
 	methods = {
@@ -80,24 +74,37 @@ class ZcascaderItemGroup extends ZpureComponent {
 			}
 		},
 	};
-	componentDidMount() {
+	setShowLens = () => {
 		this.bodyEl = this.infoEl.querySelector(".z-info-right");
-		const _item = document.createElement("div");
-		_item.innerText = this.mostText;
-		_item.className = itemClassName;
-		_item.style.visibility = "hidden";
-		this.bodyEl.appendChild(_item);
-		const itemWidth = parseInt(getStyle(_item, "width"), 10);
-		const bodyWidth = parseInt(getStyle(this.bodyEl, "width"), 10);
-		this.itemLens = Math.floor((bodyWidth - 32) / (itemWidth + 10));
-		this.bodyEl.removeChild(_item);
+		const bodyWidth = parseInt(getStyle(this.bodyEl, "width"), 10) - 32 - 40;
+		let rowCountWidth = 0;
+		this.itemLens = 0;
+		for (let index = 0; index < this.props.itemData.length; index++) {
+			const item = this.props.itemData[index];
+			const _item = document.createElement("div");
+			_item.innerText = item[this.itemKeys.name];
+			_item.className = itemClassName;
+			_item.style.visibility = "hidden";
+			this.bodyEl.appendChild(_item);
+			const itemWidth = parseInt(getStyle(_item, "width"), 10);
+			this.bodyEl.removeChild(_item);
+			if (rowCountWidth + itemWidth > bodyWidth) {
+				break;
+			} else {
+				rowCountWidth += itemWidth;
+				this.itemLens++;
+			}
+		}
 		this.setState({
 			itemData: this.showLensData(),
 		});
+	};
+	componentDidMount() {
+		this.setShowLens();
 	}
 	render() {
 		return (
-			<dl className="z-info" ref={(el) => (this.infoEl = el)}>
+			<dl className="z-info" ref={el => (this.infoEl = el)}>
 				<dt className="z-info-left">
 					<span className="z-margin-bottom-10">{this.props.label}</span>
 				</dt>
@@ -119,7 +126,7 @@ class ZcascaderItemGroup extends ZpureComponent {
 									className={`z-margin-bottom-10  ${itemClassName} ${
 										item.active ? cssClass["active"] : ""
 									} ${item.disabled ? cssClass["disabled"] : ""}`}
-									onClick={(event) => {
+									onClick={event => {
 										this.props.onItemClick && this.props.onItemClick(event, item, i, this.props);
 									}}
 								>
@@ -133,7 +140,7 @@ class ZcascaderItemGroup extends ZpureComponent {
 					<dd className={cssClass["z-cascader-right"]}>
 						<i
 							className="zero-icon zerod-doubleleft"
-							ref={(el) => {
+							ref={el => {
 								this.moreBtnEl = el;
 							}}
 							onClick={this.methods.showMore}
@@ -221,8 +228,8 @@ export class Zcascader extends ZpureComponent {
 
 				this.methods.getChildsNode(selectItem.data);
 			}
-		},600),
-		getChildsNode: (data) => {
+		}, 600),
+		getChildsNode: data => {
 			const childs = data[this.itemKeys.children];
 			if (this.props.treeAsync) {
 				this.setState({
@@ -233,7 +240,7 @@ export class Zcascader extends ZpureComponent {
 				this.methods.resolveChilds(childs);
 			}
 		},
-		resolveChilds: (childs) => {
+		resolveChilds: childs => {
 			const currentCascaders = this.currentViewCascaders;
 			if (!Array.isArray(childs) || !childs.length) {
 				this.setState(
@@ -253,8 +260,9 @@ export class Zcascader extends ZpureComponent {
 			const currentLen = currentCascaders.length;
 			let activeChils = null;
 			currentCascaders.push({
+				id: GenNonDuplicateID(),
 				label: this.props.lables[currentLen],
-				itemData: childs.map((item) => {
+				itemData: childs.map(item => {
 					const active = this.selections.includes(item[this.itemKeys.id]);
 					if (active) {
 						const activeItem = { ...item };
@@ -314,7 +322,7 @@ export class Zcascader extends ZpureComponent {
 				{this.state.cascaders.map((item, i) => {
 					return (
 						<ZcascaderItemGroup
-							key={i}
+							key={item.id}
 							index={i}
 							itemData={item.itemData}
 							label={item.label}
