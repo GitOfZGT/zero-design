@@ -69,3 +69,48 @@ export function linkRemark3({ srcControls, distControls }) {
 		</span>
 	);
 }
+export function linkRemark4({ srcControls, distControls }) {
+	return (
+		<span>
+			
+			{srcControls.map(item => {
+				return (
+					<Tag color="volcano" key={item.label}>
+						{item.label}
+					</Tag>
+				);
+			})}
+			<span className="z-margin-right-5">选项的value传入异步控件：</span>
+			{distControls.map(item => {
+				return (
+					<Tag color="volcano" key={item.label}>
+						{item.label}
+					</Tag>
+				);
+			})}
+			<span>的请求参数名：</span>
+		</span>
+	);
+}
+export function linkRemark5({ srcControls, distControls }) {
+	return (
+		<span>
+			
+			{srcControls.map(item => {
+				return (
+					<Tag color="volcano" key={item.label}>
+						{item.label}
+					</Tag>
+				);
+			})}
+			<span className="z-margin-right-5">选项的联动异步控件：</span>
+			{distControls.map(item => {
+				return (
+					<Tag color="volcano" key={item.label}>
+						{item.label}
+					</Tag>
+				);
+			})}
+		</span>
+	);
+}

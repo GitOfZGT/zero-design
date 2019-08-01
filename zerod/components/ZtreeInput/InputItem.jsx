@@ -5,6 +5,22 @@ import cssClass from "./style.scss";
 import ZlabelInput from "../ZlabelInput";
 import { Tooltip, Input } from "antd";
 import InputContext from "./InputContext";
+function singleInput(states, setStates, inputKeys, valuePlaceholder) {
+	return (
+		<Input
+			placeholder={valuePlaceholder}
+			value={states[inputKeys[1].key]}
+			onChange={e => {
+				setStates({
+					[inputKeys[0].key]: e.target.value,
+					[inputKeys[1].key]: e.target.value,
+				});
+			}}
+			size="small"
+		/>
+	);
+}
+
 const _InputItem = React.forwardRef(function InputItemCom(props, ref) {
 	const {
 		data,
@@ -19,24 +35,49 @@ const _InputItem = React.forwardRef(function InputItemCom(props, ref) {
 		onBlur,
 		multiple,
 		inputType,
+		labelPlaceholder,
+		valuePlaceholder,
+		customInputKeys,
+		customInputFunc,
+		showBtns,
+		toolTips,
 	} = props;
-	const [doubleValue, setDoubleValue] = useState(null);
-	const [singleValue, setSingleValue] = useState("");
-	const doubleChange = (val, e) => {
-		data.label = val.label;
-		data.value = val.value;
-		setDoubleValue(val);
+	// const inputKeys = customInputKeys.length
+	// 	? customInputKeys
+	// 	: [{ key: "label", initValue: "" }, { key: "value", initValue: "" }];
+	const coustomStates = {};
+	const setCoustomStates = {};
+	customInputKeys.forEach(item => {
+		const [keyState, setKeyState] = useState(item.initValue);
+		coustomStates[item.key] = keyState;
+		setCoustomStates[item.key] = setKeyState;
+	});
+	const setState = newState => {
+		Object.keys(newState).forEach(key => {
+			data[key] = newState[key];
+			setCoustomStates[key](newState[key]);
+		});
+		onBlur();
 	};
-	const singleChange = e => {
-		data.label = e.target.value;
-		data.value = e.target.value;
-		setSingleValue(e.target.value);
+
+	const [doubleValue, setDoubleValue] = useState(null);
+	const doubleChange = (val, e) => {
+		data[customInputKeys[0].key] = val.label;
+		data[customInputKeys[1].key] = val.value;
+		setDoubleValue(val);
+		onBlur();
 	};
 	useEffect(() => {
 		if (inputType === "double") {
-			setDoubleValue({ label: data.label, value: data.value });
+			setDoubleValue({ label: data[customInputKeys[0].key], value: data[customInputKeys[1].key] });
 		} else {
-			setSingleValue(data.value);
+			customInputKeys.forEach(item => {
+				if (data[item.key]) {
+					setCoustomStates[item.key](data[item.key]);
+				} else {
+					data[item.key] = item.initValue;
+				}
+			});
 		}
 	}, [data]);
 	const _onSibingsClick = e => {
@@ -56,8 +97,8 @@ const _InputItem = React.forwardRef(function InputItemCom(props, ref) {
 	};
 	return (
 		<div className={`${cssClass["z-option-item"]} ${index === 0 ? cssClass["first-item"] : ""}`}>
-			{index === length - 1 ? (
-				<Tooltip placement="top" title="添加兄弟节点" mouseEnterDelay={0} mouseLeaveDelay={0}>
+			{index === length - 1 && showBtns ? (
+				<Tooltip placement="top" title={toolTips.addSiblings} mouseEnterDelay={0} mouseLeaveDelay={0}>
 					<i
 						className={`zero-icon zerod-add-circle ${cssClass["z-add-siblings"]}`}
 						onClick={_onSibingsClick}
@@ -66,45 +107,45 @@ const _InputItem = React.forwardRef(function InputItemCom(props, ref) {
 			) : null}
 			<div className="z-flex">
 				<div className="z-flex-1">
-					{inputType === "double" ? (
+					{inputType === "coustom" ? (
+						typeof customInputFunc === "function" ? (
+							customInputFunc(coustomStates, setState, customInputKeys)
+						) : null
+					) : inputType === "double" ? (
 						<ZlabelInput
 							labelSpan={12}
 							valueSpan={12}
 							size="small"
 							value={doubleValue}
 							onChange={doubleChange}
-							labelPlaceholder="Label"
-							valuePlaceholder="Value"
+							labelPlaceholder={labelPlaceholder}
+							valuePlaceholder={valuePlaceholder}
 							sync={sync}
-							onBlur={onBlur}
+							// onBlur={onBlur}
 						/>
 					) : (
-						<Input
-							size="small"
-							placeholde="Value"
-							value={singleValue}
-							onChange={singleChange}
-							onBlur={onBlur}
-						/>
+						singleInput(coustomStates, setState, customInputKeys, valuePlaceholder)
 					)}
 				</div>
 
-				<div className="z-flex-items-v-center">
-					<Tooltip placement="top" title="上移" mouseEnterDelay={0} mouseLeaveDelay={0}>
-						<i className={`zero-icon zerod-move-up`} onClick={_onMoveUp} />
-					</Tooltip>
-					<Tooltip placement="top" title="下移" mouseEnterDelay={0} mouseLeaveDelay={0}>
-						<i className={`zero-icon zerod-down`} onClick={_onMoveDown} />
-					</Tooltip>
-					<Tooltip placement="top" title="移除" mouseEnterDelay={0} mouseLeaveDelay={0}>
-						<i className={`zero-icon zerod-minus-circle ${cssClass["remove"]}`} onClick={_onRemove} />
-					</Tooltip>
-					{multiple ? (
-						<Tooltip placement="top" title="新增子节点" mouseEnterDelay={0} mouseLeaveDelay={0}>
-							<i className={`zero-icon zerod-icon-`} onClick={_onAddChild} />
+				{showBtns ? (
+					<div className="z-flex-items-v-center">
+						<Tooltip placement="top" title={toolTips.moveUp} mouseEnterDelay={0} mouseLeaveDelay={0}>
+							<i className={`zero-icon zerod-move-up`} onClick={_onMoveUp} />
 						</Tooltip>
-					) : null}
-				</div>
+						<Tooltip placement="top" title={toolTips.moveDown} mouseEnterDelay={0} mouseLeaveDelay={0}>
+							<i className={`zero-icon zerod-down`} onClick={_onMoveDown} />
+						</Tooltip>
+						<Tooltip placement="top" title={toolTips.remove} mouseEnterDelay={0} mouseLeaveDelay={0}>
+							<i className={`zero-icon zerod-minus-circle ${cssClass["remove"]}`} onClick={_onRemove} />
+						</Tooltip>
+						{multiple ? (
+							<Tooltip placement="top" title={toolTips.addChild} mouseEnterDelay={0} mouseLeaveDelay={0}>
+								<i className={`zero-icon zerod-icon-`} onClick={_onAddChild} />
+							</Tooltip>
+						) : null}
+					</div>
+				) : null}
 			</div>
 		</div>
 	);

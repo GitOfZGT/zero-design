@@ -25,7 +25,7 @@ $--simple-gutter: 20px;
 
 $--card-title-color: $heading-color;
 @include z("list-table") {
-	margin: 0 -1px  0  0;
+	// margin: 0 -1px  0  0;
 	:global {
 		.ant-table-thead > tr > th {
 			border-bottom: 0;

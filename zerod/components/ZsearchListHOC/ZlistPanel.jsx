@@ -12,6 +12,7 @@ import {
 	const_extendPanelFormConfig,
 	const_getPanelDefaultFormItems,
 	const_searchFormNode,
+	requireValid,
 } from "../constant";
 import { Button, Icon, Divider, Dropdown, Menu, Modal } from "antd";
 
@@ -39,13 +40,7 @@ class ZlistPanel extends ZpureComponent {
 		cardCoverRender: PropTypes.func, // listType=="card"时的一个前置render,
 		panelBeforeRender: PropTypes.func,
 		panelAfterRender: PropTypes.func,
-		panelHeader: PropTypes.oneOfType([
-			PropTypes.string,
-			PropTypes.number,
-			PropTypes.func,
-			PropTypes.element,
-			PropTypes.node,
-		]), //面板title,可以自定义
+		panelHeader: PropTypes.any, //面板title,可以自定义
 		moreContentRender: PropTypes.func,
 		searchForm: PropTypes.object,
 		colFormItems: PropTypes.arrayOf(PropTypes.object), // 搜索表单列map数据数据,同searchForm.items （版本兼容）
@@ -80,6 +75,96 @@ class ZlistPanel extends ZpureComponent {
 		responseKeys: PropTypes.object, //后台接口请求响应体的key处理
 	};
 	static defaultProps = defaultConfig.list;
+
+	state = {
+		listData: [],
+		noMore: false,
+		isListCard: false,
+		tableColumns: [],
+		expandedRowKeys: [],
+		expandedSearch: false,
+	};
+	componentDidMount() {
+		this.props.exportSomething && this.props.exportSomething(this.getExportSomething());
+		this.insertLocation = const_getInsertLocation(this.hocWrapperEl);
+		this.methods.onSearch();
+		this.updateSearchProtos();
+		this.setState({
+			isListCard: this.props.listType === "card",
+			tableColumns: this.getShowTableColumns(),
+			expandedSearch: this.searchFormConfig && this.searchFormConfig.defaultExpanded,
+		});
+	}
+	componentDidUpdate(prevProps) {
+		if (this.props.tableColumns !== prevProps.tableColumns || this.props.tableParams !== prevProps.tableParams) {
+			this.setState({
+				tableColumns: this.getShowTableColumns(),
+			});
+		}
+		if (this.props.searchForm !== prevProps.searchForm) {
+			this.updateSearchProtos();
+			this.setState({
+				expandedRowKeys: [],
+				expandedSearch: this.searchFormConfig && this.searchFormConfig.defaultExpanded,
+			});
+		}
+	}
+	render() {
+		this.isInfinite = this.props.paginationType === "infinite";
+		this.showPagination =
+			typeof this.props.showPagination === "function"
+				? this.props.showPagination(this.getExportSomething())
+				: this.props.showPagination;
+		this.moreBtn =
+			this.isInfinite && this.showPagination && this.state.listData.length ? (
+				<div>
+					<Button
+						type="dashed"
+						className={cssClass["z-list-block-btn"]}
+						disabled={this.state.noMore}
+						onClick={this.methods.infiniteLoader}
+					>
+						{this.state.noMore ? "没有更多数据" : "下一页"}
+					</Button>
+					{this.props.moreContentRender && this.props.moreContentRender(this.getExportSomething())}
+				</div>
+			) : (
+				this.props.moreContentRender && this.props.moreContentRender(this.getExportSomething())
+			);
+		//this.searchForm赋值
+		const_searchFormNode.call(this);
+		this.paginationOpt = {
+			total: this.page.totalCount,
+			pageSize: this.page.pageSize,
+			current: this.page.pageNumber,
+			showTotal: (total, range) => `共 ${this.page.totalCount} 条`,
+			showSizeChanger: !this.state.isListCard,
+			showQuickJumper: true,
+			// onChange: this.methods.paginationOnChange,
+			// onShowSizeChange: this.methods.paginationOnSizeChange,
+		};
+		let content = "";
+		switch (this.props.listType) {
+			case "table":
+				content = tableTemplate.call(this);
+				break;
+			case "card":
+				content = cardTemplate.call(this);
+				break;
+			case "simple":
+				content = simpleTemplate.call(this);
+				break;
+		}
+		return (
+			<section
+				ref={el => {
+					this.hocWrapperEl = el;
+				}}
+			>
+				{content}
+			</section>
+		);
+	}
 
 	hasMoreMenu = this.props.moreBtnMap && this.props.moreBtnMap.length;
 	//更多操作按钮
@@ -120,7 +205,7 @@ class ZlistPanel extends ZpureComponent {
 			<span />
 		);
 	};
-
+	moreQuery = {};
 	methods = {
 		...const_getMethods.call(this),
 		handleMenuClick: record => {
@@ -134,10 +219,11 @@ class ZlistPanel extends ZpureComponent {
 		},
 		// 获取列表数据
 		getListData: (merge, moreQuery) => {
-			let querys = this.searchQuery ? this.searchQuery : {};
+			let querys = this.searchQuery || {};
 			if (dataType.isObject(moreQuery)) {
 				this.page.pageNumber = moreQuery.pageNumber ? moreQuery.pageNumber : this.page.pageNumber;
 				this.page.pageSize = moreQuery.pageSize ? moreQuery.pageSize : this.page.pageSize;
+				this.moreQuery = { ...this.moreQuery, ...moreQuery };
 				querys = Object.assign({}, querys, moreQuery);
 			}
 			const apiPromise = this.props.listApiInterface(
@@ -149,6 +235,7 @@ class ZlistPanel extends ZpureComponent {
 						sortType: sortTypeName[this.sorter.order],
 					},
 					querys,
+					this.moreQuery,
 				),
 				this.sorter,
 				this.getExportSomething(),
@@ -157,6 +244,10 @@ class ZlistPanel extends ZpureComponent {
 				this.methods.showLoading(true);
 				apiPromise
 					.then(re => {
+						const noData = requireValid.hasData(re);
+						if (noData) {
+							return noData;
+						}
 						const data = re.data;
 						const dataKeys = this.props.responseKeys.listType;
 						let list = [];
@@ -167,7 +258,7 @@ class ZlistPanel extends ZpureComponent {
 						} else {
 							const listData = data[dataKeys["list"]];
 							if (listData === undefined) {
-								return Promise.reject({ msg: "接口返回的列表数据缺少列表数据" });
+								return Promise.reject({ msg: `响应体的data对象缺少${dataKeys["list"]}属性` });
 							} else if (Array.isArray(listData)) {
 								list = listData;
 								this.page.totalCount = data[dataKeys["totalCount"]];
@@ -198,13 +289,15 @@ class ZlistPanel extends ZpureComponent {
 		},
 		// 查询
 		onSearch: query => {
-			this.searchQuery = query;
+			if (query) {
+				this.searchQuery = query;
+			}
 			this.page.pageNumber = 1;
 			this.methods.getListData();
 		},
 		// 重置
 		onReset: () => {
-			this.methods.onSearch();
+			this.methods.onSearch({});
 		},
 		// 页码改变触发
 		paginationOnChange: (page, pageSize) => {
@@ -261,6 +354,7 @@ class ZlistPanel extends ZpureComponent {
 			const list = this.methods.currentListData();
 			const hasRemove = this.methods.findData(null, list, { isRemove: true, row });
 			if (typeof hasRemove === "boolean" && hasRemove) {
+				this.page.totalCount--;
 				this.setState({
 					listData: list,
 				});
@@ -288,17 +382,18 @@ class ZlistPanel extends ZpureComponent {
 					const pro = this.props.deleteApiInterface(row, this.getExportSomething());
 					if (dataType.isPromise(pro)) {
 						return new Promise((resolve, rejects) => {
-							this.props
-								.deleteApiInterface(row, this.getExportSomething())
-								.then(re => {
-									this.methods.notice.success("删除成功");
-									this.methods.removeOneData(row);
-									resolve();
-								})
-								.catch(re => {
-									this.methods.notice.error(re && re.msg ? re.msg : "删除失败");
-									rejects();
-								});
+							pro.then(re => {
+								this.methods.notice.success("删除成功");
+								if (this.state.listData.length === 1 && this.page.pageNumber > 1) {
+									this.page.pageSize--;
+								}
+								this.methods.getListData();
+								// this.methods.removeOneData(row);
+								resolve();
+							}).catch(re => {
+								this.methods.notice.error(re && re.msg ? re.msg : "删除失败");
+								rejects();
+							});
 						});
 					} else {
 						return Promise.resolve();
@@ -331,7 +426,7 @@ class ZlistPanel extends ZpureComponent {
 		},
 		//外部可以通过这个函数获取当前列表中的数据，
 		currentListData: () => {
-			return deepCopy(this.state.listData);
+			return this.state.listData;
 		},
 		setDataState: (data, merge) => {
 			const noMore = this.isInfinite && !data.length;
@@ -559,22 +654,14 @@ class ZlistPanel extends ZpureComponent {
 			  ]
 			: [];
 	}
-	tableColumns = [...this.props.tableColumns, ...this.actionBtns()].map(col => {
-		const colRender = col.render;
-		if (typeof colRender === "function") {
-			col.render = (text, record, index) => {
-				return colRender(text, record, index, this.getExportSomething());
-			};
-		}
-		return col;
-	});
+
 	getExportSomething() {
 		return {
 			...const_getMainTool.call(this),
 			getListData: this.methods.getListData, //同 methods.getListData,这为了版本兼容
 			showLoading: this.methods.showLoading, //
 			getPage: () => deepCopy(this.page),
-			getSearchQuery: () => deepCopy(this.searchQuery),
+			getSearchQuery: () => ({ ...(this.searchQuery || {}), ...this.moreQuery }),
 			methods: this.methods,
 			$router: {
 				history: this.props.history,
@@ -582,27 +669,33 @@ class ZlistPanel extends ZpureComponent {
 			},
 		};
 	}
-	checkColumnsValue = this.props.tableColumns
-		.filter(item => {
-			return !(dataType.isBoolean(item.show) && !item.show);
-		})
-		.map(item => item.dataIndex);
+
 	getShowTableColumns(checkValue) {
+		this.checkColumnsValue = this.props.tableColumns
+			.filter(item => {
+				return !(dataType.isBoolean(item.show) && !item.show);
+			})
+			.map(item => item.dataIndex);
+		checkValue = checkValue || this.checkColumnsValue;
+		this.tableColumns = [...this.props.tableColumns, ...this.actionBtns()].map(col => {
+			const colRender = col.render;
+			if (typeof colRender === "function") {
+				col.render = (text, record, index) => {
+					return colRender(text, record, index, this.getExportSomething());
+				};
+			}
+			return col;
+		});
 		return this.tableColumns.filter(item => {
 			return checkValue.includes(item.dataIndex) || item.dataIndex == this.actionColKey;
 		});
 	}
-	searchFormConfig = const_extendPanelFormConfig.call(this);
-	colFormItems = const_getPanelDefaultFormItems.call(this);
-	state = {
-		listData: [],
-		noMore: false,
-		isListCard: this.props.listType === "card",
-		tableColumns: this.getShowTableColumns(this.checkColumnsValue),
-		expandedRowKeys: [],
-		expandedSearch: this.searchFormConfig && this.searchFormConfig.defaultExpanded,
+	colFormItems = [];
+	updateSearchProtos = () => {
+		this.searchFormConfig = const_extendPanelFormConfig.call(this);
+		this.colFormItems = const_getPanelDefaultFormItems.call(this);
 	};
-	isInfinite = this.props.paginationType === "infinite";
+
 	getPageSize = () => {
 		const tool = this.getExportSomething();
 		return this.props.getPageSize(this.props.listType, this.state.isListCard, tool);
@@ -619,67 +712,8 @@ class ZlistPanel extends ZpureComponent {
 		field: this.defaultSorter ? this.defaultSorter.dataIndex : "",
 		order: this.defaultSorter ? this.defaultSorter.defaultSortOrder : "",
 	};
-	componentDidMount() {
-		this.props.exportSomething && this.props.exportSomething(this.getExportSomething());
-		this.insertLocation = const_getInsertLocation(this.hocWrapperEl);
-		this.methods.onSearch();
-	}
+
 	getSearchFormMethods = methods => (this.ZsearchFormMethods = methods);
-	render() {
-		this.showPagination =
-			typeof this.props.showPagination === "function"
-				? this.props.showPagination(this.getExportSomething())
-				: this.props.showPagination;
-		this.moreBtn =
-			this.isInfinite && this.showPagination && this.state.listData.length ? (
-				<div>
-					<Button
-						type="dashed"
-						className={cssClass["z-list-block-btn"]}
-						disabled={this.state.noMore}
-						onClick={this.methods.infiniteLoader}
-					>
-						{this.state.noMore ? "没有更多数据" : "下一页"}
-					</Button>
-					{this.props.moreContentRender && this.props.moreContentRender(this.getExportSomething())}
-				</div>
-			) : (
-				this.props.moreContentRender && this.props.moreContentRender(this.getExportSomething())
-			);
-		//this.searchForm赋值
-		const_searchFormNode.call(this);
-		this.paginationOpt = {
-			total: this.page.totalCount,
-			pageSize: this.page.pageSize,
-			current: this.page.pageNumber,
-			showTotal: (total, range) => `共 ${total} 条`,
-			showSizeChanger: !this.state.isListCard,
-			showQuickJumper: true,
-			// onChange: this.methods.paginationOnChange,
-			// onShowSizeChange: this.methods.paginationOnSizeChange,
-		};
-		let content = "";
-		switch (this.props.listType) {
-			case "table":
-				content = tableTemplate.call(this);
-				break;
-			case "card":
-				content = cardTemplate.call(this);
-				break;
-			case "simple":
-				content = simpleTemplate.call(this);
-				break;
-		}
-		return (
-			<section
-				ref={el => {
-					this.hocWrapperEl = el;
-				}}
-			>
-				{content}
-			</section>
-		);
-	}
 }
 ZlistPanel.prototype.getPanleHeader = function() {
 	return const_getPanleHeader.call(this, true);

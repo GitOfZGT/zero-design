@@ -127,8 +127,14 @@ class Myjavascript extends React.PureComponent {
 		<tr>
 			<td>onSearch</td>
 			<td>验证表单后的提交事件</td>
-			<td>function</td>
+			<td>function(values){}</td>
 			<td>--</td>
+		</tr>
+		<tr>
+			<td>momentFormat</td>
+			<td>是否在触发onSubmit函数后里面传出的values中存在moment对象进行表单控件对应的format格式化，启用此属性，相关moment值的控件必需format属性</td>
+			<td>boolean</td>
+			<td>false</td>
 		</tr>
         <tr>
 			<td>onReset</td>

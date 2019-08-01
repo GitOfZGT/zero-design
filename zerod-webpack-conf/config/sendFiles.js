@@ -15,27 +15,22 @@ function resolveNode_modules(dir) {
 function mergeFiles(srcname, distname, addConf) {
     let src = srcname;
     let dist = distname ? distname : srcname;
+    const baseConf = require(resolve(src));
+    typeof addConf == 'function' && addConf(baseConf);
+    let newConfString = '{}';
     if (fs.existsSync(resolveCurrent(dist))) {
-        const baseConf = require(resolve(src));
-        typeof addConf == 'function' && addConf(baseConf);
         const esConf = require(resolveCurrent(dist));
         const newConf = merge(baseConf, esConf);
-        let newConfString = JSON.stringify(newConf);
-        // if (dist === '.postcssrc.js') {
-        //     newConfString = newConfString.replace(
-        //         /"selectorBlackList"\:\[".not-vw"[,]?/g,
-        //         '"selectorBlackList":[".not-vw",/^\.am-/,',
-        //     ).replace(/,\{\}/g,"");
-        // }
-        fs.writeFileSync(
-            resolveCurrent(dist),
-            `
-        module.exports = ${newConfString}
-        `,
-        );
+        newConfString = JSON.stringify(newConf);
     } else {
-        copyFile(resolve(src), resolveCurrent(dist));
+        newConfString = JSON.stringify(baseConf);
     }
+    fs.writeFileSync(
+        resolveCurrent(dist),
+        `
+    module.exports = ${newConfString}
+    `,
+    );
 }
 
 function copyFile(_src, _dst) {
@@ -60,13 +55,14 @@ module.exports = function(config) {
     mergeFiles('.prettierrc.js');
     //babel.config.js
     mergeFiles('babel.config.js', '', function(conf) {
-        conf.plugins.push([
+        conf.plugins.splice(2, 0, [
             'import',
             {
                 libraryName: config.platform == 'pc' ? 'antd' : 'antd-mobile',
                 style: false,
                 libraryDirectory: 'es',
             },
+            config.platform == 'pc' ? 'antd' : 'antd-mobile',
         ]);
     });
     //html

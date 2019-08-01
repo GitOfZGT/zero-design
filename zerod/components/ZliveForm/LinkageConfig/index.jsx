@@ -39,12 +39,16 @@ const linkageTypes = [
 		tab: "身份证取出生年月日",
 		key: "6",
 	},
+	{
+		tab: "单选联动其他控件异步选项",
+		key: "7",
+	},
 ];
 const itemKeys = {
 	name: "tab",
 	id: "key",
 };
-const propTypes = {};
+// const propTypes = {};
 const defaultProps = {
 	//默认的linkages
 	defaultValue: [],
@@ -96,7 +100,7 @@ function LinkageConfig(props) {
 	//取ValueLinkConfigured提供的属性
 	const configuredRef = useRef(null);
 	useEffect(() => {
-		if (Array.isArray(defaultLinkagesRef.current) && curentLinkTypeRef.current.key === "6") {
+		if (Array.isArray(defaultLinkagesRef.current) && ["6","7"].includes(curentLinkTypeRef.current.key)) {
 			const IDconfigured = defaultLinkagesRef.current.filter(age => {
 				return age.linkageType === curentLinkTypeRef.current.key;
 			});
@@ -115,7 +119,7 @@ function LinkageConfig(props) {
 				const currentConfigured = configuredRef.current.getCurrentConfigured();
 				const currentLinkageType = curentLinkTypeRef.current.key;
 				let findIndex = -1;
-				if (currentLinkageType === "6") {
+				if (["6","7"].includes(currentLinkageType)) {
 					findIndex = defaultLinkagesRef.current.findIndex(item => {
 						return (
 							item.linkageType === currentLinkageType && item.src.fieldKey === currentConf.src.fieldKey
@@ -196,7 +200,7 @@ function LinkageConfig(props) {
 										configuredRef.current.setConfigured(existLinkage ? [...existLinkage.dist] : []);
 										setCurrentControl(control);
 									}}
-									onOk={links => {
+									onOk={(links, other) => {
 										// if(curentLinkTypeRef.current.key === "6"){
 
 										// }
@@ -266,7 +270,10 @@ function LinkageConfig(props) {
 													fields,
 												};
 											});
-										} else if (["6"].includes(curentLinkTypeRef.current.key)) {
+										} else if (["6", "7"].includes(curentLinkTypeRef.current.key)) {
+											const asyncParamName=curentLinkTypeRef.current.key === "7"
+												? other.asyncParamName
+												: undefined;
 											linkages = links.srcControls.map(l => {
 												return {
 													...linkage,
@@ -275,13 +282,14 @@ function LinkageConfig(props) {
 														label: l.label,
 														fieldType: l.fieldType,
 													},
+													asyncParamName,
 													dist: [
 														{
 															fields: links.distControls.map(d => {
 																return {
 																	fieldKey: d.fieldKey,
 																	label: d.label,
-																	fieldType: d.fieldType,
+																	asyncParamName,
 																};
 															}),
 														},
@@ -372,7 +380,7 @@ function LinkageConfig(props) {
 								</span>
 							</div>
 							<div className="z-panel-body">
-								{curentLinkTypeRef.current.key === "6" ? (
+								{["6","7"].includes(curentLinkTypeRef.current.key) ? (
 									<IDLinkagesConfigured ref={configuredRef} onRemove={onRemove} />
 								) : (
 									<ValueLinkConfigured

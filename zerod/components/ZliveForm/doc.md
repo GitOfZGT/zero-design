@@ -2,11 +2,11 @@
 
 # 动态表单配置：ZliveForm
 
-`ZliveForm`是动态表单配置模块（暂未完成）
+`ZliveForm`是动态表单配置模块
 
 `ZliveForm.FormViewer`是动态表单展示模块(包括控件联动效果)
 
-控件联动功能有：1、单选/多选控制其他控件禁用，2、单选/多选控制其他控件必填，3、单选/多选控制其控件非必填，4、单选/多选 控制 其他单选/多选的选择项，5.1、单选/多选控制一个组隐藏，5.2、单选/多选控制其他控件隐藏
+控件联动功能有：1、单选/多选控制其他控件禁用，2、单选/多选控制其他控件必填，3、单选/多选控制其控件非必填，4、单选/多选 控制 其他单选/多选的选择项，5.1、单选/多选控制一个组隐藏，5.2、单选/多选控制其他控件隐藏，6、身份证号取出生年月日，7、单选联动异步请求选项
 
 2、ZliveForm 的例子
 
@@ -19,7 +19,7 @@ import formData from "./formData";
 import linkages from "./linkages";
 class Myjavascript extends React.PureComponent {
 	formData = { ...formData, linkages };
-	onSave = (newFormData) => {
+	onSave = newFormData => {
 		console.log(newFormData);
 	};
 	render() {
@@ -39,7 +39,7 @@ import formData from "./formData";
 import linkages from "./linkages";
 class Myjavascript extends React.PureComponent {
 	formData = { ...formData, linkages };
-	onSubmit = (values) => {
+	onSubmit = values => {
 		console.log(values);
 		return Promise.resolve();
 	};
@@ -62,15 +62,18 @@ class Myjavascript extends React.PureComponent {
 
 ## ZliveForm.FormViewer 的 props
 
-可追 `className`
+可追 `className`、`style`
 
-| 参数            | 说明                                                                                                                                       | 类型                                       | 默认值 |
-| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------ | ------ |
-| formData        | 渲染整个表单的数据                                                                                                                         | object                                     | --     |
-| formValues      | 表单字段对应的值                                                                                                                           | object                                     | --     |
-| onSubmit        | submit 类型的按钮触发表单验证通过后的确定回调函数，同/Zform 的 onSubmit                                                                    | function(values){return Promise.resolve()} | --     |
-| submitBtnRender | 表单之下的渲染函数，可以渲染一个或多个按钮，或者其他内容。提供了一个 submit 函数，可以直接绑定给提交按钮 click 等,触发后会用 onSubmit 回调 | (submit)=>{return ReactNode}               | --     |
-| linkage         | 是否启用联动功能 (联动的前提 formData 中存在 linkages 配置)                                                                                | boolean                                    | true   |
+| 参数               | 说明                                                                                                                                             | 类型                                       | 默认值 |
+| ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------ | ------ |
+| formData           | 渲染整个表单的数据                                                                                                                               | object                                     | --     |
+| formValues         | 表单字段对应的值                                                                                                                                 | object                                     | --     |
+| onSubmit           | submit 类型的按钮触发表单验证通过后的确定回调函数，同/Zform 的 onSubmit                                                                          | function(values){return Promise.resolve()} | --     |
+| momentFormat       | 是否在触发 onSubmit 函数后里面传出的 values 中存在 moment 对象进行表单控件对应的 format 格式化，启用此属性，相关 moment 值的控件必需 format 属性 | boolean                                    | false  |
+| submitBtnRender    | 表单之下的渲染函数，可以渲染一个或多个按钮，或者其他内容。提供了一个 submit 函数，可以直接绑定给提交按钮 click 等,触发后会用 onSubmit 回调       | (submit)=>{return ReactNode}               | --     |
+| linkage            | 是否启用联动功能 (联动的前提 formData 中存在 linkages 配置)                                                                                      | boolean                                    | true   |
+| title              | 表单的标题，默认来自 formData.name, 如果 title==false,则不显示标题                                                                               | boolean \| string                          | --     |
+| afterItemsRendered | 所有表单控件渲染完成（包括异步）的回调                                                                                                           | funcion                                    | --     |
 
 ## ZliveForm.FormViewer 实例方法 (通过 Ref 取得)
 
@@ -216,18 +219,6 @@ class Myjavascript extends React.PureComponent {
 			]
 		}
 	],
-	"buttonList": [
-		//按钮
-		{
-			"id": 58,
-			"formId": 111,
-			"buttonType": 1,
-			"name": "保存按钮",
-			"value": "保存",
-			"seq": 1,
-			"description": null
-		}
-	],
 	"sectionList": [
 		//表单控件组
 		{
@@ -286,11 +277,13 @@ class Myjavascript extends React.PureComponent {
 			]
 		}
 	],
+	//为某些控件添加onChange事件
 	"customOnChange": {
 		"dogType": function(field, imperativeRef, e) {
 			console.log("dogType", field, imperativeRef.current(), e);
 		}
 	},
+	//为某些控件添加自定义rules
 	"customFormRules": {
 		"dogName": function(field, imperativeRef) {
 			console.log("dogName", field, imperativeRef.current());

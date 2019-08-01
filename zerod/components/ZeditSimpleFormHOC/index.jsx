@@ -7,6 +7,7 @@ import {
 	const_getMethods,
 	const_getPageWrapperProps,
 	const_extendArguments,
+	requireValid
 } from "../constant";
 import PropTypes from "prop-types";
 import { Zform } from "../Zform";
@@ -108,6 +109,11 @@ export function ZeditSimpleFormHOC(pageConfig) {
 				this.config.form
 					.detailApiInterface(this.props.detailId, this.props, this.tool)
 					.then((re) => {
+						const noData = requireValid.hasData(re);
+						if (noData) {
+							return noData;
+						}
+						
 						const valueData = {};
 						this.config.form.items.forEach((item) => {
 							const newVal = re.data[item.detailKey ? item.detailKey : item.key];

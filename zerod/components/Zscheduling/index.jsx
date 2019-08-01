@@ -7,7 +7,7 @@ import Swiper from "swiper/dist/js/swiper";
 import moment from "moment";
 import { Checkbox, Tooltip, DatePicker, Spin, Empty, Tag } from "antd";
 import ZschedulingTable from "../ZschedulingTable";
-import { dataType, deepCopy, addClass, removeClass } from "../zTool";
+import { dataType, deepCopy, removeClass ,isWhiteColor} from "../zTool";
 import CellCheckList from "./CellCheckList";
 
 const weekDayNums = {
@@ -800,7 +800,7 @@ export class CellTag extends React.PureComponent {
 		return name ? (
 			<Tooltip mouseLeaveDelay={0} title={title}>
 				<div className="z-cell-tag">
-					<Tag color={color}>{name}</Tag>
+					<Tag color={color} className={isWhiteColor(color)?"z-tag-white":""}>{name}</Tag>
 				</div>
 			</Tooltip>
 		) : null;

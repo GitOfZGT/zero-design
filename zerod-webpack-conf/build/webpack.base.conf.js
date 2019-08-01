@@ -171,11 +171,17 @@ module.exports = {
             verboseWhenProfiling: true, //显示信息
         }),
         ...styleHappyPacks,
-        new webpack.DllReferencePlugin({
-            // context: __dirname,
-            // scope : "vendor",
-            manifest: require(resolveCurrent('static/vendor.manifest.json')),
-        }),
+        ...(config.dll.disabled
+            ? []
+            : [
+                  new webpack.DllReferencePlugin({
+                      context: resolveCurrent(''),
+                      // scope : "vendor",
+                      manifest: require(resolveCurrent(
+                          'static/vendor.manifest.json',
+                      )),
+                  }),
+              ]),
         // https://github.com/ampedandwired/html-webpack-plugin
         new HtmlWebpackPlugin({
             filename:
@@ -187,16 +193,20 @@ module.exports = {
             chunksSortMode: 'none',
             favicon: config.favicon,
         }),
-        new HtmlIncludeAssetsPlugin({
-            assets: [
-                {
-                    path: 'static',
-                    glob: 'vendor.dll.*.js',
-                    globPath: resolveCurrent('static'),
-                },
-            ], // 添加的资源相对html的路径
-            append: false, // false 在其他资源的之前添加 true 在其他资源之后添加
-        }),
+        ...(config.dll.disabled
+            ? []
+            : [
+                  new HtmlIncludeAssetsPlugin({
+                      assets: [
+                          {
+                              path: 'static',
+                              glob: 'vendor.dll.*.js',
+                              globPath: resolveCurrent('static'),
+                          },
+                      ], // 添加的资源相对html的路径
+                      append: false, // false 在其他资源的之前添加 true 在其他资源之后添加
+                  }),
+              ]),
         ...(config.pace
             ? [
                   new HtmlIncludeAssetsPlugin({

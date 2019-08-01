@@ -12,6 +12,7 @@ import {
 	const_getPanelDefaultFormItems,
 	const_extendPanelFormConfig,
 	const_searchFormNode,
+	requireValid
 } from "../constant";
 import { Tree, Modal } from "antd";
 const TreeNode = Tree.TreeNode;
@@ -29,6 +30,16 @@ import {
 	itemsFromTree,
 	dataType,
 } from "../zTool";
+function getTreeAllId(tree, keyMap) {
+	let ids = [];
+	tree.forEach(item => {
+		ids.push(item[keyMap.id].toString());
+		if (Array.isArray(item[keyMap.children])) {
+			ids = ids.concat(getTreeAllId(item[keyMap.children], keyMap));
+		}
+	});
+	return ids;
+}
 // import { Zlayout } from "../Zlayout";
 let defaultConfig = const_getListConfig("list", "ZtreePanel");
 class ZtreePanel extends ZpureComponent {
@@ -37,13 +48,8 @@ class ZtreePanel extends ZpureComponent {
 		panelBeforeRender: PropTypes.func,
 		panelAfterRender: PropTypes.func,
 		exportSomething: PropTypes.func,
-		panelHeader: PropTypes.oneOfType([
-			PropTypes.string,
-			PropTypes.number,
-			PropTypes.func,
-			PropTypes.element,
-			PropTypes.node,
-		]), //面板title,可以自定义
+		nodeTitleRender: PropTypes.func,
+		panelHeader: PropTypes.any, //面板title,可以自定义
 		moreContentRender: PropTypes.func,
 		searchForm: PropTypes.object,
 		colFormItems: PropTypes.arrayOf(PropTypes.object), // 搜索表单列map数据数据
@@ -77,18 +83,36 @@ class ZtreePanel extends ZpureComponent {
 		...const_getMethods.call(this),
 		// 获取列表数据
 		loadTreeData: moreQuery => {
+			const { defaultExpandAll } = this.props.treeProps || {};
 			let querys = this.searchQuery ? this.searchQuery : {};
 			if (dataType.isObject(moreQuery)) {
 				querys = Object.assign({}, querys, moreQuery);
 			}
+
 			const apiPromise =
 				this.props.treeApiInterface && this.props.treeApiInterface(querys, this.getExportSomething());
 			if (dataType.isPromise(apiPromise)) {
 				this.methods.showLoading(true);
 				apiPromise
 					.then(re => {
+						const noData = requireValid.hasData(re);
+						if (noData) {
+							return noData;
+						}
+						const _defaultExpandAll =
+							typeof defaultExpandAll === "function"
+								? defaultExpandAll(this.getExportSomething(), re.data)
+								: defaultExpandAll;
+						let expandedKeys = [];
+						if (Array.isArray(_defaultExpandAll)) {
+							expandedKeys = _defaultExpandAll;
+						} else {
+							expandedKeys = _defaultExpandAll ? getTreeAllId(re.data, this.treeDataKeys) : [];
+						}
 						this.setState({
 							treeData: re.data,
+							expandedKeys,
+							loadedKeys: [],
 						});
 					})
 					.catch(re => {
@@ -100,25 +124,46 @@ class ZtreePanel extends ZpureComponent {
 			}
 		},
 		loadChildData: treeNode => {
+			// console.log(treeNode);
 			const childrenKey = this.treeDataKeys.children;
-
+			const { defaultExpandAll } = this.props.treeProps || {};
 			return new Promise(resolve => {
 				if (treeNode.props.children) {
 					resolve();
 					return;
 				}
-				this.ayncChild &&
-					this.props
-						.childApiInterface(deepCopy(treeNode.props.dataRef), this.getExportSomething())
+				const apiPromise =
+					this.ayncChild &&
+					this.props.childApiInterface(deepCopy(treeNode.props.dataRef), this.getExportSomething());
+				if (dataType.isPromise(apiPromise)) {
+					apiPromise
 						.then(re => {
+							const noData = requireValid.hasData(re);
+						if (noData) {
+							return noData;
+						}
 							treeNode.props.dataRef[childrenKey] = re.data;
+							const _defaultExpandAll =
+								typeof defaultExpandAll === "function"
+									? defaultExpandAll(this.getExportSomething(), re.data)
+									: defaultExpandAll;
+							let expandedKeys = [];
+							if (Array.isArray(_defaultExpandAll)) {
+								expandedKeys = [...this.state.expandedKeys, ..._defaultExpandAll];
+							} else {
+								expandedKeys = _defaultExpandAll
+									? [...this.state.expandedKeys, ...getTreeAllId(re.data, this.treeDataKeys)]
+									: this.state.expandedKeys;
+							}
 							this.setState({
 								treeData: [...this.state.treeData],
+								expandedKeys,
 							});
 						})
 						.finally(() => {
 							resolve();
 						});
+				}
 			});
 		},
 		// 查询
@@ -356,11 +401,14 @@ class ZtreePanel extends ZpureComponent {
 	colFormItems = const_getPanelDefaultFormItems.call(this);
 	state = {
 		treeData: [],
+		expandedKeys: [],
+		loadedKeys: [],
 		expandedSearch: this.searchFormConfig && this.searchFormConfig.defaultExpanded,
 	};
 	searchQuery = null;
 	ayncChild = typeof this.props.childApiInterface === "function";
 	getTreeNode(tree) {
+		const { selectable } = this.props.treeProps || { selectable: false };
 		return tree.map((data, index) => {
 			const childrenKey = this.treeDataKeys.children;
 			const idKey = this.treeDataKeys.id;
@@ -368,12 +416,18 @@ class ZtreePanel extends ZpureComponent {
 
 			const cilds = Array.isArray(data[childrenKey]) ? data[childrenKey] : [];
 			const { title, key, dataRef, ...otherData } = data;
+			const tool = this.getExportSomething();
 			return (
 				<TreeNode
-					selectable={false}
+					selectable={selectable}
 					title={
 						<TreeTitle
-							name={data[nameKey]}
+							tool={tool}
+							name={
+								this.props.nodeTitleRender
+									? this.props.nodeTitleRender(data[nameKey], data, tool)
+									: data[nameKey]
+							}
 							record={data}
 							index={index}
 							moreBtnType={this.props.moreBtnType}
@@ -410,7 +464,12 @@ class ZtreePanel extends ZpureComponent {
 	getSearchFormMethods = methods => (this.ZsearchFormMethods = methods);
 	render() {
 		const_searchFormNode.call(this);
-		const { showLine, loadData, onDrop, ...treeOthers } = this.props.treeProps || {};
+		const { showLine, loadData, onDrop, selectable, onExpand, expandedKeys, defaultExpandAll, ...treeOthers } =
+			this.props.treeProps || {};
+		const _expandedKeys =
+			typeof expandedKeys === "function"
+				? expandedKeys(this.state.expandedKeys, this.getExportSomething())
+				: this.state.expandedKeys;
 		return (
 			<section
 				ref={el => {
@@ -426,12 +485,22 @@ class ZtreePanel extends ZpureComponent {
 							{this.state.treeData.length ? (
 								<Tree
 									showLine
-									onDrop={this.methods.onDrop}
-									loadData={this.ayncChild ? this.methods.loadChildData : undefined}
-									{...treeOthers}
 									autoExpandParent={false}
-									onRightClick={e => {
-										console.log(5);
+									{...treeOthers}
+									expandedKeys={_expandedKeys}
+									loadedKeys={this.state.loadedKeys}
+									onExpand={(expandedKeys, other) => {
+										this.setState({
+											expandedKeys,
+										});
+										typeof onExpand === "function" && onExpand(expandedKeys, other);
+									}}
+									loadData={this.ayncChild ? this.methods.loadChildData : undefined}
+									onDrop={this.methods.onDrop}
+									onLoad={loadedKeys => {
+										this.setState({
+											loadedKeys,
+										});
 									}}
 								>
 									{this.getTreeNode(this.state.treeData)}

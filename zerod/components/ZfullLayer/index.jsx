@@ -49,9 +49,15 @@ export class ZfullLayer extends ZpureComponent {
 		},
 		getLayerModalInsertLocation: const_getInsertLocation,
 		getLayerModalScrollInstance: witch => {
+			if (witch === "mainRoute") {
+				return this.layerSroll;
+			}
 			return const_getModalScrollInstance.call(this, witch);
 		},
 		getLayerScrollAreaWrapperEl: witch => {
+			if (witch === "mainRoute") {
+				return this.defaultWrapper;
+			}
 			return const_getScrollAreaWrapperEl.call(this, witch);
 		},
 		showLoading: show => {

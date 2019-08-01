@@ -1,6 +1,8 @@
 # 工具库 zTool
 
-`zTool`积累了一些通用的工具方法，包括对需要对 DOM 元素操作的一些方法
+`zTool`积累了一些通用的工具方法，包括对需要对 DOM 元素操作的一些方法  
+
+> 除了httpAjax,BuildScroll,IScrollInstance,scrollDisableWheel,IntroInstance,listenDivSizeChange,mergeConfig , 其他的都引自于 `zerod-ztool` (2019-06-24 zTool分离出一个zerod-ztool包发布到私服)    
 
 <div class="z-doc-titles"></div>
 
@@ -10,9 +12,13 @@
 
 zTool.httpAjax()返回一个 Promise 对象,当`noCallback === false`时,默认对响应结果的处理：
 
-只有 `result.data.code === 0` 时才会进入`then((re)=>{})`回调，其他情况都会进入`catch((re)=>{})`回调,并且`then((re)=>{})`和`catch((re)=>{})`回调中的参数`re`其实是`result.data`  
+只有 `result.data.code === 0` 时才会进入`then((re)=>{})`回调，其他情况都会进入`catch((re)=>{})`回调,并且`then((re)=>{})`和`catch((re)=>{})`回调中的参数`re`其实是`result.data`
 
-当 `result.data.code === -1` || `result.data.code === 500` 会 使用 message.error 弹出 `result.data.msg` || `result.data.data` 提示
+当 `result.data.code === -1` || `result.data.code === 500` 会 使用 `window.globalMsgError` 弹出 `result.data.msg` || `result.data.data` 提示
+
+在`ZmainHOC`中已配置一个 window.globalMsgError = message.error 或者 notification.error  
+
+当 `result.data.code === 403403` 会提示`用户未登录或身份已过期`  
 
 ```js
 import { zTool } from "zerod";
@@ -27,9 +33,9 @@ import { zTool } from "zerod";
 //例：
 zTool
 	.httpAjax("get", "/webapi/v1.0/config/center/deleteServiceInfo", { id: "41" })
-	.then((re) => {})
-	.then((re) => {})
-	.catch((re) => {})
+	.then(re => {})
+	.then(re => {})
+	.catch(re => {})
 	.finally(() => {});
 zTool.httpAjax("post", "/webapi/v1.0/config/center/updateConfigProperty", { id: "41", name: "我们的故事" });
 ```
@@ -109,8 +115,8 @@ class My extends ZpureComponent {
 	}
 	render() {
 		return (
-			<section ref={(el) => (this.bodyEl = el)}>
-				<div ref={(el) => (this._contentEl = el)} style={{ position: "relative" }}>
+			<section ref={el => (this.bodyEl = el)}>
+				<div ref={el => (this._contentEl = el)} style={{ position: "relative" }}>
 					<div>{this.props.children}</div>
 				</div>
 			</section>
@@ -288,7 +294,7 @@ import { zTool } from "zerod";
  * @param {function} handler //事件回调
  */
 //例：
-zTool.on(document.querySelector("#id"), "click", (e) => {
+zTool.on(document.querySelector("#id"), "click", e => {
 	//回调
 });
 ```

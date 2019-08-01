@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useRef, useImperativeHandle, useCallback } from "react";
 import PropTypes from "prop-types";
 import { getControl, getOptions } from "../../Zform/controls";
-import { Row, Col, Tag, Button, message } from "antd";
+import { Row, Col, Tag, Button, message, Input } from "antd";
 import ZoneWayTransfer from "../../ZoneWayTransfer";
 import { itemsFromTree } from "../../zTool";
 import { controlList } from "../AddColForm";
-import { linkRemark1, linkRemark2, linkRemark3 } from "./linkRemark";
+import { linkRemark1, linkRemark2, linkRemark3, linkRemark4, linkRemark5 } from "./linkRemark";
 function turnSelectOptions(
 	section,
 	needChild,
@@ -67,27 +67,56 @@ function ValueLinkControl(props) {
 	const [leftTransferSelected, setLeftTransferSelected] = useState([]);
 	const [rightTransferSelections, setRightTransferSelections] = useState();
 	const [rightTransferSelected, setRightTransferSelected] = useState([]);
+	const asyncParamNameRef = useRef("id");
 	useEffect(() => {
-		if (["1", "2", "3", "5.2"].includes(linkageType)) {
-			setLeftTransferSelections([]);
-			setRightTransferSelections(turnSelectOptions(newFormData.sectionList, true));
-		} else if (["5.1"].includes(linkageType)) {
-			setLeftTransferSelections([]);
-			setRightTransferSelections(turnSelectOptions(newFormData.sectionList, false));
-		} else if (["4"].includes(linkageType)) {
-			setLeftTransferSelections([]);
-			setRightTransferSelections([]);
-		} else if (["6"].includes(linkageType)) {
-			setLeftTransferSelections(
-				turnSelectOptions(newFormData.sectionList, true, list => {
-					return list.filter(item => [1].includes(item.fieldType));
-				}),
-			);
-			setRightTransferSelections(
-				turnSelectOptions(newFormData.sectionList, true, list => {
-					return list.filter(item => [1, 5].includes(item.fieldType));
-				}),
-			);
+		switch (linkageType) {
+			case "1":
+			case "2":
+			case "3":
+			case "5.2":
+				setLeftTransferSelections([]);
+				setRightTransferSelections(turnSelectOptions(newFormData.sectionList, true));
+				break;
+			case "5.1":
+				setLeftTransferSelections([]);
+				setRightTransferSelections(turnSelectOptions(newFormData.sectionList, false));
+				break;
+			case "4":
+				setLeftTransferSelections([]);
+				setRightTransferSelections([]);
+				break;
+			case "6":
+				setLeftTransferSelections(
+					turnSelectOptions(newFormData.sectionList, true, list => {
+						return list.filter(item => [1].includes(item.fieldType));
+					}),
+				);
+				setRightTransferSelections(
+					turnSelectOptions(newFormData.sectionList, true, list => {
+						return list.filter(item => [1, 5].includes(item.fieldType));
+					}),
+				);
+				break;
+			case "7":
+				setLeftTransferSelections(
+					turnSelectOptions(newFormData.sectionList, true, list => {
+						return list.filter(item => [3, 9].includes(item.fieldType));
+					}),
+				);
+				setRightTransferSelections(
+					turnSelectOptions(newFormData.sectionList, true, list => {
+						return list.filter(item => {
+							let config = item.config || {};
+							if (typeof item.config == "string") {
+								try {
+									config = JSON.parse(item.config);
+								} catch (e) {}
+							}
+							return [3, 6, 7, 8, 9].includes(item.fieldType) && config.selectionsType == 2;
+						});
+					}),
+				);
+				break;
 		}
 		setLinkValue(getLinkValue());
 		setLeftTransferSelected([]);
@@ -96,7 +125,13 @@ function ValueLinkControl(props) {
 	const [linkValue, setLinkValue] = useState(getLinkValue());
 	const selectOptionsRef = useRef(
 		turnSelectOptions(newFormData.sectionList, true, list => {
-			return list.filter(item => [3, 8, 9].includes(item.fieldType));
+			return list.filter(item => {
+				let config = item.config || {};
+				if (typeof config === "string") {
+					config = JSON.parse(config);
+				}
+				return [3, 8, 9].includes(item.fieldType) && config.selectionsType != 2;
+			});
 		}),
 	);
 	//第一个穿梭框的特殊属性
@@ -151,6 +186,13 @@ function ValueLinkControl(props) {
 								});
 								setLeftTransferSelected([]);
 								setRightTransferSelected([]);
+								if (linkageType !== "4") {
+									setRightTransferSelections(
+										turnSelectOptions(newFormData.sectionList, true, list => {
+											return list.filter(item => item.fieldKey !== val);
+										}),
+									);
+								}
 								onSrcSelected && onSrcSelected(currentItem);
 							},
 						});
@@ -160,7 +202,7 @@ function ValueLinkControl(props) {
 			},
 			rightTitle: "已选择的选项",
 		};
-	} else if (["6"].includes(linkageType)) {
+	} else if (["6", "7"].includes(linkageType)) {
 		leftTransferPropsRef.current = {
 			leftTitle: "可选控件列表",
 			rightTitle: "已选择的控件",
@@ -228,14 +270,24 @@ function ValueLinkControl(props) {
 	}
 
 	let linkRemark = null;
-	if (["1", "2", "3", "5.1", "5.2"].includes(linkageType)) {
-		linkRemark = linkRemark1({ ...linkValue, linkageType });
-	} else if (["4"].includes(linkageType)) {
-		linkRemark = linkRemark2(linkValue);
-	} else if (["6"].includes(linkageType)) {
-		linkRemark = linkRemark3(linkValue);
+	switch (linkageType) {
+		case "1":
+		case "2":
+		case "3":
+		case "5.1":
+		case "5.2":
+			linkRemark = linkRemark1({ ...linkValue, linkageType });
+			break;
+		case "4":
+			linkRemark = linkRemark2(linkValue);
+			break;
+		case "6":
+			linkRemark = linkRemark3(linkValue);
+			break;
+		case "7":
+			linkRemark = linkRemark5(linkValue);
+			break;
 	}
-
 	return (
 		<Row gutter={20} className="z-margin-top-15" type="flex">
 			<Col span={12}>
@@ -251,7 +303,7 @@ function ValueLinkControl(props) {
 					rightTargetData={leftTransferSelected}
 					onChange={(actionType, rightData, actionItem, sibligItem) => {
 						setLinkValue(
-							linkageType === "6"
+							["6", "7"].includes(linkageType)
 								? { ...linkValue, srcControls: rightData }
 								: {
 										...linkValue,
@@ -284,15 +336,32 @@ function ValueLinkControl(props) {
 					}}
 				/>
 			</Col>
-			<Col offset={9} span={12}>
-				<div className="z-linkage-line z-flex-items-center">{linkRemark}</div>
+			<Col span={9} className="z-flex-items-center">
+				{linkageType === "7" ? (
+					<div className="z-linkage-remark">
+						<p>{linkRemark4(linkValue)}</p>
+						<Input.Group compact>
+							<Input style={{ width: "80px" }} defaultValue="value" disabled />
+							<Input
+								style={{ width: "160px" }}
+								defaultValue="id"
+								onChange={e => {
+									asyncParamNameRef.current = e.target.value;
+								}}
+							/>
+						</Input.Group>
+					</div>
+				) : null}
+			</Col>
+			<Col span={12}>
+				<div className="z-linkage-line z-linkage-remark z-flex-items-center">{linkRemark}</div>
 			</Col>
 			<Col span={3} className="z-flex-items-center">
 				<Button
 					type="primary"
 					onClick={e => {
 						let error = false;
-						if (["6"].includes(linkageType)) {
+						if (["6", "7"].includes(linkageType)) {
 							if (!linkValue.srcControls.length || !linkValue.distControls.length) {
 								error = true;
 							}
@@ -316,7 +385,7 @@ function ValueLinkControl(props) {
 						});
 						setLeftTransferSelected([]);
 						setRightTransferSelected([]);
-						onOk && onOk(linkValue);
+						onOk && onOk(linkValue, { asyncParamName: asyncParamNameRef.current });
 					}}
 				>
 					保存到表单

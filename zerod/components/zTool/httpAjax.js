@@ -64,6 +64,7 @@ function getHeaders() {
 			"X-Token": userinfo.token,
 			"X-Auth-Info": Auth,
 			"X-Channel-Info": getChannel(Auth),
+			"X-UserId": userinfo.userDO ? userinfo.userDO.id : "",
 		};
 	}
 	return null;
@@ -78,6 +79,7 @@ function getHeaders() {
  * @param {object} config //可配置请求头等，请看下面的config注释
  */
 function httpAjax(method, url, query, config, noCallback) {
+	//请求错误弹出提示框方法
 	const msgAlert = typeof window.globalMsgError === "function" ? window.globalMsgError : window.alert;
 	config = config ? config : {};
 	const headers = getHeaders();

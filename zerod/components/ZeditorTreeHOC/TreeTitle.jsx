@@ -1,6 +1,7 @@
-import React from "react";import ZpureComponent from "../ZpureComponent";
+import React from "react";
+// import ZpureComponent from "../ZpureComponent";
 import PropTypes from "prop-types";
-import {  Dropdown, Menu } from "antd";
+import { Dropdown, Menu } from "antd";
 import cssClass from "./style.scss";
 import { ZroundingButton } from "../ZroundingButton";
 import { Zbutton } from "../Zbutton";
@@ -8,7 +9,7 @@ import { removeClass, addClass } from "../zTool";
 class TreeTitle extends React.PureComponent {
 	static propTypes = {
 		tool: PropTypes.object,
-		name: PropTypes.string,
+		name: PropTypes.any,
 		record: PropTypes.any,
 		index: PropTypes.number,
 		moreBtnType: PropTypes.string,
@@ -37,7 +38,7 @@ class TreeTitle extends React.PureComponent {
 		const onClick = this.methods.handleMenuClick(record);
 		const items = [];
 		this.hasMoreMenu &&
-			this.props.moreBtnMap.forEach((item) => {
+			this.props.moreBtnMap.forEach(item => {
 				const { show, disbaled, name, ...others } = item;
 				const _show =
 					typeof show == "function" ? show(record, index, item, tool) : show === undefined ? true : show;
@@ -70,32 +71,33 @@ class TreeTitle extends React.PureComponent {
 		);
 	};
 	methods = {
-		handleMenuClick: (record) => {
-			return (item) => {
+		handleMenuClick: record => {
+			return item => {
 				this.props.onMoreBtnClick && this.props.onMoreBtnClick(item, record, this.props.tool);
+				item.domEvent.stopPropagation();
 			};
 		},
 
-		detailBtnClick: (e) => {
+		detailBtnClick: e => {
 			this.props.onDetailClick && this.props.onDetailClick(this.props.record);
 			e.stopPropagation();
 		},
-		addChildBtnClick: (e) => {
+		addChildBtnClick: e => {
 			this.props.onAddChildClick && this.props.onAddChildClick(this.props.record);
 			e.stopPropagation();
 		},
-		updateBtnClick: (e) => {
+		updateBtnClick: e => {
 			this.props.onUpdateClick && this.props.onUpdateClick(this.props.record);
 			e.stopPropagation();
 		},
-		deleteBtnClick: (e) => {
+		deleteBtnClick: e => {
 			this.props.onDeleteClick && this.props.onDeleteClick(this.props.record);
 			e.stopPropagation();
 		},
 	};
 	getBtn = (type, btnName, click, show, disabled) => {
 		return show ? (
-			<Zbutton  onClick={click} size="small" type={type} disabled={disabled}>
+			<Zbutton onClick={click} size="small" type={type} disabled={disabled}>
 				{btnName}
 			</Zbutton>
 		) : null;
@@ -105,11 +107,15 @@ class TreeTitle extends React.PureComponent {
 		// 	</Button>
 		// ) : null;
 	};
-	onVisibleChange = (show) => {
+	onVisibleChange = show => {
 		if (this.moreIconEl) {
 			show ? removeClass(this.moreIconEl, "is-down") : addClass(this.moreIconEl, "is-down");
 		}
 	};
+	nodeRef=React.createRef();
+	componentDidMount(){
+		this.nodeRef.current.firstElementChild.style.maxWidth = this.nodeRef.current.clientWidth - 464 + 'px';
+	}
 	render() {
 		const tool = this.props.tool;
 		const {
@@ -138,11 +144,16 @@ class TreeTitle extends React.PureComponent {
 		const _deleteBtnDisabled =
 			typeof deleteBtnDisabled == "function" ? deleteBtnDisabled(record, index, tool) : deleteBtnDisabled;
 		const moreBtn = (
-			<Zbutton size="small">
+			<Zbutton
+				size="small"
+				onClick={e => {
+					e.stopPropagation();
+				}}
+			>
 				更多
 				<i
 					className="zero-icon zerod-up z-open-btn is-down"
-					ref={(el) => {
+					ref={el => {
 						this.moreIconEl = el;
 					}}
 				/>
@@ -150,8 +161,8 @@ class TreeTitle extends React.PureComponent {
 		);
 
 		return (
-			<span className="z-flex-space-between">
-				<span>{this.props.name}</span>
+			<span className="z-flex-space-between" ref={this.nodeRef}>
+				<span className={cssClass['z-tree-title']} title={this.props.name}>{this.props.name}</span>
 				<span className={cssClass["z-tree-line"]} />
 				<span className={cssClass["z-tree-btns"]}>
 					{this.getBtn("default", "详情", this.methods.detailBtnClick, _showDetailBtn, _detailBtnDisabled)}
@@ -166,7 +177,12 @@ class TreeTitle extends React.PureComponent {
 					{this.getBtn("danger", "删除", this.methods.deleteBtnClick, _showDeleteBtn, _deleteBtnDisabled)}
 					{this.hasMoreMenu ? (
 						this.props.moreBtnType == "rounding" ? (
-							<ZroundingButton items={this.moreMenu(record, index)} onVisibleChange={this.onVisibleChange}> {moreBtn}</ZroundingButton>
+							<ZroundingButton
+								items={this.moreMenu(record, index)}
+								onVisibleChange={this.onVisibleChange}
+							>
+								{moreBtn}
+							</ZroundingButton>
 						) : (
 							<Dropdown
 								key="more"

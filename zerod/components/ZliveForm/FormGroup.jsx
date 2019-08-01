@@ -6,12 +6,11 @@ import FormContext from "./FormContext";
 const MyForm = FormContext.setConsumer(Zform);
 const FormGroup = React.memo(
 	React.forwardRef(function(
-		{ formItems, getOtherForms, labelLayout, doLinkage, onSubmit, group,titleLeftRender, titleRightRender, children, formValues },
+		{ formItems, getOtherForms, labelLayout, onSubmit, group,titleLeftRender, titleRightRender, children, formValues,momentFormat,afterItemsRendered },
 		ref,
 	) {
 		const domRef = useRef();
 		const formRef = useRef({});
-		const startRef = useRef(true);
 		const [show, setShow] = useState(true);
 		const getFormInstance = useCallback(
 			(form, methods) => {
@@ -41,15 +40,6 @@ const FormGroup = React.memo(
 			},
 			setFormItems,
 		}));
-		useEffect(() => {
-			if (startRef.current) {
-				startRef.current = false;
-				return;
-			}
-			if (show) {
-				doLinkage && doLinkage();
-			}
-		}, [show]);
 
 		const [groupName, setGroupName] = useState();
 		useEffect(() => {
@@ -83,6 +73,8 @@ const FormGroup = React.memo(
 						getFormInstance={getFormInstance}
 						otherForms={getOtherForms}
 						formDefaultValues={formValues}
+						momentFormat={momentFormat}
+						afterItemsRendered={afterItemsRendered}
 					/>
 					{children}
 				</div>

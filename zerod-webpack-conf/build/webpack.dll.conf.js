@@ -67,6 +67,7 @@ const webpackConfig = {
 				process.env.NODE_ENV === "production" ? require("../config/prod.env") : require("../config/dev.env"),
 		}),
 		new webpack.DllPlugin({
+			context: resolveCurrent(''),
 			path: resolveCurrent("static/[name].manifest.json"),
 			name: "_dll_[name]_[hash]", // 和library 一致，输出的manifest.json中的name值
 		}),

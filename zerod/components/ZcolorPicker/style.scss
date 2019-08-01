@@ -39,6 +39,10 @@ $--p: 8px;
 			opacity: 0.8;
 		}
 	}
+	&.disabled{
+		cursor: no-drop;
+		background-color: #F5F5F5;
+	}
 }
 @include z("cover") {
 	position: fixed;

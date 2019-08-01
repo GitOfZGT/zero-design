@@ -1,6 +1,6 @@
 {
 	"name": "zerod-webpack-conf",
-	"version": "1.3.2",
+	"version": "1.3.4",
 	"description": "webpack开发环境",
 	"author": "zgt",
 	"main": "index.js",

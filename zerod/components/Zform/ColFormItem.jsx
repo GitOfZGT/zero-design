@@ -15,7 +15,7 @@ class ColFormItem extends React.PureComponent {
 	};
 	methods = {
 		//手动显示loading
-		showLoading: (show) => {
+		showLoading: show => {
 			this.setState({
 				loading: show,
 			});
@@ -49,11 +49,22 @@ class ColFormItem extends React.PureComponent {
 				callback,
 			);
 		},
+		updateState: (newState = {}, callback) => {
+			let newItem = newState.item;
+			if (dataType.isObject(newItem)) {
+				newItem = { ...this.state.item, ...newItem };
+			} else if (newItem == "reset") {
+				newItem = this.props.item;
+			} else {
+				newItem = this.state.item;
+			}
+			this.setState({ ...this.state, ...newState, item: newItem }, callback);
+		},
 	};
 	state = {
 		loading: this.props.loading,
 		item: this.props.item,
-		show: dataType.isBoolean(this.props.item.show)?this.props.item.show:true,
+		show: dataType.isBoolean(this.props.item.show) ? this.props.item.show : true,
 		focus: false,
 	};
 	componentDidUpdate(prevProps, prevState) {
@@ -65,17 +76,17 @@ class ColFormItem extends React.PureComponent {
 			});
 		}
 	}
-	getInlineControl = (control) => {
+	getInlineControl = control => {
 		if (React.isValidElement(control)) {
 			const newControl = React.cloneElement(control, {
 				placeholder: "",
-				onFocus: (e) => {
+				onFocus: e => {
 					this.setState({
 						focus: true,
 					});
 					control.props.onFocus && control.props.onFocus(e);
 				},
-				onBlur: (e) => {
+				onBlur: e => {
 					this.setState({
 						focus: false,
 					});
@@ -85,6 +96,16 @@ class ColFormItem extends React.PureComponent {
 			return newControl;
 		} else {
 			return control;
+		}
+	};
+	getFormatProp = control => {
+		if (React.isValidElement(control) && typeof this.props.getInsideItems === "function") {
+			const items = this.props.getInsideItems();
+			items.forEach(item => {
+				if (item.key === this.state.item.key) {
+					item.format = control.props.format;
+				}
+			});
 		}
 	};
 	render() {
@@ -115,10 +136,16 @@ class ColFormItem extends React.PureComponent {
 						: ""
 				} ${this.state.focus ? "focus" : ""}`;
 			}
+			this.getFormatProp(control);
 		}
 		const loader = <ZpageLoading showLoading={this.state.loading} size="small" />;
 		return (
-			<Col {...span} className={item.className} data-item={itemTostring(item)} style={{display:this.state.show?"":"none"}}>
+			<Col
+				{...span}
+				className={item.className}
+				data-item={itemTostring(item)}
+				style={{ display: this.state.show ? "" : "none" }}
+			>
 				{isFormItem ? (
 					<Form.Item
 						label={!this.state.loading ? item.label : this.props.labelLayout != "inline" ? "加载中" : ""}

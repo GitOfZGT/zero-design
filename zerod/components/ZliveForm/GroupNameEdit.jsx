@@ -36,7 +36,10 @@ export default React.memo(function GroupNameEdit(props) {
 					<div
 						className="z-live-tool-item all-border small z-margin-left-10"
 						onClick={() => {
-							typeof onChange === "function" && onChange(inputValue);
+							const returner= typeof onChange === "function" && onChange(inputValue);
+							if(returner){
+								return;
+							}
 							setEdited(false);
 						}}
 					>

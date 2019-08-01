@@ -26,6 +26,9 @@ const FormViewer = React.forwardRef(function(
 		groupChildrenRender,
 		submitBtnRender,
 		title,
+		style,
+		momentFormat,
+		afterItemsRendered,
 	},
 	ref,
 ) {
@@ -50,6 +53,7 @@ const FormViewer = React.forwardRef(function(
 	//formData改变时==>处理数据
 	useEffect(() => {
 		setFormGroups(translateGroups(formData, getGroupsFn, _linkage, imperativeRef));
+		setAllFormRendered([]);
 	}, [formData]);
 	//formGroups改变时==>调用onFormGroupsChange
 	useEffect(() => {
@@ -59,35 +63,51 @@ const FormViewer = React.forwardRef(function(
 	useImperativeHandle(ref, imperativeRef.current);
 	const titleText =
 		dataType.isBoolean(title) && !title ? "" : title ? title : formData && formData.name ? formData.name : "";
+	const [allFormRendered, setAllFormRendered] = useState([]);
+	useEffect(() => {
+		if (allFormRendered.length && allFormRendered.length === formGroups.length) {
+			doLinkage && doLinkage();
+			afterItemsRendered && afterItemsRendered();
+		}
+	}, [allFormRendered]);
+
 	return (
-		<div className="z-padding-20">
-			<div className={`z-panel z-padding-bottom-20 ${className ? className : ""}`}>
-				{titleText ? (
-					<div className="z-panel-body z-padding-bottom-0-important z-text-center">
-						<h2>{titleText}</h2>
-					</div>
-				) : null}
-				{formGroups.map((group, i) => {
-					return (
-						<FormGroup
-							titleLeftRender={groupTitleLeftRender}
-							titleRightRender={groupTitleRightRender}
-							group={group}
-							onSubmit={onSubmit}
-							doLinkage={doLinkage}
-							key={group.id}
-							labelLayout={group.labelLayout}
-							ref={group.groupRef}
-							formItems={group.formItems}
-							getOtherForms={getOtherForms}
-							formValues={formValues}
-						>
-							{typeof groupChildrenRender == "function" && groupChildrenRender(group)}
-						</FormGroup>
-					);
-				})}
-				{typeof submitBtnRender == "function" ? submitBtnRender(doSubmit) : null}
-			</div>
+		<div className={`z-panel z-padding-bottom-20 ${className ? className : ""}`} style={style}>
+			{titleText ? (
+				<div className="z-panel-body z-padding-bottom-0-important z-text-center">
+					<h2>{titleText}</h2>
+				</div>
+			) : null}
+			{formGroups.map((group, i) => {
+				return (
+					<FormGroup
+						titleLeftRender={
+							groupTitleLeftRender
+								? (group, groupName, nameChange) => {
+										return groupTitleLeftRender(group, groupName, nameChange, formGroups);
+								  }
+								: undefined
+						}
+						titleRightRender={groupTitleRightRender}
+						group={group}
+						onSubmit={onSubmit}
+						doLinkage={doLinkage}
+						key={group.id}
+						labelLayout={group.labelLayout}
+						ref={group.groupRef}
+						formItems={group.formItems}
+						getOtherForms={getOtherForms}
+						formValues={formValues}
+						momentFormat={momentFormat}
+						afterItemsRendered={() => {
+							setAllFormRendered(allFormRendered.concat(["success"]));
+						}}
+					>
+						{typeof groupChildrenRender == "function" && groupChildrenRender(group)}
+					</FormGroup>
+				);
+			})}
+			{typeof submitBtnRender == "function" ? submitBtnRender(doSubmit) : null}
 		</div>
 	);
 });
@@ -101,5 +121,7 @@ FormViewer.propTypes = {
 	linkage: PropTypes.bool,
 	groupChildrenRender: PropTypes.func,
 	submitBtnRender: PropTypes.func,
+	afterItemsRendered: PropTypes.func,
+	momentFormat: PropTypes.bool,
 };
 export default React.memo(FormViewer);

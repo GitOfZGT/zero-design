@@ -32,39 +32,11 @@ class Myjavascript extends ZpureComponent {
 
 可追加`className`
 
-<table>
-	<thead>
-		<tr>
-			<th>参数</th>
-			<th>说明</th>
-			<th>类型</th>
-			<th>默认值</th>
-		</tr>
-	</thead>
-	<tbody>
-	 	<tr>
-			<td>valueType</td>
-			<td>颜色值类型,hex:十六进制模式，rgb：RGB模式(包括rgba)</td>
-			<td>hex | rgb</td>
-			<td>hex</td>
-		</tr>
-		<tr>
-			<td>value</td>
-			<td>颜色值，支持十六进制和RGB模式，如 "#FFFFFF"、"rgba(255,214,21,0.9)"</td>
-			<td>string</td>
-			<td>--</td>
-		</tr>
-		<tr>
-			<td>defaultValue</td>
-			<td>第一次渲染的颜色值，支持十六进制和RGB模式，如 "#FFFFFF"、"rgba(255,214,21,0.9)"</td>
-			<td>string</td>
-			<td>--</td>
-		</tr>
-		<tr>
-			<td>onChange</td>
-			<td>颜色值改变后触发</td>
-			<td>(value)=>{}</td>
-			<td>--</td>
-		</tr>
-	</tbody>
-</table>
+| 参数         | 说明                                                                              | 类型        | 默认值 |
+| ------------ | --------------------------------------------------------------------------------- | ----------- | ------ |
+| valueType    | 颜色值类型,hex:十六进制模式，rgb：RGB 模式(包括 rgba)                             | hex         | rgb    | hex |
+| value        | 颜色值，支持十六进制和 RGB 模式，如 "#FFFFFF"、"rgba(255,214,21,0.9)"             | string      | --     |
+| defaultValue | 第一次渲染的颜色值，支持十六进制和 RGB 模式，如 "#FFFFFF"、"rgba(255,214,21,0.9)" | string      | --     |
+| onChange     | 颜色值改变后触发                                                                  | (value,color)=>{} | --     |
+| disabled     | 是否禁用                                                                          | boolean     | false  |
+

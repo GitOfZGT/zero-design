@@ -1,3 +1,5 @@
+<div class="z-doc-titles"></div>
+
 # Zero-design 简称 zerod
 
 `zerod` 是基于`react + antd`的扩展组件库，主要包括`通用小组件`、`快速开发页面的多风格模板(HOC高阶组件)`、`通用工具函数`、`通用样式类`
@@ -26,7 +28,7 @@
 }
 ```
 
-# zerod-admin-webpack 脚手架 v1.2.2
+# zerod-admin-webpack 脚手架 v1.3.3
 
 基于 `react + react-router + redux + react-redux + antd + zerod + scss` 的 webpack4 前端开发环境
 
@@ -61,7 +63,12 @@
 
 偶热发现，cnpm install 安装的依赖包依赖链比 npm install 安装的要长的多，所以 npm install 的，运行或打包相对来说快的多。
 
-2019-03-28 v1.2.2 babel-polyfill 改用@babel/polyfill，修复@babel/\*更新后报错问题
+2019-03-28 v1.2.2 babel-polyfill 改用@babel/polyfill，修复@babel/\*更新后报错问题  
+2019-04-20 v1.2.3 加入 Eslint 检测代码规范
+
+2019-04-26 v1.3.2 webpack 相关配置提取出 zerod-webpack-conf 包发布到私服  
+2019-06-19 v1.3.3 修复实际未使用上dll的问题，babel.config.js添加@babel/plugin-transform-modules-commonjs插件    
+
 
 <div class="z-doc-titles"></div>
 
@@ -70,7 +77,6 @@
 可在 `config/index.js` 配置反代理、host、端口号、sourceMap 等等
 
 ```bash
-├── /build/          # webpack配置
 ├── /config/         # config/index.js可以配置反代理路径和打包公共路径，dev端口号等等
 ├── /dist/           # 项目打包输出目录
 ├── /src/            # 项目开发源码目录
@@ -94,24 +100,25 @@
 │ ├── /views/        # 路由组件目录，应当按照路由结构创建
 │ ├── /zTool/        # 通用工具目录
 │ │ └── httpAjax.js  # ajax库：axios或fetch 的封装
-│ ├── ant-theme-vars.scss      # antd主题变量
+│ ├── ant-icons.js      # 按需引入ant-design的icon文件
+│ ├── antd-vars.less      # scss变量替换ant-design的less变量
 │ ├── App.api.js     # 自动加载/Api/下`.api.js`后缀的文件
 │ ├── App.context.js # 自动加载/context/下的'Context.js'
 │ ├── App.jsx        # 根组件
 │ ├── app.scss       # 根样式文件
 │ └── main.js        # 项目入口文件
 ├── /static/         # 不会被压缩打包的静态文件放这里
-│ ├── /pace/         # 页面的加载进度条
-│ │ ├── pace-theme-flash.css   #
-│ │ └── pace.min.js
 │ └── vendor.dll.*.js  # package.json的dependencies依赖包的预打包文件，由npm run dll命令生成
 ├── babel.config.js  # babel配置
+├── .eslintrc.js  # Eslin配置
 ├── .gitgnore        # git忽略检测的配置
 ├── .postcssrc.js    # postcss配置
-├── .prettierrc      # 格式化代码 prettier 的配置， vscode 编辑器需安装 prettier 插件
+├── .prettierrc.js      # 格式化代码 prettier 的配置， vscode 编辑器需安装 prettier 插件
 ├── index.html       # 单页面唯一的html
 └── package.json
 ```
+
+`.scss`文件是模块化className模式，要写全局className，请使用 `:global{  包含className  }`  
 
 <div class="z-doc-titles"></div>
 
@@ -144,3 +151,5 @@
 5、从私服安装最新 zerod: `npm run npm-zerod`
 
 6、`npm run init` (此命令包含 `rimraf node_modules & npm run npm-zerod & cnpm install & npm run dll`)
+
+7、`npm run eslint`： 全局检测代码规范 前提先要全局安装 `npm install eslint eslint-plugin-react eslint-plugin-react-hooks -g`一次

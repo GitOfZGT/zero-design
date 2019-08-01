@@ -38,8 +38,7 @@ exports.cssLoaders = function(options) {
 		if (loader == "sass") {
 			cssLoader.options = Object.assign({}, cssLoader.options, {
 				modules: true,
-				importLoaders: 1,
-				localIdentName: "[local]_[hash:base64:6]",
+				importLoaders: 1
 			});
 		}
 		const loaders = options.usePostCSS ? [cssLoader, postcssLoader] : [cssLoader];

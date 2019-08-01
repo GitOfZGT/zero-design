@@ -273,7 +273,7 @@ export class ZoneWayTransfer extends ZpureComponent {
 	};
 	render() {
 		return (
-			<Row gutter={16} className={this.props.className} style={this.props.style}>
+			<Row gutter={16} type="flex" className={`${cssClass['z-transfer-row']} ${this.props.className}`} style={this.props.style}>
 				{/* <p style={{ marginBottom: "12px" }}>
 					鼠标指针呈现类似 <i className="zero-icon zerod-move" />{" "}
 					即可拖动，从左框拖动到右框表示"选择"，右框中可上下拖动调整顺序，拖出右框可移除选项

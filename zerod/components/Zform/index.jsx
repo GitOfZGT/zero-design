@@ -1,5 +1,5 @@
 import React from "react";
-import { Form, Modal, Input, Button, Row, Col } from "antd";
+import { Form, Modal, Input, Button, Row, Col, message } from "antd";
 import PropTypes from "prop-types";
 import cssClass from "./style.scss";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
@@ -7,7 +7,8 @@ import { animateTimout, const_initItems, const_execAsync, const_changeFormItems 
 // import ZpageLoading from "../ZpageLoading";
 // import { dataType, arrayFilterBy } from "../zTool";
 import ColFormItem from "./ColFormItem";
-import { dataType } from "../zTool";
+import { dataType, turnLabelOrValue } from "../zTool";
+import moment from "moment";
 export const Zform = Form.create()(
 	class extends React.PureComponent {
 		static propTypes = {
@@ -27,55 +28,65 @@ export const Zform = Form.create()(
 			otherForms: PropTypes.func, // 取得其他表单对象
 			confirm: PropTypes.object, // antd 的 modal 参数
 			initAnimation: PropTypes.bool,
+			momentFormat: PropTypes.bool,
 		};
 		static defaultProps = {
 			confirm: {},
-			items: [{ lable: "字段名", key: "name", options: {}, render: (form, panel) => <Input /> }],
+			items: [
+				{
+					lable: "字段名",
+					key: "name",
+					options: {},
+					render: (form, panel) => <Input />,
+				},
+			],
 			submitMsg: "点击确定按钮提交数据",
 			defaultSpan: { xxl: 6, xl: 8, lg: 12, md: 24 },
 			submitBtnName: "保存",
 			labelLayout: "vertical",
 			initAnimation: true,
+			momentFormat: false,
 		};
 		state = {
 			items: [],
 		};
 		allAsync = [];
+		settingValues = {};
 		methods = {
-			onSubmit: e => {
-				e.preventDefault();
+			getFieldsValue: (isValid, query) => {
 				const forms = dataType.isFunction(this.props.otherForms)
 					? this.props.otherForms(this.form).concat([this.form])
 					: [this.form];
 				let formsValues = [];
 				const valideds = forms.map(form => {
+					//保存的对应key的选项数据
+					const saveFieldOptions = form.saveFieldOptions;
+					const saveOptionsMapKey = form.saveOptionsMapKey;
+					// console.log("--form--",form)
 					let valided = true;
-					form.validateFields(
-						form.zformItems
-							.filter(item => item.ref.current.state.show)
-							.map(item => {
-								return item.key;
-							}),
-						(err, values) => {
+					const fieldNames = form.zformItems
+						.filter(item => item.ref.current.state.show)
+						.map(item => {
+							return item.key;
+						});
+					let startValues = {};
+					if (isValid) {
+						form.validateFields(fieldNames, (err, values) => {
 							// console.log('--form',this.state.items);
 							if (err) {
 								valided = false;
 								return;
 							}
-							const newValues = {};
-							if (dataType.isObject(values)) {
-								Object.keys(values).forEach(key => {
-									if (dataType.isString(values[key])) {
-										//字符串类型的值去掉首尾空格
-										newValues[key] = values[key].trim();
-									} else {
-										newValues[key] = values[key];
-									}
-								});
-							}
-							formsValues.push(values);
-						},
-					);
+							startValues = values;
+						});
+					} else {
+						startValues = form.getFieldsValue(fieldNames);
+					}
+					const newValues = this.methods.getOneFormValue(startValues, saveFieldOptions, saveOptionsMapKey,form.zformItems);
+					formsValues.push({
+						...newValues,
+						...(dataType.isObject(query) ? query : {}),
+					});
 					return valided;
 				});
 				//有一个验证失败，就阻止
@@ -84,6 +95,104 @@ export const Zform = Form.create()(
 						return !valid;
 					})
 				) {
+					message.error("表单未通过验证");
+					return false;
+				}
+				return formsValues.length > 1 ? formsValues : formsValues[0];
+			},
+
+			setFieldsValue: vals => {
+				const values = vals ? vals : this.props.formDefaultValues;
+				const forms = dataType.isFunction(this.props.otherForms)
+					? this.props.otherForms(this.form).concat([this.form])
+					: [this.form];
+				this.saveSettingValues = values;
+				// console.log(this.saveSettingValues, forms);
+				forms.forEach(form => {
+					if (values && form.zformItems.length) {
+						const newValues = {};
+						form.zformItems.forEach(field => {
+							const key = field.key;
+							const value = values[key];
+							if (value !== undefined) {
+								if (this.props.momentFormat) {
+									const currentItem = form.zformItems.find(item => item.key === key);
+									if (currentItem && currentItem.format) {
+										const toMoment = (val, format) => {
+											return moment(val, format);
+										};
+										if (dataType.isArray(value)) {
+											newValues[key] = value.map(val => {
+												return val ? toMoment(val, currentItem.format) : undefined;
+											});
+										} else {
+											newValues[key] = value ? toMoment(value, currentItem.format) : undefined;
+										}
+									} else {
+										newValues[key] = value;
+									}
+								} else {
+									newValues[key] = value;
+								}
+							}
+						});
+						// console.log("--zform", newValues);
+						if (Object.keys(newValues).length) form.setFieldsValue(newValues);
+					}
+				});
+			},
+			getOneFormValue: (values, saveFieldOptions, saveOptionsMapKey,items) => {
+				const newValues = {};
+				if (dataType.isObject(values)) {
+					Object.keys(values).forEach(key => {
+						if (dataType.isString(values[key])) {
+							//字符串类型的值去掉首尾空格
+							newValues[key] = values[key].trim();
+						} else if (this.props.momentFormat) {
+							//如果需要把moment对象格式化对应的format
+							const formating = val => {
+								if (dataType.isObject(val) && val._isAMomentObject) {
+									const formItems = items||this.state.items;
+									const currentItem = formItems.find(item => item.key === key);
+									return val.format(currentItem.format);
+								} else {
+									return val;
+								}
+							};
+							if (dataType.isArray(values[key])) {
+								newValues[key] = values[key].map(val => formating(val));
+							} else {
+								newValues[key] = formating(values[key]);
+							}
+						} else {
+							newValues[key] = values[key];
+						}
+						if (saveFieldOptions && saveFieldOptions[key]) {
+							const options = saveFieldOptions[key];
+							const mapKeys = {
+								label: "label",
+								value: "value",
+								children: "children",
+								...(saveOptionsMapKey[key] || {}),
+							};
+							const currentLabel = turnLabelOrValue(options, newValues[key], {
+								src: mapKeys.value,
+								dist: mapKeys.label,
+							});
+							newValues[`${key}Label`] =
+								(Array.isArray(currentLabel) && currentLabel.length) ||
+								(!Array.isArray(currentLabel) && currentLabel)
+									? currentLabel
+									: this.settingValues[`${key}Label`];
+						}
+					});
+				}
+				return newValues;
+			},
+			onSubmit: (e, query) => {
+				e.preventDefault();
+				const newValues = this.methods.getFieldsValue(true, query);
+				if (dataType.isBoolean(newValues) && !newValues) {
 					return;
 				}
 				const { onOk, content, show, ...others } = this.props.confirm;
@@ -93,14 +202,12 @@ export const Zform = Form.create()(
 						title: "确定好提交了吗?",
 						content: content ? content : this.props.submitMsg,
 						onOk: e => {
-							return this.props.onSubmit
-								? this.props.onSubmit(formsValues.length == 1 ? formsValues[0] : formsValues)
-								: Promise.resolve();
+							return this.props.onSubmit ? this.props.onSubmit(newValues) : Promise.resolve();
 						},
 						...others,
 					});
 				} else {
-					this.props.onSubmit && this.props.onSubmit(formsValues.length == 1 ? formsValues[0] : formsValues);
+					this.props.onSubmit && this.props.onSubmit(newValues);
 				}
 			},
 			changeFormItems: (newItems, part = false, callback) => {
@@ -110,17 +217,8 @@ export const Zform = Form.create()(
 				return this.state.items;
 			},
 		};
-		setFieldsValue(values) {
-			values = values ? values : this.props.formDefaultValues;
-			if (values && this.state.items.length) {
-				const newValues = {};
-				this.filedKeys.forEach(key => {
-					const value = values[key];
-					if (value !== undefined) newValues[key] = value;
-				});
-				// console.log("--zform", newValues);
-				if (Object.keys(newValues).length) this.form.setFieldsValue(newValues);
-			}
+		setFieldsValue(vals) {
+			this.methods.setFieldsValue(vals);
 		}
 		execAsync(newItems) {
 			const_initItems.call(
@@ -129,14 +227,20 @@ export const Zform = Form.create()(
 				this.form,
 				this.methods.changeFormItems,
 				() => {
-					const_execAsync.call(this, this.props.afterItemsRendered);
+					const_execAsync.call(this, (...rest) => {
+						this.form.formReady = true;
+						this.props.afterItemsRendered && this.props.afterItemsRendered(...rest);
+					});
 				},
 			);
 		}
-		form = { ...this.props.form, zformItems: this.state.items };
 		componentDidMount() {
-			this.execAsync();
-			this.form = { ...this.props.form, zformItems: this.state.items };
+			this.form = {
+				...this.props.form,
+				zformItems: this.state.items,
+				saveFieldOptions: {},
+				saveOptionsMapKey: {},
+			};
 			this.props.getFormInstance && this.props.getFormInstance(this.form, this.methods);
 			this.props.getInbuiltTool &&
 				this.props.getInbuiltTool({
@@ -144,6 +248,7 @@ export const Zform = Form.create()(
 					submit: this.methods.onSubmit,
 					...this.methods,
 				});
+			this.execAsync();
 		}
 		componentDidUpdate(prevProps, prevState) {
 			if (this.props.formDefaultValues !== prevProps.formDefaultValues) {
@@ -153,7 +258,12 @@ export const Zform = Form.create()(
 				this.execAsync();
 			}
 			if (this.props.form !== prevProps.form || this.state.items !== prevState.items) {
-				this.form = { ...this.props.form, zformItems: this.state.items };
+				this.form = {
+					...this.props.form,
+					zformItems: this.state.items,
+					saveFieldOptions: this.form.saveFieldOptions,
+					saveOptionsMapKey: this.form.saveOptionsMapKey,
+				};
 				this.props.getFormInstance && this.props.getFormInstance(this.form, this.methods);
 			}
 		}
@@ -173,6 +283,7 @@ export const Zform = Form.create()(
 						item={item}
 						ref={item.ref}
 						labelLayout={this.props.labelLayout}
+						getInsideItems={this.methods.getInsideItems}
 					/>
 				);
 				return this.props.initAnimation ? (

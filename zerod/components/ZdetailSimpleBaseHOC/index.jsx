@@ -1,7 +1,7 @@
 import React from "react";import ZpureComponent from "../ZpureComponent";
 import { withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
-import { const_getInsertLocation, const_getMainTool, const_getMethods,const_getPageWrapperProps } from "../constant";
+import { const_getInsertLocation, const_getMainTool, const_getMethods,const_getPageWrapperProps,requireValid } from "../constant";
 // 工具
 import { mergeConfig } from "../zTool/";
 // 上下文
@@ -79,6 +79,10 @@ export function ZdetailSimpleBaseHOC(pageConfig) {
 				this.config.detail
 					.detailApiInterface(this.props.detailId, this.props, this.tool)
 					.then((re) => {
+						const noData = requireValid.hasData(re);
+						if (noData) {
+							return noData;
+						}
 						this.setState({
 							detailData: re.data,
 						});

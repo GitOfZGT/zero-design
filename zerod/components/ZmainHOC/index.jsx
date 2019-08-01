@@ -14,6 +14,7 @@ import {
 	const_showModalLoading,
 	const_getModalScrollInstance,
 	const_getScrollAreaWrapperEl,
+	const_notification,
 } from "../constant";
 import ZerodMainContext from "../ZerodMainContext";
 import RightModals from "../ZrightModal/RightModals";
@@ -96,23 +97,25 @@ export function ZmainHOC(pageConfig, mounted) {
 			noParentPath: false,
 		},
 		// 顶部栏左边内容的渲染钩子
-		headerLeftRender: (tool) => {
+		headerLeftRender: tool => {
 			return null;
 		},
 		// 顶部栏右边内容的渲染钩子
-		headerRightRender: (tool) => {
+		headerRightRender: tool => {
 			return null;
 		},
 		// 侧边栏折叠按钮触发后，过渡动画之前
-		beforeToggleCollapse: (collapsed) => {},
+		beforeToggleCollapse: collapsed => {},
 		// 侧边栏折叠按钮触发后，过渡动画之后
-		afterToggleCollapse: (collapsed) => {},
+		afterToggleCollapse: collapsed => {},
 		// 组件加载完成的钩子
 		componentDidMount: (callback, $router, tool) => {},
 		// rightModalType
 		// rightModalType: "mainModal",
 	};
 	defaultConfig = mergeConfig(defaultConfig, pageConfig);
+	//设置httpAjax的请求错误弹出提示框方法
+	window.globalMsgError = const_notification(defaultConfig.noticeType)["error"];
 	class Main extends ZpureComponent {
 		config = defaultConfig;
 		navRoutes = [];
@@ -121,7 +124,7 @@ export function ZmainHOC(pageConfig, mounted) {
 			isCollapse: false, //侧边栏折叠状态
 			show_mainRoute_Loading: false, // 路由页面的loading
 		};
-		temporaryStorage={};
+		temporaryStorage = {};
 		setNavRoutes({ menuData, mainRoutes }) {
 			let newNav = [];
 			mainRoutes = mainRoutes ? mainRoutes : this.config.mainRoutes;
@@ -165,7 +168,7 @@ export function ZmainHOC(pageConfig, mounted) {
 		}
 		sideMenuData = [];
 		// 处理侧边导航数据
-		setSideMenu = (sideMenu) => {
+		setSideMenu = sideMenu => {
 			let menuData = sideMenu.menuData;
 			let topOtherMenu = sideMenu.topOtherMenu ? sideMenu.topOtherMenu : this.config.sideMenu.topOtherMenu;
 			let bottomOtherMenu = sideMenu.bottomOtherMenu
@@ -189,14 +192,14 @@ export function ZmainHOC(pageConfig, mounted) {
 			getTemporaryStorage: () => {
 				return this.temporaryStorage;
 			},
-			setTemporaryStorage: (data) => {
+			setTemporaryStorage: data => {
 				this.temporaryStorage = Object.assign(this.TemporaryStorage ? this.temporaryStorage : {}, data);
 			},
 			getSideMenuData: () => {
 				return deepCopy(this.sideMenuData);
 			},
 			// 登录的用户信息对象存储在this.userInfoStorage
-			saveUserInfo: (data) => {
+			saveUserInfo: data => {
 				this.userInfoStorage = data;
 			},
 			getUserInfo: () => {
@@ -217,18 +220,18 @@ export function ZmainHOC(pageConfig, mounted) {
 				this.CollapseBtnRef.current.methods.changeCollapsed();
 			},
 			//是否显示loading
-			showRouteLoading: (show,tip) => {
-				this.mainRoute_Loading_ref.current && this.mainRoute_Loading_ref.current.methods.showLoading(show,tip);
+			showRouteLoading: (show, tip) => {
+				this.mainRoute_Loading_ref.current && this.mainRoute_Loading_ref.current.methods.showLoading(show, tip);
 				// this.setState({
 				// 	show_mainRoute_Loading: show, //true || false
 				// });
 			},
-			showModalLoading: (show, witch,tip) => {
+			showModalLoading: (show, witch, tip) => {
 				const { loading_name } = getConstNames(witch);
 				if (loading_name == "show_mainRoute_Loading") {
-					this.methods.showRouteLoading(show,tip);
+					this.methods.showRouteLoading(show, tip);
 				} else {
-					const_showModalLoading.call(this, show, witch,tip);
+					const_showModalLoading.call(this, show, witch, tip);
 					// const modal = this.RightModalsRef.current.methods.findModal(witch);
 					// modal && modal.ref.current.methods.showModalLoading(show);
 				}
@@ -243,11 +246,11 @@ export function ZmainHOC(pageConfig, mounted) {
 			},
 
 			// 下次滚动条更新的时候，让滚动条回到顶部
-			setScrollToTop: (witch) => {
+			setScrollToTop: witch => {
 				let scrollInstance = this.methods.getScrollInstance(witch);
 				scrollInstance && (scrollInstance.nextScrollToTop = true);
 			},
-			getScrollInstance: (witch) => {
+			getScrollInstance: witch => {
 				if (witch == "mainRoute") {
 					const { instance_name } = getConstNames(witch);
 					return this[instance_name];
@@ -257,7 +260,7 @@ export function ZmainHOC(pageConfig, mounted) {
 					// return modal && modal.ref.current.methods.getScrollInstance();
 				}
 			},
-            getScrollAreaWrapperEl: (witch) => {
+			getScrollAreaWrapperEl: witch => {
 				if (witch == "mainRoute") {
 					const { wrapper_name, wrapperMethods_name } = getConstNames(witch);
 					return { wrapperEl: this[wrapper_name], methods: this[wrapperMethods_name] };
@@ -334,14 +337,14 @@ export function ZmainHOC(pageConfig, mounted) {
 				</Zlayout.Zbody>
 			);
 		};
-		getMaimRouteTemplate = (mainBodyId) => {
+		getMaimRouteTemplate = mainBodyId => {
 			this.mainBodyId = mainBodyId;
 			return (
 				<Zlayout.Zbody
 					id={mainBodyId ? mainBodyId : this.config.mainBodyId}
 					className={`${cssClass["z-main-body"]} app-body`}
 					scroll
-					getScrollInstance={(instance) => (this[getConstNames("mainRoute").instance_name] = instance)}
+					getScrollInstance={instance => (this[getConstNames("mainRoute").instance_name] = instance)}
 					getWrapperEl={(el, method) => {
 						const { wrapper_name, wrapperMethods_name } = getConstNames("mainRoute");
 						this[wrapper_name] = el;
@@ -355,7 +358,7 @@ export function ZmainHOC(pageConfig, mounted) {
 				</Zlayout.Zbody>
 			);
 		};
-		getBodyTemplate = (_showCollapseBtn) => {
+		getBodyTemplate = _showCollapseBtn => {
 			return (
 				<Zlayout flexRow className={`z-layout-${this.config.theme}`}>
 					<MainLeft
@@ -445,7 +448,7 @@ class MainLeft extends React.PureComponent {
 	};
 	render() {
 		const { collapseToggleEnd, theme, openAllSubmenu, onSelect, logo } = this.props;
-		const leftWidth = this.state.isCollapse ? 0: this.props.leftExpandWidth;
+		const leftWidth = this.state.isCollapse ? 0 : this.props.leftExpandWidth;
 		return (
 			<Zlayout
 				onTransitionend={collapseToggleEnd}

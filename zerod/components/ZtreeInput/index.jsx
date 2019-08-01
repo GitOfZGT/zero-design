@@ -14,28 +14,51 @@ const propTypes = {
 	value: PropTypes.array,
 	onChange: PropTypes.func,
 	multiple: PropTypes.bool,
+	showBtns: PropTypes.bool,
 	inputType: PropTypes.string,
+	labelPlaceholder: PropTypes.string,
+	valuePlaceholder: PropTypes.string,
+	customInputKeys: PropTypes.array,
+	children: PropTypes.func,
+	toolTips:PropTypes.object,
 };
 
 const defaultProps = {
 	value: [],
 	multiple: true,
 	inputType: "double",
+	labelPlaceholder: "Label",
+	valuePlaceholder: "Value",
+	customInputKeys: [{ key: "label", initValue: "" }, { key: "value", initValue: "" }],
+	showBtns:true,
+	toolTips:{},
 };
 
 function setId(arr) {
-	arr.forEach(item => {
-		if (item.id === undefined) {
-			item.id = GenNonDuplicateID();
-		}
-		if (Array.isArray(item.children)) {
-			setId(item.children);
-		}
-	});
+	Array.isArray(arr) &&
+		arr.forEach(item => {
+			if (item.id === undefined) {
+				item.id = GenNonDuplicateID();
+			}
+			if (Array.isArray(item.children)) {
+				setId(item.children);
+			}
+		});
 }
 
 const _ZtreeInput = React.forwardRef(function(props, ref) {
-	const { value, onChange, multiple, inputType } = props;
+	const {
+		value,
+		onChange,
+		multiple,
+		inputType,
+		labelPlaceholder,
+		valuePlaceholder,
+		customInputKeys,
+		children,
+		showBtns,
+		toolTips
+	} = props;
 	const [sync, setSync] = useState(false);
 	useEffect(() => {
 		if (!value.length) onChange && onChange([getNewItem()]);
@@ -45,7 +68,7 @@ const _ZtreeInput = React.forwardRef(function(props, ref) {
 		onChange && onChange([...value]);
 	};
 	setId(value);
-	// console.log(value)
+	const _toolTips = Object.assign({addSiblings:"添加兄弟节点",moveUp:"上移",moveDown:"下移",remove:"移除",addChild:"新增子节点"},toolTips)
 	return (
 		<InputContext.Provider
 			value={{
@@ -55,6 +78,12 @@ const _ZtreeInput = React.forwardRef(function(props, ref) {
 				sync,
 				inputType,
 				multiple,
+				labelPlaceholder,
+				valuePlaceholder,
+				customInputKeys,
+				customInputFunc: children,
+				showBtns,
+				toolTips:_toolTips,
 				onSibingsClick: (e, data, index) => {
 					itemsFromTree({
 						tree: value,
@@ -117,14 +146,14 @@ const _ZtreeInput = React.forwardRef(function(props, ref) {
 			}}
 		>
 			<div className={cssClass["z-tree-root"]}>
-				{inputType === "double" ? (
+				{inputType === "double" && typeof children !== "function" ? (
 					<div className={cssClass["z-tree-type"]}>
 						<Checkbox
 							onChange={e => {
 								setSync(e.target.checked);
 							}}
 						>
-							左右同步输入(Label与Value同值)
+							左右同步输入({labelPlaceholder}与{valuePlaceholder}同值)
 						</Checkbox>
 					</div>
 				) : null}

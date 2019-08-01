@@ -25,6 +25,7 @@ export const ZsearchForm = Form.create()(
 			collapseCount: PropTypes.number,
 			afterItemsRendered: PropTypes.func, // 表单控件渲染完的回调
 			initAnimation: PropTypes.bool,
+			momentFormat: PropTypes.bool,
 		};
 		static defaultProps = {
 			defaultSpan: { xxl: 6, xl: 8, lg: 12, md: 24 },
@@ -40,21 +41,40 @@ export const ZsearchForm = Form.create()(
 		};
 		allAsync = [];
 		methods = {
-			unfold: (callback) => {
+			unfold: callback => {
 				this.setAnimate(callback);
 			},
-			handleSearch: (e) => {
+			handleSearch: e => {
 				e.preventDefault();
 				this.props.form.validateFields((err, values) => {
 					if (!err) {
+						const newValues = {};
 						if (dataType.isObject(values)) {
-							Object.keys(values).forEach((key) => {
+							Object.keys(values).forEach(key => {
 								if (dataType.isString(values[key])) {
-									values[key] = values[key].trim();
+									//字符串类型的值去掉首尾空格
+									newValues[key] = values[key].trim();
+								} else if (this.props.momentFormat) {
+									//如果需要把moment对象格式化对应的format
+									const formating = val => {
+										if (dataType.isObject(val) && val._isAMomentObject) {
+											const currentItem = this.state.items.find(item => item.key === key);
+											return val.format(currentItem.format);
+										} else {
+											return val;
+										}
+									};
+									if (dataType.isArray(values[key])) {
+										newValues[key] = values[key].map(val => formating(val));
+									} else {
+										newValues[key] = formating(values[key]);
+									}
+								} else {
+									newValues[key] = values[key];
 								}
 							});
 						}
-						this.props.onSearch && this.props.onSearch(values);
+						this.props.onSearch && this.props.onSearch(newValues);
 					}
 				});
 			},
@@ -68,6 +88,9 @@ export const ZsearchForm = Form.create()(
 			changeFormItems: (newItems, part = false, callback) => {
 				const_changeFormItems.call(this, newItems, part, callback);
 			},
+			getInsideItems: () => {
+				return this.state.items;
+			},
 		};
 		config = {
 			collapseCount: this.props.collapseCount,
@@ -76,14 +99,34 @@ export const ZsearchForm = Form.create()(
 			values = values ? values : this.props.formDefaultValues;
 			if (values && this.state.items.length) {
 				const newValues = {};
-				this.filedKeys.forEach((key) => {
+				this.filedKeys.forEach(key => {
 					const value = values[key];
-					if (value !== undefined) newValues[key] = value;
+					if (value !== undefined) {
+						if (this.props.momentFormat) {
+							const currentItem = this.state.items.find(item => item.key === key);
+							if (currentItem && currentItem.format) {
+								const toMoment = (val, format) => {
+									return moment(val, format);
+								};
+								if (dataType.isArray(value)) {
+									newValues[key] = value.map(val => {
+										return val ? toMoment(val, currentItem.format) : undefined;
+									});
+								} else {
+									newValues[key] = value ? toMoment(value, currentItem.format) : undefined;
+								}
+							} else {
+								newValues[key] = value;
+							}
+						} else {
+							newValues[key] = value;
+						}
+					}
 				});
-				if (Object.keys(newValues).length) this.props.form.setFieldsValue(newValues);
+				// console.log("--zform", newValues);
+				if (Object.keys(newValues).length) this.form.setFieldsValue(newValues);
 			}
 		}
-
 		execAsync(newItems) {
 			const items = this.props.items ? this.props.items : this.props.colFormItems;
 			const_initItems.call(
@@ -123,7 +166,8 @@ export const ZsearchForm = Form.create()(
 			}
 		};
 		componentDidMount() {
-			this.props.getFormInstance && this.props.getFormInstance(this.props.form, this.methods);
+			this.form = { ...this.props.form, zformItems: this.state.items, saveFieldOptions: {},saveOptionsMapKey:{} };
+			this.props.getFormInstance && this.props.getFormInstance(this.form, this.methods);
 			this.props.exportMethods && this.props.exportMethods(this.methods);
 			this.execAsync();
 			this.setAnimate(null, true);
@@ -139,7 +183,13 @@ export const ZsearchForm = Form.create()(
 				this.execAsync();
 			}
 			if (this.props.form !== prevProps.form) {
-				this.props.getFormInstance && this.props.getFormInstance(this.props.form, this.methods);
+				this.form = {
+					...this.props.form,
+					zformItems: this.state.items,
+					saveFieldOptions: this.form.saveFieldOptions,
+					saveOptionsMapKey: this.form.saveOptionsMapKey,
+				};
+				this.props.getFormInstance && this.props.getFormInstance(this.form, this.methods);
 			}
 			// if (this.props.hidden !== prevProps.hidden) {
 			// 	this.setAnimate();
@@ -161,6 +211,7 @@ export const ZsearchForm = Form.create()(
 						item={item}
 						ref={item.ref}
 						labelLayout={this.props.labelLayout}
+						getInsideItems={this.methods.getInsideItems}
 					/>
 				);
 				return this.props.initAnimation ? (
@@ -177,7 +228,7 @@ export const ZsearchForm = Form.create()(
 			const { className, hidden, labelLayout, initAnimation } = this.props;
 			return (
 				<div
-					ref={(el) => (this.formEl = el)}
+					ref={el => (this.formEl = el)}
 					className={`${cssClass["z-search-form"]} ${className ? className : ""}`}
 				>
 					<Form onSubmit={this.methods.handleSearch} className="z-padding-top-14">

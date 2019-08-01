@@ -38,4 +38,6 @@
 }
 .z-scheduling-popover-content {
 	padding: 10px;
+	max-height: calc(100vh - 164px);
+	overflow: auto;
 }

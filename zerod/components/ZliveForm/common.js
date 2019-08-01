@@ -7,7 +7,14 @@ function sortList(o1, o2) {
 	const v2 = o2.hasOwnProperty("seq") ? o2["seq"] : 0;
 	return v1 - v2;
 }
-
+export function pareLinkages(linkages) {
+	if (Array.isArray(linkages)) {
+		return linkages;
+	} else if (typeof linkages === "string" && /^\[.+/.test(linkages)) {
+		return JSON.parse(linkages);
+	}
+	return [];
+}
 export function getFormItem(field, group, linkage, getGroupsFn, imperative, customOnChange, customFormRules) {
 	const getRules = customFormRules ? customFormRules[field.fieldKey] : null;
 	const newField = {
@@ -17,7 +24,7 @@ export function getFormItem(field, group, linkage, getGroupsFn, imperative, cust
 		key: field.fieldKey,
 		label: field.label,
 		span: field.span ? field.span : 8,
-		labelFocused: [8, 9, 11].includes(field.fieldType),
+		labelFocused: [8, 9, 11, 5].includes(field.fieldType),
 		imperative,
 		customOnChange,
 	};
@@ -26,13 +33,20 @@ export function getFormItem(field, group, linkage, getGroupsFn, imperative, cust
 		typeof getRules === "function" ? getRules(newField, imperative) : [],
 	);
 
-	newField.render = () => {
-		return controls[newField.fieldType].getControl(newField, linkage, getGroupsFn, { disabled: field.disabled });
+	newField.render = currentForm => {
+		return controls[newField.fieldType].getControl(
+			newField,
+			linkage,
+			getGroupsFn,
+			{ disabled: field.disabled },
+			undefined,
+			currentForm,
+		);
 	};
 	return newField;
 }
-export function getGroupItem(item, linkage, getGroupsFn, imperative, customOnChange, customFormRules,labelLayout) {
-	const formItems = item.formFieldInfoList.map((field) => {
+export function getGroupItem(item, linkage, getGroupsFn, imperative, customOnChange, customFormRules, labelLayout) {
+	const formItems = item.formFieldInfoList.map(field => {
 		return getFormItem(field, item, linkage, getGroupsFn, imperative, customOnChange, customFormRules);
 	});
 	formItems.sort(sortList);
@@ -49,15 +63,15 @@ export function getGroupItem(item, linkage, getGroupsFn, imperative, customOnCha
 
 export function translateGroups(formData, getGroupsFn, linkage, imperative) {
 	if (dataType.isObject(formData) && Array.isArray(formData.sectionList)) {
-		const groups = formData.sectionList.map((item) => {
+		const groups = formData.sectionList.map(item => {
 			return getGroupItem(
 				item,
-				linkage && formData.linkages ? formData.linkages : null,
+				linkage ? pareLinkages(formData.linkages) : null,
 				getGroupsFn,
 				imperative,
 				formData.customOnChange,
 				formData.customFormRules,
-				formData.labelLayout
+				formData.labelLayout,
 			);
 		});
 
@@ -66,4 +80,27 @@ export function translateGroups(formData, getGroupsFn, linkage, imperative) {
 	} else {
 		return [];
 	}
+}
+//移除linkageRef对应fieldKey的联动配置
+export function removeSomeLinkage(linkageRef, fieldKey) {
+	let hasRemoveAge = false;
+	linkageRef.current = linkageRef.current.filter(age => {
+		const unlikeness = age.src["fieldKey"] !== fieldKey;
+		if (unlikeness) {
+			age.dist.forEach(d => {
+				d.fields = d.fields.filter(f => {
+					const unlikeness = f["fieldKey"] !== fieldKey;
+					if (!hasRemoveAge && !unlikeness) {
+						hasRemoveAge = true;
+					}
+					return unlikeness;
+				});
+			});
+		}
+		if (!hasRemoveAge && !unlikeness) {
+			hasRemoveAge = true;
+		}
+		return unlikeness;
+	});
+	return hasRemoveAge;
 }

@@ -85,49 +85,80 @@ const MyUpload = React.forwardRef(function(props, ref) {
 			  };
 	//处理value
 	useEffect(() => {
-		if (!Array.isArray(value)) {
+		if (!Array.isArray(value)||!value.length) {
+			setFileState({
+				fileList: [],
+				setTruefileList: [],
+			});
 			return;
 		}
-		if (!config.detailUrl) {
-			message.error("未配置请求多文件的后台地址");
-			return;
-		}
-		const hasGetDetailIds = value.filter(id => {
-			return !getFileUids(hasUploadDoneServerIdsRef.current, "serverId").includes(id);
+		// if (!config.detailUrl) {
+		// 	message.error("未配置请求多文件的后台地址");
+		// 	return;
+		// }
+		// const hasGetDetailIds = value.filter(id => {
+		// 	return !getFileUids(hasUploadDoneServerIdsRef.current, "serverId").includes(id);
+		// });
+		const hasGetDetailIds = value.filter(server => {
+			const currentServers = getFileUids(hasUploadDoneServerIdsRef.current, "serverId");
+			const hasServer = currentServers.find(item => item.id === server.id);
+			return !hasServer;
 		});
 		// console.log(modalRef.current)
 		if (hasGetDetailIds.length) {
-			showLoading(true, modalRef.current, "获取文件中...");
-			httpAjax(config.detailUrlMethod ? config.detailUrlMethod : "post", config.detailUrl, {
-				[config.detailUrlParamName ? config.detailUrlParamName : "fileIds"]: hasGetDetailIds,
-			})
-				.then(re => {
-					const files = re.data.map(item => {
-						return {
-							uid: item.id,
-							name: `${item.originalFileName}.${item.fileSuffix}`,
-							status: "done",
-							type: item.fileType,
-							url: item.filePath,
-						};
-					});
-					hasUploadDoneServerIdsRef.current = [
-						...hasUploadDoneServerIdsRef.current,
-						...re.data.map(item => {
-							return { uid: item.id, serverId: item.id };
-						}),
-					];
-					setFileState({
-						fileList: [...fileState.fileList, ...files],
-						setTruefileList: [...fileState.setTruefileList, ...files],
-					});
+			const files = hasGetDetailIds
+				.filter(item => {
+					const isPic = item.id && item.filePath;
+					if (!isPic) {
+						console.warn("上传控件的value缺少id、filePath等字段");
+					}
+					return isPic;
 				})
-				.catch(re => {
-					message.error(re && re.msg ? re.msg : "获取已上传列表失败。");
-				})
-				.finally(() => {
-					showLoading(false, modalRef.current);
+				.map(item => {
+					hasUploadDoneServerIdsRef.current.push({ uid: item.id, serverId: item });
+					return {
+						uid: item.id,
+						name: `${item.originalFileName}.${item.fileSuffix}`,
+						status: "done",
+						type: item.fileType,
+						url: item.filePath,
+					};
 				});
+			setFileState({
+				fileList: [...fileState.fileList, ...files],
+				setTruefileList: [...fileState.setTruefileList, ...files],
+			});
+			// showLoading(true, modalRef.current, "获取文件中...");
+			// httpAjax(config.detailUrlMethod ? config.detailUrlMethod : "post", config.detailUrl, {
+			// 	[config.detailUrlParamName ? config.detailUrlParamName : "fileIds"]: hasGetDetailIds,
+			// })
+			// 	.then(re => {
+			// 		const files = re.data.map(item => {
+			// 			return {
+			// 				uid: item.id,
+			// 				name: `${item.originalFileName}.${item.fileSuffix}`,
+			// 				status: "done",
+			// 				type: item.fileType,
+			// 				url: item.filePath,
+			// 			};
+			// 		});
+			// 		hasUploadDoneServerIdsRef.current = [
+			// 			...hasUploadDoneServerIdsRef.current,
+			// 			...re.data.map(item => {
+			// 				return { uid: item.id, serverId: item.id };
+			// 			}),
+			// 		];
+			// 		setFileState({
+			// 			fileList: [...fileState.fileList, ...files],
+			// 			setTruefileList: [...fileState.setTruefileList, ...files],
+			// 		});
+			// 	})
+			// 	.catch(re => {
+			// 		message.error(re && re.msg ? re.msg : "获取已上传列表失败。");
+			// 	})
+			// 	.finally(() => {
+			// 		showLoading(false, modalRef.current);
+			// 	});
 		}
 	}, [value]);
 	//上传文件
@@ -153,7 +184,7 @@ const MyUpload = React.forwardRef(function(props, ref) {
 				hasUploadDoneServerIdsRef.current = [
 					...hasUploadDoneServerIdsRef.current,
 					...re.data.map((server, i) => {
-						return { uid: noUploader[i].uid, serverId: server.id };
+						return { uid: noUploader[i].uid, serverId: server };
 					}),
 				];
 				setFileState({

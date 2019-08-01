@@ -1,8 +1,5 @@
 /* eslint-disable no-process-exit */
 /* eslint-disable no-console */
-
-
-require('./check-versions')()
 require("./copy");
 
 // const ora = require('ora')

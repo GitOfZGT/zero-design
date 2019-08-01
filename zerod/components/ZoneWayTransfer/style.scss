@@ -5,10 +5,13 @@ $--border-color: $border-color-base;
 $--border-radius: $border-radius-base;
 $--header-h: 40px;
 $--padding-left: 1em;
+@include z("transfer-row"){
+	height: 400px;
+}
 @include z("transfer-box") {
 	user-select: none;
 	position: relative;
-	height: 400px;
+	height:100%;
 	border-width: 1px;
 	border-style: solid;
 	border-color: $--border-color;

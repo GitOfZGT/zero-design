@@ -22,14 +22,14 @@ const config = {
 			{
 				key: "serviceCode",
 				label: "服务编码",
-				render: (form) => {
+				render: form => {
 					return <Input placeholder="请输入内容" />;
 				},
 			},
 			{
 				key: "serviceName",
 				label: "服务名称",
-				render: (form) => {
+				render: form => {
 					return <Input placeholder="请输入内容" />;
 				},
 			},
@@ -40,7 +40,7 @@ const config = {
 		panelHeader: "树",
 		// 是否显示新建按钮
 		showAddBtn: true,
-		addPageRender: (panel) => {
+		addPageRender: panel => {
 			return (
 				<div className="z-panel z-text-center z-margin-bottom-20">
 					<div className="z-panel-body">addPageRender 函数渲染的内容</div>
@@ -49,7 +49,7 @@ const config = {
 		},
 		// 是否显示详情按钮
 		showDetailBtn: true,
-		detailPageRender: (record) => {
+		detailPageRender: record => {
 			return (
 				<div className="z-panel z-text-center z-margin-bottom-20">
 					<div className="z-panel-body">detailPageRender 函数渲染的内容</div>
@@ -83,11 +83,11 @@ const config = {
 			message.success(`您当前点击的是[${record.name}]这条数据`);
 		},
 		// 获取列表数据的后台接口函数，其必须内部返回Promise
-		treeApiInterface: (query) => {
+		treeApiInterface: query => {
 			// return api.area.getChildList({ id: "root" }).then((re) => {
 			// 	return { data: re.list };
 			// });
-			return new Promise((resolve) => {
+			return new Promise(resolve => {
 				setTimeout(() => {
 					resolve({ data: deepCopy(area.data) });
 				}, 500);
@@ -100,24 +100,24 @@ const config = {
 		// 	});
 		// },
 		// 删除按钮的后台接口函数，其必须内部返回Promise
-		deleteApiInterface: (data) => {
+		deleteApiInterface: data => {
 			return Promise.resolve();
 		},
-		panelBeforeRender: (obj) => {
+		panelBeforeRender: obj => {
 			return (
 				<div className="z-panel z-text-center z-margin-bottom-20">
 					<div className="z-panel-body">panelBeforeRender 函数渲染的内容</div>
 				</div>
 			);
 		},
-		panelAfterRender: (obj) => {
+		panelAfterRender: obj => {
 			return (
 				<div className="z-panel z-margin-top-20 z-text-center">
 					<div className="z-panel-body">panelAfterRender 函数渲染的内容</div>
 				</div>
 			);
 		},
-		moreContentRender: (obj) => {
+		moreContentRender: obj => {
 			return (
 				<div className="z-panel is-panel-border z-margin-top-20 z-text-center">
 					<div className="z-panel-body">moreContentRender 函数渲染的内容</div>
@@ -192,6 +192,18 @@ export default ZeditorTreeHOC(pageConfig);
 			<td>树数据对应的map结构，默认：{ name: "name", id: "id", children: "children" }</td>
 			<td>object</td>
 			<td>{ name: "name", id: "id", children: "children" }</td>
+		</tr>
+		<tr>
+			<td>treeProps</td>
+			<td><a href="https://ant.design/components/tree-cn/" target="_blank">Antd 的Tree参数</a>,除了loadData,loadedKeys,onLoad，其他可用，其中启用draggable后onDrop参数扩展function(info,dropData,done,tool){}，defaultExpandAll可采用funtion(tool){return true;}</td>
+			<td>object</td>
+			<td>{ name: "name", id: "id", children: "children" }</td>
+		</tr>
+		<tr>
+			<td>nodeTitleRender</td>
+			<td>每个节点的title渲染函数</td>
+			<td>function(text,record){return text;}</td>
+			<td>--</td>
 		</tr>
 		<tr>
 			<td>treeApiInterface</td>

@@ -35,6 +35,12 @@
         border-bottom: 1px dashed #999999;
     }
 }
+@include z("tree-title"){
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	max-width: 100px;
+}
 @include z("tree-btns"){
     button:not(:first-child){
         margin-left:15px;

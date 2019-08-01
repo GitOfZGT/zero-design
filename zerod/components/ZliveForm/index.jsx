@@ -15,7 +15,7 @@ import GroupMoveBtns from "./GroupMoveBtns";
 import InsertGroupBtns from "./InsertGroupBtns";
 import GroupNameEdit from "./GroupNameEdit";
 import LinkageConfig from "./LinkageConfig";
-import { getGroupItem } from "./common";
+import { getGroupItem, pareLinkages, removeSomeLinkage } from "./common";
 import ZfullLayer from "../ZfullLayer";
 //校验、提取最新的formData数据
 function commitFormData(formViewerRef, layoutFormRef, linkageRef, onSave) {
@@ -24,7 +24,7 @@ function commitFormData(formViewerRef, layoutFormRef, linkageRef, onSave) {
 		const groups = formViewerRef.current.getFormGroups();
 		const newFormData = {
 			code: values.code,
-			// description:formData.description,
+			description: values.description,
 			name: values.name,
 			labelLayout: values.labelLayout,
 		};
@@ -44,6 +44,8 @@ function commitFormData(formViewerRef, layoutFormRef, linkageRef, onSave) {
 					sectionId: item.sectionId,
 					span: item.span,
 					seq: itemindex + 1,
+					errorMsg: item.errorMsg,
+					remark: item.remark,
 				};
 			});
 			if (!hasEmptyGroup && !formList.length) {
@@ -60,10 +62,11 @@ function commitFormData(formViewerRef, layoutFormRef, linkageRef, onSave) {
 			message.error("存在空的组，请为其添加控件或者移除该组");
 			return;
 		}
-		newFormData.linkages = linkageRef.current;
+		newFormData.linkages = Array.isArray(linkageRef.current) ? JSON.stringify(linkageRef.current) : null;
 		typeof onSave === "function" && onSave(newFormData);
 	});
 }
+
 function useGetItems(
 	formData,
 	formViewerRef,
@@ -73,19 +76,23 @@ function useGetItems(
 	layerRef,
 	showViewerRef,
 	formRenderedRef,
+	linkageRef,
 ) {
 	const hasCodeRef = useRef(false);
+	// const linkageRef = useRef(pareLinkages(formData.linkages));
 	useEffect(() => {
 		if (layoutFormRef.current && formRenderedRef.current) {
 			layoutFormRef.current.setFieldsValue({
 				name: formData.name,
 				code: formData.code,
 				labelLayout: formData.labelLayout,
+				description: formData.description,
 			});
 		}
 		hasCodeRef.current = !!formData.code;
+		linkageRef.current = pareLinkages(formData.linkages);
 	}, [formData, layoutFormRef.current, formRenderedRef.current]);
-	const linkageRef = useRef(formData.linkages);
+
 	const itemsRef = useRef([
 		{
 			key: "name",
@@ -151,7 +158,7 @@ function useGetItems(
 			span: 10,
 			render: () => {
 				return (
-					<div>
+					<div className="z-text-right">
 						<Button
 							type="primary"
 							className="z-margin-right-12"
@@ -165,8 +172,8 @@ function useGetItems(
 												newFormData={newFormData}
 												defaultValue={linkageRef.current}
 												onChange={newLinkages => {
-													console.log(JSON.stringify(newLinkages))
-													linkageRef.current=newLinkages;
+													console.log(JSON.stringify(newLinkages));
+													linkageRef.current = newLinkages;
 												}}
 											/>
 										),
@@ -206,15 +213,35 @@ function useGetItems(
 				);
 			},
 		},
+		{
+			key: "description",
+			label: "描述",
+			span: 24,
+			render: (form, changeFormItems) => {
+				return controls["2"].getControl();
+			},
+			options: controls["2"].getOptions({
+				required: false,
+				initialValue: formData.description,
+			}),
+		},
 	]);
 	return itemsRef.current;
 }
 
-function openUpdateControl(showModal, groupId, formViewerRef, formItem, type) {
+function openUpdateControl(showModal, groupId, formViewerRef, linkageRef, formItem, type) {
 	showModal({
 		show: true,
 		modal: "controlProtoModal",
-		content: <AddColForm groupId={groupId} formItem={formItem} formViewerRef={formViewerRef} type={type} />,
+		content: (
+			<AddColForm
+				groupId={groupId}
+				formItem={formItem}
+				formViewerRef={formViewerRef}
+				linkageRef={linkageRef}
+				type={type}
+			/>
+		),
 		width: "800px",
 	});
 }
@@ -229,7 +256,7 @@ function setNewCurrentGroupItems(formViewerRef, item, action) {
 	groupRef.current.setFormItems(newItems);
 }
 
-function useFormProps(showModal, formViewerRef) {
+function useFormProps(showModal, formViewerRef, linkageRef) {
 	return useRef({
 		colContentRender: (item, form) => {
 			return (
@@ -258,6 +285,7 @@ function useFormProps(showModal, formViewerRef) {
 										cancelText: "取消",
 										onOk() {
 											setNewCurrentGroupItems(formViewerRef, item, function(currentItems, i) {
+												linkageRef.current&&removeSomeLinkage(linkageRef, currentItems[i].fieldKey);
 												currentItems.splice(i, 1);
 												return currentItems;
 											});
@@ -272,7 +300,14 @@ function useFormProps(showModal, formViewerRef) {
 							<div
 								className="z-live-tool-item right-item"
 								onClick={() => {
-									openUpdateControl(showModal, item.groupId, formViewerRef, item, "update");
+									openUpdateControl(
+										showModal,
+										item.groupId,
+										formViewerRef,
+										linkageRef,
+										item,
+										"update",
+									);
 								}}
 							>
 								<Icon type="form" />
@@ -293,7 +328,7 @@ function useFormProps(showModal, formViewerRef) {
 					className="z-text-center z-margin-bottom-10 z-add-formitem-btn"
 					style={{ padding: "15px 0", marginTop: "20px", cursor: "pointer" }}
 					onClick={() => {
-						openUpdateControl(showModal, props.group.id, formViewerRef, null, "add");
+						openUpdateControl(showModal, props.group.id, formViewerRef, linkageRef, null, "add");
 					}}
 				>
 					<Icon type="plus" /> 添加控件
@@ -319,14 +354,16 @@ function getGroupIndex(formViewerRef, group) {
 	return [newGroups, index];
 }
 
-function getNewGroupData(labelLayout) {
-	return {
+function getNewGroupData(labelLayout, groupnameNumRef) {
+	const item = {
 		additive: true,
-		name: "组名",
+		name: `组名-${groupnameNumRef.current}`,
 		id: GenNonDuplicateID(),
 		formFieldInfoList: [],
 		labelLayout,
 	};
+	groupnameNumRef.current++;
+	return item;
 }
 
 const propTypes = {
@@ -359,7 +396,9 @@ const ShowFormViewer = React.memo(
 
 const ZliveForm = ZerodMainContext.setConsumer(
 	ZerodLayerContext.setConsumer(function LiveForm({ formData, onSave, showRightModal, showLayerRightModal }) {
+		const groupnameNumRef = useRef(1);
 		const layerRef = useRef(null);
+		const linkageRef = useRef(null);
 		const showViewerRef = useRef(null);
 		const layoutFormRef = useRef(null);
 		//取FormViewer的实例
@@ -371,10 +410,8 @@ const ZliveForm = ZerodMainContext.setConsumer(
 			? showLayerRightModal
 			: () => {};
 		if (!formData.sectionList || !formData.sectionList.length) {
-			formData.sectionList = [getNewGroupData(formData.labelLayout)];
+			formData.sectionList = [getNewGroupData(formData.labelLayout, groupnameNumRef)];
 		}
-		//FormGroup里面Zform的扩展属性
-		const formProps = useFormProps(showModal, formViewerRef);
 		//当前Zform的items
 		const formRenderedRef = useRef(false);
 		const items = useGetItems(
@@ -386,7 +423,10 @@ const ZliveForm = ZerodMainContext.setConsumer(
 			layerRef,
 			showViewerRef,
 			formRenderedRef,
+			linkageRef,
 		);
+		//FormGroup里面Zform的扩展属性
+		const formProps = useFormProps(showModal, formViewerRef, linkageRef);
 		//存dragula的实例
 		const drakeRef = useRef(null);
 		//存拖动元素下一个元素
@@ -526,8 +566,20 @@ const ZliveForm = ZerodMainContext.setConsumer(
 						formData={formData}
 						title={false}
 						linkage={false}
-						groupTitleLeftRender={(group, stateGroupName, onGroupNameChange) => {
-							return <GroupNameEdit value={stateGroupName} onChange={onGroupNameChange} />;
+						groupTitleLeftRender={(group, stateGroupName, onGroupNameChange, groups) => {
+							return (
+								<GroupNameEdit
+									value={stateGroupName}
+									onChange={val => {
+										const hasindex = groups.findIndex(item => item.name === val);
+										if (hasindex > -1) {
+											message.error("组名不能与其他组名相同");
+											return true;
+										}
+										onGroupNameChange(val);
+									}}
+								/>
+							);
 						}}
 						groupTitleRightRender={group => {
 							return (
@@ -536,7 +588,10 @@ const ZliveForm = ZerodMainContext.setConsumer(
 										onInsertUp={() => {
 											const [newGroups, index] = getGroupIndex(formViewerRef, group);
 											const groupItem = getGroupItem(
-												getNewGroupData(layoutFormRef.current.getFieldValue("labelLayout")),
+												getNewGroupData(
+													layoutFormRef.current.getFieldValue("labelLayout"),
+													groupnameNumRef,
+												),
 											);
 											if (index === 0) {
 												newGroups.unshift(groupItem);
@@ -549,7 +604,10 @@ const ZliveForm = ZerodMainContext.setConsumer(
 										onInsertDown={() => {
 											const [newGroups, index] = getGroupIndex(formViewerRef, group);
 											const groupItem = getGroupItem(
-												getNewGroupData(layoutFormRef.current.getFieldValue("labelLayout")),
+												getNewGroupData(
+													layoutFormRef.current.getFieldValue("labelLayout"),
+													groupnameNumRef,
+												),
 											);
 											if (index === newGroups.length - 1) {
 												newGroups.push(groupItem);

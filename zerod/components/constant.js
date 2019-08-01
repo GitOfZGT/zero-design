@@ -8,6 +8,13 @@ const noticeMethod = {
 	notification,
 	message,
 };
+export const requireValid = {
+	hasData(result) {
+		if (!dataType.isObject(result.data) && !dataType.isArray(result.data)) {
+			return Promise.reject({ msg: `响应体缺少data对象` });
+		}
+	},
+};
 // 相同的methods ,调用 const_getMethods.call(this)
 export const const_getMethods = function() {
 	return {
@@ -186,15 +193,18 @@ function const_extendItem(needRef, item, render, hasItemClass, renderArgument, c
 export const const_initItems = function(items, renderArgument = {}, changeItems = function() {}, callback) {
 	callback = dataType.isFunction(callback) ? callback : function() {};
 	this.allAsync = [];
-	this.filedKeys = [];
+	// this.filedKeys = [];
 	const hasItemClass = [];
 	const newItems = items.map((item, index) => {
 		let render = item.render;
+		if (/Label$/.test(item.key)) {
+			throw Error("禁用以Label结尾的key");
+		}
 		if (render && !dataType.isFunction(render)) {
 			throw Error("render属性必须是函数");
 		}
 
-		this.filedKeys.push(item.key);
+		// this.filedKeys.push(item.key);
 		return const_extendItem.call(this, true, item, render, hasItemClass, renderArgument, changeItems, index);
 	});
 	addItemCss.call(this, hasItemClass);
@@ -229,35 +239,31 @@ export const const_execAsync = function(callback) {
 		this.allAsync.forEach(asy => {
 			asy.promise.then(control => {
 				if (this.unmounted) return;
-				// console.log(control)
+				this.state.items[asy.index].control = control;
 				const formItem = this.state.items[asy.index].ref.current;
 				formItem.methods.changeItem({
 					control,
 				});
 				formItem.methods.showLoading(false);
-				// this.state.items[asy.index].control = control;
-				// this.state.items[asy.index].loading = false;
 			});
 		});
 		Promise.all(
 			this.allAsync.map(asy => {
 				return asy.promise;
 			}),
-		).then(re => {
-			if (this.unmounted) return;
-			this.allAsync = [];
-			this.setFieldsValue();
-			callback(this.props.form, this.methods);
-			// this.setState(
-			// 	{
-			// 		items: [...this.state.items],
-			// 	},
-			// 	() => {
-			// 		this.setFieldsValue();
-			// 		callback(this.props.form, this.methods);
-			// 	},
-			// );
-		});
+		)
+			.catch(re => {
+				message.error("有请求失败了");
+			})
+			.finally(() => {
+				if (this.unmounted) return;
+				this.setState({
+					items: [...this.state.items],
+				});
+				this.allAsync = [];
+				this.setFieldsValue();
+				callback(this.props.form, this.methods);
+			});
 	} else {
 		this.setFieldsValue();
 		callback(this.props.form, this.methods);
@@ -280,22 +286,16 @@ export function const_changeFormItems(newItems, part = false, callback) {
 		needChangeItems.forEach((item, i) => {
 			const formItem = item.ref.current;
 			const theItem = arrayFilterBy(items, { key: item.key })[0];
+			const newColItem = {};
 			if (theItem) {
 				if (theItem.hasOwnProperty("loading")) {
-					formItem.methods.showLoading(theItem.loading);
-					return;
+					newColItem.loading = theItem.loading;
 				}
 				if (theItem.hasOwnProperty("show")) {
-					const itemPromise = new Promise(function(resolve) {
-						formItem.methods.showItem(theItem.show, resolve);
-					});
-					promises.push(itemPromise);
+					newColItem.show = theItem.show;
 				}
 				if (theItem.hasOwnProperty("newItem")) {
-					const itemPromise = new Promise(function(resolve) {
-						formItem.methods.changeItem(theItem.newItem, resolve);
-					});
-					promises.push(itemPromise);
+					newColItem.item = theItem.newItem;
 					// newItem={
 					// 	control:<Input></Input>,
 					// 	span:{lg:12},
@@ -304,6 +304,10 @@ export function const_changeFormItems(newItems, part = false, callback) {
 					// 	label:"",
 					// }
 				}
+				const itemPromise = new Promise(function(resolve) {
+					formItem.methods.updateState(newColItem, resolve);
+				});
+				promises.push(itemPromise);
 			}
 		});
 		if (promises.length && typeof callback === "function") {
@@ -578,6 +582,7 @@ export function const_searchFormNode() {
 	this.searchForm =
 		this.colFormItems && this.colFormItems.length ? (
 			<ZsearchForm
+				labelLayout="inline"
 				{...formOthers}
 				hidden={!this.state.expandedSearch}
 				colFormItems={this.colFormItems}

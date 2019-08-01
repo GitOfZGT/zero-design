@@ -20,8 +20,8 @@ class Myjavascript extends React.PureComponent {
 		{
 			key: "serviceCode",
 			label: "服务编码",
-			render: (form) => {
-				return new Promise((resolve) => {
+			render: form => {
+				return new Promise(resolve => {
 					setTimeout(() => {
 						resolve(<Input placeholder="请输入服务编码" />);
 					}, 5000);
@@ -41,7 +41,7 @@ class Myjavascript extends React.PureComponent {
 		{
 			key: "serviceName",
 			label: "服务名称",
-			render: (form) => {
+			render: form => {
 				return <Input placeholder="请输入服务名称" />;
 			},
 			//antd的 form.getFieldDecorator的options
@@ -58,7 +58,7 @@ class Myjavascript extends React.PureComponent {
 		{
 			key: "colorValue",
 			label: "颜色值",
-			render: (form) => {
+			render: form => {
 				return <ZcolorPicker className="z-margin-top-4" />;
 			},
 			//antd的 form.getFieldDecorator的options
@@ -76,7 +76,7 @@ class Myjavascript extends React.PureComponent {
 			key: "serviceRemark",
 			label: "服务说明",
 			span: { md: 24 },
-			render: (form) => {
+			render: form => {
 				return <Input.TextArea rows={2} placeholder="请输入服务说明" />;
 			},
 			//antd的 form.getFieldDecorator的options
@@ -94,7 +94,7 @@ class Myjavascript extends React.PureComponent {
 			key: "servicePort",
 			label: "端口号",
 			labelWidth: "80px",
-			render: (form) => {
+			render: form => {
 				return <InputNumber min={11110} max={65535} step={10} />;
 			},
 			//antd的 form.getFieldDecorator的options
@@ -131,7 +131,7 @@ class Myjavascript extends React.PureComponent {
 			key: "confProperty",
 			label: "默认配置",
 			span: 24,
-			render: (form) => {
+			render: form => {
 				return <Input.TextArea rows={15} placeholder="请输入默认配置" />;
 			},
 			//antd的 form.getFieldDecorator的options
@@ -156,9 +156,9 @@ class Myjavascript extends React.PureComponent {
 				labelLayout="horizontal"
 				formDefaultValues={this.defaultValue}
 				items={this.items}
-				onSubmit={(values) => {
+				onSubmit={values => {
 					// console.log(values);
-					return Promise.resolve().then((re) => {
+					return Promise.resolve().then(re => {
 						message.success("提交成功：" + JSON.stringify(values));
 					});
 				}}
@@ -216,6 +216,12 @@ class Myjavascript extends React.PureComponent {
 			<td>function(values){return Promise.resolve()}</td>
 			<td>--</td>
 		</tr>
+		<tr>
+			<td>momentFormat</td>
+			<td>是否在触发onSubmit函数后里面传出的values中存在moment对象进行表单控件对应的format格式化，启用此属性，相关moment值的控件必需format属性</td>
+			<td>boolean</td>
+			<td>false</td>
+		</tr>
         <tr>
 			<td><i class="zero-icon zerod-shengchangzhouqi"></i> submitBtnName</td>
 			<td>提交按钮的名称，如果为空则不显示默认的提交按钮</td>
@@ -232,7 +238,7 @@ class Myjavascript extends React.PureComponent {
 		</tr>
         <tr>
 			<td><i class="zero-icon zerod-shengchangzhouqi"></i> submitBtnRender</td>
-			<td>渲染提交按钮的函数，可以用自定义内容替换默认的提交按钮;参数有onSubmit：内置的提交按钮的方法，props:Zform组件的props,可以取得props.form</td>
+			<td>渲染提交按钮的函数，可以用自定义内容替换默认的提交按钮;参数有onSubmit：内置的提交按钮的方法,其可传入参数onSubmit(e,query)，props:Zform组件的props,可以取得props.form</td>
 			<td>funtion(onSubmit,props){return ReactNode;}</td>
 			<td>--</td>
 		</tr>
@@ -401,7 +407,7 @@ const items = [
 	{
 		key: "numberPlate",
 		label: "车牌号码",
-		render: (form) => {
+		render: form => {
 			return getControl("Input", { placeholder: "请输入车牌号码" });
 		},
 		options: getOptions({
@@ -419,7 +425,7 @@ const items = [
 	{
 		key: "vehicleType",
 		label: "车辆类别",
-		render: (form) => {
+		render: form => {
 			return getControl("Select", {
 				selectList: [
 					{ label: "人货车", value: "0" },
@@ -437,8 +443,12 @@ const items = [
 
 ## getControl(name,config)中
 
-`name`可选：`Input`,`TextArea`,`Select`,`Checkbox`,`InputNumber`,`DatePicker`,`Radio`,`Checkbox.Group`,`Radio.Group`,`TimePicker`,`Upload`,`TreeSelect`,`Mention`,
-`RangePicker`,`MonthPicker`,`Rate`,`AutoComplete`（在 antd-design 可找到对应的表单控件）,`TreeInput`(就是ZtreeInput)
+name 可选：`Input`、`Input.Group`、`TextArea`、`Select`、`Checkbox`、`InputNumber`、`DatePicker`、`Radio`、`Checkbox.Group`、`Radio.Group`、`TimePicker`、`Upload`、`TreeSelect`、`Mention`、
+`RangePicker`、`MonthPicker`、`Rate`、`AutoComplete`（在 antd-design 可找到对应的表单控件）、`TreeInput`(就是 ZtreeInput)、`Cascader`、`ColorPicker`(即 ZcolorPicker)、`TimeRange`(即ZtimeRange)  、`YearPicker`(年份)  
+
+当`Select`、`Checkbox.Group`、`Radio.Group`，需 config.selectList=[{label:"label",value:"value"},]
+
+当`Select`，如果需选择项分组需 config.group=true，并且 config.selectList=[{label:"组名",children:[{label:"label",value:"value"}]},]
 
 ```js
 getControl("Select", {

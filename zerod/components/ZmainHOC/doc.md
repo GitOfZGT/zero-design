@@ -52,8 +52,6 @@ const pageConfig = {
 	},
 	// 路由配置信息
 	mainRoutes: mainRoutes,
-	// 加载前要显示一个全局loading
-	globalLoading: () => <GlobalLoading />,
 	// 侧边导航设置
 	sideMenu: {
 		//是否打开所有的submenu
@@ -355,12 +353,12 @@ const NewMain = ZmainHOC(Main, (callback) => {
 			<td>array[object] | function(menuData,tool){ return array[object]}</td>
 			<td>[]</td>
 		</tr>
-		<tr>
+		<!-- <tr>
 			<td><i class="zero-icon zerod-shengchangzhouqi"></i> globalLoading</td>
 			<td>加载前要显示的一个全局loading</td>
 			<td>ReactNode | function(){return ;}</td>
 			<td>--</td>
-		</tr>
+		</tr> -->
 		<tr>
 			<td>sideMenu</td>
 			<td>侧边导航配置,请看下面的pageConfig.sideMenu</td>

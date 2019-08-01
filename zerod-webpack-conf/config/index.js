@@ -1,4 +1,4 @@
-const sendFiles = require('./sendFiles');
+
 const path = require('path');
 const fs = require('fs');
 const chalk = require('chalk');
@@ -45,8 +45,7 @@ const config = merge(
         //babel-loader 要包含的文件夹是哪些
         'babel-includes': [
             resolveCurrent('src'),
-            resolveNode_modules('zerod'),
-            /(node_modules(\\|\/)(share|zerod)\-.*)/,
+            /(node_modules(\\|\/)_?(share|zerod)\-?.*)/,
             resolveNode_modules('webpack-dev-server/client'),
         ],
         //微信页面开发授权域名验证的文件，如： path.resolve(__dirname, '../MP_verify_P7fns4NGi17lbM0R.txt')
@@ -57,6 +56,7 @@ const config = merge(
         //增加加载器
         loaders: [],
         dll: {
+            disabled:false,
             //除了package.json的dependencies，还需包含
             include: [],
             //打包dll时从package.json的dependencies中不包含
@@ -123,5 +123,4 @@ const exists = function(url) {
 };
 exists(config.favicon);
 exists(config.MP_verify);
-sendFiles(config);
 module.exports = config;

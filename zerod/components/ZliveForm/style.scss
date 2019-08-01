@@ -1,7 +1,9 @@
 @import "../../scssMixin/generateClassName";
 $--border-color: #89cbfa;
 :global {
-	
+	.z-address-btn{
+		cursor: pointer;
+	}
 	@include z("live-form-item-clone") {
 		padding: 36px 10px 0 !important;
 		position: absolute !important;
@@ -190,6 +192,9 @@ $--border-color: #89cbfa;
 		height: 140px;
 		text-align: left;
 		padding:6px 10px;
+		
+	}
+	.z-linkage-remark{
 		.ant-tag{
 			margin-bottom:5px;
 		}

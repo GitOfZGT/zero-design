@@ -111,5 +111,33 @@ export {
 export {
     default as ArrowRightOutline,
 } from '@ant-design/icons/lib/outline/ArrowRightOutline';
+export {
+    default as PlusSquareOutline,
+} from '@ant-design/icons/lib/outline/PlusSquareOutline';
+export {
+    default as MinusSquareOutline,
+} from '@ant-design/icons/lib/outline/MinusSquareOutline';
+export {
+    default as CaretUpFill,
+} from '@ant-design/icons/lib/fill/CaretUpFill';
+
+export {
+    default as CaretDownFill,
+} from '@ant-design/icons/lib/fill/CaretDownFill';
+export {
+    default as ClockCircleOutline,
+} from '@ant-design/icons/lib/outline/ClockCircleOutline';
+export {
+    default as MenuFoldOutline,
+} from '@ant-design/icons/lib/outline/MenuFoldOutline';
+export {
+    default as MenuUnfoldOutline,
+} from '@ant-design/icons/lib/outline/MenuUnfoldOutline';
+export {
+    default as DoubleRightOutline,
+} from '@ant-design/icons/lib/outline/DoubleRightOutline';
+export {
+    default as DoubleLeftOutline,
+} from '@ant-design/icons/lib/outline/DoubleLeftOutline';
 
 export * from "@/ant-icons";
