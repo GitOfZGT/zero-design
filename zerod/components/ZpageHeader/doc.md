@@ -1,3 +1,11 @@
+<!--
+ * @Author: zgt
+ * @Date: 2018-08-21 10:59:31
+ * @LastEditors: zgt
+ * @LastEditTime: 2019-09-03 19:45:58
+ * @Description: file content
+ -->
+
 # 页面头部组件：ZpageHeader
 
 1、基本使用
@@ -5,7 +13,8 @@
 <div class="z-demo-box" data-render="demo1" data-title="基本使用"></div>
 
 ```jsx
-import React from "react";import ZpureComponent from "zerod/components/ZpureComponent";
+import React from "react";
+import ZpureComponent from "zerod/components/ZpureComponent";
 import { ZpageHeader } from "zerod";
 import { Icon } from "antd";
 
@@ -33,6 +42,7 @@ class PageHeader extends ZpureComponent {
 				content={this.pageHeader.content}
 				rightMoreContent={this.pageHeader.rightMoreContent}
 				breadcrumbRoutes={this.pageHeader.breadcrumbRoutes}
+				ceiling={true}
 			/>
 		);
 	}
@@ -46,7 +56,8 @@ export default PageHeader;
 <div class="z-demo-box" data-render="demo2" data-title="使用children属性"></div>
 
 ```jsx
-import React from "react";import ZpureComponent from "zerod/components/ZpureComponent";
+import React from "react";
+import ZpureComponent from "zerod/components/ZpureComponent";
 import { ZpageHeader } from "zerod";
 import { Icon } from "antd";
 
@@ -77,6 +88,7 @@ class PageHeader extends ZpureComponent {
 		children: () => {
 			return <Ztabs tabPanes={this.tabPanes} />;
 		},
+		ceiling: false,
 	};
 
 	render() {
@@ -142,6 +154,12 @@ export default PageHeader;
 			<td>更多内容</td>
 			<td>any | function(){return 内容}</td>
 			<td>--</td>
+		</tr>
+        <tr>
+			<td>ceiling</td>
+			<td>是否脱离滚动区域</td>
+			<td>boolean</td>
+			<td>true</td>
 		</tr>
 	</tbody>
 </table>

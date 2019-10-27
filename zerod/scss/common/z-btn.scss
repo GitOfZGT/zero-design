@@ -1,8 +1,8 @@
 /* create by zgt */
-@import "../../scssMixin/generateClassName";
+@import "../../scssMixin/generateClassName2";
 @import "../vars";
 :global {
-	@include z("btn") {
+	.z-btn {
 		display: inline-block;
 		color: $--blue-deep;
 		user-select: none;
@@ -24,39 +24,39 @@
 			border-color: $--blue-deep;
 		}
 		&.primary {
-			background-image: $--primary-bg;
-			background-color: $--blue-tint;
+			// background-image: $--primary-bg;
+			background-color: $--primary-bg;
 			border-color: $--blue-tint;
 			color: white;
 			&:hover {
-				background-image: $--primary-bg-hover;
+				background-color: $--primary-bg-hover;
 			}
 			&:active {
-				background-image: $--primary-bg-active;
+				background-color: $--primary-bg-active;
 			}
 		}
 		&.success {
-			background-image: $--success-bg;
-			background-color: $--green-tint;
+			// background-image: $--success-bg;
+			background-color: $--success-bg;
 			border-color: $--green-tint;
 			color: white;
 			&:hover {
-				background-image: $--success-bg-hover;
+				background-color: $--success-bg-hover;
 			}
 			&:active {
-				background-image: $--success-bg-active;
+				background-color: $--success-bg-active;
 			}
 		}
 		&.danger {
-			background-image: $--danger-bg;
-			background-color: $--red-tint;
+			// background-image: $--danger-bg;
+			background-color: $--danger-bg;
 			border-color: $--red-tint;
 			color: white;
 			&:hover {
-				background-image: $--danger-bg-hover;
+				background-color: $--danger-bg-hover;
 			}
 			&:active {
-				background-image: $--danger-bg-active;
+				background-color: $--danger-bg-active;
 			}
 		}
 		&[disabled] {
@@ -69,12 +69,13 @@
 				cursor: no-drop;
 			}
 		}
-    }
-    .z-round-main{
-        display: inline-block;
-        line-height: initial;
-    }
-	.z-btn + .z-btn,.z-btn+.z-round-main {
+	}
+	.z-round-main {
+		display: inline-block;
+		line-height: initial;
+	}
+	.z-btn + .z-btn,
+	.z-btn + .z-round-main {
 		margin-left: 10px;
-    }
+	}
 }

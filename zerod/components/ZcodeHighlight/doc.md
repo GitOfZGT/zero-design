@@ -1,6 +1,13 @@
+<!--
+ * @Author: zgt
+ * @Date: 2018-08-21 10:59:31
+ * @LastEditors: zgt
+ * @LastEditTime: 2019-08-24 10:36:36
+ * @Description: file content
+ -->
 # 代码高亮组件：ZcodeHighlight
 
-`ZcodeHighlight`依赖于代码高亮插件`prismjs`,默认支持`html`语言,如需支持更多语言，请在`zerod-admin-webpack`脚手架的`.babelrc`文件中修改：
+`ZcodeHighlight`依赖于代码高亮插件`prismjs`,默认支持`html`语言,如需支持更多语言，请在`zerod-admin-webpack`脚手架的`babel.config.js`文件中修改：
 
 ```json
 "plugins": [

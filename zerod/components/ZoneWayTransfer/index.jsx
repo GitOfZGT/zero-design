@@ -4,7 +4,7 @@ import { Row, Col, Icon, Button, message, Modal } from "antd";
 import PropTypes from "prop-types";
 import "../../dragula/dragula.css";
 import dragula from "../../dragula/dragula";
-import cssClass from "./style.scss";
+import  "./style.scss";
 // import "../../zero-icon/iconfont.css";
 import {
 	BuildScroll,
@@ -23,7 +23,7 @@ function getTransferTarget(target) {
 	while (
 		el &&
 		(typeof el.className !== "string" ||
-			(typeof el.className == "string" && !el.className.includes(cssClass["z-transfer-li"])))
+			(typeof el.className == "string" && !el.className.includes("z-transfer-li")))
 	) {
 		if (el.parentElement) {
 			el = el.parentElement;
@@ -57,7 +57,7 @@ class ZTransfer extends ZpureComponent {
 			el.animating = true;
 			const $next = el.nextElementSibling;
 			const animate = show ? "flipX-enter fast" : "flipX-exit fast";
-			if ($next && hasClass($next, cssClass["z-transfer-li"]) && !hasClass($next, cssClass["is-sub"])) {
+			if ($next && hasClass($next, "z-transfer-li") && !hasClass($next, "is-sub")) {
 				const nextData = JSON.parse($next.dataset.item);
 				if (nextData.parName === itemKey) {
 					if (show) {
@@ -84,9 +84,9 @@ class ZTransfer extends ZpureComponent {
 			if (el.animating) {
 				return;
 			}
-			const $icon = el.querySelector(`.${cssClass["z-right"]}`);
+			const $icon = el.querySelector(`.z-right`);
 			const subData = JSON.parse(el.dataset.item);
-			const expand = cssClass["is-90"];
+			const expand = "is-90";
 			if ($icon) {
 				if (hasClass($icon, expand)) {
 					removeClass($icon, expand);
@@ -99,22 +99,41 @@ class ZTransfer extends ZpureComponent {
 		},
 	};
 	componentDidMount() {
-		const scrollInstance = new BuildScroll(this.bodyEl, { scrollbars: "custom" });
-		listenDivSizeChange(this.contentEl, scrollInstance.refresh);
+		this.scrollInstance = new BuildScroll(this.bodyEl, { scrollbars: "custom", useCustomScroll: false });
+
+		if (!this.scrollInstance.scroll.hasVerticalScroll) {
+			this.scrollInstance.scroll.destroy();
+			this.destroyed = true;
+		}
+		listenDivSizeChange(
+			this.contentEl,
+			() => {
+				this.scrollInstance.refresh();
+				if (this.scrollInstance.scroll.hasVerticalScroll && this.destroyed) {
+					this.destroyed = false;
+					this.scrollInstance.scroll._init();
+					this.scrollInstance.refresh();
+				} else if (!this.scrollInstance.scroll.hasVerticalScroll && !this.destroyed) {
+					this.destroyed = true;
+					this.scrollInstance.scroll.destroy();
+				}
+			},
+			{ useCustomScroll: false },
+		);
 	}
 	render() {
 		const { getUlElement, sourceData, sourceKeys, headerRender, itemRender } = this.props;
 		return (
-			<section className={`${cssClass["z-transfer-box"]}`}>
-				<header className={`${cssClass["z-transfer-heading"]}`}>{headerRender && headerRender()}</header>
+			<section className="z-transfer-box">
+				<header className="z-transfer-heading">{headerRender && headerRender()}</header>
 				<section
-					className={`${cssClass["z-transfer-body"]}`}
+					className="z-transfer-body"
 					ref={el => {
 						this.bodyEl = el;
 					}}
 				>
 					<div
-						className={`${cssClass["z-transfer-ul"]} ${cssClass["z-min-height"]}`}
+						className={`z-transfer-ul z-min-height`}
 						ref={el => {
 							this.contentEl = el;
 							getUlElement(el);
@@ -129,10 +148,10 @@ class ZTransfer extends ZpureComponent {
 									data-expand="1"
 									data-item={JSON.stringify(item)}
 									data-disabled={item.disabled}
-									className={`${cssClass["z-transfer-li"]} ${item.isSub ? cssClass["is-sub"] : ""} ${
-										item.droged ? cssClass["is-li-droged"] : ""
-									} ${item.move ? cssClass["is-li-move"] : ""}  ${
-										item.disabled || item.noChilds ? cssClass["is-li-disabled"] : ""
+									className={`z-transfer-li ${item.isSub ? "is-sub" : ""} ${
+										item.droged ? "is-li-droged" : ""
+									} ${item.move ? "is-li-move" : ""}  ${
+										item.disabled || item.noChilds ? "is-li-disabled" : ""
 									}`}
 								>
 									{item.isSub ? <Icon type="folder-open" style={{ marginRight: "0.4em" }} /> : null}
@@ -141,7 +160,7 @@ class ZTransfer extends ZpureComponent {
 										: item[sourceKeys.name]}
 									{item.isSub ? (
 										<Icon
-											className={`${cssClass["z-right"]} ${cssClass["is-90"]}`}
+											className={`z-right is-90`}
 											type="right"
 											style={{ fontSize: "12px" }}
 										/>
@@ -273,7 +292,12 @@ export class ZoneWayTransfer extends ZpureComponent {
 	};
 	render() {
 		return (
-			<Row gutter={16} type="flex" className={`${cssClass['z-transfer-row']} ${this.props.className}`} style={this.props.style}>
+			<Row
+				gutter={16}
+				type="flex"
+				className={`z-transfer-row ${this.props.className}`}
+				style={this.props.style}
+			>
 				{/* <p style={{ marginBottom: "12px" }}>
 					鼠标指针呈现类似 <i className="zero-icon zerod-move" />{" "}
 					即可拖动，从左框拖动到右框表示"选择"，右框中可上下拖动调整顺序，拖出右框可移除选项
@@ -305,7 +329,7 @@ export class ZoneWayTransfer extends ZpureComponent {
 							);
 						}}
 					/>
-					<div className={cssClass["z-arrow-right"]}>
+					<div className="z-arrow-right">
 						<Icon type="arrow-right" />
 					</div>
 				</Col>
@@ -418,17 +442,10 @@ export class ZoneWayTransfer extends ZpureComponent {
 					},
 				);
 			})
-			// .on("cancel", () => {
-			// 	// console.log("cancel");
-			// })
 			.on("cloned", (clone, original, type) => {
 				clone.className += " z-transfer-item-clone";
 				clone.style.paddingLeft = _paddingLeft;
 			})
-			// .on("drag", function(el) {
-			// 	el.className += ` ${cssClass["is-li-move"]}`;
-			// 	// el.className = el.className.replace("ex-moved", "");
-			// })
 			.on("remove", (el, container, source) => {
 				el = getTransferTarget(el);
 				const oldData = this.state.rightTargetData;
@@ -448,19 +465,12 @@ export class ZoneWayTransfer extends ZpureComponent {
 					},
 				);
 			})
-
-			// .on("dragend", (el) =>{
-			// 	this.setState({
-			// 		rightSourceData:[...this.state.rightSourceData]
-			// 	})
-			// })
 			.on("over", function(el, container) {
-				// el.className += ` ${cssClass["is-li-move"]}`;
-				container.parentElement.parentElement.className += ` ${cssClass["is-over"]}`;
+				container.parentElement.parentElement.className += ` is-over`;
 			})
 			.on("out", function(el, container) {
 				container.parentElement.parentElement.className = container.parentElement.parentElement.className.replace(
-					cssClass["is-over"],
+					"is-over",
 					"",
 				);
 			});

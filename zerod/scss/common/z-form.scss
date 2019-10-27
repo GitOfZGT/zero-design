@@ -1,7 +1,8 @@
-@import "../../scssMixin/generateClassName";
+@import "../../scssMixin/generateClassName2";
+@import "../vars";
 :global {
 	$--row-gutter: 6px;
-	@include z("form-row") {
+	.z-form-row {
 		.ant-form-item-children,
 		.ant-input-number {
 			display: inline-block;
@@ -24,19 +25,6 @@
 			padding-left: $--row-gutter;
 			padding-right: $--row-gutter;
 		}
-		.ant-radio-group,
-		.ant-checkbox-group {
-			display: block !important;
-			box-sizing: border-box;
-			background-color: #fff;
-			border: 1px solid hsl(0, 0%, 85%);
-			border-radius: 4px;
-			outline: none;
-			transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
-			min-height: 38px;
-			padding: 0 15px;
-			line-height: 38px;
-		}
 	}
 	.z-form-label-vertical .ant-form-item {
 		margin-bottom: 22px;
@@ -58,6 +46,19 @@
 		}
 	}
 	.z-form-label-inline {
+		.ant-radio-group,
+		.ant-checkbox-group {
+			display: block !important;
+			box-sizing: border-box;
+			background-color: #fff;
+			border: 1px solid $border-color-base;
+			border-radius: 4px;
+			outline: none;
+			transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+			min-height: 38px;
+			padding: 0 15px;
+			line-height: 38px;
+		}
 		.z-form-item {
 			margin-bottom: 12px;
 			.ant-form-item-label {
@@ -87,6 +88,7 @@
 			&.focus .ant-form-item-label,
 			&.has-value .ant-form-item-label {
 				transform: scale(0.85) translateY(-24px);
+				transform-origin: left;
 				// z-index: 1;
 				background-color: white;
 				left: 0px;
@@ -113,12 +115,16 @@
 				position: absolute;
 				padding: 0 6px;
 				background-color: white;
-				bottom: -6px;
+				bottom: -10px;
 				right: 11px;
+				z-index: 2;
 			}
 			&.ant-form-item-with-help {
 				margin-bottom: 12px;
 			}
+			 .ant-switch{
+				margin: 4px 0 0 ;
+			 }
 		}
 		// .ant-form-item,
 		// .ant-form-item-with-help {

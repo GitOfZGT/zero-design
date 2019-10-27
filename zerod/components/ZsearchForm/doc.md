@@ -1,3 +1,10 @@
+<!--
+ * @Author: zgt
+ * @Date: 2018-08-21 10:59:31
+ * @LastEditors: zgt
+ * @LastEditTime: 2019-10-11 17:35:00
+ * @Description: file content
+ -->
 <div class="z-doc-titles"></div>
 
 # 查询表单：ZsearchForm
@@ -21,9 +28,9 @@ class Myjavascript extends React.PureComponent {
 		{
 			key: "serviceCode",
 			label: "服务编码",
-			render: (form) => {
+			render: form => {
 				//异步加载表单控件
-				return new Promise((resolve) => {
+				return new Promise(resolve => {
 					setTimeout(() => {
 						resolve(<Input placeholder="请输入服务编码" />);
 					}, 5000);
@@ -43,7 +50,7 @@ class Myjavascript extends React.PureComponent {
 		{
 			key: "serviceName",
 			label: "服务名称",
-			render: (form) => {
+			render: form => {
 				return <Input placeholder="请输入服务名称" />;
 			},
 			//antd的 form.getFieldDecorator的options
@@ -60,7 +67,7 @@ class Myjavascript extends React.PureComponent {
 		{
 			key: "time",
 			label: "申请时间",
-			render: (form) => {
+			render: form => {
 				return <DatePicker.RangePicker renderExtraFooter={() => "extra footer"} showTime />;
 			},
 		},
@@ -68,7 +75,7 @@ class Myjavascript extends React.PureComponent {
 			key: "serviceRemark",
 			label: "服务说明",
 			span: 24,
-			render: (form) => {
+			render: form => {
 				return <Input.TextArea rows={2} placeholder="请输入服务说明" />;
 			},
 			//antd的 form.getFieldDecorator的options
@@ -88,7 +95,7 @@ class Myjavascript extends React.PureComponent {
 			<ZsearchForm
 				labelLayout="inline"
 				colFormItems={this.items}
-				onSearch={(values) => {
+				onSearch={values => {
 					message.success("提交成功：" + JSON.stringify(values));
 				}}
 				collapseCount={2}
@@ -155,8 +162,8 @@ class Myjavascript extends React.PureComponent {
 			<td>--</td>
 		</tr>
 		 <tr>
-			<td>formDefaultValues</td>
-			<td>返显表单的数据，如{serviceName:"名称"}，"serviceName"对应items属性里面的key, (请使用变量缓存所需设置的值而非直接使用字面量)</td>
+			<td>values</td>
+			<td>所有表单控件的值，如{serviceName:"名称"}，"serviceName"对应items属性里面的key</td>
 			<td>object</td>
 			<td>--</td>
 		</tr>
@@ -183,12 +190,12 @@ class Myjavascript extends React.PureComponent {
 			<td>label的布局方式</a></td>
 			<td>'horizontal'|'vertical'|'inline'</td>
 			<td>'vertical'</td>
-			 <tr>
-			<td>initAnimation</td>
-			<td>渲染items是否初始化动画</td>
+		</tr>
+		 <tr>
+			<td>booleanToNumber</td>
+			<td>表单验证通过后是否把boolean类型的值转成0或1，通常处理Switch控件的值</td>
 			<td>boolean</td>
 			<td>true</td>
-		</tr>
 		</tr>
 	</tbody>
 </table>

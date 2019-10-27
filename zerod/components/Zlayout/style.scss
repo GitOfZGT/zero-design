@@ -1,17 +1,17 @@
-@import "../../scssMixin/generateClassName";
+@import "../../scssMixin/generateClassName2";
 @import "../../scss/vars";
 :global {
 	//滚动条的样式
 	.iScrollVerticalScrollbar {
 		position: absolute;
-		width: 6px;
+		width: $--defatul-ScrollbarSize;
 		top: 3px;
 		right: 3px;
 		bottom: 3px;
 	}
 
 	.iScrollHorizontalScrollbar {
-		height: 8px;
+		height: $--defatul-ScrollbarSize;
 		position: absolute;
 		right: 3px;
 		bottom: 2px;
@@ -23,7 +23,7 @@
 
 	.iScrollIndicator {
 		background-color: $--defatul-ScrollbarColor;
-		border-radius: 8px;
+		border-radius: $--defatul-ScrollbarRadius;
 	}
 }
 

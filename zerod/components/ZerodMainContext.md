@@ -1,3 +1,11 @@
+<!--
+ * @Author: zgt
+ * @Date: 2018-08-21 10:59:31
+ * @LastEditors: zgt
+ * @LastEditTime: 2019-08-24 17:47:26
+ * @Description: file content
+ -->
+
 # ZerodMainContext
 
 在`ZmainHOC`中启用了`ZerodMainContext`的上文，通过`ZerodMainContext.setConsumer(组件)`包装的组件，可以使用`this.props`调用以下东西：
@@ -6,25 +14,25 @@
 
 ## 打开右抽屉窗口: showRightModal()
 
-showRightModal 参数有：`show`:是否显示，`modal`: 任意字符串（窗口的唯一标识，可以理解为ID） <del>"mainModal" | "appModal" | "mainModal_top" | "appModal_top"</del>，`content`：窗口的内容，`scroll`：窗口内是否启用滚动条,`onTransitionend`:打开关闭的过渡动画执行完后的回调，`wrapperEl`:窗口的父元素(dom 元素，可选， document.body 或其他)
+showRightModal 参数有：`show`:是否显示，`modal`: 任意字符串（窗口的唯一标识，可以理解为 ID） <del>"mainModal" | "appModal" | "mainModal_top" | "appModal_top"</del>，`content`：窗口的内容，`scroll`：窗口内是否启用滚动条,`onTransitionend`:打开关闭的过渡动画执行完后的回调，`wrapperEl`:窗口的父元素(dom 元素，可选， document.body 或其他)
 
 ```jsx
 //第一种传参
-this.props.showRightModal(true, "mainModal", <div>内容</div>, true, (show) => {});
+this.props.showRightModal(true, "mainModal", <div>内容</div>, true, show => {});
 //第二种传参
 this.props.showRightModal({
 	show: true,
-	modal: "mainModal",//modal也可以不写，内部会随机一个
+	modal: "mainModal", //modal也可以不写，内部会随机一个
 	content: <div>内容</div>,
 	scroll: true,
-	width:null,//自定义宽度 "400px"||"50%"
-	mask:true,//是否显示遮罩层
-	onTransitionend: (show) => {},
+	width: null, //自定义宽度 "400px"||"50%"
+	mask: true, //是否显示遮罩层
+	onTransitionend: show => {},
 	// wrapperEl:document.body
 });
 //关闭窗口
-this.props.showRightModal (false,'mainModal');//关闭对应的
-this.props.showRightModal (false);//关闭的是最顶层的那个
+this.props.showRightModal(false, "mainModal"); //关闭对应的
+this.props.showRightModal(false); //关闭的是最顶层的那个
 ```
 
 <del>`modal`属性层级："appModal_top" > "appModal" > "mainModal_top" > "mainModal"</del>
@@ -44,7 +52,7 @@ import { Button } from "antd";
 import { ZerodMainContext } from "zerod";
 class OpenModal extends ZpureComponent {
 	methods = {
-		openMainModal: (e) => {
+		openMainModal: e => {
 			this.props.showRightModal(
 				true,
 				"mainModal",
@@ -54,7 +62,7 @@ class OpenModal extends ZpureComponent {
 				</div>,
 			);
 		},
-		openAppModal: (e) => {
+		openAppModal: e => {
 			this.props.showRightModal(
 				true,
 				"appModal",
@@ -93,7 +101,7 @@ showRouteLoading 方法有一个参数，`show`:是否显示，`tip`:自定义�
 ```jsx
 class MyScript extends ZpureComponent {
 	methods = {
-		showRouteLoading: (e) => {
+		showRouteLoading: e => {
 			this.props.showRouteLoading(true);
 			setTimeout(() => {
 				this.props.showRouteLoading(false);
@@ -139,7 +147,7 @@ class MyScript extends ZpureComponent {
 				<Button
 					type="primary"
 					className="z-show-loading-btn"
-					onClick={(e) => {
+					onClick={e => {
 						this.methods.showModalLoading(e, "mainModal");
 					}}
 				>
@@ -148,7 +156,7 @@ class MyScript extends ZpureComponent {
 				<Button
 					type="primary"
 					className="z-show-loading-btn"
-					onClick={(e) => {
+					onClick={e => {
 						this.methods.showModalLoading(e, "mainModal_top");
 					}}
 				>
@@ -157,7 +165,7 @@ class MyScript extends ZpureComponent {
 				<Button
 					type="primary"
 					className="z-show-loading-btn z-margin-left-20"
-					onClick={(e) => {
+					onClick={e => {
 						this.methods.showModalLoading(e, "appModal");
 					}}
 				>
@@ -166,7 +174,7 @@ class MyScript extends ZpureComponent {
 				<Button
 					type="primary"
 					className="z-show-loading-btn z-margin-left-20"
-					onClick={(e) => {
+					onClick={e => {
 						this.methods.showModalLoading(e, "appModal_top");
 					}}
 				>
@@ -223,8 +231,13 @@ getScrollAreaWrapperEl 方法有一个参数，`modal`:哪个地方的滚动条:
 	<tbody>
     	<tr>
 			<td>setScrollAreaStyle</td>
-			<td>设置滚动区域的style</td>
-			<td>obj.methods.setScrollAreaStyle({height:"calc(100% - 60px)"})</td>
+			<td>设置滚动区域的style （除了 height属性）</td>
+			<td>obj.methods.setScrollAreaStyle({backgroundColor:"#f0f0f0"})</td>
+		</tr>
+    	<tr>
+			<td>initScrollAreaSize</td>
+			<td>设置滚动区域的height</td>
+			<td>obj.methods.initScrollAreaSize(60)</td>
 		</tr>
     	<tr>
 			<td>setScrollAreaClassName</td>
@@ -252,11 +265,9 @@ class MoreCofig extends ZpureComponent {
 		const insetLocaltion = this.props.getInsertLocation(this.boxEl);
 		// 获取insetLocaltion所在滚动区域得包裹元素
 		this.obj = this.props.getScrollAreaWrapperEl(insetLocaltion);
-		// 由于将 100px 高度的内容插入到滚动区域外边，
-		// 需要将 滚动区域 的高度设置为`calc(100% - 100px)`
-		this.obj.methods.setScrollAreaStyle({
-			height: `calc(100% - 100px)`,
-		});
+		// 由于将 60px 高度的内容插入到滚动区域外边，
+		// 需要将 滚动区域 的高度计算为`calc(100% - ZpageHeader的高度 - 60px)`
+		this.obj.methods.initScrollAreaSize(60);
 		this.setState({});
 	}
 	componentWillUnmount() {
@@ -265,7 +276,7 @@ class MoreCofig extends ZpureComponent {
 	}
 	render() {
 		return (
-			<div className="z-panel z-margin-top-20" ref={(el) => (this.boxEl = el)}>
+			<div className="z-panel z-margin-top-20" ref={el => (this.boxEl = el)}>
 				<div className="z-panel-body">panelAfterRender</div>
 				{/* 将如下的内容插入到了 滚动条区域外面 不受滚动条影响 */}
 				{this.obj
@@ -275,7 +286,7 @@ class MoreCofig extends ZpureComponent {
 									position: "absolute",
 									bottom: "0px",
 									width: "100%",
-									height: "100px",
+									height: "60px",
 									backgroundColor: "white",
 									borderTop: "1px solid #ddd",
 								}}
@@ -309,3 +320,7 @@ setTemporaryStorage(data)用于跨路由页面临时存储一些数据，data �
 ## \$router
 
 \$router:是一个对象，提供 history 和 location 属性
+
+## setInitData(userInfo = {}, menuData = [], mapKeys={}, mainRoutes=[])
+
+`setInitData`就是 ZmainHOC 的 pageConfig 的 componentDidMount 的 callback 方法

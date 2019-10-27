@@ -1,3 +1,10 @@
+/*
+ * @Author: zgt
+ * @Date: 2019-04-08 10:53:46
+ * @LastEditors: zgt
+ * @LastEditTime: 2019-10-15 14:32:18
+ * @Description: file content
+ */
 import React from "react";
 import {
 	Checkbox,
@@ -9,10 +16,11 @@ import {
 	TimePicker,
 	Upload,
 	TreeSelect,
-	Mention,
+	Mentions,
 	Rate,
 	AutoComplete,
 	Cascader,
+	Switch,
 } from "antd";
 import { dataType, deepCopy } from "../zTool";
 import TreeInput from "../ZtreeInput";
@@ -21,34 +29,89 @@ import ColorPicker from "../ZcolorPicker";
 import TimeRange from "../ZtimeRange";
 import YearPicker from "../ZyearPicker";
 
+import debounce from "lodash/debounce";
+
+export function debounceInput(InputControl, valueType = "", timer = 70) {
+	return class Mydebounce extends React.PureComponent {
+		state = {
+			value: this.props.value,
+		};
+		componentDidUpdate(prevProps) {
+			if (this.props.value !== prevProps.value && this.props.value !== this.state.value) {
+				this.setState({
+					value: this.props.value,
+				});
+			}
+		}
+		render() {
+			const { value, onChange, children, ...others } = this.props;
+			return (
+				<InputControl
+					{...others}
+					value={this.state.value}
+					onChange={(e, ...rest) => {
+						let valueTypeNames = [];
+						if (valueType) {
+							valueTypeNames = valueType.split(".");
+						}
+						let value = e;
+						if (valueTypeNames.length) {
+							while (valueTypeNames.length) {
+								value = value[valueTypeNames.shift()];
+							}
+						}
+						this.setState({
+							value,
+						});
+						if (valueType) {
+							this.propOnChange(value, ...rest);
+						} else {
+							this.propOnChange(value, e, ...rest);
+						}
+					}}
+				>
+					{children}
+				</InputControl>
+			);
+		}
+		propOnChange = debounce((value, ...rest) => {
+			this.props.onChange && this.props.onChange(value, ...rest);
+		}, timer);
+	};
+}
+
 export const getOptions = function(e) {
+	const opt = dataType.isObject(e) ? e : {};
+	const required = opt.required;
+	const requiredMsg = opt.requiredMsg;
+	delete opt.required;
+	delete opt.requiredMsg;
 	return {
-		...(dataType.isObject(e) ? e : {}),
+		...opt,
 		rules: [
 			{
-				required: dataType.isBoolean(e.required) ? e.required == 1 : e.required,
-				message: e.requiredMsg ? e.requiredMsg : "必填。",
+				required: dataType.isBoolean(required) ? required : required == 1,
+				message: requiredMsg || "必填。",
 			},
-			...(Array.isArray(e.rules) ? e.rules : []),
-		],
-		initialValue: e.initialValue,
+		].concat(Array.isArray(opt.rules) ? opt.rules : []),
 	};
 };
+
 const controls = {
-	Input,
+	Input: debounceInput(Input, "target.value"),
 	"Input.Group": Input.Group,
-	TextArea: Input.TextArea,
-	Select,
+	TextArea: debounceInput(Input.TextArea, "target.value"),
+	Select: debounceInput(Select),
 	Checkbox,
-	InputNumber,
+	InputNumber: debounceInput(InputNumber),
 	DatePicker,
 	Radio,
-	"Checkbox.Group": Checkbox.Group,
-	"Radio.Group": Radio.Group,
+	"Checkbox.Group": debounceInput(Checkbox.Group),
+	"Radio.Group": debounceInput(Radio.Group),
 	TimePicker,
 	Upload,
 	TreeSelect,
-	Mention,
+	Mentions: debounceInput(Mentions),
 	RangePicker,
 	MonthPicker,
 	WeekPicker,
@@ -59,6 +122,7 @@ const controls = {
 	ColorPicker,
 	TimeRange,
 	YearPicker,
+	Switch,
 };
 
 function recursionOption(selectList, Option, OptGroup, optLabelRender) {

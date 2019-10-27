@@ -6,13 +6,14 @@ import { withRouter } from "react-router-dom";
 import { ZpageHeader } from "../ZpageHeader";
 import { ZpageFooter } from "../ZpageFooter";
 
-import cssClass from "./style.scss";
+import "./style.scss";
 //
 import { footerLinks, footerCopyright } from "../myPageFooter.js";
 // 上下文
 import ZerodRootContext from "../ZerodRootContext";
 import ZerodMainContext from "../ZerodMainContext";
 import { dataType } from "../zTool";
+import debounce from 'lodash/debounce'
 // 递归获取面包屑数据
 const getBreadcrumbsFromMenu = function(arr, path, rootArr) {
 	let newArr = [];
@@ -78,7 +79,7 @@ class Page extends ZpureComponent {
 		return header;
 	};
 	newPageHeader = this.getNewPageHeader();
-	initDoms = (e) => {
+	initDoms = debounce((e) => {
 		if (e && (e.target.localName == "input" || e.target.localName == "textarea" || e.target.localName == "button"))
 			return;
 		if (this.footerWrapEl) {
@@ -89,7 +90,7 @@ class Page extends ZpureComponent {
 				this.wrapEl.style.minHeight = H + "px";
 			}
 		}
-	};
+	},60);
 
 	componentDidMount() {
 		document.addEventListener("transitionend", this.initDoms, false);
@@ -117,9 +118,9 @@ class Page extends ZpureComponent {
 			<>
 				{this.props.pageHeader.show ? <ZpageHeader {...this.newPageHeader} /> : null}
 				<div
-					className={`${this.props.hasBodyPadding ? cssClass["z-wraper-body"] : ""} ${
+					className={`${this.props.hasBodyPadding ? "z-wraper-body" : ""} ${
 						className ? className : ""
-					} ${pageFooter.show?"":"z-padding-24-important"}`}
+					} ${pageFooter.show?"":"z-padding-14-important"}`}
 					ref={(el) => (this.wrapEl = el)}
 				>
 					{this.props.children}

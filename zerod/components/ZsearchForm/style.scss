@@ -1,9 +1,9 @@
-@import "../../scssMixin/generateClassName";
+@import "../../scssMixin/generateClassName2";
 
-@include z("search-form"){
-	transition: height 0.25s cubic-bezier(0,0,0.3,1);
+@include z("search-form") {
+	transition: height 0.25s cubic-bezier(0, 0, 0.3, 1);
 	overflow: hidden;
-	@include is("height-0"){
+	@include is("height-0") {
 		height: 0;
 	}
 }

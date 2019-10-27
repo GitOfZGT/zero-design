@@ -10,8 +10,6 @@ import { const_getListConfig, const_getPageWrapperProps } from "../constant";
 // childs
 import ZlistPanel from "./ZlistPanel";
 
-// import cssClass from "./style.scss";
-
 // HOC
 const PageWraper = ZpageWraperHOC();
 
@@ -32,6 +30,7 @@ export function ZsearchListHOC(pageConfig) {
 			return (
 				<PageWraper {...this.pageWraper}>
 					<ZlistPanel
+						wrapperProps={this.props}
 						pageId={this.pageId}
 						colFormItems={this.config.searchForm.items}
 						searchForm={this.config.searchForm}

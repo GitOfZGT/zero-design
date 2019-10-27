@@ -1,9 +1,28 @@
+<!--
+ * @Author: zgt
+ * @Date: 2018-12-25 17:45:32
+ * @LastEditors: zgt
+ * @LastEditTime: 2019-08-15 16:02:04
+ * @Description: file content
+ -->
 
-# 按钮：Zbutton
+# 按钮：Zbutton （保留可用，完全就是 antd 的 Button）
 
-`Zbutton` 与 `Antd 的 Button` 不同在于，`Zbutton`是 span 标签渲染的，这是因为在一些列表中渲染 button 标签，数据多的情况下消耗的性能巨大，如 Table、尤其在 Tree 当中，使用 span 标签明显有提升渲染性能。
+之前考虑 button 在 Table 和 Tree 内渲染消耗性能很大(多数据情况下明显)，启用了 Zbutton 组件，但一次展示大量数据依然性能也同样不乐观，大量数据列表的渲染应该从数据角度处理，所以 Zbutton 的存在意义不大且没有 antd 的 Button 完善，所以 Zbutton 保留可用并且改用转发 antd 的 Button 而已（Zbutton就是Button），之后建议直接使用 Button
 
-1、基本使用
+<del>`Zbutton` 与 `Antd 的 Button` 不同在于，`Zbutton`是 span 标签渲染的，这是因为在一些列表中渲染 button 标签，数据多的情况下消耗的性能巨大，如 Table、尤其在 Tree 当中，使用 span 标签明显有提升渲染性能。</del>
+
+antd 的 Button 没有success类型的颜色， 当type==="primary"时可以加 className = "z-btn-success" 将按钮颜色改为success类型的
+
+<div class="z-demo-box" data-render="demo2" data-title="z-btn-success"></div>
+
+```jsx
+import {Button} from 'antd'
+
+<Button type="primary" className="z-btn-success">按钮</Button>
+```
+
+<!-- 1、基本使用
 
 <div class="z-demo-box" data-render="demo1" data-title="基本使用"></div>
 
@@ -35,12 +54,9 @@ class Myjavascript extends ZpureComponent {
 		);
 	}
 }
-```
+``` -->
 
-## Zbutton 的 props
-
-可追加`className`、`style`
-
+<del>
 <table>
 	<thead>
 		<tr>
@@ -77,3 +93,4 @@ class Myjavascript extends ZpureComponent {
 		</tr>
 	</tbody>
 </table>
+</del>

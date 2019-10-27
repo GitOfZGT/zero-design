@@ -1,0 +1,17 @@
+{
+  "name": "zorod-ztool",
+  "version": "1.1.1",
+  "description": "zorod-ztool",
+  "author": "zgt",
+  "main": "index.js",
+  "scripts": {
+    "login": "npm login --registry=https://registry.npmjs.org"
+  },
+  "devDependencies": {},
+  "dependencies": {},
+  "license": "MIT",
+  "miniprogram": "dist",
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org"
+  }
+}

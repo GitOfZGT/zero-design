@@ -2,7 +2,6 @@ import React from "react";
 import ReactDOM from "react-dom";
 import ZpureComponent from "../ZpureComponent";
 import PropTypes from "prop-types";
-import cssClass from "./style.scss";
 import ZpageLoading from "../ZpageLoading";
 import { once } from "../zTool";
 import ModalContent from "../ZrightModal/ModalContent";
@@ -15,11 +14,12 @@ import {
 	const_getInsertLocation,
 } from "../constant";
 import ZerodLayerContext from "../ZerodLayerContext";
+import "./style.scss";
 export class ZfullLayer extends ZpureComponent {
 	static propTypes = {
 		header: PropTypes.node,
 		children: PropTypes.node,
-		type: PropTypes.string,
+		type: PropTypes.string, //normal | dark
 		exportMethods: PropTypes.func,
 		// getWrapperEl: PropTypes.func,
 		// getScrollInstance: PropTypes.func,
@@ -123,6 +123,7 @@ export class ZfullLayer extends ZpureComponent {
 		},
 		closeLayer: () => {
 			this.methods.showLayer(false);
+			this.RightModalsRef.current.methods.closeAllModal();
 		},
 	};
 	componentDidMount() {
@@ -147,8 +148,12 @@ export class ZfullLayer extends ZpureComponent {
 					className={`z-full-layer ${type} ${transparent ? "transparent" : ""}`}
 					style={{ display: show ? "block" : "none" }}
 				>
-					<div className="z-full-layer-heading">{header}</div>
-					<div className={`z-full-layer-body ${scale ? "scale" : ""}`} ref={this.bodyElRef}>
+					{header ? <div className="z-full-layer-heading">{header}</div> : null}
+					<div
+						className={`z-full-layer-body ${scale ? "scale" : ""}`}
+						ref={this.bodyElRef}
+						style={header ? { height: "calc(100% - 64px)" } : null}
+					>
 						{show ? (
 							<ModalContent
 								getWrapperEl={this.getWrapperEl}

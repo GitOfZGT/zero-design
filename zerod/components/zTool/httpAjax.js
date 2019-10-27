@@ -1,3 +1,10 @@
+/*
+ * @Author: zgt
+ * @Date: 2019-04-10 15:11:45
+ * @LastEditors: zgt
+ * @LastEditTime: 2019-10-09 15:57:11
+ * @Description: file content
+ */
 import "./Promise-extend.js";
 import axios from "axios";
 import uuidv4 from "uuid/v4";
@@ -79,6 +86,9 @@ function getHeaders() {
  * @param {object} config //可配置请求头等，请看下面的config注释
  */
 function httpAjax(method, url, query, config, noCallback) {
+	//来自环境变量的basepath
+	const basePath = process && process.env && process.env.BASE_NAME ? process.env.BASE_NAME.replace(/\/$/, "") : "";
+	url = basePath + url;
 	//请求错误弹出提示框方法
 	const msgAlert = typeof window.globalMsgError === "function" ? window.globalMsgError : window.alert;
 	config = config ? config : {};
@@ -150,21 +160,18 @@ function httpAjax(method, url, query, config, noCallback) {
 						// 后台请求返回的code=0是操作成功
 						result.data && result.data.code === 0 ? resolve(result.data) : reject(result.data);
 					}).catch(result => {
-						// if (result.response.data.status === 499) {
-						// 	if (window.rootVue) {
-						// 		window.rootVue.$message.error("您的账号在别的地方登录");
-						// 		window.rootVue.$router.replace({ name: "login" });
-						// 	}
-						// 	return;
-						// }
-						// if (result.response.data.status === 403) {
-						// 	if (window.rootVue) {
-						// 		window.rootVue.$message.error("登录过期，重新登录");
-						// 		window.rootVue.$router.replace({ name: "login" });
-						// 	}
-						// 	return;
-						// }
-						reject(result.data);
+						const re = result.response && result.response.data ? result.response.data : {};
+						const newResult = {
+							msg: re.message,
+							msg: re.message,
+							status: re.status,
+							error: re.error,
+							path: re.path,
+						};
+						if (newResult.msg || newResult.error) {
+							msgAlert(newResult.msg || newResult.error);
+						}
+						reject(newResult);
 					});
 		  });
 	return promise;

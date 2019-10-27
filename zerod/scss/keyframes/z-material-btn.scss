@@ -1,33 +1,31 @@
-@import "../../scssMixin/generateClassName";
+@import "../../scssMixin/generateClassName2";
 @keyframes zRippled {
-    to {
-      transform: scale(2);
-      opacity: 0;
-    }
-  }
-:global{
-  @include z("material-btn") {
-    position: relative;
-    overflow: hidden;
-    user-select: none;
-    border: none;
-    outline: none;
-    @include is("fill") {
-      display: block;
-      width: 100%;
-      height: 100%;
-    }
-  }
-  @include z('btn-ripple'){
-      position: absolute;
-      background: rgba(0, 0, 0, 0.15);
-      border-radius: 100%;
-      transform: scale(0);
-      pointer-events: none;
-    
-      @include is('ripple-visible') {
-        animation: zRippled 0.75s ease-out;
-      }
-  }
+	to {
+		transform: scale(2);
+		opacity: 0;
+	}
 }
 
+@include z("material-btn") {
+	position: relative;
+	overflow: hidden;
+	user-select: none;
+	border: none;
+	outline: none;
+	@include is("fill") {
+		display: block;
+		width: 100%;
+		height: 100%;
+	}
+}
+@include z("btn-ripple") {
+	position: absolute;
+	background: rgba(0, 0, 0, 0.15);
+	border-radius: 100%;
+	transform: scale(0);
+	pointer-events: none;
+
+	@include is("ripple-visible") {
+		animation: zRippled 0.75s ease-out;
+	}
+}

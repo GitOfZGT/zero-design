@@ -1,7 +1,14 @@
+/*
+ * @Author: zgt
+ * @Date: 2019-03-29 12:10:53
+ * @LastEditors: zgt
+ * @LastEditTime: 2019-09-29 19:55:45
+ * @Description: file content
+ */
 import React, { useEffect, useRef, useCallback } from "react";
 import { dataType } from "../zTool";
 import { Button } from "antd";
-import linkageAction from "./linkageAction";
+import linkageAction, { autoCheckedBySelected } from "./linkageAction";
 import { pareLinkages } from "./common";
 //返回获取最新formGroups的callback
 export function useGetGroupsCallback(formGroups) {
@@ -15,15 +22,17 @@ export function useGetGroupsCallback(formGroups) {
 	}, [groupsRef.current]);
 }
 //返回执行linkageAction的callback
-export function useLinkageCallback(formGroups, formData, getGroupsFn) {
-	const doLinkage = useCallback(() => {
-		if (formData) {
-			linkageAction(pareLinkages(formData.linkages), getGroupsFn);
-		}
-	}, [getGroupsFn, formData]);
-	useEffect(() => {
-		doLinkage();
-	}, [formGroups]);
+export function useLinkageCallback(formData, getGroupsFn) {
+	const doLinkage = useCallback(
+		selfItem => {
+			if (formData) {
+				const linkages = pareLinkages(formData.linkages);
+				autoCheckedBySelected(linkages, getGroupsFn);
+				linkageAction(linkages, getGroupsFn, selfItem);
+			}
+		},
+		[getGroupsFn, formData],
+	);
 	return doLinkage;
 }
 //返回获取formGroups中非隐藏的forms的callback
@@ -40,7 +49,7 @@ export function useGetOtherFormsCallback(formGroups) {
 				  })
 				: [];
 
-			return forms.map(g => g.groupRef.current.getForm().form)
+			return forms.map(g => g.groupRef.current.getForm().form);
 		},
 		[formGroups],
 	);

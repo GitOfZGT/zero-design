@@ -2,12 +2,8 @@ import React from "react";
 import { animateTimout } from "../constant";
 import { Button, Card, Row, Col, Pagination } from "antd";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
-// my component
-import { Zlayout } from "../Zlayout";
 import { ZsorterBtn } from "../ZsorterBtn";
 import { deepCopy } from "../zTool";
-
-import cssClass from "./style.scss";
 
 // 卡片类型
 export default function cardTemplate() {
@@ -20,7 +16,7 @@ export default function cardTemplate() {
 		contentColumns.pop();
 	}
 	let sorters = [];
-	this.state.tableColumns.forEach((col, index) => {
+	contentColumns.forEach((col, index) => {
 		if (col.sorter) {
 			sorters.push(
 				<ZsorterBtn
@@ -50,21 +46,21 @@ export default function cardTemplate() {
 	const _showAddBtn = typeof showAddBtn == "function" ? showAddBtn(tool) : showAddBtn;
 	const _addBtnDisabled = typeof addBtnDisabled == "function" ? addBtnDisabled(tool) : addBtnDisabled;
 	return (
-		<Zlayout.Template>
+		<>
 			{this.props.panelBeforeRender && this.props.panelBeforeRender(tool)}
 			<div className="z-panel z-margin-bottom-15 is-radius-top">
 				{this.getPanleHeader()}
 				{this.searchForm}
 			</div>
 			{sorters.length ? <div className="z-margin-bottom-15">{sorters}</div> : null}
-			<Row type="flex" className={cssClass["z-card-row"]}>
+			<Row type="flex" className="z-card-row">
 				{_showAddBtn ? (
-					<Col {..._span} className={`${cssClass["z-list-card"]} z-margin-bottom-15`}>
+					<Col {..._span} className={`z-list-card z-margin-bottom-15`}>
 						<Button
 							disabled={_addBtnDisabled}
 							type="dashed"
 							icon="plus"
-							className={cssClass["z-list-block-btn"]}
+							className="z-list-block-btn"
 							onClick={this.methods.onAdd}
 							style={{ height: "100%", fontSize: "20px", minHeight: "120px" }}
 						>
@@ -76,15 +72,9 @@ export default function cardTemplate() {
 					{this.state.listData.map((item, i) => {
 						const cardActions =
 							actionCol && actionCol.key == "actionBtns"
-								? actionCol.render(
-										item[actionCol.dataIndex],
-										item,
-										i,
-										tool,
-										this.state.isListCard,
-								  )
+								? actionCol.render(item[actionCol.dataIndex], item, i, tool, this.state.isListCard)
 								: [];
-						const getColContent = (col) => {
+						const getColContent = col => {
 							if (!col) return null;
 							return typeof col.render === "function"
 								? col.render(item[col.dataIndex], item, i, tool)
@@ -93,18 +83,15 @@ export default function cardTemplate() {
 						let _title = getColContent(contentColumns[0]);
 						return (
 							<CSSTransition key={i} timeout={animateTimout.flipInTime} classNames="fadeIn-to-down">
-								<Col {..._span} className={`${cssClass["z-list-card"]} z-margin-bottom-15`}>
+								<Col {..._span} className={`z-list-card z-margin-bottom-15`}>
 									<Card
-										cover={
-											this.props.cardCoverRender &&
-											this.props.cardCoverRender(item, i, tool)
-										}
+										cover={this.props.cardCoverRender && this.props.cardCoverRender(item, i, tool)}
 										actions={cardActions}
-										className={cssClass["z-card"]}
+										className="z-card"
 									>
 										<h1
-											className={cssClass["z-list-card-title"]}
-											onClick={(e) => {
+											className="z-list-card-title"
+											onClick={e => {
 												this.methods.onDetail(item);
 											}}
 										>
@@ -113,7 +100,7 @@ export default function cardTemplate() {
 										{contentColumns.slice(1).map((col, index) => {
 											return (
 												<div
-													className={`${cssClass["z-list-card-content"]} z-text-gray`}
+													className={`z-list-card-content z-text-gray`}
 													key={`${i}_${index}`}
 												>
 													{getColContent(col)}
@@ -146,6 +133,6 @@ export default function cardTemplate() {
 			) : null}
 			{this.moreBtn}
 			{this.props.panelAfterRender && this.props.panelAfterRender(tool)}
-		</Zlayout.Template>
+		</>
 	);
 }

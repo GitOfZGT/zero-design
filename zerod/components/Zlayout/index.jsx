@@ -1,12 +1,12 @@
 import React from "react";import ZpureComponent from "../ZpureComponent";
 import PropTypes from "prop-types";
-import cssClass from "./style.scss";
 import Zheader from "./Zheader";
 import Zbody from "./Zbody";
 import Zfooter from "./Zfooter";
 import ZheaderBtn from "./ZheaderBtn";
 import { getStyle } from "../zTool";
 import { listenDivSizeChange, once } from "../zTool";
+import "./style.scss";
 export class Zlayout extends ZpureComponent {
 	static propTypes = {
 		flexRow: PropTypes.bool,
@@ -15,19 +15,20 @@ export class Zlayout extends ZpureComponent {
 		width: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
 		className: PropTypes.string,
 		onTransitionend: PropTypes.func,
+		useCustomScroll: PropTypes.bool,
 	};
-	layoutClassName = cssClass["z-layout"];
+	layoutClassName = "z-layout";
 	layoutEl = null;
 	setBodyHeight = (warpEl) => {
 		let headerHeight = 0;
 		let footerHeight = 0;
 		let _body = null;
 		Array.prototype.slice.call(warpEl.children).forEach((el) => {
-			if (el.className.includes(cssClass["z-layout-body"])) {
+			if (el.className.includes("z-layout-body")) {
 				_body = el;
-			} else if (el.className.includes(cssClass["z-layout-header"])) {
+			} else if (el.className.includes("z-layout-header")) {
 				headerHeight += parseInt(getStyle(el, "height"), 10);
-			} else if (el.className.includes(cssClass["z-layout-footer"])) {
+			} else if (el.className.includes("z-layout-footer")) {
 				footerHeight += parseInt(getStyle(el, "height"), 10);
 			}
 		});
@@ -47,12 +48,12 @@ export class Zlayout extends ZpureComponent {
 	componentDidMount() {
 		let _body = null;
 		Array.prototype.slice.call(this.layoutEl.children).forEach((el) => {
-			if (el.className.includes(cssClass["z-layout-body"])) {
+			if (el.className.includes("z-layout-body")) {
 				_body = el;
 			}
 		});
 		if (_body) {
-			listenDivSizeChange(this.layoutEl, this.setHeight);
+			listenDivSizeChange(this.layoutEl, this.setHeight,this.props.useCustomScroll);
 		}
 		this.setHeight();
 	}
@@ -62,7 +63,7 @@ export class Zlayout extends ZpureComponent {
 		}
 	}
 	render() {
-		let classNames = `${this.layoutClassName} ${this.props.flexRow ? cssClass["is-flex"] : ""} ${
+		let classNames = `${this.layoutClassName} ${this.props.flexRow ? "is-flex" : ""} ${
 			this.props.className ? this.props.className : ""
 		}`;
 		let flex = this.props.flex ? this.props.flex : 1;

@@ -2,11 +2,23 @@ import React, { useState, useEffect, useRef, useImperativeHandle, useCallback } 
 import Zform from "../Zform";
 import FormContext from "./FormContext";
 
-
 const MyForm = FormContext.setConsumer(Zform);
 const FormGroup = React.memo(
 	React.forwardRef(function(
-		{ formItems, getOtherForms, labelLayout, onSubmit, group,titleLeftRender, titleRightRender, children, formValues,momentFormat,afterItemsRendered },
+		{
+			formItems,
+			getOtherForms,
+			labelLayout,
+			onSubmit,
+			group,
+			titleLeftRender,
+			titleRightRender,
+			children,
+			formValues,
+			momentFormat,
+			booleanToNumber,
+			afterItemsRendered,
+		},
 		ref,
 	) {
 		const domRef = useRef();
@@ -26,8 +38,16 @@ const FormGroup = React.memo(
 			getForm() {
 				return { ...formRef.current, group };
 			},
-			show(show) {
-				setShow(show);
+			show(showStatus, seftItem) {
+				if (show === showStatus) return;
+				setShow(showStatus);
+				formRef.current.methods.changeFormItems(
+					stateFormItems.map(item => ({
+						key: item.key,
+						show: showStatus,
+					})),
+					true,
+				);
 			},
 			getShowState() {
 				return show;
@@ -46,18 +66,22 @@ const FormGroup = React.memo(
 			setGroupName(group.name);
 		}, [group.name]);
 		const nameChange = useCallback(
-			(val) => {
+			val => {
 				group.name = val;
 				setGroupName(val);
 			},
 			[group, setGroupName],
 		);
 		// console.log("--groups--" + group.id, stateFormItems);
-		return show ? (
-			<div className="z-view-form-panel" ref={domRef}>
-				<div className="z-panel-heading z-flex-space-between">
+		return (
+			<div className="z-view-form-panel" ref={domRef} style={!show ? { display: "none" } : null}>
+				<div className="z-panel-heading z-bordercolor-light-orange z-text-orange z-flex-space-between">
 					<div className="z-flex-items-v-center">
-						{typeof titleLeftRender === "function" ? titleLeftRender(group,groupName,nameChange):<span>{groupName}</span>}
+						{typeof titleLeftRender === "function" ? (
+							titleLeftRender(group, groupName, nameChange)
+						) : (
+							<span>{groupName}</span>
+						)}
 					</div>
 					<div className="z-flex-items-v-center">
 						{typeof titleRightRender === "function" && titleRightRender(group)}
@@ -74,12 +98,14 @@ const FormGroup = React.memo(
 						otherForms={getOtherForms}
 						formDefaultValues={formValues}
 						momentFormat={momentFormat}
+						booleanToNumber={booleanToNumber}
 						afterItemsRendered={afterItemsRendered}
+						initAnimation={false}
 					/>
 					{children}
 				</div>
 			</div>
-		) : null;
+		);
 	}),
 );
 export default FormGroup;

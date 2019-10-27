@@ -2,10 +2,10 @@ import React from "react";
 // import ZpureComponent from "../ZpureComponent";
 import PropTypes from "prop-types";
 import { Dropdown, Menu } from "antd";
-import cssClass from "./style.scss";
 import { ZroundingButton } from "../ZroundingButton";
 import { Zbutton } from "../Zbutton";
 import { removeClass, addClass } from "../zTool";
+import "./style.scss";
 class TreeTitle extends React.PureComponent {
 	static propTypes = {
 		tool: PropTypes.object,
@@ -95,9 +95,9 @@ class TreeTitle extends React.PureComponent {
 			e.stopPropagation();
 		},
 	};
-	getBtn = (type, btnName, click, show, disabled) => {
+	getBtn = (type, btnName, click, show, disabled, opt = {}) => {
 		return show ? (
-			<Zbutton onClick={click} size="small" type={type} disabled={disabled}>
+			<Zbutton onClick={click} size="small" type={type} disabled={disabled} {...opt}>
 				{btnName}
 			</Zbutton>
 		) : null;
@@ -112,9 +112,9 @@ class TreeTitle extends React.PureComponent {
 			show ? removeClass(this.moreIconEl, "is-down") : addClass(this.moreIconEl, "is-down");
 		}
 	};
-	nodeRef=React.createRef();
-	componentDidMount(){
-		this.nodeRef.current.firstElementChild.style.maxWidth = this.nodeRef.current.clientWidth - 464 + 'px';
+	nodeRef = React.createRef();
+	componentDidMount() {
+		this.nodeRef.current.firstElementChild.style.maxWidth = this.nodeRef.current.clientWidth - 464 + "px";
 	}
 	render() {
 		const tool = this.props.tool;
@@ -162,19 +162,26 @@ class TreeTitle extends React.PureComponent {
 
 		return (
 			<span className="z-flex-space-between" ref={this.nodeRef}>
-				<span className={cssClass['z-tree-title']} title={this.props.name}>{this.props.name}</span>
-				<span className={cssClass["z-tree-line"]} />
-				<span className={cssClass["z-tree-btns"]}>
-					{this.getBtn("default", "详情", this.methods.detailBtnClick, _showDetailBtn, _detailBtnDisabled)}
+				<span className="z-tree-title" title={this.props.name}>
+					{this.props.name}
+				</span>
+				<span className="z-tree-line" />
+				<span className="z-tree-btns">
+					{this.getBtn("default", "详情", this.methods.detailBtnClick, _showDetailBtn, _detailBtnDisabled,{ icon: "eye" },)}
 					{this.getBtn(
 						"primary",
 						"新增子节点",
 						this.methods.addChildBtnClick,
 						_showAddChildBtn,
 						_addChildBtnDisabled,
+						{ icon: "branches" },
 					)}
-					{this.getBtn("primary", "修改", this.methods.updateBtnClick, _showUpdateBtn, _updateBtnDisabled)}
-					{this.getBtn("danger", "删除", this.methods.deleteBtnClick, _showDeleteBtn, _deleteBtnDisabled)}
+					{this.getBtn("primary", "修改", this.methods.updateBtnClick, _showUpdateBtn, _updateBtnDisabled, {
+						icon: "edit",
+					})}
+					{this.getBtn("danger", "删除", this.methods.deleteBtnClick, _showDeleteBtn, _deleteBtnDisabled, {
+						icon: "delete",
+					})}
 					{this.hasMoreMenu ? (
 						this.props.moreBtnType == "rounding" ? (
 							<ZroundingButton

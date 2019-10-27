@@ -1,3 +1,10 @@
+/*
+ * @Author: zgt
+ * @Date: 2019-04-24 09:28:54
+ * @LastEditors: zgt
+ * @LastEditTime: 2019-08-19 14:38:17
+ * @Description: file content
+ */
 module.exports = {
     presets: [
         [
@@ -13,7 +20,7 @@ module.exports = {
         '@babel/preset-react',
     ],
     plugins: [
-        ['@babel/plugin-transform-runtime', { corejs: 2 }],
+        ['@babel/plugin-transform-runtime', { corejs: false }],
         '@babel/plugin-syntax-dynamic-import',
         [
             'import',

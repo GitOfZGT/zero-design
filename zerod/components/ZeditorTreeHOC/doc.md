@@ -1,3 +1,10 @@
+<!--
+ * @Author: zgt
+ * @Date: 2018-09-12 10:18:04
+ * @LastEditors: zgt
+ * @LastEditTime: 2019-08-22 16:20:45
+ * @Description: file content
+ -->
 <div class="z-doc-titles"></div>
 
 # 树列表页：ZeditorTreeHOC
@@ -377,6 +384,11 @@ tool.methods 是一个对象，内容如下：
 		</tr>
 	</thead>
 	<tbody>
+		<tr>
+			<td>getWrapperProps</td>
+			<td>用于获取ZeditorTreeHOC()返回的那个组件的props</td>
+			<td>tool.methods.getWrapperProps()</td>
+		</tr>
 		<tr>
 			<td>showLoading</td>
 			<td>用于 显示/取消 当前页的loading的方法，参数show：true|false</td>

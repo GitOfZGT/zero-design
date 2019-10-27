@@ -1,9 +1,16 @@
+/*
+ * @Author: zgt
+ * @Date: 2018-08-21 10:59:31
+ * @LastEditors: zgt
+ * @LastEditTime: 2019-09-30 09:46:08
+ * @Description: file content
+ */
 import IScroll from "iscroll";
 // import moment from "moment";
 import Ajax from "./httpAjax";
-import debounce from "lodash.debounce";
+import debounce from "lodash/debounce";
 import ResizeSensor from "./ResizeSensor";
-import merge from "lodash.merge";
+import merge from "lodash/merge";
 export const httpAjax = Ajax;
 export {
 	getStyle,
@@ -40,26 +47,14 @@ export {
 	unshiftItemToTree,
 	isWhiteColor,
 	turnMapKeys,
-	turnLabelOrValue
+	turnLabelOrValue,
 } from "zerod-ztool";
-import ztool from 'zerod-ztool';
-// {
-//     probeType: 2,
-//     bounce: false,
-//     momentum:false,
-//     disableMouse:true,
-//     disablePointer:true,
-//     disableTouch:true,
-//     scrollX: true,
-//     preventDefault: false,
-//     scrollY: true,
-//     mouseWheel: true,
-//     bindToWrapper: true,
-//     eventPassthrough: false,
-//     scrollbars: "custom",
-//     interactiveScrollbars: true,
-// }
-
+import ztool from "zerod-ztool";
+//
+function isChrome() {
+	const userAgent = window.navigator.userAgent;
+	return userAgent.indexOf("Chrome") > -1;
+}
 //生成IScroll 滚动条实例
 export const IScrollInstance = function(el, opt) {
 	let defaultopt = Object.assign(
@@ -88,58 +83,113 @@ export const IScrollInstance = function(el, opt) {
 };
 //更新iscroll
 export const BuildScroll = function(el, opt) {
-	this.scroll = IScrollInstance(el, opt);
 	this.nextScrollToTop = false;
-	this.refresh = function() {
+	this.refresh =debounce(() =>{
 		if (this.nextScrollToTop) {
 			this.scroll.scrollTo(0, 0, 200);
 			this.nextScrollToTop = false;
 		}
 		this.scroll.refresh();
-	}.bind(this);
-	//解决嵌套滚动条滚动问题
-	let canscroll = false;
-	let timer = null;
-	const wheelhandle = e => {
-		let scrollElement = e.target;
-		while (
-			scrollElement &&
-			scrollElement !== el &&
-			!["auto", "scroll"].includes(ztool.getStyle(scrollElement, "overflow-y"))
-		) {
-			scrollElement = scrollElement.parentElement;
-		}
-		if (scrollElement && el.contains(scrollElement)) {
-			if (!scrollElement.bindingWheelScroll) {
-				scrollDisableWheel(scrollElement);
+		console.log("scrollRefresh")
+	},60);
+	this.callbackWare = [];
+	if (isChrome() && !opt.useCustomScroll) {
+		this.scroll = {
+			x: 0,
+			y: 0,
+			on: (name, callback) => {
+				if (name === "scrollEnd") {
+					ztool.on(el, "scroll", this.scrollfunc);
+					this.callbackWare.push(callback);
+				}
+			},
+			off: (name, callback) => {
+				if (name === "scrollEnd") {
+					if (!this.callbackWare.length) {
+						ztool.off(el, "scroll", this.scrollfunc);
+					} else {
+						const index = this.callbackWare.indexOf(callback);
+						if (index > -1) {
+							this.callbackWare.splice(index, 1);
+						}
+					}
+				}
+			},
+			scrollTo: (x, y) => {
+				typeof x === "number" && ((el.scrollLeft = Math.abs(x)), (this.scroll.x = Math.abs(x)));
+				typeof y === "number" && ((el.scrollTop = Math.abs(y)), (this.scroll.y = Math.abs(y)));
+			},
+			refresh() {},
+			_initEvents() {},
+			destroy: () => {
+				// zTool.off(el, "mouseenter", this.showScroll);
+				// zTool.off(el, "mouseleave", this.hideScroll);
+			},
+		};
+		this.scrollfunc = e => {
+			this.scroll.x = -el.scrollLeft;
+			this.scroll.y = -el.scrollTop;
+			this.callbackWare.forEach(ware => {
+				typeof ware === "function" && ware(e);
+			});
+		};
+		// this.showScroll = () => {
+		// 	el.style.overflow = "auto";
+		// };
+		// this.hideScroll = () => {
+		// 	el.style.overflow = "hidden";
+		// };
+		// zTool.on(el, "mouseenter", this.showScroll);
+		// zTool.on(el, "mouseleave", this.hideScroll);
+		el.style.overflow = "auto";
+	} else {
+		this.scroll = IScrollInstance(el, opt);
+		// console.log(this.scroll);
+		//解决嵌套滚动条滚动问题
+		let canscroll = false;
+		let timer = null;
+		const wheelhandle = e => {
+			let scrollElement = e.target;
+			while (
+				scrollElement &&
+				scrollElement !== el &&
+				!["auto", "scroll"].includes(ztool.getStyle(scrollElement, "overflow-y"))
+			) {
+				scrollElement = scrollElement.parentElement;
 			}
-		}
-		if (this.scroll.wrapperHeight - this.scroll.y !== this.scroll.scrollerHeight && this.scroll.y !== 0) {
-			e.stopPropagation();
-			canscroll = true;
-		} else {
-			if (canscroll) {
+			if (scrollElement && el.contains(scrollElement)) {
+				if (!scrollElement.bindingWheelScroll) {
+					scrollDisableWheel(scrollElement,opt);
+				}
+			}
+			if (this.scroll.wrapperHeight - this.scroll.y !== this.scroll.scrollerHeight && this.scroll.y !== 0) {
 				e.stopPropagation();
+				canscroll = true;
+			} else {
+				if (canscroll) {
+					e.stopPropagation();
+				}
+				clearTimeout(timer);
+				timer = setTimeout(() => {
+					canscroll = false;
+				}, 320);
 			}
-			clearTimeout(timer);
-			timer = setTimeout(() => {
-				canscroll = false;
-			}, 320);
-		}
-	};
-	this.scroll.wrapper.addEventListener("wheel", wheelhandle, false);
-	this.scroll.wrapper.addEventListener("mousewheel", wheelhandle, false);
-	this.scroll.wrapper.addEventListener("DOMMouseScroll", wheelhandle, false);
-	this.scroll.wrapper.addEventListener(
-		"mouseover",
-		() => {
-			canscroll = true;
-		},
-		false,
-	);
+		};
+		this.scroll.wrapper.addEventListener("wheel", wheelhandle, false);
+		this.scroll.wrapper.addEventListener("mousewheel", wheelhandle, false);
+		this.scroll.wrapper.addEventListener("DOMMouseScroll", wheelhandle, false);
+		this.scroll.wrapper.addEventListener(
+			"mouseover",
+			() => {
+				canscroll = true;
+			},
+			false,
+		);
+	}
 };
 //
-export const scrollDisableWheel = function(el) {
+export const scrollDisableWheel = function(el, opt = {}) {
+	if (isChrome() && !opt.useCustomScroll) return;
 	el.bindingWheelScroll = true;
 	let scrollEnd = true;
 	let onWheel = e => {
@@ -157,41 +207,44 @@ export const scrollDisableWheel = function(el) {
 	});
 };
 //监听盒子（div）尺寸变化
-export const listenDivSizeChange = function(el, scrollFun) {
-	new ResizeSensor(el, debounce(scrollFun, 70));
+export const listenDivSizeChange = function(el, scrollFun, opt = {}) {
+	if (isChrome() && !opt.useCustomScroll) return;
+	new ResizeSensor(el, debounce(scrollFun, 60));
 };
 
 //生成 引导提示 introjs的实例，注意的是：此函数返回promise 需要在then((intro)>{})拿introjs的实例
 export const IntroInstance = function(opt) {
 	//异步加载相关文件
-	return ztool.loadFileList([
-		"./static/introJs/introjs.min.css",
-		"./static/introJs/themes/introjs-flattener.css",
-		"./static/introJs/intro.min.js",
-	]).then(() => {
-		if (window.introJs) {
-			const intro = window.introJs();
-			intro.setOptions(
-				Object.assign(
-					{
-						nextLabel: "下一个",
-						prevLabel: "上一个",
-						doneLabel: "没有下一个，关闭",
-						skipLabel: "关闭",
-						disableInteraction: true, //是否让element可点击
-						showProgress: true, //进度条
-						exitOnOverlayClick: false, //是否点击遮罩层关闭
-						showStepNumbers: true, //是否显示步骤数字
-						showBullets: true, //是否显示步骤圆点
-						// showButtons:true,
-						exitOnEsc: false,
-					},
-					opt,
-				),
-			);
-			return intro;
-		}
-	});
+	return ztool
+		.loadFileList([
+			"./static/introJs/introjs.min.css",
+			"./static/introJs/themes/introjs-flattener.css",
+			"./static/introJs/intro.min.js",
+		])
+		.then(() => {
+			if (window.introJs) {
+				const intro = window.introJs();
+				intro.setOptions(
+					Object.assign(
+						{
+							nextLabel: "下一个",
+							prevLabel: "上一个",
+							doneLabel: "没有下一个，关闭",
+							skipLabel: "关闭",
+							disableInteraction: true, //是否让element可点击
+							showProgress: true, //进度条
+							exitOnOverlayClick: false, //是否点击遮罩层关闭
+							showStepNumbers: true, //是否显示步骤数字
+							showBullets: true, //是否显示步骤圆点
+							// showButtons:true,
+							exitOnEsc: false,
+						},
+						opt,
+					),
+				);
+				return intro;
+			}
+		});
 };
 
 // 合并defaultConfig的属性生成新的config

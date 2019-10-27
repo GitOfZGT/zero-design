@@ -1,7 +1,6 @@
 import React from "react";import ZpureComponent from "../ZpureComponent";
 import { Table } from "antd";
 import { Zlayout } from "../Zlayout";
-import cssClass from "./style.scss";
 // 表格类型
 export default function tableTemplate() {
 	const tool = this.getExportSomething();
@@ -48,7 +47,7 @@ export default function tableTemplate() {
 				{this.getPanleHeader()}
 				<div>
 					{this.searchForm}
-					<div className={cssClass["z-list-table"]}>
+					<div className="z-list-table">
 						<Table
 							expandRowByClick={true}
 							columns={this.state.tableColumns}

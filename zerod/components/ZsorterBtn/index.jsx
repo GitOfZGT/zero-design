@@ -1,6 +1,6 @@
 import React from "react";import ZpureComponent from "../ZpureComponent";
 import PropTypes from "prop-types";
-import cssClass from "./style.scss";
+import  "./style.scss";
 import { Tooltip ,Icon} from "antd";
 export class ZsorterBtn extends ZpureComponent {
 	static propTypes = {
@@ -30,7 +30,7 @@ export class ZsorterBtn extends ZpureComponent {
 	render() {
 		return (
 			<Tooltip placement="top" title={`排序字段：${this.props.children}`}>
-			<div className={cssClass["z-sorter-btn"]}>
+			<div className="z-sorter-btn">
 				{this.props.children}
 				<div className="btn-sorter">
 					<span

@@ -1,30 +1,85 @@
-
 //----------------------------zerod 的变量---------------------------
+/* 标准色 */
+$--red: #e54d42;
+$--orange: #f37b1d;
+$--yellow: #fbbd08;
+$--olive: #8dc63f;
+$--green: #39b54a;
+$--cyan: #1cbbb4;
+$--blue: #0081ff;
+$--purple: #6739b6;
+$--mauve: #9c26b0;
+$--pink: #e03997;
+$--brown: #a5673f;
+$--grey: #8799a3;
+$--black: #333333;
+$--darkGray: #666666;
+$--gray: #aaaaaa;
+$--ghostWhite: #f1f1f1;
+$--white: #ffffff;
+/* 浅色 */
+$--light-red: #fadbd9;
+$--light-orange: #fde6d2;
+$--light-yellow: #fef2ce;
+$--light-olive: #e8f4d9;
+$--light-green: #d7f0db;
+$--light-cyan: #d2f1f0;
+$--light-blue: #cce6ff;
+$--light-purple: #e1d7f0;
+$--light-mauve: #ebd4ef;
+$--light-pink: #f9d7ea;
+$--light-brown: #ede1d9;
+$--light-grey: #e7ebed;
+/* 渐变色 */
+$--gradient-red: linear-gradient(45deg, #f43f3b, #ec008c);
+$--gradient-orange: linear-gradient(45deg, #ff9700, #ed1c24);
+$--gradient-green: linear-gradient(45deg, #39b54a, #8dc63f);
+$--gradient-purple: linear-gradient(45deg, #9000ff, #5e00ff);
+$--gradient-pink: linear-gradient(45deg, #ec008c, #6739b6);
+$--gradient-blue: linear-gradient(45deg, #0081ff, #1cbbb4);
+/* 阴影透明色 */
+$--shadow-size: 2px 2px 6px;
+$--shadow-red: rgba(204, 69, 59, 0.1);
+$--shadow-orange: rgba(217, 109, 26, 0.1);
+$--shadow-yellow: rgba(224, 170, 7, 0.1);
+$--shadow-olive: rgba(124, 173, 55, 0.1);
+$--shadow-green: rgba(48, 156, 63, 0.1);
+$--shadow-cyan: rgba(28, 187, 180, 0.1);
+$--shadow-blue: rgba(0, 102, 204, 0.1);
+$--shadow-purple: rgba(88, 48, 156, 0.1);
+$--shadow-mauve: rgba(133, 33, 150, 0.1);
+$--shadow-pink: rgba(199, 50, 134, 0.1);
+$--shadow-brown: rgba(140, 88, 53, 0.1);
+$--shadow-grey: rgba(114, 130, 138, 0.1);
+$--shadow-gray: rgba(114, 130, 138, 0.1);
+$--shadow-black: rgba(26, 26, 26, 0.1);
+
 //--颜色
-$--default-color: rgba(57,61,73, 1);
+$--default-color: rgba(57, 61, 73, 1);
 
-$--blue-color:#1A71C6;
-$--blue-tint:#009DE8;
-$--blue-deep:#2F6BAA;
+$--blue-color: #4383c4;
+$--blue-tint: #009de8;
+$--blue-deep: #2f6baa;
 
-$--yellow-color:#FF9A00;
-$--green-color:#21BE2E;
-$--green-tint:#4DD41E;
-$--green-deep:#27AB0D;
+$--yellow-color: #ff9a00;
+$--green-color: #21be2e;
+$--green-tint: #4dd41e;
+$--green-deep: #27ab0d;
 
-$--red-color:#D12020;
-$--red-deep:#D12020;
-$--red-tint:#FD7A7A;
+$--red-color: #db5050;
+$--red-deep: #d12020;
+$--red-tint: #fd7a7a;
 
 //--卡片圆角
-$--card-radius:8px;
+$--card-radius: 8px;
 
 //--shandow
-$--box-shadow:0 2px 4px 0 rgba(217,217,217,0.50);
+$--box-shadow: $--shadow-size $--shadow-blue;
 
 //--滚动条默认颜色
-$--defatul-ScrollbarColor: rgba(57,61,73, 0.2);
-
+$--defatul-ScrollbarColor: linear-gradient(to bottom, rgba(#ffe0af, 0.5), rgba(#a0c6ea, 0.5));
+$--defatul-ScrollbarSize: 10px;
+$--defatul-ScrollbarRadius: 8px;
 //--ZmainHOC-light
 $--main-logo-light-bg: white;
 $--main-nav-light-bg: white;
@@ -32,40 +87,33 @@ $--main-nav-light-bg: white;
 $--main-logo-dark-bg: lighten($--default-color, 5%);
 $--main-nav-dark-bg: $--default-color;
 //--ZmainHOC-mazarine
-$--main-logo-mazarine-bg: #0a1131;
 $--main-nav-mazarine-bg: #242c47;
-
+$--main-logo-mazarine-bg: darken($--main-nav-mazarine-bg,3%);
 
 //--------------------------------antd 的变量-------------------------
 
 //--基础
-$blue-6:$--blue-deep;
-$heading-color:#000000;
-$text-color:#333333;
-$border-color-base:hsl(0,0,85%);
-$border-radius-base:4px;
+$blue-6: $--blue-color;
+$heading-color: #000000;
+$text-color: #333333;
+$border-color-base: $--light-blue;
+// $border-color-base: #d9d9d9;
+$border-color-split:lighten($--light-blue,4%);
+$border-radius-base: 4px;
 
 // // -------- Colors -----------
-$primary-color          : $blue-6;
+$primary-color: $blue-6;
 
 //--按钮
-$btn-border-radius-base:30px;
-$btn-border-radius-sm:14px;
+$btn-border-radius-base: 30px;
+$btn-border-radius-sm: 14px;
 
-$btn-default-color : $--blue-deep;
-
-$btn-primary-color      : #fff;
-$btn-primary-bg         :$--blue-tint;
-
-$btn-danger-color       : white;
-$btn-danger-bg          : $--red-color;
-$btn-danger-border      : $--red-tint;
-
-$btn-padding-sm         :0 14px;
+$btn-padding-sm: 0 14px;
 
 //
-$table-header-bg:#F0F2F5;
-$input-height-base           : 38px;
+$table-header-bg: transparent;
+$table-header-sort-bg: $--light-grey;
+$input-height-base: 38px;
 // 将如下的@开头的变量改成$开头的变量来改变antd主题
 
 // // -------- Colors -----------

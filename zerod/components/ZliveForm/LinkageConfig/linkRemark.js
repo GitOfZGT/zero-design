@@ -16,7 +16,7 @@ function srcControlRemark(srcControl, srcValues) {
 	);
 }
 
-export function linkRemark1({ srcControl, srcValues, distControls, linkageType }) {
+export function linkRemark1({ srcControl, srcValues, distControls, linkageType }={}) {
 	return (
 		<span>
 			{srcControlRemark(srcControl, srcValues)}
@@ -31,7 +31,7 @@ export function linkRemark1({ srcControl, srcValues, distControls, linkageType }
 	);
 }
 
-export function linkRemark2({ srcControl, srcValues, distControl, distValues }) {
+export function linkRemark2({ srcControl, srcValues, distControl, distValues } = {}) {
 	return (
 		<span>
 			{srcControlRemark(srcControl, srcValues)}
@@ -47,10 +47,10 @@ export function linkRemark2({ srcControl, srcValues, distControl, distValues }) 
 	);
 }
 
-export function linkRemark3({ srcControls, distControls }) {
+export function linkRemark3({ srcControls, distControls } = {}, { remmak1, remmak2 } = {}) {
 	return (
 		<span>
-			<span>身份证输入控件：</span>
+			<span>{remmak1}</span>
 			{srcControls.map(item => {
 				return (
 					<Tag color="volcano" key={item.label}>
@@ -58,7 +58,7 @@ export function linkRemark3({ srcControls, distControls }) {
 					</Tag>
 				);
 			})}
-			<span className="z-margin-right-5">联动出生年月日接收控件：</span>
+			<span className="z-margin-right-5">{remmak2}</span>
 			{distControls.map(item => {
 				return (
 					<Tag color="volcano" key={item.label}>
@@ -69,10 +69,9 @@ export function linkRemark3({ srcControls, distControls }) {
 		</span>
 	);
 }
-export function linkRemark4({ srcControls, distControls }) {
+export function linkRemark4({ srcControls, distControls } = {}, { remmak1, remmak2 } = {}) {
 	return (
 		<span>
-			
 			{srcControls.map(item => {
 				return (
 					<Tag color="volcano" key={item.label}>
@@ -80,7 +79,7 @@ export function linkRemark4({ srcControls, distControls }) {
 					</Tag>
 				);
 			})}
-			<span className="z-margin-right-5">选项的value传入异步控件：</span>
+			<span className="z-margin-right-5">{remmak1}</span>
 			{distControls.map(item => {
 				return (
 					<Tag color="volcano" key={item.label}>
@@ -88,29 +87,7 @@ export function linkRemark4({ srcControls, distControls }) {
 					</Tag>
 				);
 			})}
-			<span>的请求参数名：</span>
-		</span>
-	);
-}
-export function linkRemark5({ srcControls, distControls }) {
-	return (
-		<span>
-			
-			{srcControls.map(item => {
-				return (
-					<Tag color="volcano" key={item.label}>
-						{item.label}
-					</Tag>
-				);
-			})}
-			<span className="z-margin-right-5">选项的联动异步控件：</span>
-			{distControls.map(item => {
-				return (
-					<Tag color="volcano" key={item.label}>
-						{item.label}
-					</Tag>
-				);
-			})}
+			<span>{remmak2}</span>
 		</span>
 	);
 }

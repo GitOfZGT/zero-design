@@ -1,4 +1,4 @@
-@import "../../scssMixin/generateClassName";
+@import "../../scssMixin/generateClassName2";
 @import "../../scss/vars";
 $--z: 999;
 @include z("pop-cover") {
@@ -20,6 +20,7 @@ $--z: 999;
 	transition: transform 0.25s ease-out;
 	position: absolute;
 	width: 90%;
+	max-width: 100%;
 	height: 100%;
 	right: 0;
 	top: 0;
@@ -40,7 +41,7 @@ $--z: 999;
             cursor: pointer;
             @include z('btn'){
                 padding: 20px 0;
-                background-color: $--primary-5;
+                background-color: $--primary-color;
                 color: white;
                 border-top-right-radius: 8px;
                 border-bottom-right-radius: 8px;

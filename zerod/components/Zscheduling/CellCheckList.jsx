@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import ZpureComponent from "../ZpureComponent";
-import { dataType } from "../zTool";
+import { dataType,isWhiteColor } from "../zTool";
 import ZpageLoading from "../ZpageLoading";
 import { Checkbox, Button, Empty } from "antd";
 
@@ -61,7 +61,7 @@ class RowCheckBox extends React.PureComponent {
 						<p key={i} className="z-margin-bottom-0-important">
 							<Checkbox value={check[mapKeys.value]} disabled={check.disabled}>
 								<span
-									className="z-schedul-color-span"
+									className={`z-schedul-color-span ${isWhiteColor(check[mapKeys.color]) ? 'z-tag-white' : ''}`}
 									style={{ backgroundColor: check[mapKeys.color] }}
 								/>
 								{nameReader ? nameReader(check, i) : check[mapKeys.name]}

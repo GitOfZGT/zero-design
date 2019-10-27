@@ -1,4 +1,4 @@
-@import "../../scssMixin/generateClassName";
+@import "../../scssMixin/generateClassName2";
 @import "../../scss/vars";
 @include z("page-header") {
 	background-color: white;
@@ -6,23 +6,22 @@
 	box-shadow: $--box-shadow;
 
 	@include z("page-header-title") {
-		margin-top: 8px;
-		margin-bottom: 10px;
-		font-size: 28px;
+		margin-top: 0px;
+		margin-bottom: 8px;
+		font-size: 18px;
 		color: #333333;
 		letter-spacing: 0;
-    }
-    :global{
-        .ant-tabs-bar{
-            margin-bottom:0;
-        }
-    }
+	}
+
+	.ant-tabs-bar {
+		margin-bottom: 0;
+		border-color: transparent;
+	}
 }
 
 @include z("pillars") {
-
-	&>li {
-        list-style: none;
+	& > li {
+		list-style: none;
 		height: 6px;
 		width: 60px;
 		&.blue {

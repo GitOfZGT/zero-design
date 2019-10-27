@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useRef, useImperativeHandle, useCallback } from "react";
 import ZeditSimpleFormHOC from "../ZeditSimpleFormHOC";
 import { getControl, getOptions } from "../Zform/controls";
-import { itemsFromTree } from "../zTool";
+import { itemsFromTree, GenNonDuplicateID } from "../zTool";
 import { dateFormats } from "./controls";
 import ZselectInput from "./ZselectInput";
 import ZauxiliaryInput from "./ZauxiliaryInput";
 import { getFormItem, removeSomeLinkage } from "./common";
 import { dataType } from "zerod/components/zTool";
-import { Input } from "antd";
+import { Input, message, Icon, Tooltip, Modal } from "antd";
 
 const PercentInput = React.memo(
 	React.forwardRef(function(props, ref) {
@@ -58,18 +58,42 @@ const inputKeys = [...textKeys, "type"];
 const textarayKeys = textKeys;
 const selectionsType1keys = ["selectList"];
 const selectionsType2keys = ["selectionsUrl", "selectionsQuery"];
-const selectKeys = ["selectionsType", "selectListFieldNames", ...selectionsType1keys, ...selectionsType2keys];
+const selectKeys = [
+	"notFoundContent",
+	"selectionsType",
+	"selectListFieldNames",
+	...selectionsType1keys,
+	...selectionsType2keys,
+];
 const cascaderKeys = [...selectKeys, "changeOnSelect"];
 const dateKeys = ["format"];
-const uploadKeys = ["url"];
+const uploadKeys = [
+	"url",
+	"fileAccept",
+	"fileListType",
+	"wxSourceTypes",
+	"uploaderResponse",
+	"minUploadLength",
+	"maxUploadLength",
+	"autoUpload",
+	"maxMegabytes",
+];
 const colorKeys = ["colorValueType", "minSaturability"];
+const mapSelectKeys = ["mapType", "secretKey", "webserviceUrlDO"];
+const inputNumberKeys = ["min", "max"];
+//微信小程序组件库wux-weapp-ex支持标识
+const wechat = { key: "wechat", title: "微信小程序可用" };
+//控件类型在微信小程序组件库wux-weapp-ex支持情况
+const controlWechat = [1, 2, 3, 4, 5, 6, 8, 9, 11, 13];
+//日期格式在微信小程序组件库wux-weapp-ex支持情况
+const formatWechat = ["YYYY", "YYYY-MM", "YYYY-MM-DD", "YYYY-MM-DD HH:mm", "HH:mm"];
 //控件类型列表
 export const controlList = [
 	{
 		label: "单行输入", //控件类型名称
 		value: 1, //类型值
-		showKeys: [...commonKeys, ...inputKeys], //要显示的属性
-		configKeys: inputKeys, //哪些要转成config的属性
+		showKeys: [...commonKeys, ...inputKeys], //要显示的控件属性
+		configKeys: inputKeys, //保存时哪些要转成config的属性
 	},
 	{
 		label: "多行输入",
@@ -80,13 +104,14 @@ export const controlList = [
 	{
 		label: "下拉选择",
 		value: 3,
-		showKeys: [...commonKeys, ...selectKeys, "mode"],
-		configKeys: [...selectKeys, "mode"],
+		showKeys: [...commonKeys, ...selectKeys, "mode", "notFoundContent"],
+		configKeys: [...selectKeys, "mode", "notFoundContent"],
 	},
 	{
 		label: "数字输入",
 		value: 4,
-		showKeys: [...commonKeys],
+		showKeys: [...commonKeys, ...inputNumberKeys],
+		configKeys: inputNumberKeys,
 	},
 	{
 		label: "日期/时间选择",
@@ -118,11 +143,12 @@ export const controlList = [
 		showKeys: [...commonKeys, ...selectKeys],
 		configKeys: selectKeys,
 	},
-	// {
-	// 	label: "时间选择",
-	// 	value: 10,
-	// 	showKeys: [...commonKeys],
-	// },
+	{
+		label: "开关",
+		value: 10,
+		showKeys: [...commonKeys],
+		configKeys: [],
+	},
 	{
 		label: "文件上传",
 		value: 11,
@@ -138,8 +164,20 @@ export const controlList = [
 	{
 		label: "地图选点",
 		value: 13,
-		showKeys: [...commonKeys, "mapType", "secretKey"],
-		configKeys: ["mapType", "secretKey"],
+		showKeys: [...commonKeys, ...mapSelectKeys],
+		configKeys: mapSelectKeys,
+	},
+	{
+		label: "自定义占位",
+		value: 14,
+		showKeys: [...commonKeys, "isFormItem"],
+		configKeys: [],
+	},
+	{
+		label: "文书",
+		value: 20,
+		showKeys: [...commonKeys, "docCode"],
+		configKeys: ["docCode"],
 	},
 ];
 //地图的默认密钥(默认是邹国涛个人注册)
@@ -149,10 +187,10 @@ const initSereKey = {
 };
 //控制显示哪个类型的控件的属性
 function showFieldTypeLinkOther(changeFormItems, formItems, val, excludeKeys = []) {
-	const control = controlList.find(cont => {
+	const fieldTypeItem = controlList.find(cont => {
 		return cont.value === val;
 	});
-	const showKeys = control.showKeys.filter(key => {
+	const showKeys = fieldTypeItem.showKeys.filter(key => {
 		return !excludeKeys.includes(key);
 	});
 	changeFormItems(
@@ -161,6 +199,72 @@ function showFieldTypeLinkOther(changeFormItems, formItems, val, excludeKeys = [
 		}),
 		true,
 	);
+}
+const getSwitchOpt = (options = {}) => ({
+	render(form, changeFormItems) {
+		return getControl("Switch");
+	},
+	options: getOptions({
+		required: true,
+		initialValue: true,
+		normalize(value, prevValue, allValues) {
+			return Boolean(value);
+		},
+		valuePropName: "checked",
+		...options,
+	}),
+});
+//对应字段的控件
+function getCorresFormItem({ key, label, initialValue }) {
+	return {
+		key,
+		label,
+		show: false,
+		labelFocused: true,
+		render(form, changeFormItems) {
+			return getControl("TreeInput", {
+				multiple: false,
+				showBtns: false,
+				inputType: "coustom",
+				customInputKeys: [{ key: "label", initValue: "" }, { key: "value", initValue: "" }],
+				children: (states, setStates, customInputKeys) => {
+					return getControl("Input.Group", {
+						compact: true,
+						style: { width: "100%" },
+						children: (
+							<>
+								{getControl("Input", {
+									style: { width: "50%" },
+									value: states[customInputKeys[0].key],
+									onChange: value => {
+										setStates({
+											[customInputKeys[0].key]: value,
+										});
+									},
+									size: "small",
+									disabled: true,
+								})}
+								{getControl("Input", {
+									style: { width: "50%" },
+									value: states[customInputKeys[1].key],
+									onChange: value => {
+										setStates({
+											[customInputKeys[1].key]: value,
+										});
+									},
+									size: "small",
+								})}
+							</>
+						),
+					});
+				},
+			});
+		},
+		options: getOptions({
+			required: true,
+			initialValue,
+		}),
+	};
 }
 function showSelectionsTypeLinkOther(changeFormItems, selectionsType) {
 	changeFormItems(
@@ -181,17 +285,15 @@ function showSelectionsTypeLinkOther(changeFormItems, selectionsType) {
 		true,
 	);
 }
-const urlRules = function(keys = {}) {
+const urlRules = function(keys = []) {
 	return [
 		{
 			validator: (rule, value, callback) => {
+				console.log(value);
 				if (!value) {
 					return callback(new Error("不能为空"));
 				}
-				const valkeys = Object.keys(keys);
-				let hasError = valkeys.some(
-					key => value[keys[key]] === undefined || !value[keys[key]].toString().trim(),
-				);
+				let hasError = keys.some(key => value[key] === undefined || !value[key].toString().trim());
 				if (hasError) {
 					return callback(new Error("有未填写的值"));
 				}
@@ -200,10 +302,56 @@ const urlRules = function(keys = {}) {
 		},
 	];
 };
+
+function getKeyControl(keyDisabledRef, isUpdateRef, changeFormItems) {
+	const inputOpt = {
+		disabled: keyDisabledRef.current,
+	};
+	if (isUpdateRef.current) {
+		inputOpt.addonAfter = (
+			<Tooltip title={`${inputOpt.disabled ? "开启" : "关闭"}修改key`}>
+				<i
+					className="zero-icon zerod-chushihualiuchengshitu z-fieldKey-lock"
+					onClick={() => {
+						const doChange = () => {
+							keyDisabledRef.current = !keyDisabledRef.current;
+							changeFormItems(
+								[
+									{
+										key: "fieldKey",
+										newItem: {
+											control: getKeyControl(keyDisabledRef, isUpdateRef, changeFormItems),
+										},
+									},
+								],
+								true,
+							);
+						};
+						if (keyDisabledRef.current) {
+							Modal.confirm({
+								title: "提醒",
+								content: "如果修改了字段key,提交后会删除相关的联动配置,是否继续?",
+								onOk: doChange,
+							});
+						} else {
+							doChange();
+						}
+					}}
+				/>
+			</Tooltip>
+		);
+	}
+	return getControl("Input", inputOpt);
+}
+
 //控件属性
 function useFormItems(groupId, formViewerRef, type) {
 	const itemsRef = useRef([]);
+	const isUpdateRef = useRef(type === "update");
+	const keyDisabledRef = useRef(isUpdateRef.current);
+	const hashkey = GenNonDuplicateID(4);
 	itemsRef.current = [
+		//<--共用属性---> start
 		{
 			key: "groupName",
 			label: "组名",
@@ -217,7 +365,13 @@ function useFormItems(groupId, formViewerRef, type) {
 			labelFocused: true,
 			render(form, changeFormItems) {
 				return getControl("Select", {
-					selectList: controlList.map(item => ({ label: item.label, value: item.value })),
+					selectList: controlList.map(item => {
+						const plat = [];
+						if (controlWechat.includes(item.value)) {
+							plat.push(wechat);
+						}
+						return { label: item.label, value: item.value, plat };
+					}),
 					onChange(val) {
 						//控件类型改变控制显示对应的属性输入框
 						showFieldTypeLinkOther(changeFormItems, itemsRef.current, val);
@@ -226,9 +380,29 @@ function useFormItems(groupId, formViewerRef, type) {
 						}
 						// changeFormItems([{ key: "initialValue", show: ![5].includes(val) }], true);
 					},
+					optLabelRender(item) {
+						return (
+							<div className="z-flex-space-between">
+								<div>{item.label}</div>
+								<div>
+									{item.plat.map(p => {
+										return (
+											<Tooltip title={p.title} key={p.key}>
+												<Icon
+													className="z-text-green z-margin-left-5"
+													key={p.key}
+													type={p.key}
+												/>
+											</Tooltip>
+										);
+									})}
+								</div>
+							</div>
+						);
+					},
 				});
 			},
-			options: getOptions({ required: true }),
+			options: getOptions({ required: true, initialValue: 1 }),
 		},
 		{
 			key: "label",
@@ -237,17 +411,18 @@ function useFormItems(groupId, formViewerRef, type) {
 			render(form, changeFormItems) {
 				return getControl("Input");
 			},
-			options: getOptions({ required: true }),
+			options: getOptions({ required: false, initialValue: `名称_${hashkey}` }),
 		},
 		{
 			key: "fieldKey",
 			label: "字段Key",
 			labelFocused: true,
 			render(form, changeFormItems) {
-				return getControl("Input");
+				return getKeyControl(keyDisabledRef, isUpdateRef, changeFormItems);
 			},
 			options: getOptions({
 				required: true,
+				initialValue: `key_${hashkey}`,
 				rules: [
 					{
 						validator: (rule, value, callback) => {
@@ -271,96 +446,22 @@ function useFormItems(groupId, formViewerRef, type) {
 		},
 		{
 			key: "required",
-			label: "是否必填",
+			label: "必填",
 			labelFocused: true,
-			render(form, changeFormItems) {
-				return getControl("Radio.Group", {
-					selectList: [
-						{
-							label: "是",
-							value: 1,
-						},
-						{ label: "否", value: 0 },
-					],
-				});
-			},
-			options: getOptions({ required: true, initialValue: 1 }),
+			...getSwitchOpt(),
 		},
-
 		{
 			key: "disabled",
-			label: "是否默认禁用",
+			label: "默认禁用",
 			labelFocused: true,
-			render(form, changeFormItems) {
-				return getControl("Radio.Group", {
-					selectList: [
-						{
-							label: "是",
-							value: 1,
-						},
-						{ label: "否", value: 0 },
-					],
-				});
-			},
-			options: getOptions({ required: true, initialValue: 0 }),
+			...getSwitchOpt({ initialValue: false }),
 		},
-		{
-			key: "mode",
-			label: "模式",
-			show: false,
-			labelFocused: true,
-			render(form, changeFormItems) {
-				return getControl("Radio.Group", {
-					selectList: [
-						{
-							label: "单选",
-							value: "single",
-						},
-						{ label: "多选", value: "multiple" },
-						{ label: "标签", value: "tags" },
-					],
-				});
-			},
-			options: getOptions({ required: true, initialValue: "single" }),
-		},
-		{
-			key: "mapType",
-			label: "地图类型",
-			show: false,
-			labelFocused: true,
-			render(form, changeFormItems) {
-				return getControl("Radio.Group", {
-					selectList: [
-						{
-							label: "腾讯",
-							value: "qqmap",
-						},
-						{ label: "高德", value: "amap" },
-					],
-					onChange(e) {
-						const val = e.target.value;
-						form.setFieldsValue({
-							secretKey: initSereKey[val],
-						});
-					},
-				});
-			},
-			options: getOptions({ required: true, initialValue: "qqmap" }),
-		},
-		{
-			key: "secretKey",
-			label: "密钥",
-			show: false,
-			labelFocused: true,
-			render(form, changeFormItems) {
-				return getControl("Input");
-			},
-			options: getOptions({ required: true, initialValue: initSereKey["qqmap"] }),
-		},
+		//<--共用属性---> end
+		//<--input特有属性---> start
 		{
 			key: "type",
 			label: "文本类型",
-			show: false,
+			show: true,
 			labelFocused: true,
 			render(form, changeFormItems) {
 				return getControl("Radio.Group", {
@@ -381,6 +482,24 @@ function useFormItems(groupId, formViewerRef, type) {
 		{
 			key: "maxLength",
 			label: "最大输入长度",
+			show: true,
+			labelFocused: true,
+			render(form, changeFormItems) {
+				return getControl("InputNumber", { min: 0 });
+			},
+		},
+		{
+			key: "minLength",
+			label: "最小输入长度",
+			show: true,
+			labelFocused: true,
+			render(form, changeFormItems) {
+				return getControl("InputNumber", { min: 0 });
+			},
+		},
+		{
+			key: "max",
+			label: "最大值",
 			show: false,
 			labelFocused: true,
 			render(form, changeFormItems) {
@@ -388,14 +507,37 @@ function useFormItems(groupId, formViewerRef, type) {
 			},
 		},
 		{
-			key: "minLength",
-			label: "最小输入长度",
+			key: "min",
+			label: "最小值",
 			show: false,
 			labelFocused: true,
 			render(form, changeFormItems) {
 				return getControl("InputNumber");
 			},
 		},
+		//<--input特有属性---> end
+		//<--下拉框特有属性---> start
+		{
+			key: "mode",
+			label: "模式",
+			show: false,
+			labelFocused: true,
+			render(form, changeFormItems) {
+				return getControl("Radio.Group", {
+					selectList: [
+						{
+							label: "单选",
+							value: "single",
+						},
+						{ label: "多选", value: "multiple" },
+						{ label: "标签", value: "tags" },
+					],
+				});
+			},
+			options: getOptions({ required: true, initialValue: "single" }),
+		},
+		//<--下拉框特有属性---> end
+		//<--下拉框、单选框、多选框、级联、树选择特有属性---> start
 		{
 			key: "selectionsType",
 			label: "选项类型",
@@ -450,7 +592,7 @@ function useFormItems(groupId, formViewerRef, type) {
 						}
 						leftSpan={6}
 						centerSpan={[3, 8, 9].includes(form.getFieldValue("fieldType")) ? 18 : 12}
-						rightSpan={[3, 8, 9].includes(form.getFieldValue("fieldType")) ? 0 : 6}
+						rightSpan={[3, 8, 9].includes(form.getFieldValue("fieldType")) ? null : 6}
 						selectList={["post", "get"].map(m => ({ label: m, value: m }))}
 						valueKey={{ left: "selectionsUrlMethod", center: "selectionsUrl", right: "requireType" }}
 						leftPlaceholde="请求方式"
@@ -461,7 +603,7 @@ function useFormItems(groupId, formViewerRef, type) {
 			options: getOptions({
 				required: true,
 				initialValue: { selectionsUrlMethod: "post", selectionsUrl: "", requireType: "all" },
-				rules: urlRules({ left: "selectionsUrlMethod", center: "selectionsUrl", right: "requireType" }),
+				rules: urlRules(["selectionsUrlMethod", "selectionsUrl", "requireType"]),
 			}),
 		},
 		{
@@ -510,72 +652,35 @@ function useFormItems(groupId, formViewerRef, type) {
 				],
 			}),
 		},
-		{
+		getCorresFormItem({
 			key: "selectListFieldNames",
 			label: "lable、value、children对应选项数据中的字段",
+			initialValue: [
+				{ label: "label", value: "label" },
+				{ label: "value", value: "value" },
+				{ label: "children", value: "children" },
+			],
+		}),
+		{
+			key: "notFoundContent",
+			label: "没有选项数据时显示的内容",
 			show: false,
-			labelFocused: true,
 			render(form, changeFormItems) {
-				return getControl("TreeInput", {
-					multiple: false,
-					showBtns: false,
-					inputType: "coustom",
-					customInputKeys: [{ key: "label", initValue: "" }, { key: "value", initValue: "" }],
-					children: (states, setStates, customInputKeys) => {
-						return (
-							<Input.Group compact style={{ width: "100%" }}>
-								<Input
-									style={{ width: "50%" }}
-									value={states[customInputKeys[0].key]}
-									onChange={e => {
-										setStates({
-											[customInputKeys[0].key]: e.target.value,
-										});
-									}}
-									size="small"
-									disabled
-								/>
-								<Input
-									style={{ width: "50%" }}
-									value={states[customInputKeys[1].key]}
-									onChange={e => {
-										setStates({
-											[customInputKeys[1].key]: e.target.value,
-										});
-									}}
-									size="small"
-								/>
-							</Input.Group>
-						);
-					},
-				});
+				return getControl("Input");
 			},
-			options: getOptions({
-				required: true,
-				initialValue: [
-					{ label: "label", value: "label" },
-					{ label: "value", value: "value" },
-					{ label: "children", value: "children" },
-				],
-			}),
+			options: getOptions({ required: true, initialValue: "无相关数据" }),
 		},
+		//<--下拉框、单选框、多选框、级联、树选择特有属性---> end
+		//<--级联特有属性---> start
 		{
 			key: "changeOnSelect",
-			label: "是否必须选到最后一级",
+			label: "必须选到最后一级",
 			labelFocused: true,
-			render(form, changeFormItems) {
-				return getControl("Radio.Group", {
-					selectList: [
-						{
-							label: "是",
-							value: 0,
-						},
-						{ label: "否", value: 1 },
-					],
-				});
-			},
-			options: getOptions({ required: true, initialValue: 0 }),
+			show: false,
+			...getSwitchOpt(),
 		},
+		//<--级联特有属性---> end
+		//<--日期特有属性---> start
 		{
 			key: "format",
 			label: "格式",
@@ -583,15 +688,49 @@ function useFormItems(groupId, formViewerRef, type) {
 			labelFocused: true,
 			render(form, changeFormItems) {
 				return getControl("Select", {
-					selectList: Object.keys(dateFormats).map(key => ({ label: key, value: key })),
+					selectList: Object.keys(dateFormats).map(key => {
+						const plat = [];
+						if (formatWechat.includes(key)) {
+							plat.push(wechat);
+						}
+						return { label: key, value: key, plat };
+					}),
+					optLabelRender(item) {
+						return (
+							<div className="z-flex-space-between">
+								<div>{item.label}</div>
+								<div>
+									{item.plat.map(p => {
+										return (
+											<Tooltip title={p.title} key={p.key}>
+												<Icon
+													className="z-text-green z-margin-left-5"
+													key={p.key}
+													type={p.key}
+												/>
+											</Tooltip>
+										);
+									})}
+								</div>
+							</div>
+						);
+					},
 				});
 			},
 			options: getOptions({ required: true, initialValue: "YYYY-MM-DD" }),
 		},
-
+		//<--日期特有属性---> end
+		//<--上传控件特有属性---> start
+		{
+			key: "autoUpload",
+			label: "选完文件自动上传",
+			labelFocused: true,
+			show: false,
+			...getSwitchOpt(),
+		},
 		{
 			key: "url",
-			label: "上传地址",
+			label: "上传地址(依次为：请求方式、请求地址、formData参数名、是否多文件上传)",
 			show: false,
 			labelFocused: true,
 			render(form, changeFormItems) {
@@ -602,6 +741,28 @@ function useFormItems(groupId, formViewerRef, type) {
 						leftPlaceholde="请求方式"
 						centerPlaceholder="请求地址"
 						rightPlaceholder="参数名"
+						leftSpan={5}
+						centerSpan={11}
+						rightSpan={3}
+						customControls={[
+							{
+								key: "requestMode",
+								span: 5,
+								render(value, item, change) {
+									return getControl("Select", {
+										value: value[item.key],
+										selectList: [
+											{ label: "单文件", value: "single" },
+											{ label: "多文件", value: "multiple" },
+										],
+										onChange(val) {
+											change(val, item.key);
+										},
+										className: "z-label",
+									});
+								},
+							},
+						]}
 					/>
 				);
 			},
@@ -611,32 +772,105 @@ function useFormItems(groupId, formViewerRef, type) {
 					urlMethod: "post",
 					url: "/file-upload-service/webapi/v1.0/fileUpload/uploads",
 					urlParamName: "files",
+					requestMode: "multiple",
 				},
-				rules: urlRules({ left: "urlMethod", center: "url", right: "urlParamName" }),
+				rules: urlRules(["urlMethod", "url", "urlParamName", "requestMode"]),
 			}),
 		},
-		// {
-		// 	key: "detailUrl",
-		// 	label: "获取已上传列表的地址",
-		// 	show: false,
-		// 	labelFocused: true,
-		// 	render(form, changeFormItems) {
-		// 		return (
-		// 			<ZselectInput
-		// 				selectList={["post", "get"].map(m => ({ label: m, value: m }))}
-		// 				valueKey={{ left: "detailUrlMethod", center: "detailUrl", right: "detailUrlParamName" }}
-		// 				leftPlaceholde="请求方式"
-		// 				centerPlaceholder="请求地址"
-		// 				rightPlaceholder="参数名"
-		// 			/>
-		// 		);
-		// 	},
-		// 	options: getOptions({
-		// 		required: true,
-		// 		initialValue: { detailUrlMethod: "post", detailUrl: "", detailUrlParamName: "fileIds" },
-		// 		rules: urlRules({ left: "detailUrlMethod", center: "detailUrl", right: "detailUrlParamName" }),
-		// 	}),
-		// },
+		getCorresFormItem({
+			key: "uploaderResponse",
+			label: "响应体对应的字段",
+			initialValue: [
+				{ label: "id", value: "id" },
+				{ label: "filePath", value: "filePath" },
+				{ label: "fileSuffix", value: "fileSuffix" },
+				{ label: "originalFileName", value: "originalFileName" },
+			],
+		}),
+		{
+			key: "fileAccept",
+			label: "允许上传文件类型",
+			show: false,
+			render() {
+				return getControl("Select", {
+					selectList: [
+						{
+							label: "只允许图片",
+							value: "image/*",
+						},
+						{
+							label: "任意文件",
+							value: "all",
+						},
+					],
+				});
+			},
+			options: getOptions({
+				required: true,
+				initialValue: "image/*",
+			}),
+		},
+		{
+			key: "fileListType",
+			label: "上传列表样式",
+			show: false,
+			render() {
+				return getControl("Select", {
+					selectList: ["picture", "picture-card"],
+				});
+			},
+			options: getOptions({
+				required: true,
+				initialValue: "picture-card",
+			}),
+		},
+		{
+			key: "maxMegabytes",
+			label: "最大上传大小(M)",
+			show: false,
+			labelFocused: true,
+			render(form, changeFormItems) {
+				return getControl("InputNumber", { min: 0, precision: 2 });
+			},
+			options: getOptions({
+				required: true,
+				initialValue: 10,
+			}),
+		},
+		{
+			key: "maxUploadLength",
+			label: "最大上传数",
+			show: false,
+			labelFocused: true,
+			render(form, changeFormItems) {
+				return getControl("InputNumber", { min: 0 });
+			},
+		},
+		{
+			key: "minUploadLength",
+			label: "最小上传数",
+			show: false,
+			labelFocused: true,
+			render(form, changeFormItems) {
+				return getControl("InputNumber", { min: 0 });
+			},
+		},
+		{
+			key: "wxSourceTypes",
+			label: "小程序图片来源",
+			show: false,
+			render() {
+				return getControl("Checkbox.Group", {
+					selectList: [{ label: "从相册选图", value: "album" }, { label: "使用相机", value: "camera" }],
+				});
+			},
+			options: getOptions({
+				required: true,
+				initialValue: ["album", "camera"],
+			}),
+		},
+		//<--上传控件特有属性---> end
+		//<--颜色值特有属性---> start
 		{
 			key: "colorValueType",
 			label: "颜色值类型",
@@ -665,6 +899,77 @@ function useFormItems(groupId, formViewerRef, type) {
 				initialValue: 0,
 			}),
 		},
+		//<--颜色值特有属性---> end
+		//<--地图选点特有属性---> start
+		{
+			key: "mapType",
+			label: "地图类型",
+			show: false,
+			labelFocused: true,
+			render(form, changeFormItems) {
+				return getControl("Radio.Group", {
+					selectList: [
+						{
+							label: "腾讯",
+							value: "qqmap",
+						},
+						{ label: "高德", value: "amap" },
+					],
+					onChange(e) {
+						const val = e.target.value;
+						form.setFieldsValue({
+							secretKey: initSereKey[val],
+						});
+					},
+				});
+			},
+			options: getOptions({ required: true, initialValue: "qqmap" }),
+		},
+
+		{
+			key: "secretKey",
+			label: "密钥",
+			show: false,
+			labelFocused: true,
+			render(form, changeFormItems) {
+				return getControl("Input");
+			},
+			options: getOptions({ required: true, initialValue: initSereKey["qqmap"] }),
+		},
+		{
+			key: "webserviceUrlDO",
+			label: "调用地图web服务的代理地址",
+			show: false,
+			labelFocused: true,
+			render(form, changeFormItems) {
+				return (
+					<ZselectInput
+						leftSpan={6}
+						centerSpan={18}
+						rightSpan={0}
+						selectList={["post", "get"].map(m => ({ label: m, value: m }))}
+						valueKey={{ left: "urlMethod", center: "url" }}
+						leftPlaceholde="请求方式"
+						centerPlaceholder="请求地址"
+					/>
+				);
+			},
+			options: getOptions({
+				required: true,
+				initialValue: { urlMethod: "post", url: "/system-service/webapi/geography/webService" },
+				rules: urlRules(["urlMethod", "url"]),
+			}),
+		},
+		//<--地图选点特有属性---> end
+		{
+			key: "isFormItem",
+			label: "自定义内容是否为表单控件",
+			labelFocused: true,
+			show: false,
+			...getSwitchOpt(),
+		},
+
+		//<--共用属性---> start
 		{
 			key: "initialValue",
 			labelFocused: true,
@@ -719,6 +1024,17 @@ function useFormItems(groupId, formViewerRef, type) {
 				});
 			},
 		},
+		//<--共用属性---> end
+		{
+			key: "docCode",
+			show: false,
+			label: "文书模板编码",
+			labelFocused: true,
+			render(form, changeFormItems) {
+				return getControl("Input");
+			},
+			options: getOptions({ required: true }),
+		},
 	];
 	return itemsRef.current;
 }
@@ -734,6 +1050,7 @@ function useEditPage(groupId, formItem, formViewerRef, linkageRef, type) {
 				show: false,
 			},
 			form: {
+				initAnimation: false,
 				panelHeader: "控件属性",
 				labelLayout: "inline",
 				type: "update",
@@ -765,6 +1082,18 @@ function useEditPage(groupId, formItem, formViewerRef, linkageRef, type) {
 						try {
 							const config = JSON.parse(formItem["config"]);
 							if (config) {
+								const objToArr = keyName => {
+									if (dataType.isObject(config[keyName])) {
+										config[keyName] = Object.keys(config[keyName]).map(key => {
+											return {
+												label: key,
+												value: config[keyName][key],
+											};
+										});
+									} else {
+										config[keyName] = undefined;
+									}
+								};
 								//当是上传控件
 								if (formItem["fieldType"] === 11) {
 									const url = { urlMethod: "", url: "", urlParamName: "" };
@@ -774,6 +1103,7 @@ function useEditPage(groupId, formItem, formViewerRef, linkageRef, type) {
 											case "urlMethod":
 											case "url":
 											case "urlParamName":
+											case "requestMode":
 												url[key] = config[key];
 												delete config[key];
 												break;
@@ -786,24 +1116,14 @@ function useEditPage(groupId, formItem, formViewerRef, linkageRef, type) {
 										}
 									});
 									config["url"] = url;
+									objToArr("uploaderResponse");
 									// config["detailUrl"] = detailUrl;
 								} else if ([3, 6, 7, 8, 9].includes(formItem["fieldType"])) {
 									config.selectionsType =
 										config.selectionsType === undefined ? 1 : Number(config.selectionsType);
 									excludeKeys =
 										config.selectionsType === 1 ? selectionsType2keys : selectionsType1keys;
-									const objToArr = keyName => {
-										if (dataType.isObject(config[keyName])) {
-											config[keyName] = Object.keys(config[keyName]).map(key => {
-												return {
-													label: key,
-													value: config[keyName][key],
-												};
-											});
-										} else {
-											config[keyName] = [];
-										}
-									};
+
 									objToArr("selectionsQuery");
 									objToArr("selectListFieldNames");
 									showSelectionsTypeLinkOther(
@@ -831,17 +1151,28 @@ function useEditPage(groupId, formItem, formViewerRef, linkageRef, type) {
 					});
 				},
 				submitApiInterface(values, props, tool) {
-					const control = controlList.find(item => {
+					const fieldTypeItem = controlList.find(item => {
 						return item.value === values["fieldType"];
 					});
 					const config = {};
-					if (Array.isArray(control.configKeys)) {
-						control.configKeys.forEach(key => {
+					if (Array.isArray(fieldTypeItem.configKeys)) {
+						fieldTypeItem.configKeys.forEach(key => {
 							config[key] = values[key];
 							delete values[key];
 						});
 					}
 					values.config = config;
+					values.fieldTypeName = fieldTypeItem.label;
+					const arrToObj = keyName => {
+						const newSelectionsQuery = {};
+						Array.isArray(values.config[keyName]) &&
+							values.config[keyName].forEach(item => {
+								if (item.label && item.value) {
+									newSelectionsQuery[item.label] = item.value;
+								}
+							});
+						values.config[keyName] = newSelectionsQuery;
+					};
 					//上传控件的config要特殊处理
 					if (values["fieldType"] === 11) {
 						let newConf = values.config;
@@ -855,30 +1186,26 @@ function useEditPage(groupId, formItem, formViewerRef, linkageRef, type) {
 							}
 						});
 						values.config = newConf;
+						arrToObj("uploaderResponse");
 					} else if ([3, 6, 7, 8, 9].includes(values["fieldType"])) {
-						const arrToObj = keyName => {
-							const newSelectionsQuery = {};
-							Array.isArray(values.config[keyName]) &&
-								values.config[keyName].forEach(item => {
-									if (item.label && item.value) {
-										newSelectionsQuery[item.label] = item.value;
-									}
-								});
-							values.config[keyName] = newSelectionsQuery;
-						};
 						arrToObj("selectionsQuery");
 						arrToObj("selectListFieldNames");
 					}
 					if (values.config) {
 						values.config = JSON.stringify(values.config);
 					}
-					const newItem = getFormItem(formItem ? { ...formItem, ...values } : values, groupRef.current);
+
+					const newItem = getFormItem({
+						field: formItem ? { ...formItem, ...values } : values,
+						group: groupRef.current,
+						noAsync: true,
+					});
 					const currentItems = groupRef.current.groupRef.current.getFormItems();
 					let newItems = [...currentItems];
 					const i = currentItems.findIndex(
 						item => item["fieldKey"] === (formItem ? formItem["fieldKey"] : values["fieldKey"]),
 					);
-					let successMsg = "添加控件成功";
+					let successMsg = `${formItem ? "修改" : "添加"}控件成功`;
 					if (i > -1) {
 						if (formItem && formItem["fieldKey"] !== values["fieldKey"] && linkageRef.current) {
 							//修改了fieldKey时移除li

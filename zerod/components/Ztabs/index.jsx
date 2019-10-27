@@ -1,9 +1,9 @@
-import React from "react";import ZpureComponent from "../ZpureComponent";
+import React from "react";
+import ZpureComponent from "../ZpureComponent";
 import { Tabs } from "antd";
 import PropTypes from "prop-types";
-import cssClass from "./style.scss";
-
-export  class Ztabs extends ZpureComponent {
+import "./style.scss";
+export class Ztabs extends ZpureComponent {
 	static propTypes = {
 		tabPanes: PropTypes.arrayOf(PropTypes.object),
 	};
@@ -20,8 +20,12 @@ export  class Ztabs extends ZpureComponent {
 		});
 	}
 	render() {
-		const { tabPanes, ...others } = this.props;
-		return <Tabs {...others}>{this.getTabPanes()}</Tabs>;
+		const { tabPanes, className, ...others } = this.props;
+		return (
+			<Tabs className={`z-tabs ${className || ""}`} tabBarGutter={10} {...others}>
+				{this.getTabPanes()}
+			</Tabs>
+		);
 	}
 }
 

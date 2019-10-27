@@ -1,12 +1,14 @@
-@import '../../scssMixin/generateClassName';
+@import "../../scssMixin/generateClassName2";
 @include z("bg-image-box") {
 	position: relative;
-	background-color: #ebebeb;
-	color: #cfcfcf;
 	width: 100%;
 	overflow: hidden;
-	font-size: 18px;
-    min-height: 100%;
+	min-height: 100%;
+	&.no-url {
+		background-color: #ebebeb;
+		color: #cfcfcf;
+		font-size: 12px;
+	}
 	@at-root {
 		@include z("bg-image") {
 			position: absolute;

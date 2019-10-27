@@ -1,4 +1,4 @@
-import React from "react";import ZpureComponent from "../ZpureComponent";
+import React from "react";
 import { withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
 import { const_getInsertLocation, const_getMainTool, const_getMethods,const_getPageWrapperProps,requireValid } from "../constant";
@@ -64,7 +64,7 @@ export function ZdetailSimpleBaseHOC(pageConfig) {
 		exportSomething: null,
 	};
 	defaultConfig = mergeConfig(defaultConfig, pageConfig);
-	class myDetail extends ZpureComponent {
+	class myDetail extends React.PureComponent {
 		static propTypes = {
 			detailId: PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.object]).isRequired,
 		};
@@ -103,6 +103,9 @@ export function ZdetailSimpleBaseHOC(pageConfig) {
 		}
 		tool = {
 			...const_getMainTool.call(this),
+			getWrapperProps: () => {
+				return this.props;
+			},
 			showLoading: this.methods.showLoading, //同 methods.showLoading,这为了版本兼容
 			methods: this.methods,
 			$router: {

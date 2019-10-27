@@ -1,5 +1,4 @@
 import React from "react";
-import ZpureComponent from "../ZpureComponent";
 import { withRouter } from "react-router-dom";
 import {
 	const_getInsertLocation,
@@ -7,12 +6,11 @@ import {
 	const_getMethods,
 	const_getPageWrapperProps,
 	const_extendArguments,
-	requireValid
+	requireValid,
 } from "../constant";
 import PropTypes from "prop-types";
 import { Zform } from "../Zform";
 // import { Input } from "antd";
-// import cssClass from "./style.scss";
 // 工具
 import { mergeConfig } from "../zTool";
 // 上下文
@@ -20,7 +18,6 @@ import ZerodMainContext from "../ZerodMainContext";
 
 import { ZpageWraperHOC } from "../ZpageWrapper";
 const PageWraper = ZpageWraperHOC();
-
 export function ZeditSimpleFormHOC(pageConfig) {
 	pageConfig = pageConfig ? pageConfig : {};
 	let defaultConfig = {
@@ -91,7 +88,7 @@ export function ZeditSimpleFormHOC(pageConfig) {
 		exportSomething: null,
 	};
 	defaultConfig = mergeConfig(defaultConfig, pageConfig);
-	class myForm extends ZpureComponent {
+	class myForm extends React.PureComponent {
 		static propTypes = {
 			detailId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 		};
@@ -101,21 +98,24 @@ export function ZeditSimpleFormHOC(pageConfig) {
 		};
 		methods = {
 			...const_getMethods.call(this),
+			getWrapperProps: () => {
+				return this.props;
+			},
 			getFormDetailData: () => {
 				if (this.props.detailId === undefined || this.props.detailId === null) {
 					throw Error("缺少获取详细数据的detailId");
 				}
 				this.methods.showLoading(true);
-				this.config.form
+				return this.config.form
 					.detailApiInterface(this.props.detailId, this.props, this.tool)
-					.then((re) => {
+					.then(re => {
 						const noData = requireValid.hasData(re);
 						if (noData) {
 							return noData;
 						}
-						
+
 						const valueData = {};
-						this.config.form.items.forEach((item) => {
+						this.config.form.items.forEach(item => {
 							const newVal = re.data[item.detailKey ? item.detailKey : item.key];
 							if (newVal !== undefined) valueData[item.key] = newVal;
 						});
@@ -125,11 +125,11 @@ export function ZeditSimpleFormHOC(pageConfig) {
 								detailData: re.data,
 							},
 							() => {
-								if (Object.keys(valueData).length) this.form.setFieldsValue(valueData);
+								if (Object.keys(valueData).length&&this.formMethods) this.formMethods.setFieldsValue(valueData);
 							},
 						);
 					})
-					.catch((re) => {
+					.catch(re => {
 						this.methods.notice.error(re && re.msg ? re.msg : "获取数据失败");
 					})
 					.finally(() => {
@@ -139,17 +139,17 @@ export function ZeditSimpleFormHOC(pageConfig) {
 			closeRightModal: () => {
 				this.methods.closeCurrentModal();
 			},
-			onSubmit: (values) => {
+			onSubmit: values => {
 				const afterSuccess = this.config.form.afterSubmitSuccess;
 				this.props.showModalLoading(true);
 				return this.config.form
 					.submitApiInterface(values, this.props, this.tool)
 
-					.then((re) => {
-						this.methods.notice.success(re&&re.msg?re.msg:"保存成功");
+					.then(re => {
+						this.methods.notice.success(re && re.msg ? re.msg : "保存成功");
 						typeof afterSuccess === "function" && afterSuccess(values, this.tool);
 					})
-					.catch((re) => {
+					.catch(re => {
 						this.methods.notice.error(re && re.msg ? re.msg : "保存失败");
 					})
 					.finally(() => {
@@ -186,7 +186,12 @@ export function ZeditSimpleFormHOC(pageConfig) {
 		};
 		didAsync = () => {
 			if (this.config.form.type === "update") {
-				this.methods.getFormDetailData();
+				this.methods.getFormDetailData().finally(() => {
+					this.config.form.afterItemsRendered &&
+						this.config.form.afterItemsRendered(this.form, this.formMethods);
+				});
+			} else {
+				this.config.form.afterItemsRendered && this.config.form.afterItemsRendered(this.form, this.formMethods);
 			}
 		};
 		componentDidMount() {
@@ -196,7 +201,7 @@ export function ZeditSimpleFormHOC(pageConfig) {
 		pageWraper = const_getPageWrapperProps(this.config);
 		getDefaultFormItems = () => {
 			const formItems = this.config.form.items ? this.config.form.items : [];
-			return formItems.map((item) => {
+			return formItems.map(item => {
 				return {
 					...item,
 					render: (form, changeFormItems) => {
@@ -223,7 +228,7 @@ export function ZeditSimpleFormHOC(pageConfig) {
 			} = this.config.form;
 			return (
 				<section
-					ref={(el) => {
+					ref={el => {
 						this.hocWrapperEl = el;
 					}}
 				>

@@ -1,9 +1,15 @@
+/*
+ * @Author: zgt
+ * @Date: 2018-08-21 10:59:31
+ * @LastEditors: zgt
+ * @LastEditTime: 2019-09-30 10:52:18
+ * @Description: file content
+ */
 import React from "react";
 import ReactDOM from "react-dom";
 import { ZsearchForm } from "./ZsearchForm";
 import { Button, notification, message, Tooltip, Popover, Checkbox } from "antd";
 import { dataType, GenNonDuplicateID, arrayFilterBy } from "./zTool";
-import searchCssClass from "./ZsearchListHOC/style.scss";
 const noticeMethod = {
 	notification,
 	message,
@@ -150,14 +156,14 @@ function addItemCss(classNames) {
 		document.head.appendChild(this.styleEl);
 	}
 }
-function const_extendItem(needRef, item, render, hasItemClass, renderArgument, changeItems, index) {
+function const_extendItem(needRef, item, render, hasItemClass, renderArgument, changeItems, index, temporaryArr) {
 	let control = value => value;
 	let loading = false;
 	let renderValue = null;
 	if (render) {
 		const _return = render(renderArgument, changeItems);
 		if (dataType.isPromise(_return) && index !== undefined) {
-			this.allAsync.push({ promise: _return, index });
+			temporaryArr.push({ promise: _return, index });
 			// renderValue = disableControl;
 			loading = true;
 		} else if (dataType.isFunction(_return)) {
@@ -192,7 +198,7 @@ function const_extendItem(needRef, item, render, hasItemClass, renderArgument, c
 //如在Zform中使用const_initItems.call(this,this.props.items,<Input placeholder="加载中" disabled />);
 export const const_initItems = function(items, renderArgument = {}, changeItems = function() {}, callback) {
 	callback = dataType.isFunction(callback) ? callback : function() {};
-	this.allAsync = [];
+	const temporaryArr = [];
 	// this.filedKeys = [];
 	const hasItemClass = [];
 	const newItems = items.map((item, index) => {
@@ -205,8 +211,20 @@ export const const_initItems = function(items, renderArgument = {}, changeItems 
 		}
 
 		// this.filedKeys.push(item.key);
-		return const_extendItem.call(this, true, item, render, hasItemClass, renderArgument, changeItems, index);
+		return const_extendItem.call(
+			this,
+			true,
+			item,
+			render,
+			hasItemClass,
+			renderArgument,
+			changeItems,
+			index,
+			temporaryArr,
+		);
 	});
+	//保存正在请求的promise
+	this.allAsync = temporaryArr;
 	addItemCss.call(this, hasItemClass);
 	this.setState(
 		{
@@ -221,14 +239,6 @@ export const const_itemSpan = function(control, currentSpan, defaultSpan) {
 	if (currentSpan !== undefined && currentSpan !== null) {
 		span = dataType.isNumber(currentSpan) ? { md: currentSpan } : currentSpan;
 	}
-	// else if (
-	// 	dataType.isObject(control) &&
-	// 	control.props &&
-	// 	control.props.prefixCls == "ant-input" &&
-	// 	dataType.isUndefined(control.type.TextArea)
-	// ) {
-	// 	span = { md: 24 };
-	// }
 	return span;
 };
 
@@ -253,7 +263,7 @@ export const const_execAsync = function(callback) {
 			}),
 		)
 			.catch(re => {
-				message.error("有请求失败了");
+				console.error("Zform的异步控件有请求失败了");
 			})
 			.finally(() => {
 				if (this.unmounted) return;
@@ -322,6 +332,7 @@ export function const_changeFormItems(newItems, part = false, callback) {
 //ZtreePanel和ZlistPanel的heading,这里不能是箭头函数
 export const const_getPanleHeader = function(hasControl) {
 	const tool = this.getExportSomething();
+	const { hideExpandedBtn } = this.searchFormConfig || {};
 	const { showAddBtn, addBtnDisabled } = this.props;
 	const _showAddBtn = typeof showAddBtn == "function" ? showAddBtn(tool) : showAddBtn;
 	const _addBtnDisabled = typeof addBtnDisabled == "function" ? addBtnDisabled(tool) : addBtnDisabled;
@@ -354,6 +365,17 @@ export const const_getPanleHeader = function(hasControl) {
 		left = heading;
 	}
 	const items = this.colFormItems;
+	const expandedBtn =
+		items.length && !hideExpandedBtn ? (
+			<Button type="dashed" icon="search" className="z-margin-left-10" onClick={this.methods.openSearch}>
+				{this.state.expandedSearch ? "折叠" : "展开"}查询
+				<i
+					className={`zero-icon zerod-up z-margin-left-4 z-open-btn ${
+						this.state.expandedSearch ? "" : "is-down"
+					}`}
+				/>
+			</Button>
+		) : null;
 	return left || center || right || items.length || this.addBtn ? (
 		<div className="z-panel-heading z-flex-items-v-center z-flex-space-between">
 			<span>
@@ -363,7 +385,7 @@ export const const_getPanleHeader = function(hasControl) {
 						<Popover
 							content={
 								<Checkbox.Group
-									className={searchCssClass["z-control-group"]}
+									className="z-control-group"
 									defaultValue={this.checkColumnsValue}
 									options={this.props.tableColumns
 										.filter(item => item.dataIndex)
@@ -377,26 +399,19 @@ export const const_getPanleHeader = function(hasControl) {
 							trigger="click"
 							placement="rightTop"
 						>
-							<i className={`zero-icon zerod-kongzhitai ${searchCssClass["z-control-icon"]}`} />
+							<i className={`zero-icon zerod-kongzhitai z-control-icon`} />
 						</Popover>
 					</Tooltip>
 				) : null}
 			</span>
 			{center}
-			<span>
-				{right}
-				{items.length ? (
-					<Button type="dashed" icon="search" className="z-margin-left-10" onClick={this.methods.openSearch}>
-						{this.state.expandedSearch ? "折叠" : "展开"}查询
-						<i
-							className={`zero-icon zerod-up z-margin-left-4 z-open-btn ${
-								this.state.expandedSearch ? "" : "is-down"
-							}`}
-						/>
-					</Button>
-				) : null}
-				{this.addBtn}
-			</span>
+			{right || expandedBtn || this.addBtn ? (
+				<span>
+					{right}
+					{expandedBtn}
+					{this.addBtn}
+				</span>
+			) : null}
 		</div>
 	) : null;
 };
@@ -605,7 +620,7 @@ export function const_searchFormNode() {
 		this.searchForm = ReactDOM.createPortal(this.searchForm, insertEl);
 	} else {
 		this.searchForm = this.searchForm ? (
-			<div className={`${searchCssClass["z-embedded-form"]} ${"z-padding-top-0-important"}`}>
+			<div className={`z-embedded-form z-padding-top-0-important`}>
 				{this.searchForm}
 			</div>
 		) : null;

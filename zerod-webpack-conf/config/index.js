@@ -1,3 +1,10 @@
+/*
+ * @Author: zgt
+ * @Date: 2019-08-21 09:38:24
+ * @LastEditors: zgt
+ * @LastEditTime: 2019-10-09 16:10:15
+ * @Description: file content
+ */
 
 const path = require('path');
 const fs = require('fs');
@@ -12,20 +19,16 @@ function resolveCurrent(dir) {
 function resolveNode_modules(dir) {
     return path.join(__dirname, '../../', dir);
 }
+const copyFolderName = 'share-code';
 let age = { name: 'share-example' };
-const agepath = 'share-code/package.json';
+const agepath = `${copyFolderName}/package.json`;
 if (fs.existsSync(resolveCurrent(agepath))) {
     age = require(resolveCurrent(agepath));
 }
 // 共享代码包的名称
 const shareName = age.name;
-if (
-    !/^(share\-)[a-z0-9]*/.test(shareName) &&
-    !/^(zerod\-)[a-z0-9]*/.test(shareName)
-) {
-    console.log(
-        chalk.red(`share-code/package.json/name必须以share-或者zerod-开头`),
-    );
+if (!/^(share\-)[a-z0-9]*/.test(shareName) && !/^(zerod\-)[a-z0-9]*/.test(shareName)) {
+    console.log(chalk.red(`${copyFolderName}/package.json/name必须以share-或者zerod-开头`));
     process.exit(1);
 }
 
@@ -42,6 +45,7 @@ const config = merge(
         //入口js
         entry: {},
         copyName: shareName,
+        copyFolderName,
         //babel-loader 要包含的文件夹是哪些
         'babel-includes': [
             resolveCurrent('src'),
@@ -56,19 +60,11 @@ const config = merge(
         //增加加载器
         loaders: [],
         dll: {
-            disabled:false,
+            disabled: false,
             //除了package.json的dependencies，还需包含
             include: [],
             //打包dll时从package.json的dependencies中不包含
-            exclude: [
-                'antd',
-                'antd-mobile',
-                'uuid',
-                'echarts',
-                'babel-polyfill',
-                '@babel/polyfill',
-                'mockjs',
-            ],
+            exclude: ['antd', 'antd-mobile', 'uuid', 'echarts', 'babel-polyfill', '@babel/polyfill', 'mockjs'],
         },
         HtmlIncludeAssets: [],
         //开发模式配置
@@ -111,6 +107,23 @@ const config = merge(
     },
     baseConf,
 );
+function getBuildPublicPath() {
+    //npm run build 之后的参数
+    const npm_config_argv = JSON.parse(process.env.npm_config_argv);
+    const original = npm_config_argv.original;
+    let buildPuablicPath = '';
+    if (original[0] === 'run' && ['build', 'dev'].includes(original[1]) && original[2]) {
+        buildPuablicPath = `/${original[2].replace(/(^\/|\/$)/g, '').replace(/^--/g, '')}/`;
+    }
+    console.log(buildPuablicPath);
+    return buildPuablicPath;
+}
+//npm run build  或 npm run dev  后带了参数 ，就取这个参数作为基础绝对路径
+const publicPath = getBuildPublicPath();
+if (publicPath) {
+    config.dev.assetsPublicPath = publicPath;
+    config.build.assetsPublicPath = publicPath;
+}
 const exists = function(url) {
     if (url) {
         fs.exists(url, function(exist) {

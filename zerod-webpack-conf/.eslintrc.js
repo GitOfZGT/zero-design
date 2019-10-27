@@ -1,3 +1,10 @@
+/*
+ * @Author: zgt
+ * @Date: 2019-04-24 09:28:54
+ * @LastEditors: zgt
+ * @LastEditTime: 2019-08-14 17:02:37
+ * @Description: file content
+ */
 module.exports = {
     env: { browser: true, node: true, es6: true, commonjs: true },
     parser: 'babel-eslint',
@@ -100,7 +107,7 @@ module.exports = {
         'consistent-return': 'warn',
         curly: ['warn', 'multi-line'],
         'default-case': ['error', { commentPattern: '^no default$' }],
-        'dot-notation': ['error', { allowKeywords: true }],
+        'dot-notation': 'off',
         eqeqeq: ['warn', 'always'],
         'guard-for-in': 'error',
         'no-case-declarations': 'error',

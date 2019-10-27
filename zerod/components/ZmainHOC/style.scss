@@ -1,4 +1,4 @@
-@import "../../scssMixin/generateClassName";
+@import "../../scssMixin/generateClassName2";
 @import "../../scss/vars";
 
 @mixin navTheme($name, $nav-bg, $selected-bg, $select-border) {
@@ -6,47 +6,46 @@
 		:global {
 			.z-layout-#{$name} .z-scroll-color {
 				.iScrollIndicator {
-					background-color: rgba($color: lighten($color: $nav-bg, $amount: 40%), $alpha: 0.7);
+					// background-color: rgba($color: lighten($color: $nav-bg, $amount: 40%), $alpha: 0.7);
+					background-image: $--defatul-ScrollbarColor;
 				}
-            }
+			}
 		}
 	}
 
 	@include is($name) {
-        background-color: $nav-bg;
-		:global {
-			.ant-menu-dark .ant-menu-inline.ant-menu-sub {
-				box-shadow: none;
-            }
+		background-color: $nav-bg;
 
-
-            .ant-menu-dark .ant-menu-item:hover,
-            .ant-menu-dark.ant-menu-inline-collapsed .ant-menu-submenu-title:hover{
-                background-color: #1c3e5f;
-            }
-            .ant-menu.ant-menu-root.ant-menu-dark .ant-menu-item-selected {
-				color: lighten($color: $nav-bg, $amount: 90%);
-				background-color: $selected-bg;
-				&:after {
-                    border-right: 4px solid $select-border;
-                    transform:scaleY(1);
-                    opacity: 1;
-				}
-            }
-			.ant-menu-dark .ant-menu-sub {
-				// background-color: lighten($color: $nav-bg, $amount: 4%);
-				background-color: $nav-bg;
-			}
-
-			.ant-menu-dark.ant-menu-inline-collapsed .ant-menu-submenu-selected {
-				background-color: #1c3e5f;
-			}
-
-			// .ant-menu-dark .ant-menu-item:hover,
-			// .ant-menu-dark .ant-menu-submenu-title:hover {
-			//     background-color: #1C4B76;
-			// }
+		.ant-menu-dark .ant-menu-inline.ant-menu-sub {
+			box-shadow: none;
 		}
+
+		.ant-menu-dark .ant-menu-item:hover,
+		.ant-menu-dark.ant-menu-inline-collapsed .ant-menu-submenu-title:hover {
+			background-color: #1c3e5f;
+		}
+		.ant-menu.ant-menu-root.ant-menu-dark .ant-menu-item-selected {
+			color: lighten($color: $nav-bg, $amount: 90%);
+			background-color: $selected-bg;
+			&:after {
+				border-right: 4px solid $select-border;
+				transform: scaleY(1);
+				opacity: 1;
+			}
+		}
+		.ant-menu-dark .ant-menu-sub {
+			// background-color: lighten($color: $nav-bg, $amount: 4%);
+			background-color: $nav-bg;
+		}
+
+		.ant-menu-dark.ant-menu-inline-collapsed .ant-menu-submenu-selected {
+			background-color: #1c3e5f;
+		}
+
+		// .ant-menu-dark .ant-menu-item:hover,
+		// .ant-menu-dark .ant-menu-submenu-title:hover {
+		//     background-color: #1C4B76;
+		// }
 	}
 }
 
@@ -67,7 +66,7 @@
 		box-shadow: none;
 	}
 	@include is("light") {
-		box-shadow: 2px 0px 6px #dbdbdb;
+		border-right: 1px solid #e3e6ea;
 	}
 }
 
@@ -84,37 +83,27 @@
 	}
 }
 @include z("main-nav") {
-	:global {
-		.ant-menu-dark {
-			background-color: transparent;
-		}
+	.ant-menu-dark {
+		background-color: transparent;
 	}
 
 	@include navTheme("light", $--main-nav-light-bg, $--blue-deep, $--yellow-color);
 	@include navTheme("dark", $--main-nav-dark-bg, $--blue-deep, $--yellow-color);
 	@include navTheme("mazarine", $--main-nav-mazarine-bg, $--blue-deep, $--yellow-color);
 	@include is("light") {
-		:global {
-			.ant-menu-submenu.ant-menu-submenu-open .ant-menu-submenu-title {
-				color: $primary-color;
-			}
+		.ant-menu-submenu.ant-menu-submenu-open .ant-menu-submenu-title {
+			color: $primary-color;
 		}
 	}
 
-	:global {
-		.ant-menu-inline,
-		.ant-menu-vertical,
-		.ant-menu-vertical-left {
-			border-right: 0;
-		}
+	.ant-menu-inline,
+	.ant-menu-vertical,
+	.ant-menu-vertical-left {
+		border-right: 0;
 	}
 }
 
 @include z("main-header") {
 	background-color: white;
 	border-bottom: 1px solid #e3e6ea;
-	
-}
-
-@include z("main-body") {
 }

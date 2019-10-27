@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useImperativeHandle, useCallback } from "react";
 import { Icon, Input, Tooltip } from "antd";
-
+import { getControl, getOptions } from "../Zform/controls";
 export default React.memo(function GroupNameEdit(props) {
 	const { value, onChange } = props;
 	const [inputValue, setInputValue] = useState();
@@ -10,13 +10,13 @@ export default React.memo(function GroupNameEdit(props) {
 			{!edited ? <span>{value}</span> : null}
 			{edited ? (
 				<div className="z-display-inline-block" style={{ width: "180px" }}>
-					<Input
-						size="small"
-						value={inputValue}
-						onChange={(e) => {
-							setInputValue(e.target.value);
-						}}
-					/>
+					{getControl("Input", {
+						size: "small",
+						value: inputValue,
+						onChange: value => {
+							setInputValue(value);
+						},
+					})}
 				</div>
 			) : null}
 			{edited ? (
@@ -36,8 +36,8 @@ export default React.memo(function GroupNameEdit(props) {
 					<div
 						className="z-live-tool-item all-border small z-margin-left-10"
 						onClick={() => {
-							const returner= typeof onChange === "function" && onChange(inputValue);
-							if(returner){
+							const returner = typeof onChange === "function" && onChange(inputValue);
+							if (returner) {
 								return;
 							}
 							setEdited(false);

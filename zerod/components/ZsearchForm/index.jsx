@@ -1,12 +1,12 @@
 import React from "react";
 import { Form, Row, Col, Input, Button, Icon } from "antd";
 import PropTypes from "prop-types";
-import cssClass from "./style.scss";
-import { CSSTransition, TransitionGroup } from "react-transition-group";
+// import { CSSTransition, TransitionGroup } from "react-transition-group";
 import { animateTimout, const_initItems, const_execAsync, const_changeFormItems } from "../constant";
 // import ZpageLoading from "../ZpageLoading";
 import { once, dataType } from "../zTool";
 import ColFormItem from "../Zform/ColFormItem";
+import "./style.scss";
 export const ZsearchForm = Form.create()(
 	class extends React.PureComponent {
 		static propTypes = {
@@ -22,10 +22,12 @@ export const ZsearchForm = Form.create()(
 			noCollapse: PropTypes.bool,
 			defaultSpan: PropTypes.oneOfType([PropTypes.number, PropTypes.object]),
 			formDefaultValues: PropTypes.object,
+			values: PropTypes.object,
 			collapseCount: PropTypes.number,
 			afterItemsRendered: PropTypes.func, // 表单控件渲染完的回调
 			initAnimation: PropTypes.bool,
 			momentFormat: PropTypes.bool,
+			booleanToNumber: PropTypes.bool,
 		};
 		static defaultProps = {
 			defaultSpan: { xxl: 6, xl: 8, lg: 12, md: 24 },
@@ -34,10 +36,18 @@ export const ZsearchForm = Form.create()(
 			hidden: false,
 			labelLayout: "vertical",
 			initAnimation: true,
+			booleanToNumber:true,
 		};
 		state = {
 			expand: this.props.noCollapse,
 			items: [],
+			currentForm: {
+				...this.props.form,
+				zformItems: [],
+				saveFieldOptions: {},
+				saveOptionsMapKey: {},
+				getAsyncQueue: () => this.allAsync,
+			},
 		};
 		allAsync = [];
 		methods = {
@@ -54,6 +64,14 @@ export const ZsearchForm = Form.create()(
 								if (dataType.isString(values[key])) {
 									//字符串类型的值去掉首尾空格
 									newValues[key] = values[key].trim();
+									//凡是只有%_的都会转义
+									const hasSyml = newValues[key].match(/^[\%\_]+$/g);
+									if (hasSyml) {
+										//转义通配符% _
+										hasSyml.forEach(syml => {
+											newValues[key] = newValues[key].replace(syml, `\\${syml}`);
+										});
+									}
 								} else if (this.props.momentFormat) {
 									//如果需要把moment对象格式化对应的format
 									const formating = val => {
@@ -69,6 +87,8 @@ export const ZsearchForm = Form.create()(
 									} else {
 										newValues[key] = formating(values[key]);
 									}
+								} else if (this.props.booleanToNumber && dataType.isBoolean(values[key])) {
+									newValues[key] = Number(values[key]);
 								} else {
 									newValues[key] = values[key];
 								}
@@ -96,7 +116,7 @@ export const ZsearchForm = Form.create()(
 			collapseCount: this.props.collapseCount,
 		};
 		setFieldsValue(values) {
-			values = values ? values : this.props.formDefaultValues;
+			values = values ? values : this.props.values || this.props.formDefaultValues;
 			if (values && this.state.items.length) {
 				const newValues = {};
 				this.filedKeys.forEach(key => {
@@ -144,11 +164,13 @@ export const ZsearchForm = Form.create()(
 			if (this.hidden) {
 				if (init) {
 					this.formEl.style.height = "0px";
+					this.formEl.style.overflow = "hidden";
 					this.hidden = false;
 				} else {
 					this.formEl.style.height = (this.formEl.scrollHeight > 0 ? this.formEl.scrollHeight : 1) + "px";
 					setTimeout(() => {
 						this.formEl.style.height = "0px";
+						this.formEl.style.overflow = "hidden";
 						this.hidden = false;
 						callback && callback(this.hidden);
 					}, 10);
@@ -159,6 +181,7 @@ export const ZsearchForm = Form.create()(
 					this.formEl.style.height = (this.formEl.scrollHeight > 0 ? this.formEl.scrollHeight : 1) + "px";
 					once(this.formEl, "transitionend", () => {
 						this.formEl.style.height = "";
+						this.formEl.style.overflow = "";
 					});
 					this.hidden = true;
 					callback && callback(this.hidden);
@@ -166,14 +189,17 @@ export const ZsearchForm = Form.create()(
 			}
 		};
 		componentDidMount() {
-			this.form = { ...this.props.form, zformItems: this.state.items, saveFieldOptions: {},saveOptionsMapKey:{} };
+			this.form = this.state.currentForm;
 			this.props.getFormInstance && this.props.getFormInstance(this.form, this.methods);
 			this.props.exportMethods && this.props.exportMethods(this.methods);
 			this.execAsync();
 			this.setAnimate(null, true);
 		}
 		componentDidUpdate(prevProps, prevState) {
-			if (this.props.formDefaultValues !== prevProps.formDefaultValues) {
+			if (
+				this.props.values !== prevProps.values ||
+				this.props.formDefaultValues !== prevProps.formDefaultValues
+			) {
 				this.setFieldsValue();
 			}
 			if (
@@ -182,13 +208,19 @@ export const ZsearchForm = Form.create()(
 			) {
 				this.execAsync();
 			}
-			if (this.props.form !== prevProps.form) {
+			if (this.props.form !== prevProps.form || this.state.items !== prevState.items) {
 				this.form = {
 					...this.props.form,
 					zformItems: this.state.items,
 					saveFieldOptions: this.form.saveFieldOptions,
 					saveOptionsMapKey: this.form.saveOptionsMapKey,
+					getAsyncQueue: () => this.allAsync,
 				};
+				if (this.props.form !== prevProps.form) {
+					this.setState({
+						currentForm: this.form,
+					});
+				}
 				this.props.getFormInstance && this.props.getFormInstance(this.form, this.methods);
 			}
 			// if (this.props.hidden !== prevProps.hidden) {
@@ -206,7 +238,7 @@ export const ZsearchForm = Form.create()(
 					<ColFormItem
 						key={item.key}
 						loading={item.loading}
-						form={this.props.form}
+						form={this.state.currentForm}
 						changeFormItems={this.methods.changeFormItems}
 						item={item}
 						ref={item.ref}
@@ -214,32 +246,31 @@ export const ZsearchForm = Form.create()(
 						getInsideItems={this.methods.getInsideItems}
 					/>
 				);
-				return this.props.initAnimation ? (
-					<CSSTransition key={item.key} timeout={animateTimout.flipInTime} classNames="fadeIn-to-down">
-						{colItem}
-					</CSSTransition>
-				) : (
-					colItem
-				);
+				return colItem;
+				// return this.props.initAnimation ? (
+				// 	<CSSTransition key={item.key} timeout={animateTimout.flipInTime} classNames="fadeIn-to-down">
+				// 		{colItem}
+				// 	</CSSTransition>
+				// ) : (
+				// 	colItem
+				// );
 			});
 		}
 		render() {
 			this.items = this.getFormItems();
 			const { className, hidden, labelLayout, initAnimation } = this.props;
 			return (
-				<div
-					ref={el => (this.formEl = el)}
-					className={`${cssClass["z-search-form"]} ${className ? className : ""}`}
-				>
+				<div ref={el => (this.formEl = el)} className={`z-search-form ${className || ""}`}>
 					<Form onSubmit={this.methods.handleSearch} className="z-padding-top-14">
 						<Row type="flex" className={`z-form-row ${"z-form-label-" + labelLayout}`}>
-							{initAnimation ? (
+							{this.items}
+							{/* {initAnimation ? (
 								<TransitionGroup component={null} enter={true} exit={true} appear={true}>
 									{this.items}
 								</TransitionGroup>
 							) : (
 								this.items
-							)}
+							)} */}
 							{this.items.length ? (
 								<Col
 									{...(typeof this.props.defaultSpan == "number"
@@ -247,11 +278,15 @@ export const ZsearchForm = Form.create()(
 										: this.props.defaultSpan)}
 									className="z-flex-items-end"
 								>
-									<div className="ant-form-item z-padding-bottom-4">
-										<Button type="primary" htmlType="submit">
+									<div className="ant-form-item z-form-item" style={{ paddingBottom: "4px" }}>
+										<Button type="primary" htmlType="submit" icon="search">
 											查询
 										</Button>
-										<Button className={`z-margin-left-15`} onClick={this.methods.handleReset}>
+										<Button
+											className={`z-margin-left-15`}
+											onClick={this.methods.handleReset}
+											icon="reload"
+										>
 											重置
 										</Button>
 										{this.state.items.length > this.config.collapseCount &&

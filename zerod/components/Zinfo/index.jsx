@@ -1,7 +1,7 @@
 import React from "react";
 import { Row, Col } from "antd";
 import PropTypes from "prop-types";
-import cssClass from "./style.scss";
+import "./style.scss";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
 import { animateTimout, const_initItems, const_execAsync, const_itemSpan } from "../constant";
 // import ZpageLoading from "../ZpageLoading";
@@ -73,7 +73,7 @@ class Zinfo extends React.PureComponent {
 	}
 	render() {
 		return (
-			<Row type="flex" className={cssClass["z-info-row"]}>
+			<Row type="flex" className="z-info-row">
 				<TransitionGroup component={null} enter={true} exit={true} appear={true}>
 					{this.getItems()}
 				</TransitionGroup>

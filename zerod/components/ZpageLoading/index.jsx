@@ -1,7 +1,7 @@
 import React from "react";
 import { Spin } from "antd";
 import PropTypes from "prop-types";
-import cssClass from "./style.scss";
+import "./style.scss";
 
 export class ZpageLoading extends React.PureComponent {
 	static propTypes = {
@@ -25,11 +25,11 @@ export class ZpageLoading extends React.PureComponent {
 		this.props.exportMethods && this.props.exportMethods(this.methods);
 	}
 	render() {
-		const { size, showLoading, tip, ...others } = this.props;
+		const { size, showLoading, tip, exportMethods, ...others } = this.props;
 		const loading = showLoading !== undefined ? showLoading : this.state.loading;
 		return (
-			<div className={cssClass["z-page-loading-cover"]} style={{ display: loading ? "block" : "none" }}>
-				<div className={cssClass["z-page-loading"]}>
+			<div className="z-page-loading-cover" style={{ display: loading ? "block" : "none" }}>
+				<div className="z-page-loading">
 					<Spin
 						spinning={loading}
 						size={size ? size : "large"}

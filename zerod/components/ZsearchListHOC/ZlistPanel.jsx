@@ -16,7 +16,7 @@ import {
 } from "../constant";
 import { Button, Icon, Divider, Dropdown, Menu, Modal } from "antd";
 
-import cssClass from "./style.scss";
+import "./style.scss";
 // 上下文
 import ZerodMainContext from "../ZerodMainContext";
 import ZerodRootContext from "../ZerodRootContext";
@@ -25,9 +25,9 @@ import { deepCopy, dataType, addClass, removeClass } from "../zTool";
 import tableTemplate from "./tableTemplate";
 import cardTemplate from "./cardTemplate";
 import simpleTemplate from "./simpleTemplate";
+import customTemplate from "./customTemplate";
 let defaultConfig = const_getListConfig("list", "ZlistPanel");
 import { ZroundingButton } from "../ZroundingButton";
-import { Zbutton } from "../Zbutton";
 
 const sortTypeName = {
 	ascend: "ASC",
@@ -73,6 +73,7 @@ class ZlistPanel extends ZpureComponent {
 		paginationType: PropTypes.string, // 分页类型， paging | infinite
 		tableParams: PropTypes.object, // 对应antd 的Table的参数
 		responseKeys: PropTypes.object, //后台接口请求响应体的key处理
+		customTemplateRender: PropTypes.func, // listType==='custom'时，调用的自定义渲染函数
 	};
 	static defaultProps = defaultConfig.list;
 
@@ -108,6 +109,9 @@ class ZlistPanel extends ZpureComponent {
 				expandedSearch: this.searchFormConfig && this.searchFormConfig.defaultExpanded,
 			});
 		}
+		if (this.props.location !== prevProps.location) {
+			this.props.exportSomething && this.props.exportSomething(this.getExportSomething());
+		}
 	}
 	render() {
 		this.isInfinite = this.props.paginationType === "infinite";
@@ -120,11 +124,12 @@ class ZlistPanel extends ZpureComponent {
 				<div>
 					<Button
 						type="dashed"
-						className={cssClass["z-list-block-btn"]}
+						icon="arrow-down"
+						className="z-load-more-btn"
 						disabled={this.state.noMore}
 						onClick={this.methods.infiniteLoader}
 					>
-						{this.state.noMore ? "没有更多数据" : "下一页"}
+						{this.state.noMore ? "没有更多数据" : "加载更多"}
 					</Button>
 					{this.props.moreContentRender && this.props.moreContentRender(this.getExportSomething())}
 				</div>
@@ -153,6 +158,9 @@ class ZlistPanel extends ZpureComponent {
 				break;
 			case "simple":
 				content = simpleTemplate.call(this);
+				break;
+			case "custom":
+				content = customTemplate.call(this);
 				break;
 		}
 		return (
@@ -207,9 +215,13 @@ class ZlistPanel extends ZpureComponent {
 	};
 	moreQuery = {};
 	methods = {
+		getWrapperProps: () => {
+			return this.props.wrapperProps;
+		},
 		...const_getMethods.call(this),
 		handleMenuClick: record => {
 			return item => {
+				item.domEvent && item.domEvent.stopPropagation();
 				if (item.key === "_delete") {
 					this.methods.onDelete(item.item.props.text, record);
 				} else {
@@ -268,6 +280,7 @@ class ZlistPanel extends ZpureComponent {
 						this.methods.setDataState(list, merge);
 					})
 					.catch(re => {
+						this.methods.setDataState([], merge);
 						this.methods.notice.error(re && re.msg ? re.msg : "获取数据失败");
 					})
 					.finally(re => {
@@ -444,7 +457,7 @@ class ZlistPanel extends ZpureComponent {
 			});
 		},
 	};
-	getDiffBtn = (type, btnName, onClick, disabled) => {
+	getDiffBtn = (type, btnName, onClick, disabled, opt = {}) => {
 		const clickfn = e => {
 			e.stopPropagation();
 			typeof onClick == "function" && onClick(e);
@@ -452,18 +465,17 @@ class ZlistPanel extends ZpureComponent {
 		switch (this.props.listType) {
 			case "table":
 			case "card":
+			case "custom":
 				return (
-					<Zbutton key={btnName} disabled={disabled} size="small" type={type} onClick={clickfn}>
+					<Button key={btnName} disabled={disabled} size="small" type={type} onClick={clickfn} {...opt}>
 						{btnName}
-					</Zbutton>
+					</Button>
 				);
 			case "simple":
 				return (
 					<a
 						key={btnName}
-						className={`z-text-underline-hover ${!disabled ? "z-text-blue" : "z-text-gray"} ${
-							cssClass["z-simple-link"]
-						}`}
+						className={`z-text-underline-hover ${!disabled ? "z-text-blue" : "z-text-gray"} z-simple-link`}
 						href="javascript:void(0)"
 						onClick={!disabled ? clickfn : () => {}}
 					>
@@ -547,6 +559,7 @@ class ZlistPanel extends ZpureComponent {
 										this.methods.onDetail(record);
 									},
 									_detailBtnDisabled,
+									{ icon: "eye" },
 								);
 							// {_showUpdateBtn && !this.state.isListCard ? <Divider type="vertical" /> : null}
 							// </span>
@@ -560,6 +573,7 @@ class ZlistPanel extends ZpureComponent {
 										this.methods.onUpdate(record);
 									},
 									_updateBtnDisabled,
+									{ icon: "edit" },
 								);
 							// 	{_showDeleteBtn && !this.state.isListCard ? <Divider type="vertical" /> : null}
 							// </span>
@@ -573,6 +587,7 @@ class ZlistPanel extends ZpureComponent {
 										this.methods.onDelete(text, record);
 									},
 									_deleteBtnDisabled,
+									{ icon: "delete" },
 								);
 							// 	{this.hasMoreMenu && !this.state.isListCard ? <Divider type="vertical" /> : null}
 							// </span>

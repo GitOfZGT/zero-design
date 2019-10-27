@@ -1,13 +1,14 @@
 import React from "react";
 import ZpureComponent from "../ZpureComponent";
 import { BrowserRouter, HashRouter, Route, Redirect, Switch } from "react-router-dom";
-import { LocaleProvider } from "antd";
+import { ConfigProvider } from "antd";
 import zh_CN from "antd/lib/locale-provider/zh_CN";
-import moment from 'moment';
-import 'moment/locale/zh-cn';
-moment.locale('zh-cn');
+import moment from "moment";
+import "moment/locale/zh-cn";
+moment.locale("zh-cn");
 import ZerodRootContext from "../ZerodRootContext";
-import {mergeConfig,dataType} from "../zTool";
+import { mergeConfig } from "../zTool";
+import "./style.scss";
 let fistLoad = true;
 function hasPaceWatch() {
 	if (window.Pace && fistLoad) {
@@ -15,7 +16,7 @@ function hasPaceWatch() {
 		window.addEventListener(
 			"hashchange",
 			() => {
-				window.Pace && window.Pace.restart();
+				!window.isAppPortal && window.Pace && window.Pace.restart();
 			},
 			false,
 		);
@@ -40,6 +41,7 @@ function ZappHOC(pageConfig) {
 	if (defaultConfig.routerType == "hash") {
 		hasPaceWatch();
 	}
+	console.log(process.env);
 	class App extends ZpureComponent {
 		config = defaultConfig;
 		routes = this.config.rootRoutes.map((item, i) => {
@@ -52,7 +54,7 @@ function ZappHOC(pageConfig) {
 		render() {
 			const Router = this.config.routerType === "history" ? BrowserRouter : HashRouter;
 			return (
-				<LocaleProvider locale={zh_CN}>
+				<ConfigProvider locale={zh_CN}>
 					<ZerodRootContext.Provider
 						value={{
 							footerLinks: this.config.footerLinks,
@@ -60,11 +62,11 @@ function ZappHOC(pageConfig) {
 							responseKeys: this.config.responseKeys,
 						}}
 					>
-						<Router>
+						<Router basename={process && process.env && process.env.BASE_NAME ? process.env.BASE_NAME : ""}>
 							<>{this.routes}</>
 						</Router>
 					</ZerodRootContext.Provider>
-				</LocaleProvider>
+				</ConfigProvider>
 			);
 		}
 	}

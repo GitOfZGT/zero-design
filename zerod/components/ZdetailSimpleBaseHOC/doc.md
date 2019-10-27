@@ -1,3 +1,10 @@
+<!--
+ * @Author: zgt
+ * @Date: 2018-08-21 10:59:31
+ * @LastEditors: zgt
+ * @LastEditTime: 2019-08-22 16:22:10
+ * @Description: file content
+ -->
 <div class="z-doc-titles"></div>
 
 # 详情页面：ZdetailSimpleBaseHOC
@@ -175,6 +182,11 @@ tool.methods 是一个对象，内容如下：
 		</tr>
 	</thead>
 	<tbody>
+		<tr>
+			<td>getWrapperProps</td>
+			<td>用于获取ZdetailSimpleBaseHOC()返回的那个组件的props</td>
+			<td>tool.methods.getWrapperProps()</td>
+		</tr>
 		<tr>
 			<td>showLoading</td>
 			<td>用于 显示/取消 当前页的loading的方法，必需参数show：true|false</td>

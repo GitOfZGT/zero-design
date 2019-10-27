@@ -1,3 +1,10 @@
+/*
+ * @Author: zgt
+ * @Date: 2018-08-21 11:15:09
+ * @LastEditors: zgt
+ * @LastEditTime: 2019-08-19 12:03:06
+ * @Description: file content
+ */
 const path = require('path');
 function resolve(dir) {
     return path.join(__dirname, '..', dir);
@@ -9,7 +16,7 @@ const config = {
     'ant-icons': true,
     //入口js
     entry: {
-        app: ['@babel/polyfill', resolve('src/main.js')],
+        app: [resolve('src/main.js')],
     },
     //babel-loader 要包含的文件夹是哪些
     'babel-includes': [],

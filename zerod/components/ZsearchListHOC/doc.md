@@ -1,3 +1,10 @@
+<!--
+ * @Author: zgt
+ * @Date: 2018-08-21 10:59:31
+ * @LastEditors: zgt
+ * @LastEditTime: 2019-09-09 14:07:54
+ * @Description: file content
+ -->
 <div class="z-doc-titles"></div>
 
 # 列表展示：ZsearchListHOC
@@ -24,13 +31,23 @@ import getDetailPage from "./getDetailPage.js";
 const pageConfig = {
 	pageHeader: {
 		show: true,
-		trademark: <img src="https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png" width="60" className="z-margin-right-15" />,
+		trademark: (
+			<img
+				src="https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png"
+				width="60"
+				className="z-margin-right-15"
+			/>
+		),
 		// array>[object] | null,如果是null则不显示面包屑
-		breadcrumbRoutes: [{ path: "config", name: "案例", link: false }, { path: "serviceWithTableList", name: "表格列表", link: true }],
+		breadcrumbRoutes: [
+			{ path: "config", name: "案例", link: false },
+			{ path: "serviceWithTableList", name: "表格列表", link: true },
+		],
 		// any
 		title: "服务器配置",
 		// any
-		content: "微服务的定义，维护其配置。除了Eureka Service及Config Center两种服务不在这里配置，其他服务都必须在此定义和配置！",
+		content:
+			"微服务的定义，维护其配置。除了Eureka Service及Config Center两种服务不在这里配置，其他服务都必须在此定义和配置！",
 		// element | node | function
 		rightMoreContent: <div>右边内容</div>,
 	},
@@ -40,14 +57,14 @@ const pageConfig = {
 			{
 				key: "serviceCode",
 				label: "服务编码",
-				render: (form) => {
+				render: form => {
 					return <Input placeholder="请输入内容" />;
 				},
 			},
 			{
 				key: "serviceName",
 				label: "服务名称",
-				render: (form) => {
+				render: form => {
 					return <Input placeholder="请输入内容" />;
 				},
 			},
@@ -108,13 +125,13 @@ const pageConfig = {
 		],
 		// 是否显示新建按钮
 		showAddBtn: true,
-		addPageRender: (panel) => {
+		addPageRender: panel => {
 			const AddPage = getEditPage({
 				pageType: "add",
 				headerTitle: "新增服务配置",
 				headerContent: "新增一个服务,需要录入服务编码服务名称端口号等信息",
 				// 保存数据成功的回调
-				afterSubmitSuccess: (closeRightModal) => {
+				afterSubmitSuccess: closeRightModal => {
 					// 保存数据成功后刷新列表数据
 					panel.methods.getListData();
 					// 关闭右边modal
@@ -125,7 +142,7 @@ const pageConfig = {
 		},
 		// 是否显示详情按钮
 		showDetailBtn: true,
-		detailPageRender: (record) => {
+		detailPageRender: record => {
 			const DetailPage = getDetailPage({ headerTitle: record.serviceName, headerContent: record.remark });
 			return <DetailPage detailId={record.id} />;
 		},
@@ -138,7 +155,7 @@ const pageConfig = {
 				pageType: "update",
 				headerTitle: record.serviceName,
 				headerContent: record.remark,
-				afterSubmitSuccess: (closeRightModal) => {
+				afterSubmitSuccess: closeRightModal => {
 					panel.methods.getListData(); // 保存数据成功后刷新列表数据
 				},
 			});
@@ -160,11 +177,11 @@ const pageConfig = {
 			message.success(`您当前点击的是[${record.serviceName}]这条数据`);
 		},
 		// 获取列表数据的后台接口函数，其必须内部返回Promise
-		listApiInterface: (query) => {
+		listApiInterface: query => {
 			return api.config.getServiceList(Object.assign(query, { servcieName: query.serviceName })); //处理字段名
 		},
 		// 删除按钮的后台接口函数，其必须内部返回Promise
-		deleteApiInterface: (data) => {
+		deleteApiInterface: data => {
 			return api.config.deleteService({ id: data.id });
 		},
 		//是否显示分页
@@ -186,7 +203,7 @@ const pageConfig = {
 		listType: "card",
 		// 分页类型
 		paginationType: "infinite",
-		getPageSize: (listType) => 2,
+		getPageSize: listType => 2,
 		tableColumns: [
 			{
 				title: "服务名称",
@@ -224,7 +241,7 @@ const pageConfig = {
 		listType: "simple",
 		// 分页类型
 		paginationType: "infinite",
-		getPageSize: (listType) => 3,
+		getPageSize: listType => 3,
 		tableColumns: [
 			{
 				title: "服务名称",
@@ -277,6 +294,7 @@ const pageConfig = {
 				<p>4、其中<code>searchForm.items</code>的<code>render函数</code>的参数在这里多加tool,如：items:[{render:(form,changeFormItems,tool)=>{},key:"myKey"}]。</p>
 				<p>5、其中<code>searchForm.items</code>的<code>options函数</code>的参数在这里多加tool,如：items:[{options:(tool)=>options}]。</p>
 				<p>6、<code>searchForm</code>的其他<code>函数属性</code>除了原有的参数，还多加tool，如 <code>searchForm.afterItemsRendered</code>:(form,methods,tool)=>{}</p>
+				<p>7、<code>searchForm.hideExpandedBtn</code> 是否显示折叠按钮(默认true)</p>
 			</td>
 			<td>object</td>
 			<td>--</td>
@@ -307,7 +325,7 @@ const pageConfig = {
 		<tr>
 			<td>listType</td>
 			<td>列表类型</td>
-			<td>table | card | simple</td>
+			<td>table | card | simple | custom</td>
 			<td>table</td>
 		</tr>
 		<tr>
@@ -502,6 +520,12 @@ const pageConfig = {
 			<td>(text, record,index,tool,isListCard,getDiffBtn)=>{return [getDiffBtn("primary","新按钮",(e)=>{}),getDiffBtn("primary","新按钮",(e)=>{})]}</td>
 			<td>--</td>
 		</tr>
+		<tr>
+			<td>customTemplateRender</td>
+			<td>当listType==='custom'时自定义列表渲染函数</td>
+			<td>({ columns, listData, tool })=>{return ReactNode}}</td>
+			<td>--</td>
+		</tr>
 	</tbody>
 </table>
 
@@ -534,6 +558,11 @@ tool.methods 是一个对象，内容如下：
 		</tr>
 	</thead>
 	<tbody>
+		<tr>
+			<td>getWrapperProps</td>
+			<td>用于获取ZsearchListHOC()返回的那个组件的props</td>
+			<td>tool.methods.getWrapperProps()</td>
+		</tr>
 		<tr>
 			<td>showLoading</td>
 			<td>用于 显示/取消 当前页的loading的方法，必需参数show：true|false</td>

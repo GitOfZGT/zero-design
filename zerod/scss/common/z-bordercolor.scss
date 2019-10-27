@@ -1,0 +1,43 @@
+@import "../../scssMixin/generateClassName2";
+@import "../vars.scss";
+
+$--list-var: (
+	"bordercolor-red": $--red,
+	"bordercolor-orange": $--orange,
+	"bordercolor-yellow": $--yellow,
+	"bordercolor-olive": $--olive,
+	"bordercolor-green": $--green,
+	"bordercolor-cyan": $--cyan,
+	"bordercolor-blue": $--blue,
+	"bordercolor-purple": $--purple,
+	"bordercolor-mauve": $--mauve,
+	"bordercolor-pink": $--pink,
+	"bordercolor-brown": $--brown,
+	"bordercolor-grey": $--grey,
+	"bordercolor-black": $--black,
+	"bordercolor-darkGray": $--darkGray,
+	"bordercolor-gray": $--gray,
+	"bordercolor-ghostWhite": $--ghostWhite,
+	"bordercolor-light-red": $--light-red,
+	"bordercolor-light-orange": $--light-orange,
+	"bordercolor-light-yellow": $--light-yellow,
+	"bordercolor-light-olive": $--light-olive,
+	"bordercolor-light-green": $--light-green,
+	"bordercolor-light-cyan": $--light-cyan,
+	"bordercolor-light-blue": $--light-blue,
+	"bordercolor-light-purple": $--light-purple,
+	"bordercolor-light-mauve": $--light-mauve,
+	"bordercolor-light-pink": $--light-pink,
+	"bordercolor-light-brown": $--light-brown,
+	"bordercolor-light-grey": $--light-grey,
+);
+//生成 如z-bg-blue,z-bg-blue-important的 className
+@each $i, $color in $--list-var {
+	@include z($i, $global: true) {
+		border-color: $color;
+	}
+	//如需提高 color 权重 使用后缀 "-important"的className
+	@include z($i + "-important", $global: true) {
+		border-color: $color !important;
+	}
+}

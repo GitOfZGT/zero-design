@@ -1,4 +1,5 @@
-import React from "react";import ZpureComponent from "../ZpureComponent";
+import React from "react";
+import ZpureComponent from "../ZpureComponent";
 // import { Input } from "antd";
 
 // 工具
@@ -9,8 +10,6 @@ import { ZpageWraperHOC } from "../ZpageWrapper";
 import { const_getListConfig, const_getPageWrapperProps } from "../constant";
 // childs
 import ZtreePanel from "./ZtreePanel";
-
-// import cssClass from "./style.scss";
 
 // HOC
 const PageWraper = ZpageWraperHOC();
@@ -32,6 +31,7 @@ export function ZeditorTreeHOC(pageConfig) {
 			return (
 				<PageWraper {...this.pageWraper}>
 					<ZtreePanel
+						wrapperProps={this.props}
 						pageId={this.pageId}
 						colFormItems={this.config.searchForm.items}
 						searchForm={this.config.searchForm}

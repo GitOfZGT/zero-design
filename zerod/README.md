@@ -1,3 +1,10 @@
+<!--
+ * @Author: zgt
+ * @Date: 2018-08-21 10:59:31
+ * @LastEditors: zgt
+ * @LastEditTime: 2019-09-30 09:47:58
+ * @Description: file content
+ -->
 <div class="z-doc-titles"></div>
 
 # Zero-design 简称 zerod
@@ -18,9 +25,7 @@
 		"prismjs": "^1.15.0",
 		"swiper": "^4.3.5",
 		"react-color": "^2.14.1",
-		"lodash.debounce": "^4.0.8",
-		"lodash.throttle": "^4.1.1",
-		"lodash.merge": "^4.6.1",
+		"lodash": "^4.17.15",
 		"uuid": "^3.3.2",
 		"blueimp-md5": "^2.10.0",
 		"js-base64": "^2.5.1"
@@ -28,7 +33,7 @@
 }
 ```
 
-# zerod-admin-webpack 脚手架 v1.3.3
+# zerod-admin-webpack 脚手架 v1.3.5
 
 基于 `react + react-router + redux + react-redux + antd + zerod + scss` 的 webpack4 前端开发环境
 
@@ -67,7 +72,8 @@
 2019-04-20 v1.2.3 加入 Eslint 检测代码规范
 
 2019-04-26 v1.3.2 webpack 相关配置提取出 zerod-webpack-conf 包发布到私服  
-2019-06-19 v1.3.3 修复实际未使用上dll的问题，babel.config.js添加@babel/plugin-transform-modules-commonjs插件    
+2019-06-19 v1.3.3 修复实际未使用上 dll 的问题，babel.config.js 添加@babel/plugin-transform-modules-commonjs 插件  
+2019-08-14 v1.3.5 html-webpack-include-assets-plugin 升级为[html-webpack-tags-plugin](https://github.com/jharris4/html-webpack-tags-plugin)
 
 <div class="z-doc-titles"></div>
 
@@ -117,7 +123,7 @@
 └── package.json
 ```
 
-`.scss`文件是模块化className模式，要写全局className，请使用 `:global{  包含className  }`  
+`.scss`文件是模块化 className 模式，要写全局 className，请使用 `:global{ 包含className }`
 
 <div class="z-doc-titles"></div>
 
@@ -152,3 +158,5 @@
 6、`npm run init` (此命令包含 `rimraf node_modules & npm run npm-zerod & cnpm install & npm run dll`)
 
 7、`npm run eslint`： 全局检测代码规范 前提先要全局安装 `npm install eslint eslint-plugin-react eslint-plugin-react-hooks -g`一次
+
+8、`npm run initFiles` 发现根目录下没有 babel.config.js 等文件时，执行一次

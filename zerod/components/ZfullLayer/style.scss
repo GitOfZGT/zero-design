@@ -7,13 +7,13 @@
 		bottom: 0;
 		background-color: rgba(0, 0, 0, 0.6);
 		overflow: hidden;
-        z-index: 999;
-        $--h:128px;
-		$--top:$--h/2;
+		z-index: 999;
+		$--h: 128px;
+		$--top: $--h/2;
 		opacity: 1;
 		display: none;
 		transition: all 0.25s;
-		&.transparent{
+		&.transparent {
 			opacity: 0;
 		}
 		.close {
@@ -35,31 +35,38 @@
 				bottom: 22px;
 				left: 30px;
 			}
-        }
-        .z-full-layer-heading{
+		}
+		.z-full-layer-heading {
 			height: $--top;
-            // padding:0 $--top 0 20px;
-        }
-        .z-full-layer-body{
-            height: calc(100% - #{$--top});
+			// padding:0 $--top 0 20px;
+		}
+		.z-full-layer-body {
+			// height: calc(100% - #{$--top});
+			height: 100%;
 			overflow: auto;
 			transition: all 0.25s;
 			opacity: 1;
-			&.scale{
-				transform-origin:center center;
+			&.scale {
+				transform-origin: center center;
 				transform: scale(0);
 				opacity: 0;
 			}
 		}
-		&.normal .z-full-layer-heading{
+		&.normal .z-full-layer-heading {
 			border-bottom: 1px solid #cccccc;
 		}
-		&.normal .z-full-layer-heading,&.normal .z-full-layer-body{
+		&.normal .z-full-layer-heading,
+		&.normal .z-full-layer-body {
 			background-color: white;
 		}
-		&.normal .close{
+		&.normal .close {
 			color: #666666;
 		}
+		&.dark {
+			.z-full-layer-body::-webkit-scrollbar-track,
+			.z-body-scroll::-webkit-scrollbar-track {
+				background: transparent;
+			}
+		}
 	}
-
 }

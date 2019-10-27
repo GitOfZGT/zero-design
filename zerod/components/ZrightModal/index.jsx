@@ -3,7 +3,7 @@ import ZpureComponent from "../ZpureComponent";
 import PropTypes from "prop-types";
 import { Icon } from "antd";
 
-import cssClass from "./style.scss";
+import "./style.scss";
 // import Zlayout from "../Zlayout";
 import ZpageLoading from "../ZpageLoading";
 import { once } from "../zTool";
@@ -36,11 +36,11 @@ export class ZrightModal extends ZpureComponent {
 		transparent: true,
 		show: false,
 	};
-	hideClass = cssClass["is-right-hide"];
+	hideClass = "is-right-hide";
 	closeModal = () => {
 		this.props.onClose && this.props.onClose();
 	};
-	showAfter = (e) => {
+	showAfter = e => {
 		// if (e.target !== e.currentTarget) return;
 
 		document.documentElement.style.overflow = "";
@@ -80,15 +80,15 @@ export class ZrightModal extends ZpureComponent {
 								});
 								this.showAfter();
 						  })
-						: once(this.boxEl, "transitionend", this.showAfter);;
+						: once(this.boxEl, "transitionend", this.showAfter);
 				}, 100);
 			}
 			document.documentElement.style.overflow = "hidden";
 		}
 	}
 	methods = {
-		showLoading: (show,tip) => {
-			this.loadingRef.current.methods.showLoading(show,tip);
+		showLoading: (show, tip) => {
+			this.loadingRef.current.methods.showLoading(show, tip);
 		},
 	};
 	loadingRef = React.createRef();
@@ -100,28 +100,32 @@ export class ZrightModal extends ZpureComponent {
 				{this.props.mask ? (
 					<div
 						ref={this.coverElRef}
-						className={`${cssClass["z-pop-cover"]} ${transparent ? cssClass["transparent"] : ""}`}
+						className={`z-pop-cover ${transparent ? "transparent" : ""}`}
 						style={{ display: this.state.showCover ? "block" : "none", zIndex: this.props.zIndex - 1 }}
 						onClick={this.closeModal}
 					/>
 				) : null}
 				<div
-					ref={(el) => (this.boxEl = el)}
-					onClick={(e) => {
+					ref={el => (this.boxEl = el)}
+					onClick={e => {
 						e.nativeEvent.stopImmediatePropagation();
 					}}
-					className={`${cssClass["z-pop-content"]} app-body ${this.state.show ? "" : this.hideClass}`}
+					className={`z-pop-content app-body ${this.state.show ? "" : this.hideClass}`}
 					style={{ width: this.props.width, zIndex: this.props.zIndex }}
 					data-zgt_modal={this.props.name}
 				>
-					{this.props.scroll?<ModalContent
-						getWrapperEl={this.props.getWrapperEl}
-						scroll={this.props.scroll}
-						getScrollInstance={this.props.getScrollInstance}
-						children={this.props.children}
-					/>:this.props.children}
-					<div className={`${cssClass["z-pop-close"]} z-flex-items-v-center`}>
-						<Icon type="right" className={`${cssClass["z-btn"]}`} onClick={this.closeModal} />
+					{this.props.scroll ? (
+						<ModalContent
+							getWrapperEl={this.props.getWrapperEl}
+							scroll={this.props.scroll}
+							getScrollInstance={this.props.getScrollInstance}
+							children={this.props.children}
+						/>
+					) : (
+						this.props.children
+					)}
+					<div className={`z-pop-close z-flex-items-v-center`}>
+						<Icon type="right" className="z-btn" onClick={this.closeModal} />
 					</div>
 					<ZpageLoading ref={this.loadingRef} showLoading={this.props.showLoading} />
 				</div>

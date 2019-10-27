@@ -1,8 +1,6 @@
-@import "../../scssMixin/generateClassName";
+@import "../../scssMixin/generateClassName2";
+
 @include z("form") {
-	width: 80%;
+	width: 86%;
 	margin: 0 auto !important;
 }
-
-
-

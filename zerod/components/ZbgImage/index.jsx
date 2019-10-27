@@ -1,29 +1,35 @@
-import React from "react";import ZpureComponent from "../ZpureComponent";
+import React from "react";
+import ZpureComponent from "../ZpureComponent";
 import PropTypes from "prop-types";
-import cssClass from "./style.scss";
+import "./style.scss";
 export class ZbgImage extends ZpureComponent {
 	static propTypes = {
 		url: PropTypes.string,
-		position: PropTypes.string,// top | center
+		position: PropTypes.string, // top | center
 		className: PropTypes.string,
 		style: PropTypes.object,
 		onClick: PropTypes.func,
 	};
-    static defaultProps={
-        position:'center'
-    }
+	static defaultProps = {
+		position: "center",
+	};
 	render() {
-		let boxclassName = `${cssClass['z-bg-image-box']} z-flex-items-center ${this.props.className?this.props.className:''}`;
+		let boxclassName = `z-bg-image-box z-flex-items-center ${this.props.className ? this.props.className : ""} ${
+			this.props.url ? "" : "no-url"
+		}`;
 		return (
 			<div
 				className={boxclassName}
-				onClick={(e) => {
+				onClick={e => {
 					this.props.onClick && this.props.onClick(e);
 				}}
 				style={this.props.style}
 			>
-				<span>图片</span>
-				<div className={`${cssClass["z-bg-image"]} ${cssClass[`is-bg-${this.props.position}`]}`} style={{ backgroundImage: `url(${this.props.url})` }} />
+				{this.props.url ? null : <span>无图片</span>}
+				<div
+					className={`z-bg-image is-bg-${this.props.position}`}
+					style={{ backgroundImage: `url(${this.props.url})` }}
+				/>
 				{this.props.children}
 			</div>
 		);

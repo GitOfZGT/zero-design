@@ -1,3 +1,10 @@
+/*
+ * @Author: zgt
+ * @Date: 2019-04-24 18:01:13
+ * @LastEditors: zgt
+ * @LastEditTime: 2019-09-02 11:29:33
+ * @Description: file content
+ */
 "use strict";
 const path = require("path");
 const config = require("../config");
@@ -105,12 +112,12 @@ exports.styleLoaders = function(options) {
 			use: options.extract?[MiniCssExtractPlugin.loader,"happypack/loader?id="+"happy-"+extension]:["happypack/loader?id="+"happy-"+extension],
 		};
 		if(extension==="scss"){
-			opt.exclude= /node_modules[\\/](?!zerod)/;
+			opt.exclude= /node_modules[\\/](?!zerod|share)/;
 			opt.issuer = {
 				exclude: /\.less$/,
 			};
         }else if (extension==="less"){
-            opt.exclude=/node_modules[\\/](?!antd|_antd|ant-mobile|_ant-mobile)/;
+            opt.exclude=/node_modules[\\/](?!antd|_antd|ant-mobile|_ant-mobile|zerod)/;
 		}
 		happyOutput.push({
 			id: "happy-"+extension, //对于loaders id

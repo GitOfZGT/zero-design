@@ -3,8 +3,8 @@ import ZpureComponent from "../ZpureComponent";
 import ReactDOM from "react-dom";
 import PropTypes from "prop-types";
 import { SketchPicker } from "react-color";
-import cssClass from "./style.scss";
 import { CSSTransition } from "react-transition-group";
+import "./style.scss";
 export class ZcolorPicker extends ZpureComponent {
 	static propTypes = {
 		value: PropTypes.string,
@@ -19,32 +19,27 @@ export class ZcolorPicker extends ZpureComponent {
 	};
 	state = {
 		showPicker: false,
-		color: this.props.defaultValue
-			? this.props.defaultValue
-			: this.props.value
-			? this.props.value
-			: this.props.valueType === "hex"
-			? "#000000"
-			: "rgba(0,0,0,1)",
+		color: "",
 	};
+	componentDidMount() {
+		this.methods.initValue();
+		// this.props.onChange && this.props.onChange(this.state.color);
+		document.documentElement.addEventListener("click", this.methods.closePicker, false);
+	}
 	componentDidUpdate(prevProps) {
 		if (this.props.value !== prevProps.value) {
 			this.methods.initValue();
 		}
 	}
-	componentDidMount() {
-		this.methods.initValue();
-		this.props.onChange && this.props.onChange(this.state.color);
-		document.documentElement.addEventListener("click", this.methods.closePicker, false);
-	}
+
 	componentWillUnmount() {
 		document.documentElement.removeEventListener("click", this.methods.closePicker, false);
 	}
-	backgroundColor = this.state.color;
+	backgroundColor = "tranparent";
 	position = {};
 	methods = {
 		initValue: () => {
-			const val = this.props.value;
+			const val = this.props.value || this.props.defaultValue;
 			if (!val) return;
 			let color = "";
 			if (val.includes("rgb")) {
@@ -76,7 +71,6 @@ export class ZcolorPicker extends ZpureComponent {
 		colorChange: (color, event) => {
 			this.backgroundColor = `rgba(${color.rgb.r}, ${color.rgb.g}, ${color.rgb.b},${color.rgb.a})`;
 			this.setState({ color: color.rgb });
-			console.log(color)
 			this.props.onChange &&
 				this.props.onChange(
 					this.props.valueType == "rgb" ? this.backgroundColor : color[this.props.valueType],
@@ -121,10 +115,7 @@ export class ZcolorPicker extends ZpureComponent {
 			}
 		},
 		closePicker: e => {
-			if (e.target && e.target.className.includes(cssClass["z-color"])) {
-				return;
-			}
-			if (this.pickerEl.contains(e.target)) {
+			if (this.pickerEl.contains(e.target) || this.boxEl.contains(e.target)) {
 				return;
 			}
 			this.setState({
@@ -136,16 +127,14 @@ export class ZcolorPicker extends ZpureComponent {
 		const { className, disabled, style } = this.props;
 		return (
 			<span
-				className={`${cssClass["z-color-box"]} ${className ? className : ""} ${
-					disabled ? cssClass["disabled"] : ""
-				}`}
+				className={`z-color-box ${className ? className : ""} ${disabled ? "disabled" : ""}`}
 				ref={el => (this.boxEl = el)}
 				style={style}
 				onClick={this.methods.triggerPicker}
 			>
-				<span className={cssClass["z-bg"]} />
+				<span className="z-bg" />
 				<span
-					className={cssClass["z-color"]}
+					className="z-color"
 					style={
 						this.state.color
 							? {
@@ -155,10 +144,10 @@ export class ZcolorPicker extends ZpureComponent {
 					}
 				/>
 				{ReactDOM.createPortal(
-					<div className={cssClass["z-cover"]} ref={el => (this.coverEl = el)}>
+					<div className="z-cover" ref={el => (this.coverEl = el)}>
 						<CSSTransition in={this.state.showPicker} timeout={500} classNames="fadeIn-to-down">
 							<div
-								className={cssClass["z-picker"]}
+								className="z-picker"
 								style={this.position}
 								ref={el => (this.pickerEl = el)}
 								onAnimationEnd={this.methods.onAnimationEnd}

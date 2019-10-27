@@ -1,3 +1,10 @@
+<!--
+ * @Author: zgt
+ * @Date: 2018-08-21 10:59:31
+ * @LastEditors: zgt
+ * @LastEditTime: 2019-08-16 09:50:02
+ * @Description: file content
+ -->
 <div class="z-doc-titles"></div>
 
 # 布局组件：Zlayout
@@ -194,6 +201,12 @@
 			<td>获取最外层包裹元素,(el,metods)=>{}</td>
 			<td>function</td>
 			<td>--</td>
+		</tr>
+        <tr>
+			<td>useCustomScroll</td>
+			<td>在chrome浏览器默认使用原生滚动条，在其他浏览器默认启用js自定义滚动条，如需chrome也启用js自定义滚动条，useCustomScroll为true即可</td>
+			<td>boolean</td>
+			<td>false</td>
 		</tr>
 	</tbody>
 </table>

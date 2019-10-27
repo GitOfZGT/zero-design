@@ -1,14 +1,15 @@
 import React from "react";
 import { Form, Modal, Input, Button, Row, Col, message } from "antd";
 import PropTypes from "prop-types";
-import cssClass from "./style.scss";
-import { CSSTransition, TransitionGroup } from "react-transition-group";
+// import { CSSTransition, TransitionGroup } from "react-transition-group";
 import { animateTimout, const_initItems, const_execAsync, const_changeFormItems } from "../constant";
 // import ZpageLoading from "../ZpageLoading";
 // import { dataType, arrayFilterBy } from "../zTool";
 import ColFormItem from "./ColFormItem";
 import { dataType, turnLabelOrValue } from "../zTool";
 import moment from "moment";
+import classNames from "classnames";
+import "./style.scss";
 export const Zform = Form.create()(
 	class extends React.PureComponent {
 		static propTypes = {
@@ -16,9 +17,9 @@ export const Zform = Form.create()(
 			labelLayout: PropTypes.string, //'horizontal'|'vertical' | 	inline
 			items: PropTypes.arrayOf(PropTypes.object),
 			getFormInstance: PropTypes.func,
-			getInbuiltTool: PropTypes.func,
 			onSubmit: PropTypes.func,
-			formDefaultValues: PropTypes.object,
+			formDefaultValues: PropTypes.object, //values 替代 formDefaultValues；相当于 formDefaultValues 改名为 values
+			values: PropTypes.object,
 			submitBtnName: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
 			submitMsg: PropTypes.any,
 			defaultSpan: PropTypes.oneOfType([PropTypes.number, PropTypes.object]),
@@ -27,8 +28,9 @@ export const Zform = Form.create()(
 			colContentRender: PropTypes.func, //
 			otherForms: PropTypes.func, // 取得其他表单对象
 			confirm: PropTypes.object, // antd 的 modal 参数
-			initAnimation: PropTypes.bool,
+			// initAnimation: PropTypes.bool,
 			momentFormat: PropTypes.bool,
+			booleanToNumber: PropTypes.bool,
 		};
 		static defaultProps = {
 			confirm: {},
@@ -44,11 +46,19 @@ export const Zform = Form.create()(
 			defaultSpan: { xxl: 6, xl: 8, lg: 12, md: 24 },
 			submitBtnName: "保存",
 			labelLayout: "vertical",
-			initAnimation: true,
+			// initAnimation: true,
 			momentFormat: false,
+			booleanToNumber:true,
 		};
 		state = {
 			items: [],
+			currentForm: {
+				...this.props.form,
+				zformItems: [],
+				saveFieldOptions: {},
+				saveOptionsMapKey: {},
+				getAsyncQueue: () => this.allAsync,
+			},
 		};
 		allAsync = [];
 		settingValues = {};
@@ -82,7 +92,12 @@ export const Zform = Form.create()(
 					} else {
 						startValues = form.getFieldsValue(fieldNames);
 					}
-					const newValues = this.methods.getOneFormValue(startValues, saveFieldOptions, saveOptionsMapKey,form.zformItems);
+					const newValues = this.methods.getOneFormValue(
+						startValues,
+						saveFieldOptions,
+						saveOptionsMapKey,
+						form.zformItems,
+					);
 					formsValues.push({
 						...newValues,
 						...(dataType.isObject(query) ? query : {}),
@@ -95,14 +110,14 @@ export const Zform = Form.create()(
 						return !valid;
 					})
 				) {
-					message.error("表单未通过验证");
+					// message.error("表单未通过验证");
 					return false;
 				}
 				return formsValues.length > 1 ? formsValues : formsValues[0];
 			},
 
 			setFieldsValue: vals => {
-				const values = vals ? vals : this.props.formDefaultValues;
+				const values = vals ? vals : this.props.values || this.props.formDefaultValues;
 				const forms = dataType.isFunction(this.props.otherForms)
 					? this.props.otherForms(this.form).concat([this.form])
 					: [this.form];
@@ -137,22 +152,32 @@ export const Zform = Form.create()(
 							}
 						});
 						// console.log("--zform", newValues);
-						if (Object.keys(newValues).length) form.setFieldsValue(newValues);
+						if (Object.keys(newValues).length) {
+							form.setFieldsValue(newValues);
+						}
 					}
 				});
 			},
-			getOneFormValue: (values, saveFieldOptions, saveOptionsMapKey,items) => {
+			getOneFormValue: (values, saveFieldOptions, saveOptionsMapKey, items) => {
 				const newValues = {};
 				if (dataType.isObject(values)) {
 					Object.keys(values).forEach(key => {
 						if (dataType.isString(values[key])) {
 							//字符串类型的值去掉首尾空格
 							newValues[key] = values[key].trim();
+							//凡是只有%_的都会转义
+							const hasSyml = newValues[key].match(/^[\%\_]+$/g);
+							if (hasSyml) {
+								//转义通配符% _
+								hasSyml.forEach(syml => {
+									newValues[key] = newValues[key].replace(syml, `\\${syml}`);
+								});
+							}
 						} else if (this.props.momentFormat) {
 							//如果需要把moment对象格式化对应的format
 							const formating = val => {
 								if (dataType.isObject(val) && val._isAMomentObject) {
-									const formItems = items||this.state.items;
+									const formItems = items || this.state.items;
 									const currentItem = formItems.find(item => item.key === key);
 									return val.format(currentItem.format);
 								} else {
@@ -164,6 +189,8 @@ export const Zform = Form.create()(
 							} else {
 								newValues[key] = formating(values[key]);
 							}
+						} else if (this.props.booleanToNumber && dataType.isBoolean(values[key])) {
+							newValues[key] = Number(values[key]);
 						} else {
 							newValues[key] = values[key];
 						}
@@ -235,26 +262,20 @@ export const Zform = Form.create()(
 			);
 		}
 		componentDidMount() {
-			this.form = {
-				...this.props.form,
-				zformItems: this.state.items,
-				saveFieldOptions: {},
-				saveOptionsMapKey: {},
-			};
+			this.form = this.state.currentForm;
 			this.props.getFormInstance && this.props.getFormInstance(this.form, this.methods);
-			this.props.getInbuiltTool &&
-				this.props.getInbuiltTool({
-					form: this.form,
-					submit: this.methods.onSubmit,
-					...this.methods,
-				});
 			this.execAsync();
 		}
 		componentDidUpdate(prevProps, prevState) {
-			if (this.props.formDefaultValues !== prevProps.formDefaultValues) {
+			if (
+				(this.props.values !== prevProps.values ||
+					this.props.formDefaultValues !== prevProps.formDefaultValues) &&
+				!this.allAsync.length
+			) {
 				this.setFieldsValue();
 			}
 			if (this.props.items !== prevProps.items && !this.allAsync.length) {
+				// console.log('newItems',this.props.items)
 				this.execAsync();
 			}
 			if (this.props.form !== prevProps.form || this.state.items !== prevState.items) {
@@ -263,7 +284,13 @@ export const Zform = Form.create()(
 					zformItems: this.state.items,
 					saveFieldOptions: this.form.saveFieldOptions,
 					saveOptionsMapKey: this.form.saveOptionsMapKey,
+					getAsyncQueue: () => this.allAsync,
 				};
+				if (this.props.form !== prevProps.form) {
+					this.setState({
+						currentForm: this.form,
+					});
+				}
 				this.props.getFormInstance && this.props.getFormInstance(this.form, this.methods);
 			}
 		}
@@ -278,7 +305,7 @@ export const Zform = Form.create()(
 						key={item.key}
 						colContentRender={this.props.colContentRender}
 						loading={item.loading}
-						form={this.form}
+						form={this.state.currentForm}
 						changeFormItems={this.methods.changeFormItems}
 						item={item}
 						ref={item.ref}
@@ -286,47 +313,45 @@ export const Zform = Form.create()(
 						getInsideItems={this.methods.getInsideItems}
 					/>
 				);
-				return this.props.initAnimation ? (
-					<CSSTransition key={item.key} timeout={animateTimout.flipInTime} classNames="fadeIn-to-down">
-						{colItem}
-					</CSSTransition>
-				) : (
-					colItem
-				);
+				return colItem;
+				// return this.props.initAnimation ? (
+				// 	<CSSTransition key={item.key} timeout={animateTimout.flipInTime} classNames="fadeIn-to-down">
+				// 		{colItem}
+				// 	</CSSTransition>
+				// ) : (
+				// 	colItem
+				// );
 			});
 			return formItems;
 		};
 		render() {
 			const {
 				submitBtnName,
-				onSubmit,
+				// onSubmit,
 				className,
 				style,
 				submitBtnRender,
 				labelLayout,
-				initAnimation,
+				// initAnimation,
 			} = this.props;
 			const items = this.getFormItems();
+			const wrapperClassname = classNames("z-form", className || "");
 			return (
-				<Form
-					onSubmit={this.methods.onSubmit}
-					className={`${cssClass["z-form"]} ${className ? className : ""}`}
-					style={style}
-				>
+				<Form onSubmit={this.methods.onSubmit} className={wrapperClassname} style={style}>
 					<Row type="flex" className={`z-form-row ${"z-form-label-" + labelLayout}`}>
-						{initAnimation ? (
+						{items}
+						{/* {initAnimation ? (
 							<TransitionGroup component={null} enter={true} exit={true} appear={true}>
 								{items}
 							</TransitionGroup>
 						) : (
 							items
-						)}
-
+						)} */}
 						{typeof submitBtnRender === "function" ? (
 							submitBtnRender(this.methods.onSubmit, this.props)
 						) : submitBtnName ? (
 							<Col span={24} className="z-text-center">
-								<Button type="primary" htmlType="submit">
+								<Button type="primary" htmlType="submit" icon="check">
 									{typeof submitBtnName === "function" ? submitBtnName() : submitBtnName}
 								</Button>
 							</Col>

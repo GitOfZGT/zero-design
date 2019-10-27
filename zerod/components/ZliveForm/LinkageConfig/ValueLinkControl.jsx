@@ -5,7 +5,8 @@ import { Row, Col, Tag, Button, message, Input } from "antd";
 import ZoneWayTransfer from "../../ZoneWayTransfer";
 import { itemsFromTree } from "../../zTool";
 import { controlList } from "../AddColForm";
-import { linkRemark1, linkRemark2, linkRemark3, linkRemark4, linkRemark5 } from "./linkRemark";
+import { linkRemark1, linkRemark2, linkRemark3, linkRemark4 } from "./linkRemark";
+import { regionNames } from "../common";
 function turnSelectOptions(
 	section,
 	needChild,
@@ -60,14 +61,16 @@ const propTypes = {
 	newFormData: PropTypes.object,
 	onSrcSelected: PropTypes.func,
 	onOk: PropTypes.func,
+	onBack: PropTypes.func,
 };
 function ValueLinkControl(props) {
-	const { newFormData, onSrcSelected, onOk, linkageType } = props;
+	const { newFormData, onSrcSelected, onOk, onBack, linkageType } = props;
 	const [leftTransferSelections, setLeftTransferSelections] = useState([]);
 	const [leftTransferSelected, setLeftTransferSelected] = useState([]);
 	const [rightTransferSelections, setRightTransferSelections] = useState();
 	const [rightTransferSelected, setRightTransferSelected] = useState([]);
 	const asyncParamNameRef = useRef("id");
+	const regionNameRef = useRef("province,city,district");
 	useEffect(() => {
 		switch (linkageType) {
 			case "1":
@@ -114,6 +117,18 @@ function ValueLinkControl(props) {
 							}
 							return [3, 6, 7, 8, 9].includes(item.fieldType) && config.selectionsType == 2;
 						});
+					}),
+				);
+				break;
+			case "8":
+				setLeftTransferSelections(
+					turnSelectOptions(newFormData.sectionList, true, list => {
+						return list.filter(item => [13].includes(item.fieldType));
+					}),
+				);
+				setRightTransferSelections(
+					turnSelectOptions(newFormData.sectionList, true, list => {
+						return list.filter(item => [1, 2].includes(item.fieldType));
 					}),
 				);
 				break;
@@ -186,7 +201,7 @@ function ValueLinkControl(props) {
 								});
 								setLeftTransferSelected([]);
 								setRightTransferSelected([]);
-								if (linkageType !== "4") {
+								if (!["4", "5.1"].includes(linkageType)) {
 									setRightTransferSelections(
 										turnSelectOptions(newFormData.sectionList, true, list => {
 											return list.filter(item => item.fieldKey !== val);
@@ -202,7 +217,7 @@ function ValueLinkControl(props) {
 			},
 			rightTitle: "已选择的选项",
 		};
-	} else if (["6", "7"].includes(linkageType)) {
+	} else if (["6", "7", "8"].includes(linkageType)) {
 		leftTransferPropsRef.current = {
 			leftTitle: "可选控件列表",
 			rightTitle: "已选择的控件",
@@ -282,10 +297,13 @@ function ValueLinkControl(props) {
 			linkRemark = linkRemark2(linkValue);
 			break;
 		case "6":
-			linkRemark = linkRemark3(linkValue);
+			linkRemark = linkRemark3(linkValue, { remmak1: "身份证输入控件：", remmak2: "联动出生年月日接收控件：" });
 			break;
 		case "7":
-			linkRemark = linkRemark5(linkValue);
+			linkRemark = linkRemark3(linkValue, { remmak1: "单选框/下拉框控件：", remmak2: "联动异步接收控件：" });
+			break;
+		case "8":
+			linkRemark = linkRemark3(linkValue, { remmak1: "地图选点控件：", remmak2: "联动接收控件：" });
 			break;
 	}
 	return (
@@ -303,7 +321,7 @@ function ValueLinkControl(props) {
 					rightTargetData={leftTransferSelected}
 					onChange={(actionType, rightData, actionItem, sibligItem) => {
 						setLinkValue(
-							["6", "7"].includes(linkageType)
+							["6", "7", "8"].includes(linkageType)
 								? { ...linkValue, srcControls: rightData }
 								: {
 										...linkValue,
@@ -339,57 +357,97 @@ function ValueLinkControl(props) {
 			<Col span={9} className="z-flex-items-center">
 				{linkageType === "7" ? (
 					<div className="z-linkage-remark">
-						<p>{linkRemark4(linkValue)}</p>
-						<Input.Group compact>
-							<Input style={{ width: "80px" }} defaultValue="value" disabled />
-							<Input
-								style={{ width: "160px" }}
-								defaultValue="id"
-								onChange={e => {
-									asyncParamNameRef.current = e.target.value;
-								}}
-							/>
-						</Input.Group>
+						<div className="z-margin-bottom-12">
+							{linkRemark4(linkValue, {
+								remmak1: "选项的value传入异步控件：",
+								remmak2: "的请求参数名：",
+							})}
+						</div>
+						{getControl("Input.Group", {
+							compact: true,
+							children: (
+								<>
+									{getControl("Input", {
+										style: { width: "80px" },
+										defaultValue: "value",
+										disabled: true,
+									})}
+									{getControl("Input", {
+										style: { width: "160px" },
+										defaultValue: asyncParamNameRef.current,
+										onChange: value => {
+											asyncParamNameRef.current = value;
+										},
+									})}
+								</>
+							),
+						})}
+					</div>
+				) : null}
+				{linkageType === "8" ? (
+					<div className="z-linkage-remark">
+						<div className="z-margin-bottom-12">
+							{linkRemark4(linkValue, { remmak1: "选项的行政区划信息传入：", remmak2: "的内容是：" })}
+						</div>
+						{getControl("Select", {
+							style: { width: "240px" },
+							defaultValue: regionNameRef.current,
+							selectList: regionNames,
+							onChange: val => {
+								regionNameRef.current = val;
+							},
+						})}
 					</div>
 				) : null}
 			</Col>
 			<Col span={12}>
 				<div className="z-linkage-line z-linkage-remark z-flex-items-center">{linkRemark}</div>
 			</Col>
-			<Col span={3} className="z-flex-items-center">
-				<Button
-					type="primary"
-					onClick={e => {
-						let error = false;
-						if (["6", "7"].includes(linkageType)) {
-							if (!linkValue.srcControls.length || !linkValue.distControls.length) {
+			<Col span={3} className="z-flex-items-end">
+				<div className="z-display-inline-block">
+					<Button
+						icon="check"
+						block
+						type="primary"
+						onClick={e => {
+							let error = false;
+							if (["6", "7", "8"].includes(linkageType)) {
+								if (!linkValue.srcControls.length || !linkValue.distControls.length) {
+									error = true;
+								}
+							} else if (["4"].includes(linkageType)) {
+								if (!linkValue.srcValues.length || !linkValue.distValues.length) {
+									error = true;
+								}
+							} else if (!linkValue.srcValues.length || !linkValue.distControls.length) {
 								error = true;
 							}
-						} else if (["4"].includes(linkageType)) {
-							if (!linkValue.srcValues.length || !linkValue.distValues.length) {
-								error = true;
+							if (error) {
+								message.error("配置不完整");
+								return;
 							}
-						} else if (!linkValue.srcValues.length || !linkValue.distControls.length) {
-							error = true;
-						}
-						if (error) {
-							message.error("配置不完整");
-							return;
-						}
-						setLinkValue({
-							...linkValue,
-							srcValues: [],
-							srcControls: [],
-							distValues: [],
-							distControls: [],
-						});
-						setLeftTransferSelected([]);
-						setRightTransferSelected([]);
-						onOk && onOk(linkValue, { asyncParamName: asyncParamNameRef.current });
-					}}
-				>
-					保存到表单
-				</Button>
+							setLinkValue({
+								...linkValue,
+								srcValues: [],
+								srcControls: [],
+								distValues: [],
+								distControls: [],
+							});
+							setLeftTransferSelected([]);
+							setRightTransferSelected([]);
+							onOk &&
+								onOk(linkValue, {
+									asyncParamName: asyncParamNameRef.current,
+									regionName: regionNameRef.current,
+								});
+						}}
+					>
+						保存到表单
+					</Button>
+					<Button type="default" block onClick={onBack} className="z-margin-top-15" icon="close">
+						关闭窗口
+					</Button>
+				</div>
 			</Col>
 		</Row>
 	);

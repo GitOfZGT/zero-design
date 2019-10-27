@@ -1,24 +1,21 @@
 import React, { useState, useEffect, useRef, useImperativeHandle, useCallback } from "react";
-import { dataType } from "../zTool";
 import PropTypes from "prop-types";
-import cssClass from "./style.scss";
+import { getControl, getOptions } from "../Zform/controls";
 import ZlabelInput from "../ZlabelInput";
 import { Tooltip, Input } from "antd";
 import InputContext from "./InputContext";
 function singleInput(states, setStates, inputKeys, valuePlaceholder) {
-	return (
-		<Input
-			placeholder={valuePlaceholder}
-			value={states[inputKeys[1].key]}
-			onChange={e => {
-				setStates({
-					[inputKeys[0].key]: e.target.value,
-					[inputKeys[1].key]: e.target.value,
-				});
-			}}
-			size="small"
-		/>
-	);
+	return getControl("Input", {
+		placeholder: valuePlaceholder,
+		value: states[inputKeys[1].key],
+		onChange: value => {
+			setStates({
+				[inputKeys[0].key]: value,
+				[inputKeys[1].key]: value,
+			});
+		},
+		size: "small",
+	});
 }
 
 const _InputItem = React.forwardRef(function InputItemCom(props, ref) {
@@ -96,13 +93,10 @@ const _InputItem = React.forwardRef(function InputItemCom(props, ref) {
 		onAddChild && onAddChild(e, data, index);
 	};
 	return (
-		<div className={`${cssClass["z-option-item"]} ${index === 0 ? cssClass["first-item"] : ""}`}>
+		<div className={`z-option-item ${index === 0 ? "first-item" : ""}`}>
 			{index === length - 1 && showBtns ? (
 				<Tooltip placement="top" title={toolTips.addSiblings} mouseEnterDelay={0} mouseLeaveDelay={0}>
-					<i
-						className={`zero-icon zerod-add-circle ${cssClass["z-add-siblings"]}`}
-						onClick={_onSibingsClick}
-					/>
+					<i className={`zero-icon zerod-add-circle z-add-siblings`} onClick={_onSibingsClick} />
 				</Tooltip>
 			) : null}
 			<div className="z-flex">
@@ -137,7 +131,7 @@ const _InputItem = React.forwardRef(function InputItemCom(props, ref) {
 							<i className={`zero-icon zerod-down`} onClick={_onMoveDown} />
 						</Tooltip>
 						<Tooltip placement="top" title={toolTips.remove} mouseEnterDelay={0} mouseLeaveDelay={0}>
-							<i className={`zero-icon zerod-minus-circle ${cssClass["remove"]}`} onClick={_onRemove} />
+							<i className={`zero-icon zerod-minus-circle remove`} onClick={_onRemove} />
 						</Tooltip>
 						{multiple ? (
 							<Tooltip placement="top" title={toolTips.addChild} mouseEnterDelay={0} mouseLeaveDelay={0}>

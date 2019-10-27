@@ -1,3 +1,10 @@
+<!--
+ * @Author: zgt
+ * @Date: 2018-12-12 14:15:16
+ * @LastEditors: zgt
+ * @LastEditTime: 2019-08-15 14:21:36
+ * @Description: file content
+ -->
 # 环绕按钮：ZroundingButton
 
 `ZroundingButton` 环绕在四周的更多按钮展示方式
@@ -43,8 +50,6 @@ class Myjavascript extends ZpureComponent {
 		}
 ```
 ## ZroundingButton 的 props
-
-可追加`className`、`style`
 
 <table>
 	<thead>

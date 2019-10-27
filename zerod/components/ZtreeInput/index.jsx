@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import InputGroup from "./InputGroup";
 import InputContext from "./InputContext";
 import { message } from "antd";
-import cssClass from "./style.scss";
+import "./style.scss";
 import { Checkbox } from "antd";
 function getNewItem() {
 	return { id: GenNonDuplicateID(), label: "", value: "" };
@@ -20,7 +20,7 @@ const propTypes = {
 	valuePlaceholder: PropTypes.string,
 	customInputKeys: PropTypes.array,
 	children: PropTypes.func,
-	toolTips:PropTypes.object,
+	toolTips: PropTypes.object,
 };
 
 const defaultProps = {
@@ -30,8 +30,8 @@ const defaultProps = {
 	labelPlaceholder: "Label",
 	valuePlaceholder: "Value",
 	customInputKeys: [{ key: "label", initValue: "" }, { key: "value", initValue: "" }],
-	showBtns:true,
-	toolTips:{},
+	showBtns: true,
+	toolTips: {},
 };
 
 function setId(arr) {
@@ -57,23 +57,24 @@ const _ZtreeInput = React.forwardRef(function(props, ref) {
 		customInputKeys,
 		children,
 		showBtns,
-		toolTips
+		toolTips,
 	} = props;
 	const [sync, setSync] = useState(false);
-	useEffect(() => {
-		if (!value.length) onChange && onChange([getNewItem()]);
-	}, [value]);
+	const valueTree = Array.isArray(value) && value.length ? value : [getNewItem()];
 	const addChild = (item, newItem) => {
 		item.children = Array.isArray(item.children) ? [...item.children, newItem] : [newItem];
-		onChange && onChange([...value]);
+		onChange && onChange([...valueTree]);
 	};
-	setId(value);
-	const _toolTips = Object.assign({addSiblings:"添加兄弟节点",moveUp:"上移",moveDown:"下移",remove:"移除",addChild:"新增子节点"},toolTips)
+	setId(valueTree);
+	const _toolTips = Object.assign(
+		{ addSiblings: "添加兄弟节点", moveUp: "上移", moveDown: "下移", remove: "移除", addChild: "新增子节点" },
+		toolTips,
+	);
 	return (
 		<InputContext.Provider
 			value={{
 				onBlur: () => {
-					onChange && onChange(value);
+					onChange && onChange([...valueTree]);
 				},
 				sync,
 				inputType,
@@ -83,24 +84,24 @@ const _ZtreeInput = React.forwardRef(function(props, ref) {
 				customInputKeys,
 				customInputFunc: children,
 				showBtns,
-				toolTips:_toolTips,
+				toolTips: _toolTips,
 				onSibingsClick: (e, data, index) => {
 					itemsFromTree({
-						tree: value,
+						tree: valueTree,
 						sourceItem: { id: data.id },
 						action: ({ tree, currentItem, item, index, keyObj, parentItem }) => {
 							if (parentItem) {
 								parentItem.children = [...parentItem.children, getNewItem()];
-								onChange && onChange([...value]);
+								onChange && onChange([...valueTree]);
 							} else {
-								onChange && onChange([...value, getNewItem()]);
+								onChange && onChange([...valueTree, getNewItem()]);
 							}
 						},
 					});
 				},
 				onMoveUp: (e, data, index) => {
 					itemsFromTree({
-						tree: value,
+						tree: valueTree,
 						sourceItem: { id: data.id },
 						action: ({ tree, currentItem, item, index, keyObj }) => {
 							if (index === 0) {
@@ -108,13 +109,13 @@ const _ZtreeInput = React.forwardRef(function(props, ref) {
 							}
 							tree.splice(index, 1);
 							tree.splice(index - 1, 0, currentItem);
-							onChange && onChange([...value]);
+							onChange && onChange([...valueTree]);
 						},
 					});
 				},
 				onMoveDown: (e, data, index) => {
 					itemsFromTree({
-						tree: value,
+						tree: valueTree,
 						sourceItem: { id: data.id },
 						action: ({ tree, currentItem, item, index, keyObj }) => {
 							if (index === tree.length - 1) {
@@ -122,17 +123,17 @@ const _ZtreeInput = React.forwardRef(function(props, ref) {
 							}
 							tree.splice(index + 2, 0, currentItem);
 							tree.splice(index, 1);
-							onChange && onChange([...value]);
+							onChange && onChange([...valueTree]);
 						},
 					});
 				},
 				onRemove: (e, data, index) => {
-					if (value.length === 1 && value[0].id === data.id) {
+					if (valueTree.length === 1 && valueTree[0].id === data.id) {
 						message.warning("根的最后一项不能移除");
 						return;
 					}
 					const newTree = removeItemFromTree({
-						tree: value,
+						tree: valueTree,
 						sourceItem: {
 							id: data.id,
 						},
@@ -145,9 +146,9 @@ const _ZtreeInput = React.forwardRef(function(props, ref) {
 				},
 			}}
 		>
-			<div className={cssClass["z-tree-root"]}>
+			<div className="z-tree-root">
 				{inputType === "double" && typeof children !== "function" ? (
-					<div className={cssClass["z-tree-type"]}>
+					<div className="z-tree-type">
 						<Checkbox
 							onChange={e => {
 								setSync(e.target.checked);
@@ -157,7 +158,7 @@ const _ZtreeInput = React.forwardRef(function(props, ref) {
 						</Checkbox>
 					</div>
 				) : null}
-				<InputGroup options={value} />
+				<InputGroup options={valueTree} />
 			</div>
 		</InputContext.Provider>
 	);

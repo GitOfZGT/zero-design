@@ -1,8 +1,16 @@
+<!--
+ * @Author: zgt
+ * @Date: 2018-08-21 10:59:31
+ * @LastEditors: zgt
+ * @LastEditTime: 2019-08-16 15:31:51
+ * @Description: file content
+ -->
+
 # 工具库 zTool
 
-`zTool`积累了一些通用的工具方法，包括对需要对 DOM 元素操作的一些方法  
+`zTool`积累了一些通用的工具方法，包括对需要对 DOM 元素操作的一些方法
 
-> 除了httpAjax,BuildScroll,IScrollInstance,scrollDisableWheel,IntroInstance,listenDivSizeChange,mergeConfig , 其他的都引自于 `zerod-ztool` (2019-06-24 zTool分离出一个zerod-ztool包发布到私服)    
+> 除了 httpAjax,BuildScroll,IScrollInstance,scrollDisableWheel,IntroInstance,listenDivSizeChange,mergeConfig , 其他的都引自于 `zerod-ztool` (2019-06-24 zTool 分离出一个 zerod-ztool 包发布到私服)
 
 <div class="z-doc-titles"></div>
 
@@ -16,9 +24,9 @@ zTool.httpAjax()返回一个 Promise 对象,当`noCallback === false`时,默认�
 
 当 `result.data.code === -1` || `result.data.code === 500` 会 使用 `window.globalMsgError` 弹出 `result.data.msg` || `result.data.data` 提示
 
-在`ZmainHOC`中已配置一个 window.globalMsgError = message.error 或者 notification.error  
+在`ZmainHOC`中已配置一个 window.globalMsgError = message.error 或者 notification.error
 
-当 `result.data.code === 403403` 会提示`用户未登录或身份已过期`  
+当 `result.data.code === 403403` 会提示`用户未登录或身份已过期`
 
 ```js
 import { zTool } from "zerod";
@@ -93,12 +101,14 @@ zTool.filterQuery(["name", "selected"], { name: "萧雨", selected: false, id: "
 
 `zTool.BuildScroll` 是一个构造方法，是对<a href="http://iscrolljs.com/#intro" target="_blank">漂亮滚动条插件 ISroll</a>的 `new IScroll(el,opt)` 的二次封装,并且解决嵌套滚动条的问题，且对 options 有一些默认值
 
+注:zerod v0.0.124 之后`zTool.BuildScroll`在 Chrome 浏览器下是不起作用的，如 options.useCustomScroll=true 则会强制启用。
+
 ```jsx
 import { zTool } from "zerod";
 /**
  *
  * @param {HTMLElement} el //需要生成滚动条的盒子
- * @param {object} opttions //IScroll的配置，更多请看http://iscrolljs.com/#intro
+ * @param {object} options //IScroll的配置，更多请看http://iscrolljs.com/#intro
  */
 //scroollInstance有三个属性:
 //scroollInstance.scroll：其实是new IScroll(el,opt)的实例，
@@ -131,12 +141,15 @@ class My extends ZpureComponent {
 
 监听盒子（div）尺寸变化 ,只对 section，div 等块状元素有效，对 textarea 无效
 
+注:zerod v0.0.124 之后`zTool.listenDivSizeChange`在 Chrome 浏览器下是不起作用的，如 options.useCustomScroll=true 则会强制启用。
+
 ```jsx
 import { zTool } from "zerod";
 /**
  *
  * @param {HTMLElement} el //需要生成滚动条的盒子
  * @param {function} callback //回调函数
+ * @param {object} options //options.useCustomScroll
  */
 zTool.listenDivSizeChange(document.querySelector("#id"), ()=>{
     //盒子高度/宽度变化了
@@ -149,11 +162,14 @@ zTool.listenDivSizeChange(document.querySelector("#id"), ()=>{
 
 用于解决外层使用了`zTool.BuildScroll`创建了滚动条，内部存在如：`textarea`出现滚动条时滚轮对`textarea`无效问题
 
+注:zerod v0.0.124 之后`zTool.scrollDisableWheel`在 Chrome 浏览器下是不起作用的，如 options.useCustomScroll=true 则会强制启用。
+
 ```jsx
 import { zTool } from "zerod";
 /**
  *
  * @param {HTMLElement} el //textarea等
+ * @param {object} options //options.useCustomScroll
  */
 zTool.scrollDisableWheel(document.querySelector("#textarea"));
 ```
@@ -599,4 +615,146 @@ const newTree = zTool.insertBeforeItemFromTree({
 	item: { id: 18, name: "莴笋" },
 });
 //返回 [{id:2,name:"苹果"},{id:5,name:"蔬菜",children:[{id:9,name:"豆芽"}]},{id:18,name:"莴笋"}]
+```
+
+## zTool.turnLabelOrValue
+
+用 一个值 换取 列表数据 中 另外一个字段的值
+
+```js
+import { zTool } from "zerod";
+/**
+ * @description:
+ * @param tree {array}
+ * @param value {string|array|number}
+ * @param toDist {object}  默认 ： { src: "value", dist: "label" }  意思》将value值取tree对应的 label
+ * @return: newValue
+ */
+//从一级列表数据
+const list = [{ id: 2, name: "苹果" }, { id: 5, name: "蔬菜" }, { id: 6, name: "肉类" }];
+//id:2换取对应name
+const newValue = zTool.turnLabelOrValue(list, 2, { src: "id", dist: "name" });
+//返回 "苹果"
+
+//从tree(必须带有 children 属性)：
+const tree = [{ id: 2, name: "苹果" }, { id: 5, name: "蔬菜", children: [{ id: 9, name: "豆芽" }] }];
+//id:9换取对应name
+const newValue = zTool.turnLabelOrValue(tree, 9, { src: "id", dist: "name" });
+//返回 "豆芽"
+
+//从tree(必须带有 children 属性)：
+const tree = [
+	{
+		id: 1,
+		name: "省",
+		children: [
+			{ id: 2, name: "市1", children: [{ id: 4, name: "区3" }] },
+			{ id: 3, name: "市2", children: [{ id: 5, name: "区4" }] },
+		],
+	},
+];
+//级联id值（array） 换取 name
+const newValue = zTool.turnLabelOrValue(tree, [1, 3, 5], { src: "id", dist: "name" });
+//返回 ["省","市2","区4"]
+```
+
+## zTool.turnMapKeys
+
+递归转换 tree 里的字段名
+
+```js
+import { zTool } from "zerod";
+/**
+ * @description: 转换tree数据的键名
+ * @param tree {array}
+ * @param srcMapKeys {object} 默认 { label: "label", value: "value", children: "children" },
+ * @param distMapKeys {object} 默认 { label: "label", value: "value", children: "children" }
+ * @param extands {object} 默认 {}  可以在tree中加入定义的字段
+ * @param valueToString {boolean} 默认 false 是否把 value (有可能是数字) 转成 string 类型的
+ * @param includesSourceItem {boolean} 默认 false  除了label，value字段，是否保留tree中的其他字段
+ * @return: newTree
+ */
+
+const tree = [
+	{
+		id: 1,
+		name: "省",
+		children: [
+			{ id: 2, name: "市1", children: [{ id: 4, name: "区3" }] },
+			{ id: 3, name: "市2", children: [{ id: 5, name: "区4" }] },
+		],
+	},
+];
+
+const newTree = zTool.turnMapKeys(
+	tree,
+	{ label: "name", value: "id", children: "children" },
+	{ label: "label", value: "value", children: "children" },
+);
+// [
+// 	{
+// 		value: 1,
+// 		label: "省",
+// 		children: [
+// 			{ value: 2, label: "市1", children: [{ value: 4, label: "区3" }] },
+// 			{ value: 3, label: "市2", children: [{ value: 5, label: "区4" }] },
+// 		],
+// 	},
+// ]
+
+//加入自定义的字段
+const newTree = zTool.turnMapKeys(
+	tree,
+	{ label: "name", value: "id", children: "children" },
+	{ label: "label", value: "value", children: "children" },
+	{ active: false },
+);
+// [
+// 	{
+// 		value: 1,
+// 		label: "省",
+// 		active: false,
+// 		children: [
+// 			{ active: false, value: 2, label: "市1", children: [{ active: false, value: 4, label: "区3" }] },
+// 			{ active: false, value: 3, label: "市2", children: [{ active: false, value: 5, label: "区4" }] },
+// 		],
+// 	},
+// ];
+
+//保留原字段
+const newTree = zTool.turnMapKeys(
+	tree,
+	{ label: "name", value: "id", children: "children" },
+	{ label: "label", value: "value", children: "children" },
+	{ active: false },
+	false,
+	true,
+);
+// [
+// 	{
+// 		id: 1,
+// 		value: 1,
+// 		name: "省",
+// 		label: "省",
+// 		active: false,
+// 		children: [
+// 			{
+// 				active: false,
+// 				value: 2,
+// 				id: 2,
+// 				label: "市1",
+// 				name: "市1",
+// 				children: [{ active: false, value: 4, id: 4, label: "区3", name: "区3" }],
+// 			},
+// 			{
+// 				active: false,
+// 				value: 3,
+// 				id: 3,
+// 				label: "市2",
+// 				name: "市2",
+// 				children: [{ active: false, value: 5, id: 5, label: "区4", name: "区4" }],
+// 			},
+// 		],
+// 	},
+// ];
 ```

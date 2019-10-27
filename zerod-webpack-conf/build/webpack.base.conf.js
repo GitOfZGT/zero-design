@@ -1,8 +1,15 @@
+/*
+ * @Author: zgt
+ * @Date: 2019-04-24 18:01:13
+ * @LastEditors: zgt
+ * @LastEditTime: 2019-10-09 16:10:55
+ * @Description: file content
+ */
 /* eslint-disable camelcase */
 /* eslint-disable no-mixed-spaces-and-tabs */
 
 const webpack = require('webpack');
-const HtmlIncludeAssetsPlugin = require('html-webpack-include-assets-plugin');
+const HtmlWebpackTagsPlugin = require('html-webpack-tags-plugin');
 const path = require('path');
 const utils = require('./utils');
 const config = require('../config');
@@ -21,6 +28,7 @@ function resolveCurrent(dir) {
 function resolveNode_modules(dir) {
     return path.join(__dirname, '../../', dir);
 }
+
 let configCopyOpt = [];
 if (typeof config.CopyWebpackOptions === 'function') {
     configCopyOpt = config.CopyWebpackOptions(config, process.env.NODE_ENV);
@@ -28,13 +36,11 @@ if (typeof config.CopyWebpackOptions === 'function') {
     configCopyOpt = config.CopyWebpackOptions;
 }
 
+const isProduction = process.env.NODE_ENV === 'production';
 const copyOpt = [
     {
         from: resolveCurrent('static'),
-        to:
-            process.env.NODE_ENV === 'production'
-                ? config.build.assetsSubDirectory
-                : config.dev.assetsSubDirectory,
+        to: isProduction ? config.build.assetsSubDirectory : config.dev.assetsSubDirectory,
         ignore: ['.*'],
     },
     ...(Array.isArray(configCopyOpt) ? configCopyOpt : []),
@@ -54,62 +60,61 @@ if (config.MP_verify) {
     });
 }
 const styleLoaders = utils.styleLoaders({
-    sourceMap:
-        process.env.NODE_ENV === 'production'
-            ? config.build.productionSourceMap
-            : config.dev.cssSourceMap,
-    extract: process.env.NODE_ENV === 'production',
+    sourceMap: isProduction ? config.build.productionSourceMap : config.dev.cssSourceMap,
+    extract: isProduction,
     usePostCSS: true,
 });
 const styleHappyPacks = styleLoaders[1].map((item) => {
     return new HappyPack({ ...item, threadPool: happyThreadPool });
 });
-const eslintLoader = config.dev.useEslint
-    ? [
-          {
-              test: /\.(js|jsx)$/,
-              enforce: 'pre',
-              exclude: /node_modules/,
-              loader: 'eslint-loader',
-              options: {
-                  fix: true,
-                  emitWarning: true,
+const eslintLoader =
+    config.dev.useEslint && !isProduction
+        ? [
+              {
+                  test: /\.(js|jsx)$/,
+                  enforce: 'pre',
+                  exclude: /node_modules/,
+                  loader: 'eslint-loader',
+                  options: {
+                      fix: true,
+                      emitWarning: true,
+                  },
               },
-          },
-      ]
-    : [];
+          ]
+        : [];
 let otherHtmlIncludeAssets = [];
 if (typeof config.HtmlIncludeAssets === 'function') {
     const assets = config.HtmlIncludeAssets(config, process.env.NODE_ENV);
     assets.forEach((asset) => {
-        otherHtmlIncludeAssets.push(new HtmlIncludeAssetsPlugin(asset));
+        otherHtmlIncludeAssets.push(new HtmlWebpackTagsPlugin(asset));
     });
 } else if (Array.isArray(config.HtmlIncludeAssets)) {
     config.HtmlIncludeAssets.forEach((asset) => {
-        otherHtmlIncludeAssets.push(new HtmlIncludeAssetsPlugin(asset));
+        otherHtmlIncludeAssets.push(new HtmlWebpackTagsPlugin(asset));
     });
 }
 const antIcons = {
     '@ant-design/icons/lib/dist$': path.resolve(__dirname, './ant-icons.js'),
 };
+const confResolve = config.resolve || {};
+const outputPath = isProduction ? config.build.assetsPublicPath : config.dev.assetsPublicPath;
+const webProcessEnv = isProduction ? require('../config/prod.env') : require('../config/dev.env');
+webProcessEnv.BASE_NAME = `'${outputPath}'`;
 module.exports = {
     context: path.resolve(__dirname, '../'),
     entry: config.entry,
     output: {
         path: config.build.assetsRoot,
         filename: '[name].js',
-        publicPath:
-            process.env.NODE_ENV === 'production'
-                ? config.build.assetsPublicPath
-                : config.dev.assetsPublicPath,
+        publicPath: outputPath,
     },
     resolve: {
-        extensions: ['.js', '.jsx', '.json'],
+        ...confResolve,
+        extensions: ['.js', '.jsx', '.json', ...(confResolve.extensions || [])],
         alias: {
             '@': resolveCurrent('src'),
-            ...(config.platform === 'pc' && config['ant-icons']
-                ? antIcons
-                : {}),
+            ...(config.platform === 'pc' && config['ant-icons'] ? antIcons : {}),
+            ...(confResolve.alias || {}),
         },
     },
     module: {
@@ -156,10 +161,7 @@ module.exports = {
         new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
         // http://vuejs.github.io/vue-loader/en/workflow/production.html
         new webpack.DefinePlugin({
-            'process.env':
-                process.env.NODE_ENV === 'production'
-                    ? require('../config/prod.env')
-                    : require('../config/dev.env'),
+            'process.env': webProcessEnv,
         }),
         // copy custom static assets
         new CopyWebpackPlugin(copyOpt),
@@ -177,17 +179,12 @@ module.exports = {
                   new webpack.DllReferencePlugin({
                       context: resolveCurrent(''),
                       // scope : "vendor",
-                      manifest: require(resolveCurrent(
-                          'static/vendor.manifest.json',
-                      )),
+                      manifest: require(resolveCurrent('static/vendor.manifest.json')),
                   }),
               ]),
         // https://github.com/ampedandwired/html-webpack-plugin
         new HtmlWebpackPlugin({
-            filename:
-                process.env.NODE_ENV === 'production'
-                    ? config.build.index
-                    : 'index.html',
+            filename: isProduction ? config.build.index : 'index.html',
             template: resolveCurrent('index.html'),
             inject: true,
             chunksSortMode: 'none',
@@ -196,8 +193,8 @@ module.exports = {
         ...(config.dll.disabled
             ? []
             : [
-                  new HtmlIncludeAssetsPlugin({
-                      assets: [
+                  new HtmlWebpackTagsPlugin({
+                      tags: [
                           {
                               path: 'static',
                               glob: 'vendor.dll.*.js',
@@ -209,8 +206,8 @@ module.exports = {
               ]),
         ...(config.pace
             ? [
-                  new HtmlIncludeAssetsPlugin({
-                      assets: [
+                  new HtmlWebpackTagsPlugin({
+                      tags: [
                           {
                               path: 'pace',
                               glob: '*.js',

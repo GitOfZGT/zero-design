@@ -1,10 +1,11 @@
-@import "../../scssMixin/generateClassName";
+@import "../../scssMixin/generateClassName2";
+@import "../../scss/vars";
 $--line-hor-w: 24px;
 $--line-color: #a79f9f;
 $--margin-bottom: 16px;
 $--padding-left: 8px;
 @include z("tree-root") {
-	border: 1px solid hsl(0, 0%, 85%);
+	border: 1px solid $border-color-split;
 	border-radius: 4px;
 	padding: 16px;
 }

@@ -1,7 +1,6 @@
 import React from "react";import ZpureComponent from "../ZpureComponent";
 import PropTypes from "prop-types";
 import Prism from "prismjs";
-// import cssClass from "./style.scss";
 export class ZcodeHighlight extends ZpureComponent {
 	static propTypes = {
 		mode: PropTypes.string, // block || inline || html

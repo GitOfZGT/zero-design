@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useImperativeHandle, useCallback } from "react";
 // import { getControl, getOptions } from "../../Zform/controls";
 import { Row, Col, Tag, Tooltip, Icon } from "antd";
+import { regionNames } from "../common";
 function IDLinkagesConfigured(props, ref) {
 	const { onRemove } = props;
 	const [configured, setConfigured] = useState([]);
@@ -22,7 +23,7 @@ function IDLinkagesConfigured(props, ref) {
 							<Tag color="#2db7f5">{c.src.label}</Tag>
 						</Col>
 						<Col span={14}>
-							<span>{c.linkageType === "6" ? "出生年月日接收控件：" : "联动异步控件："}</span>
+							<span>{c.linkageType === "6" ? "出生年月日接收控件：" : "联动控件："}</span>
 							{c.dist.map(d => {
 								return d.fields.map(item => {
 									return (
@@ -32,7 +33,17 @@ function IDLinkagesConfigured(props, ref) {
 									);
 								});
 							})}
-							{c.asyncParamName ? <span>请求选项，其参数名：<Tag color="red">{c.asyncParamName}</Tag></span> : null}
+							{c.asyncParamName ? (
+								<span>
+									请求选项，其参数名：<Tag color="red">{c.asyncParamName}</Tag>
+								</span>
+							) : null}
+							{c.regionName ? (
+								<span>
+									内容是：
+									<Tag color="red">{regionNames.find(item => item.value === c.regionName).label}</Tag>
+								</span>
+							) : null}
 						</Col>
 						<Col span={4}>
 							<Tooltip placement="top" title="移除">

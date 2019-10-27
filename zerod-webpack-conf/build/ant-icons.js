@@ -1,3 +1,10 @@
+/*
+ * @Author: zgt
+ * @Date: 2019-08-15 16:16:47
+ * @LastEditors: zgt
+ * @LastEditTime: 2019-08-15 20:33:01
+ * @Description: file content
+ */
 // export what you need
 export {
     default as SmileOutline,
@@ -139,5 +146,21 @@ export {
 export {
     default as DoubleLeftOutline,
 } from '@ant-design/icons/lib/outline/DoubleLeftOutline';
+export {
+    default as EditOutline,
+} from '@ant-design/icons/lib/outline/EditOutline';
+export {
+    default as ReloadOutline,
+} from '@ant-design/icons/lib/outline/ReloadOutline';
+
+export {
+    default as BranchesOutline,
+} from '@ant-design/icons/lib/outline/BranchesOutline';
+export {
+    default as BlockOutline,
+} from '@ant-design/icons/lib/outline/BlockOutline';
+export {
+    default as FileUnknownOutline,
+} from '@ant-design/icons/lib/outline/FileUnknownOutline';
 
 export * from "@/ant-icons";

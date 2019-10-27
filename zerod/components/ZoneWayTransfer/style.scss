@@ -1,7 +1,7 @@
-@import "../../scssMixin/generateClassName";
+@import "../../scssMixin/generateClassName2";
 @import "../../scss/vars";
 
-$--border-color: $border-color-base;
+$--border-color: $border-color-split;
 $--border-radius: $border-radius-base;
 $--header-h: 40px;
 $--padding-left: 1em;
@@ -27,8 +27,8 @@ $--padding-left: 1em;
 		align-items: center;
 		height: $--header-h;
 		line-height: $--header-h;
-		color: $--primary-5;
-		border-bottom: 1px solid lighten($--border-color, 5%);
+		color: $--primary-color;
+		border-bottom: 1px solid $--border-color;
 		padding: 0 $--padding-left;
 	}
 	@include z("transfer-body") {
@@ -38,6 +38,7 @@ $--padding-left: 1em;
 		left: 0;
 		right: 0;
 		overflow: hidden;
+		overflow-x: hidden !important;
 	}
 	@include z("transfer-ul") {
 		list-style: none;

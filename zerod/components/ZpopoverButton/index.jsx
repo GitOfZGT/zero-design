@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import ZpureComponent from "../ZpureComponent";
 import { Button, Popover } from "antd";
-import cssClass from "./style.scss";
+import "./style.scss";
 class ZpopoverButton extends ZpureComponent {
 	static propTypes = {
 		title: PropTypes.any,
@@ -26,7 +26,7 @@ class ZpopoverButton extends ZpureComponent {
 		placement: "rightTop",
 	};
 	methods = {
-		onVisibleChange: (visible) => {
+		onVisibleChange: visible => {
 			if (this.props.isCustomVisible && visible) {
 				this.setState({
 					visible: visible,
@@ -53,12 +53,12 @@ class ZpopoverButton extends ZpureComponent {
 				this.props.onVisibleChange && this.props.onVisibleChange(true);
 			}
 		},
-		setDisabled: (disabled) => {
+		setDisabled: disabled => {
 			this.setState({
 				disabled,
 			});
 		},
-		show: (show) => {
+		show: show => {
 			this.setState({
 				show,
 			});
@@ -81,7 +81,7 @@ class ZpopoverButton extends ZpureComponent {
 			isReactNode = true;
 			buttonName = React.cloneElement(children, {
 				...children.props,
-				onClick: (e) => {
+				onClick: e => {
 					this.methods.btnClick();
 					children.props.onClick && children.props.onClick(e);
 				},
@@ -102,16 +102,16 @@ class ZpopoverButton extends ZpureComponent {
 				<Popover
 					placement={placement}
 					title={
-						<div className={cssClass["z-scheduling-popover-title"]}>
+						<div className="z-scheduling-popover-title">
 							{title}
-							<span onClick={this.methods.closePopover} className={cssClass["z-popover-close-btn"]}>
+							<span onClick={this.methods.closePopover} className="z-popover-close-btn">
 								×
 							</span>
 						</div>
 					}
-					content={<div className={cssClass["z-scheduling-popover-content"]}>{content}</div>}
+					content={<div className="z-scheduling-popover-content">{content}</div>}
 					trigger="contextMenu"
-					overlayClassName={cssClass["z-scheduling-popover"]}
+					overlayClassName="z-scheduling-popover"
 					getPopupContainer={this.methods.getPopupContainer}
 					onVisibleChange={this.methods.onVisibleChange}
 					{...visible}

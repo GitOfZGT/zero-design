@@ -43,6 +43,10 @@ const linkageTypes = [
 		tab: "单选联动其他控件异步选项",
 		key: "7",
 	},
+	{
+		tab: "地图选点取行政区划",
+		key: "8",
+	},
 ];
 const itemKeys = {
 	name: "tab",
@@ -55,34 +59,37 @@ const defaultProps = {
 };
 
 function LinkageConfig(props) {
-	const { getInsertLocation, getScrollAreaWrapperEl, newFormData, defaultValue, onChange } = props;
+	const { getInsertLocation, showRightModal, newFormData, defaultValue, onChange } = props;
 	const wrapperRef = useRef(null);
-	const [tabPanes, setTabPanes] = useState([]);
+	const [tabPanes, setTabPanes] = useState([
+		{
+			tab: "联动列表",
+			key: "1",
+			content: null,
+		},
+		{
+			tab: "联动配置",
+			key: "2",
+			content: null,
+		},
+	]);
 	const [tabKey, setTabKey] = useState("1");
 	const [linkageTypesState, setLinkageTypes] = useState(linkageTypes);
 	const curentLinkTypeRef = useRef(linkageTypesState.find(item => item.active));
 	const objRef = useRef(null);
 	const defaultLinkagesRef = useRef(defaultValue);
+	const [insetLocaltion, setInsetLocaltion] = useState();
 	useEffect(() => {
 		// 首先得获取wrapperRef.current元素所在得位置
 		const insetLocaltion = getInsertLocation(wrapperRef.current);
-		// 获取insetLocaltion所在滚动区域得包裹元素
-		objRef.current = getScrollAreaWrapperEl(insetLocaltion);
-		setTabPanes([
-			{
-				tab: "联动列表",
-				key: "1",
-				content: null,
-			},
-			{
-				tab: "联动配置",
-				key: "2",
-				content: null,
-			},
-		]);
-		return () => {
-			objRef.current.methods.resetScrollArea();
-		};
+		let parEl = wrapperRef.current;
+		while (parEl && !parEl.dataset.zgt_modal) {
+			parEl = parEl.parentElement;
+		}
+		if (parEl) {
+			objRef.current = parEl.querySelector("#ZpageHeaderBox");
+		}
+		setInsetLocaltion(insetLocaltion);
 	}, []);
 	const onItemClick = useCallback((e, item, i, props) => {
 		setLinkageTypes(
@@ -100,7 +107,7 @@ function LinkageConfig(props) {
 	//取ValueLinkConfigured提供的属性
 	const configuredRef = useRef(null);
 	useEffect(() => {
-		if (Array.isArray(defaultLinkagesRef.current) && ["6","7"].includes(curentLinkTypeRef.current.key)) {
+		if (Array.isArray(defaultLinkagesRef.current) && ["6", "7", "8"].includes(curentLinkTypeRef.current.key)) {
 			const IDconfigured = defaultLinkagesRef.current.filter(age => {
 				return age.linkageType === curentLinkTypeRef.current.key;
 			});
@@ -110,7 +117,7 @@ function LinkageConfig(props) {
 		}
 	}, [curentLinkTypeRef.current.key]);
 
-	const onRemove = (currentConf, index) => {
+	const onRemove = (currentConf, currentIndex) => {
 		Modal.confirm({
 			title: "是否确认移除这条配置?",
 			okText: "确定",
@@ -118,23 +125,26 @@ function LinkageConfig(props) {
 			onOk() {
 				const currentConfigured = configuredRef.current.getCurrentConfigured();
 				const currentLinkageType = curentLinkTypeRef.current.key;
-				let findIndex = -1;
-				if (["6","7"].includes(currentLinkageType)) {
-					findIndex = defaultLinkagesRef.current.findIndex(item => {
-						return (
-							item.linkageType === currentLinkageType && item.src.fieldKey === currentConf.src.fieldKey
-						);
+				let ageIndex = -1;
+				const getageIndex = currentKey => {
+					return defaultLinkagesRef.current.findIndex(item => {
+						return item.linkageType === currentLinkageType && item.src.fieldKey === currentKey;
 					});
+				};
+				if (["6", "7", "8"].includes(currentLinkageType)) {
+					ageIndex = getageIndex(currentConf.src.fieldKey);
 				} else {
-					findIndex = defaultLinkagesRef.current.findIndex(item => {
-						return item.linkageType === currentLinkageType && item.src.fieldKey === currentConf.srcKey;
-					});
+					ageIndex = getageIndex(currentConf.srcKey);
 				}
-				if (findIndex > -1) {
-					currentConfigured.splice(index, 1);
+				if (ageIndex > -1) {
+					currentConfigured.splice(currentIndex, 1);
 					const newConfigs = [...currentConfigured];
-					defaultLinkagesRef.current[findIndex].dist = newConfigs;
 					configuredRef.current.setConfigured(newConfigs);
+					if (["6", "7", "8"].includes(currentLinkageType)) {
+						defaultLinkagesRef.current.splice(ageIndex, 1);
+					} else {
+						defaultLinkagesRef.current[ageIndex].dist = newConfigs;
+					}
 					defaultLinkagesRef.current = [...defaultLinkagesRef.current];
 					onChange && onChange(defaultLinkagesRef.current);
 				}
@@ -146,17 +156,7 @@ function LinkageConfig(props) {
 		<section ref={wrapperRef} className="z-linkage-config">
 			{objRef.current
 				? ReactDom.createPortal(
-						<div
-							className="z-linkage-tab"
-							ref={el => {
-								if (el) {
-									objRef.current.methods.setScrollAreaStyle({
-										height: `calc(100% - ${el.clientHeight}px)`,
-										marginTop: `${el.clientHeight}px`,
-									});
-								}
-							}}
-						>
+						<div className="z-linkage-tab">
 							<Ztabs
 								tabPanes={tabPanes}
 								activeKey={tabKey}
@@ -165,7 +165,7 @@ function LinkageConfig(props) {
 								}}
 							/>
 						</div>,
-						objRef.current.wrapperEl,
+						objRef.current,
 				  )
 				: null}
 			{tabKey === "1" ? (
@@ -175,7 +175,7 @@ function LinkageConfig(props) {
 			) : null}
 			{tabKey === "2" ? (
 				<section>
-					<div className="z-padding-20">
+					<div className="z-padding-15">
 						<div className="z-panel">
 							<div className="z-panel-body z-padding-bottom-0-important">
 								<ZcascaderItemGroup
@@ -183,6 +183,7 @@ function LinkageConfig(props) {
 									itemData={linkageTypesState}
 									itemKeys={itemKeys}
 									onItemClick={onItemClick}
+									autoExpanded={true}
 								/>
 								<ValueLinkControl
 									newFormData={newFormData}
@@ -270,10 +271,13 @@ function LinkageConfig(props) {
 													fields,
 												};
 											});
-										} else if (["6", "7"].includes(curentLinkTypeRef.current.key)) {
-											const asyncParamName=curentLinkTypeRef.current.key === "7"
-												? other.asyncParamName
-												: undefined;
+										} else if (["6", "7", "8"].includes(curentLinkTypeRef.current.key)) {
+											const asyncParamName =
+												curentLinkTypeRef.current.key === "7"
+													? other.asyncParamName
+													: undefined;
+											const regionName =
+												curentLinkTypeRef.current.key === "8" ? other.regionName : undefined;
 											linkages = links.srcControls.map(l => {
 												return {
 													...linkage,
@@ -283,13 +287,16 @@ function LinkageConfig(props) {
 														fieldType: l.fieldType,
 													},
 													asyncParamName,
+													regionName,
 													dist: [
 														{
 															fields: links.distControls.map(d => {
 																return {
 																	fieldKey: d.fieldKey,
+																	fieldType: d.fieldType,
 																	label: d.label,
 																	asyncParamName,
+																	regionName,
 																};
 															}),
 														},
@@ -371,6 +378,12 @@ function LinkageConfig(props) {
 										defaultLinkagesRef.current = [...defaultLinkagesRef.current];
 										onChange && onChange(defaultLinkagesRef.current);
 									}}
+									onBack={() => {
+										showRightModal({
+											show: false,
+											modal: insetLocaltion,
+										});
+									}}
 								/>
 							</div>
 							<div className="z-panel-heading">
@@ -380,7 +393,7 @@ function LinkageConfig(props) {
 								</span>
 							</div>
 							<div className="z-panel-body">
-								{["6","7"].includes(curentLinkTypeRef.current.key) ? (
+								{["6", "7", "8"].includes(curentLinkTypeRef.current.key) ? (
 									<IDLinkagesConfigured ref={configuredRef} onRemove={onRemove} />
 								) : (
 									<ValueLinkConfigured

@@ -34,8 +34,8 @@ export default React.memo(
 				{getControl("Input", {
 					value: inputValue,
 					onChange(e) {
-						setVals(e.target.value);
-						onChange(e.target.value);
+						setVals(e);
+						onChange(e);
 					},
 					style: {
 						width: "75%",

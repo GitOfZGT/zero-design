@@ -1,0 +1,21 @@
+@import "../../scssMixin/generateClassName2";
+@import "../vars.scss";
+
+$--list-var: (
+	"bg-gradient-red": $--gradient-red,
+	"bg-gradient-orange": $--gradient-orange,
+	"bg-gradient-green": $--gradient-green,
+	"bg-gradient-purple": $--gradient-purple,
+	"bg-gradient-pink": $--gradient-pink,
+	"bg-gradient-blue": $--gradient-blue,
+);
+//生成 如z-gradient-blue,z-gradient-blue-important的 className
+@each $i, $color in $--list-var {
+	@include z($i, $global: true) {
+		background-image: $color;
+	}
+	//如需提高 color 权重 使用后缀 "-important"的className
+	@include z($i + "-important", $global: true) {
+		background-image: $color !important;
+	}
+}

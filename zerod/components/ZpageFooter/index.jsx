@@ -1,6 +1,6 @@
 import React from "react";import ZpureComponent from "../ZpureComponent";
 import PropTypes from "prop-types";
-import cssClass from "./style.scss";
+import "./style.scss";
 class Com extends ZpureComponent {
 	static propTypes = {
 		links: PropTypes.arrayOf(PropTypes.object),
@@ -10,12 +10,12 @@ class Com extends ZpureComponent {
 		const {show, links, copyright,className,forwardRef,ref,...others } = this.props;
 		return (
 			<div
-				className={`${cssClass["z-page-footer"]} ${className ? className : ""}`}
+				className={`z-page-footer ${className ? className : ""}`}
 				ref={forwardRef}
 				{...others}
 			>
 				{links ? (
-					<div className={cssClass["z-footer-link"]}>
+					<div className="z-footer-link">
 						{links.map((link, i) => (
 							<a
 								key={link.key ? link.key : i}
@@ -28,7 +28,7 @@ class Com extends ZpureComponent {
 					</div>
 				) : null}
 				{copyright ? (
-					<div className={cssClass["z-footer-copyright"]}>
+					<div className="z-footer-copyright">
 						{typeof copyright == "function" ? copyright() : copyright}
 					</div>
 				) : null}

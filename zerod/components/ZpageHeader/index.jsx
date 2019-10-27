@@ -1,13 +1,14 @@
-import React from "react";import ZpureComponent from "../ZpureComponent";
+import React from "react";
+import ReactDOM from "react-dom";
 import { Link } from "react-router-dom";
 import { Breadcrumb, Icon } from "antd";
 import PropTypes from "prop-types";
-import cssClass from "./style.scss";
+import "./style.scss";
 
 function itemRender(route, params, routes, paths) {
 	return !route.link ? <span>{route.name}</span> : <Link to={paths.join("/")}>{route.name}</Link>;
 }
-export class ZpageHeader extends ZpureComponent {
+export class ZpageHeader extends React.PureComponent {
 	static propTypes = {
 		trademark: PropTypes.any, //图标|图示
 		title: PropTypes.any, // 标题
@@ -15,7 +16,21 @@ export class ZpageHeader extends ZpureComponent {
 		rightMoreContent: PropTypes.oneOfType([PropTypes.element, PropTypes.node, PropTypes.func]), // 标题列的右边可添加更多内容
 		breadcrumbParams: PropTypes.any, // 面包屑路由参数
 		breadcrumbRoutes: PropTypes.arrayOf(PropTypes.object), // 面包屑routes
+		ceiling: PropTypes.bool,
 	};
+	static defaultProps = {
+		ceiling: true,
+	};
+	componentDidMount() {
+		let parEl = this.domWrapperEl;
+		while (parEl && !parEl.dataset.zgt_modal) {
+			parEl = parEl.parentElement;
+		}
+		if (parEl) {
+			this.pageHeaderBox = parEl.querySelector("#ZpageHeaderBox");
+			this.setState({});
+		}
+	}
 	render() {
 		const {
 			children,
@@ -28,11 +43,16 @@ export class ZpageHeader extends ZpureComponent {
 			className,
 			show,
 			pageId,
+			ceiling,
 			...others
 		} = this.props;
-		const mb = "bottom-16";
-		return (
-			<section className={`${cssClass["z-page-header"]} ${className ? className : ""}`} {...others}>
+		const mb = "bottom-10";
+		const comtents = (
+			<section
+				className={`z-page-header ${className ? className : ""}`}
+				{...others}
+				ref={el => (this.domWrapperEl = el)}
+			>
 				<div className="z-flex ">
 					<div className="z-flex-1">
 						{breadcrumbRoutes && breadcrumbRoutes.length ? (
@@ -44,7 +64,7 @@ export class ZpageHeader extends ZpureComponent {
 								/>
 							</div>
 						) : null}
-						<section className="z-flex z-padding-left-30">
+						<section className="z-flex">
 							{trademark ? (
 								typeof trademark === "function" ? (
 									trademark(this.props)
@@ -57,7 +77,7 @@ export class ZpageHeader extends ZpureComponent {
 									typeof title === "function" ? (
 										title(this.props)
 									) : (
-										<header className={`${cssClass["z-page-header-title"]}`}>{title}</header>
+										<header className="z-page-header-title">{title}</header>
 									)
 								) : null}
 								{content ? (
@@ -68,10 +88,10 @@ export class ZpageHeader extends ZpureComponent {
 									)
 								) : null}
 								{title || content ? (
-									<ul className={`${cssClass["z-pillars"]} z-clear-fix z-margin-bottom-20`}>
-										<li className={`z-float-left ${cssClass["blue"]}`} />
-										<li className={`z-float-left ${cssClass["yellow"]}`} />
-										<li className={`z-float-left ${cssClass["green"]}`} />
+									<ul className={`z-pillars z-clear-fix z-margin-bottom-10`}>
+										<li className={`z-float-left blue`} />
+										<li className={`z-float-left yellow`} />
+										<li className={`z-float-left green`} />
 									</ul>
 								) : null}
 							</div>
@@ -83,6 +103,7 @@ export class ZpageHeader extends ZpureComponent {
 				<div id={pageId}></div>
 			</section>
 		);
+		return this.pageHeaderBox && ceiling ? ReactDOM.createPortal(comtents, this.pageHeaderBox) : comtents;
 	}
 }
 

@@ -1,0 +1,10 @@
+/config/*.js
+/dist/*.js
+/build/*.js
+/pace/*.js
+/static/*.js
+babel.config.js
+.postcssrc.js
+.prettierrc.js
+.eslintrc.js
+gulpfile.js

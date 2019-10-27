@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef, useImperativeHandle, useCallback } from "react";
 import { GenNonDuplicateID } from "../zTool";
 import PropTypes from "prop-types";
-import cssClass from "./style.scss";
 import InputItem from "./InputItem";
 
 const propsTypes = {
@@ -14,7 +13,7 @@ const defaultProps = {
 const _InputGroup = React.forwardRef(function InputGroupCom(props, ref) {
 	const { options } = props;
 	return (
-		<section className={cssClass["z-option-group"]}>
+		<section className="z-option-group">
 			{options.map((item, i) => {
 				return (
 					<React.Fragment key={item.id}>

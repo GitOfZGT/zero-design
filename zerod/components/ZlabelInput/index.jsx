@@ -1,9 +1,10 @@
 import React from "react";
 import ZpureComponent from "../ZpureComponent";
 import PropTypes from "prop-types";
-import cssClass from "./style.scss";
+import "./style.scss";
 import { Input, Col } from "antd";
 import { deepCopy } from "../zTool";
+import { getControl, getOptions } from "../Zform/controls";
 export class ZlabelInput extends ZpureComponent {
 	static propTypes = {
 		className: PropTypes.string,
@@ -27,17 +28,17 @@ export class ZlabelInput extends ZpureComponent {
 		value: "",
 	};
 	methods = {
-		labelChange: (e) => {
-			this.saveData.label = e.target.value;
+		labelChange: (value, e) => {
+			this.saveData.label = value;
 			if (this.props.sync) {
-				this.saveData.value = e.target.value;
+				this.saveData.value = value;
 			}
 			typeof this.props.onChange == "function" && this.props.onChange(deepCopy(this.saveData), e);
 		},
-		valueChange: (e) => {
-			this.saveData.value = e.target.value;
+		valueChange: (value, e) => {
+			this.saveData.value = value;
 			if (this.props.sync) {
-				this.saveData.label = e.target.value;
+				this.saveData.label = value;
 			}
 			typeof this.props.onChange == "function" && this.props.onChange(deepCopy(this.saveData), e);
 		},
@@ -62,26 +63,26 @@ export class ZlabelInput extends ZpureComponent {
 		const _value = labelValue.value ? labelValue.value : "";
 		this.saveData = labelValue;
 		return (
-			<Input.Group compact className={`${cssClass["z-label-input"]} ${className ? className : ""}`} style={style} size={size}>
+			<Input.Group compact className={`z-label-input ${className ? className : ""}`} style={style} size={size}>
 				<Col span={labelSpan}>
-					<Input
-						{...others}
-						className={`z-label ${_label?"hasvalue":""}`}
-						value={_label}
-						placeholder={labelPlaceholder}
-						onChange={this.methods.labelChange}
-						disabled={disabled}
-					/>
+					{getControl("Input", {
+						...others,
+						className: `z-label ${_label ? "hasvalue" : ""}`,
+						value: _label,
+						placeholder: labelPlaceholder,
+						onChange: this.methods.labelChange,
+						disabled,
+					})}
 				</Col>
 				<Col span={valueSpan}>
-					<Input
-						{...others}
-						className={`z-value ${_value?"hasvalue":""}`}
-						value={_value}
-						placeholder={valuePlaceholder}
-						onChange={this.methods.valueChange}
-						disabled={disabled}
-					/>
+					{getControl("Input", {
+						...others,
+						className: `z-value ${_value ? "hasvalue" : ""}`,
+						value: _value,
+						placeholder: valuePlaceholder,
+						onChange: this.methods.valueChange,
+						disabled,
+					})}
 				</Col>
 			</Input.Group>
 		);

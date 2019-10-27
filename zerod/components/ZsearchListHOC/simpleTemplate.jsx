@@ -5,8 +5,6 @@ import { CSSTransition, TransitionGroup } from "react-transition-group";
 // my component
 import { Zlayout } from "../Zlayout";
 import { ZsorterBtn } from "../ZsorterBtn";
-
-import cssClass from "./style.scss";
 import { deepCopy } from "zerod/components/zTool";
 import { dataType } from "../zTool";
 
@@ -56,7 +54,7 @@ export default function simpleTemplate() {
 			{sorters.length ? <div className="z-margin-bottom-15">{sorters}</div> : null}
 			<div className="z-panel z-margin-bottom-15">
 				<div className="z-panel-body">
-					<Row type="flex" className={cssClass["z-simple-row"]}>
+					<Row type="flex" className="z-simple-row">
 						<TransitionGroup component={null} enter={true} exit={false} appear={true}>
 							{this.state.listData.map((item, i) => {
 								const cardActions =
@@ -94,26 +92,24 @@ export default function simpleTemplate() {
 									>
 										<Col
 											{..._span}
-											className={`${cssClass["z-list-simple-col"]} z-margin-bottom-50`}
+											className={`z-list-simple-col z-margin-bottom-50`}
 										>
-											<div className={`${cssClass["z-list-simple"]}`}>
-												<div className={`${cssClass["z-list-simple-left"]}`}>
+											<div className="z-list-simple">
+												<div className="z-list-simple-left">
 													{typeof this.props.cardCoverRender == "function" ? (
 														this.props.cardCoverRender(item, i, tool, _ic, item.hsl)
 													) : (
 														<span
-															className={`${cssClass["z-list-simple-icon"]}`}
+															className="z-list-simple-icon"
 															style={{ backgroundColor: item.hsl }}
 														>
 															{_ic}
 														</span>
 													)}
 												</div>
-												<div className={`${cssClass["z-list-simple-right"]}`}>
+												<div className="z-list-simple-right">
 													<h1
-														className={`${
-															cssClass["z-list-card-title"]
-														} z-margin-bottom-18-important`}
+														className={`z-list-card-title z-margin-bottom-18-important`}
 														onClick={(e) => {
 															this.methods.onDetail(item);
 														}}

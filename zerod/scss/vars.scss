@@ -1,88 +1,52 @@
 @import "../ant-theme-vars";
 $--primary-color: $primary-color;
-$--primary-1: lighten($--primary-color, 55%);
-$--primary-2: lighten($--primary-color, 40%);
-$--primary-3: lighten($--primary-color, 30%);
-$--primary-4: lighten($--primary-color, 20%);
-$--primary-5: lighten($--primary-color, 10%);
-$--primary-6: lighten($--primary-color, 8%);
-$--primary-7: lighten($--primary-color, 6%);
-$--primary-8: lighten($--primary-color, 4%);
-$--primary-9: lighten($--primary-color, 2%);
+$--primary-1: rgba($--primary-color, 0.1);
+$--primary-2: rgba($--primary-color, 0.2);
+$--primary-3: rgba($--primary-color, 0.3);
+$--primary-4: rgba($--primary-color, 0.4);
+$--primary-5: rgba($--primary-color, 0.5);
+$--primary-6: rgba($--primary-color, 0.6);
+$--primary-7: rgba($--primary-color, 0.7);
+$--primary-8: rgba($--primary-color, 0.8);
+$--primary-9: rgba($--primary-color, 0.9);
 
-$--primary-bg: linear-gradient(90deg, $--blue-tint 0%, $--blue-deep 100%);
-$--primary-bg-hover: linear-gradient(90deg, $--blue-tint 0%, $--blue-tint 100%);
-$--primary-bg-active: linear-gradient(90deg, $--blue-deep 0%, $--blue-deep 100%);
+// $--primary-bg: linear-gradient(90deg, $--blue-tint 0%, $--blue-deep 100%);
+// $--primary-bg-hover: linear-gradient(90deg, $--blue-tint 0%, $--blue-tint 100%);
+// $--primary-bg-active: linear-gradient(90deg, $--blue-deep 0%, $--blue-deep 100%);
+$--primary-bg: $--blue-color;
+$--primary-bg-hover: $--blue-tint;
+$--primary-bg-active: $--blue-deep;
 
-$--success-bg: linear-gradient(90deg, $--green-tint 0%, $--green-deep 100%);
-$--success-bg-hover: linear-gradient(90deg, $--green-tint 0%, $--green-tint 100%);
-$--success-bg-active: linear-gradient(90deg, $--green-deep 0%, $--green-deep 100%);
+// $--success-bg: linear-gradient(90deg, $--green-tint 0%, $--green-deep 100%);
+// $--success-bg-hover: linear-gradient(90deg, $--green-tint 0%, $--green-tint 100%);
+// $--success-bg-active: linear-gradient(90deg, $--green-deep 0%, $--green-deep 100%);
 
-$--danger-bg: linear-gradient(90deg, $--red-tint 0%, $--red-deep 100%);
-$--danger-bg-hover: linear-gradient(90deg, $--red-tint 0%, $--red-tint 100%);
-$--danger-bg-active: linear-gradient(90deg, $--red-deep 0%, $--red-deep 100%);
+$--success-bg: $--green-color;
+$--success-bg-hover: $--green-tint;
+$--success-bg-active: $--green-deep;
+
+// $--danger-bg: linear-gradient(90deg, $--red-tint 0%, $--red-deep 100%);
+// $--danger-bg-hover: linear-gradient(90deg, $--red-tint 0%, $--red-tint 100%);
+// $--danger-bg-active: linear-gradient(90deg, $--red-deep 0%, $--red-deep 100%);
+
+$--danger-bg: $--red-color;
+$--danger-bg-hover: $--red-tint;
+$--danger-bg-active: $--red-deep;
 
 :global {
-	body:not([class*="not-cover"]) {
-		.ant-btn-primary:not([disabled]) {
-			background-image: $--primary-bg;
-			background-color: $--blue-tint;
-			border-color: $--blue-tint;
-			&:hover,
-			&:focus {
-				background-image: $--primary-bg-hover;
-			}
-			&:active {
-				background-image: $--primary-bg-active;
-			}
-		}
-		.ant-btn-primary.z-btn-success:not([disabled]) {
-			background-image: $--success-bg;
-			background-color: $--green-tint;
-			border-color: $--green-tint;
-			&:hover,
-			&:focus {
-				background-image: $--success-bg-hover;
-			}
-			&:active {
-				background-image: $--success-bg-active;
-			}
-		}
-		.ant-btn-danger:not([disabled]) {
-			background-image: $--danger-bg;
-			background-color: $--red-tint;
-			border-color: $--red-tint;
-			&:hover,
-			&:focus {
-				background-image: $--danger-bg-hover;
-			}
-			&:active {
-				background-image: $--danger-bg-active;
-			}
-		}
-		$--ra: $btn-border-radius-base;
-		.ant-input-search {
-			border-top-right-radius: $--ra;
-			border-bottom-right-radius: $--ra;
-			.ant-input {
-				border-top-right-radius: $--ra;
-				border-bottom-right-radius: $--ra;
-			}
-		}
-	}
 	*::-webkit-scrollbar {
-		width: 6px;
+		width: $--defatul-ScrollbarSize;
+		height: $--defatul-ScrollbarSize;
 	}
 	*::-webkit-scrollbar-thumb {
 		background: transparent;
-		border-radius: 4px;
-	}
-
-	*:hover::-webkit-scrollbar-thumb {
+		border-radius: $--defatul-ScrollbarRadius;
 		background: $--defatul-ScrollbarColor;
 	}
+	
 
-	*:hover::-webkit-scrollbar-track {
-		background: white;
+	*::-webkit-scrollbar-track {
+		background: linear-gradient(to right,#F0F2F5,#E3E6EA 1px,#F0F2F5 1px,#F0F2F5);
 	}
+
 }

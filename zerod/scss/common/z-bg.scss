@@ -1,0 +1,44 @@
+@import "../../scssMixin/generateClassName2";
+@import "../vars.scss";
+
+$--list-var: (
+	"bg-red": $--red,
+	"bg-orange": $--orange,
+	"bg-yellow": $--yellow,
+	"bg-olive": $--olive,
+	"bg-green": $--green,
+	"bg-cyan": $--cyan,
+	"bg-blue": $--blue,
+	"bg-purple": $--purple,
+	"bg-mauve": $--mauve,
+	"bg-pink": $--pink,
+	"bg-brown": $--brown,
+	"bg-grey": $--grey,
+	"bg-black": $--black,
+	"bg-darkGray": $--darkGray,
+	"bg-gray": $--gray,
+	"bg-ghostWhite": $--ghostWhite,
+	"bg-white": $--white,
+	"bg-light-red": $--light-red,
+	"bg-light-orange": $--light-orange,
+	"bg-light-yellow": $--light-yellow,
+	"bg-light-olive": $--light-olive,
+	"bg-light-green": $--light-green,
+	"bg-light-cyan": $--light-cyan,
+	"bg-light-blue": $--light-blue,
+	"bg-light-purple": $--light-purple,
+	"bg-light-mauve": $--light-mauve,
+	"bg-light-pink": $--light-pink,
+	"bg-light-brown": $--light-brown,
+	"bg-light-grey": $--light-grey,
+);
+//生成 如z-bg-blue,z-bg-blue-important的 className
+@each $i, $color in $--list-var {
+	@include z($i, $global: true) {
+		background-color: $color;
+	}
+	//如需提高 color 权重 使用后缀 "-important"的className
+	@include z($i + "-important", $global: true) {
+		background-color: $color !important;
+	}
+}

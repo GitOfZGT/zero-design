@@ -1,3 +1,10 @@
+<!--
+ * @Author: zgt
+ * @Date: 2018-08-21 10:59:31
+ * @LastEditors: zgt
+ * @LastEditTime: 2019-08-22 16:21:38
+ * @Description: file content
+ -->
 <div class="z-doc-titles"></div>
 
 # 编辑页面：ZeditSimpleFormHOC
@@ -9,7 +16,8 @@
 <div class="z-demo-box" data-render="demo1" data-title="新增表单"></div>
 
 ```jsx
-import React from "react";import ZpureComponent from "zerod/components/ZpureComponent";
+import React from "react";
+import ZpureComponent from "zerod/components/ZpureComponent";
 import { Input, InputNumber, Button } from "antd";
 import { ZeditSimpleFormHOC, zTool } from "zerod";
 import defaultConfigData from "@/mock/serviceDefaultConfigData.js";
@@ -28,7 +36,7 @@ const pageCofig = {
 			{
 				key: "serviceCode",
 				label: "服务编码",
-				render: (form) => {
+				render: form => {
 					return <Input placeholder="请输入服务编码" />;
 				},
 				//antd的 form.getFieldDecorator的options
@@ -45,7 +53,7 @@ const pageCofig = {
 			{
 				key: "serviceName",
 				label: "服务名称",
-				render: (form) => {
+				render: form => {
 					return <Input placeholder="请输入服务名称" />;
 				},
 				//antd的 form.getFieldDecorator的options
@@ -63,7 +71,7 @@ const pageCofig = {
 				key: "serviceRemark",
 				label: "服务说明",
 				span: 24,
-				render: (form) => {
+				render: form => {
 					return <Input.TextArea rows={2} placeholder="请输入服务说明" />;
 				},
 				//antd的 form.getFieldDecorator的options
@@ -81,7 +89,7 @@ const pageCofig = {
 				key: "servicePort",
 				detailKey: "serviceProt",
 				label: "端口号",
-				render: (form) => {
+				render: form => {
 					return <InputNumber min={11110} max={65535} step={10} />;
 				},
 				//antd的 form.getFieldDecorator的options
@@ -98,7 +106,7 @@ const pageCofig = {
 			{
 				key: "quick",
 				label: "快捷操作",
-				render: (form) => {
+				render: form => {
 					return (
 						<Button
 							onClick={() => {
@@ -116,12 +124,12 @@ const pageCofig = {
 				key: "confProperty",
 				label: "默认配置",
 				span: 24,
-				render: (form) => {
+				render: form => {
 					return (
 						<Input.TextArea
 							rows={15}
 							placeholder="请输入默认配置"
-							ref={(el) => {
+							ref={el => {
 								zTool.scrollDisableWheel(el.textAreaRef);
 							}}
 						/>
@@ -146,24 +154,24 @@ const pageCofig = {
 			return api.config.addService(Object.assign({}, values, { environment: "default" }));
 		},
 	},
-		moreContentRender: function() {
-			return (
-				<div className="z-panel z-margin-top-20">
-					<div className="z-panel-body">moreContentRender</div>
-				</div>
-			);
-		},
-		panelBeforeRender: function() {
-			return (
-				<div className="z-panel z-margin-bottom-20">
-					<div className="z-panel-body">panelBeforeRender</div>
-				</div>
-			);
-		},
-		panelAfterRender: function() {
-			// MoreContent 的代码请查看 ZerodMainContext 的 getScrollAreaWrapperEl 中例子的代码
-			return <MoreContent />;
-		},
+	moreContentRender: function() {
+		return (
+			<div className="z-panel z-margin-top-20">
+				<div className="z-panel-body">moreContentRender</div>
+			</div>
+		);
+	},
+	panelBeforeRender: function() {
+		return (
+			<div className="z-panel z-margin-bottom-20">
+				<div className="z-panel-body">panelBeforeRender</div>
+			</div>
+		);
+	},
+	panelAfterRender: function() {
+		// MoreContent 的代码请查看 ZerodMainContext 的 getScrollAreaWrapperEl 中例子的代码
+		return <MoreContent />;
+	},
 };
 export default ZeditSimpleFormHOC(pageConfig);
 ```
@@ -173,7 +181,8 @@ export default ZeditSimpleFormHOC(pageConfig);
 <div class="z-demo-box" data-render="demo2" data-title='form.type="update"时为修改表单,这时才会调用form.detailApiInterface钩子，使用moreContentRender函数在页面末端追加更多内容'></div>
 
 ```jsx
-import React from "react";import ZpureComponent from "zerod/components/ZpureComponent";
+import React from "react";
+import ZpureComponent from "zerod/components/ZpureComponent";
 import { Input, InputNumber, Button } from "antd";
 import { ZeditSimpleFormHOC, zTool } from "zerod";
 import defaultConfigData from "@/mock/serviceDefaultConfigData.js";
@@ -192,7 +201,7 @@ const pageCofig = {
 			{
 				key: "serviceCode",
 				label: "服务编码",
-				render: (form) => {
+				render: form => {
 					return <Input placeholder="请输入服务编码" />;
 				},
 				//antd的 form.getFieldDecorator的options
@@ -209,7 +218,7 @@ const pageCofig = {
 			{
 				key: "serviceName",
 				label: "服务名称",
-				render: (form) => {
+				render: form => {
 					return <Input placeholder="请输入服务名称" />;
 				},
 				//antd的 form.getFieldDecorator的options
@@ -227,7 +236,7 @@ const pageCofig = {
 				key: "serviceRemark",
 				label: "服务说明",
 				span: 24,
-				render: (form) => {
+				render: form => {
 					return <Input.TextArea rows={2} placeholder="请输入服务说明" />;
 				},
 				//antd的 form.getFieldDecorator的options
@@ -245,7 +254,7 @@ const pageCofig = {
 				key: "servicePort",
 				detailKey: "serviceProt",
 				label: "端口号",
-				render: (form) => {
+				render: form => {
 					return <InputNumber min={11110} max={65535} step={10} />;
 				},
 				//antd的 form.getFieldDecorator的options
@@ -267,24 +276,24 @@ const pageCofig = {
 			return api.config.updateService(Object.assign({}, values, { serviceId: props.detailId }));
 		},
 	},
-		moreContentRender: function() {
-			return (
-				<div className="z-panel z-margin-top-20">
-					<div className="z-panel-body">moreContentRender</div>
-				</div>
-			);
-		},
-		panelBeforeRender: function() {
-			return (
-				<div className="z-panel z-margin-bottom-20">
-					<div className="z-panel-body">panelBeforeRender</div>
-				</div>
-			);
-		},
-		panelAfterRender: function() {
-			// MoreContent 的代码请查看 ZerodMainContext 的 getScrollAreaWrapperEl 中例子的代码
-			return <MoreContent />;
-		},
+	moreContentRender: function() {
+		return (
+			<div className="z-panel z-margin-top-20">
+				<div className="z-panel-body">moreContentRender</div>
+			</div>
+		);
+	},
+	panelBeforeRender: function() {
+		return (
+			<div className="z-panel z-margin-bottom-20">
+				<div className="z-panel-body">panelBeforeRender</div>
+			</div>
+		);
+	},
+	panelAfterRender: function() {
+		// MoreContent 的代码请查看 ZerodMainContext 的 getScrollAreaWrapperEl 中例子的代码
+		return <MoreContent />;
+	},
 };
 export default ZeditSimpleFormHOC(pageConfig);
 ```
@@ -293,7 +302,7 @@ export default ZeditSimpleFormHOC(pageConfig);
 
 ## pageConfig
 
-除了如下的属性，pageConfig还包含 <span class="z-history-href" data-path="/main/HOC-doc/ZpageWraperHOC-doc">HOC/页面头尾结构：ZpageWrapper</span> 的props
+除了如下的属性，pageConfig 还包含 <span class="z-history-href" data-path="/main/HOC-doc/ZpageWraperHOC-doc">HOC/页面头尾结构：ZpageWrapper</span> 的 props
 
 <table>
 	<thead>
@@ -383,6 +392,12 @@ export default ZeditSimpleFormHOC(pageConfig);
 			<td>点击确定按钮提交数据</td>
 		</tr>
         <tr>
+			<td>afterItemsRendered</td>
+			<td>同 <span class="z-history-href" data-path="/main/component-doc/Zform-doc">组件/Zform</span> 的afterItemsRendered属性</td>
+			<td>function</td>
+			<td>所有控件渲染的回调</td>
+		</tr>
+        <tr>
 			<td><i class="zero-icon zerod-shengchangzhouqi"></i> submitBtnRender</td>
 			<td>同 <span class="z-history-href" data-path="/main/component-doc/Zform-doc">组件/Zform</span> 的submitBtnRender属性</td>
 			<td>funtion(onSubmit,props,tool){return ReactNode;}</td>
@@ -435,7 +450,7 @@ pageConfig 中的一些函数如`moreContentRender`提供了`tool`参数出来�
 
 ### tool.getFormMethods
 
-是一个方法，可以 const myMethods=tool.getFormMethods()取得 Zform 中的methods属性;
+是一个方法，可以 const myMethods=tool.getFormMethods()取得 Zform 中的 methods 属性;
 
 ### tool.methods
 
@@ -450,6 +465,11 @@ tool.methods 是一个对象，内容如下：
 		</tr>
 	</thead>
 	<tbody>
+		<tr>
+			<td>getWrapperProps</td>
+			<td>用于获取ZeditSimpleFormHOC()返回的那个组件的props</td>
+			<td>tool.methods.getWrapperProps()</td>
+		</tr>
 		<tr>
 			<td>showLoading</td>
 			<td>用于 显示/取消 当前页的loading的方法，必需参数show：true|false</td>
@@ -485,9 +505,9 @@ tool.methods 是一个对象，内容如下：
 
 <div class="z-doc-titles"></div>
 
-### tool.$router
+### tool.\$router
 
-tool.$router 是一个对象，内容如下：
+tool.\$router 是一个对象，内容如下：
 
 <table>
 	<thead>

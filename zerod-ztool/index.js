@@ -1,25 +1,45 @@
+/*
+ * @Author: zgt
+ * @Date: 2019-06-24 11:04:00
+ * @LastEditors: zgt
+ * @LastEditTime: 2019-09-07 15:48:07
+ * @Description: file content
+ */
 /*加载一批文件，_files:文件路径数组,可包括js,css,less文件,isSequence 是否按数组的顺序加载*/
 export const loadFileList = (function() {
   /* 已加载文件缓存列表,用于判断文件是否已加载过，若已加载则不再次加载*/
   let classcodes = [];
   /*加载JS文件,url:文件路径*/
   const loadFile = function(url) {
-    if (!FileIsExt(classcodes, url)) {
-      var ThisType = GetFileType(url);
+    let newUrl = "";
+    let protos = null;
+    if (dataTypeTest(url) === "object") {
+      newUrl = url.url;
+      protos = url.protos;
+    } else {
+      newUrl = url;
+    }
+    if (!FileIsExt(classcodes, newUrl)) {
+      var ThisType = GetFileType(newUrl);
       var fileObj = null;
       if (ThisType == ".js" || ThisType == "http") {
         fileObj = document && document.createElement("script");
-        fileObj.src = url;
+        fileObj.src = newUrl;
       } else if (ThisType == ".css") {
         fileObj = document && document.createElement("link");
-        fileObj.href = url;
+        fileObj.href = newUrl;
         fileObj.type = "text/css";
         fileObj.rel = "stylesheet";
       } else if (ThisType == ".less") {
         fileObj = document && document.createElement("link");
-        fileObj.href = url;
+        fileObj.href = newUrl;
         fileObj.type = "text/css";
         fileObj.rel = "stylesheet/less";
+      }
+      if (dataTypeTest(protos) === "object" && fileObj) {
+        Object.keys(protos).forEach(key => {
+          fileObj[key] = protos[key];
+        });
       }
       if (fileObj)
         return new Promise(function(resolve, reject) {
@@ -30,7 +50,7 @@ export const loadFileList = (function() {
               "complete" === this.readyState
             ) {
               // success();
-              classcodes.push(url);
+              classcodes.push(newUrl);
               resolve();
             }
           };
@@ -964,9 +984,11 @@ export function isWhiteColor(str) {
 /**
  * @description: 转换tree数据的键名
  * @param tree {array}
- * @param srcMapKeys {object}
- * @param distMapKeys {object}
- * @param extands {object}
+ * @param srcMapKeys {object} 默认 { label: "label", value: "value", children: "children" },
+ * @param distMapKeys {object} 默认 { label: "label", value: "value", children: "children" }
+ * @param extands {object} 默认 {}  可以在tree中加入定义的字段
+ * @param valueToString {boolean} 默认 false 是否把 value (有可能是数字) 转成 string 类型的
+ * @param includesSourceItem {boolean} 默认 true  除了label，value字段，是否保留tree中的其他字段
  * @return: newTree
  */
 export function turnMapKeys(
@@ -974,12 +996,16 @@ export function turnMapKeys(
   srcMapKeys = { label: "label", value: "value", children: "children" },
   distMapKeys = { label: "label", value: "value", children: "children" },
   extands = {},
-  valueToString,
-  includesSourceItem
+  valueToString = false,
+  includesSourceItem = true
 ) {
   return Array.isArray(tree)
     ? tree.map(item => {
+        const children = item[srcMapKeys.children];
+        const sourceItem = includesSourceItem ? item : {};
+        delete sourceItem[srcMapKeys.children];
         const newItem = {
+          ...sourceItem,
           [distMapKeys.label]: item[srcMapKeys.label],
           [distMapKeys.value]:
             valueToString &&
@@ -987,12 +1013,11 @@ export function turnMapKeys(
             item[srcMapKeys.value] !== undefined
               ? item[srcMapKeys.value].toString()
               : item[srcMapKeys.value],
-          ...extands,
-          ...(includesSourceItem?item:{})
+          ...extands
         };
-        if (item[srcMapKeys.children]) {
+        if (children) {
           newItem[distMapKeys.children] = turnMapKeys(
-            item[srcMapKeys.children],
+            children,
             srcMapKeys,
             distMapKeys,
             valueToString,
@@ -1006,32 +1031,33 @@ export function turnMapKeys(
 /**
  * @description:
  * @param tree {array}
- * @param valueArr {string|array|number}
+ * @param value {string|array|number}
+ * @param toDist {object}  默认 ： { src: "value", dist: "label" }  意思》将value值取tree对应的 label
  * @return: newValueArr
  */
 export function turnLabelOrValue(
   tree,
-  valueArr,
+  value,
   toDist = { src: "value", dist: "label" },
   parValueArr
 ) {
-  const newValueArr = parValueArr ? parValueArr : [];
+  const newValueArr = parValueArr || [];
   if (Array.isArray(tree)) {
     tree.forEach(item => {
-      if (Array.isArray(valueArr)) {
-        const index = valueArr.indexOf(item[toDist.src]);
+      if (Array.isArray(value)) {
+        const index = value.indexOf(item[toDist.src]);
         if (index > -1 && !newValueArr[index]) {
           newValueArr[index] = item[toDist.dist];
         }
-      } else if (valueArr === item[toDist.src]) {
+      } else if (value === item[toDist.src]) {
         newValueArr[0] = item[toDist.dist];
       }
       if (item.children) {
-        turnLabelOrValue(item.children, valueArr, toDist, newValueArr);
+        turnLabelOrValue(item.children, value, toDist, newValueArr);
       }
     });
   }
-  return Array.isArray(valueArr) ? newValueArr : newValueArr[0];
+  return Array.isArray(value) ? newValueArr : newValueArr[0];
 }
 
 export const zTool = {

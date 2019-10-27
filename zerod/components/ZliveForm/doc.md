@@ -1,18 +1,23 @@
-<div class="z-doc-titles"></div>
-
+<!--
+ * @Author: zgt
+ * @Date: 2019-09-20 19:52:56
+ * @LastEditors: zgt
+ * @LastEditTime: 2019-10-12 17:04:09
+ * @Description: file content
+ -->
 # 动态表单配置：ZliveForm
 
-`ZliveForm`是动态表单配置模块
+`ZliveForm` 是动态表单配置模块
 
-`ZliveForm.FormViewer`是动态表单展示模块(包括控件联动效果)
+`ZliveForm.FormViewer` 是动态表单展示模块(包括控件联动效果)
 
-控件联动功能有：1、单选/多选控制其他控件禁用，2、单选/多选控制其他控件必填，3、单选/多选控制其控件非必填，4、单选/多选 控制 其他单选/多选的选择项，5.1、单选/多选控制一个组隐藏，5.2、单选/多选控制其他控件隐藏，6、身份证号取出生年月日，7、单选联动异步请求选项
+控件联动功能有：1、单选/多选控制其他控件禁用，2、单选/多选控制其他控件必填，3、单选/多选控制其控件非必填，4、单选/多选 控制 其他单选/多选的选择项，5.1、单选/多选控制一个组隐藏，5.2、单选/多选控制其他控件隐藏，6、身份证号取出生年月日，7、单选联动异步请求选项，8、地图选点取行政区划
 
 2、ZliveForm 的例子
 
 <div class="z-demo-box" data-render="demo0" data-title="ZliveForm的例子"></div>
 
-```jsx
+``` jsx
 import React from "react";
 import { ZliveForm } from "zerod";
 import formData from "./formData";
@@ -28,11 +33,11 @@ class Myjavascript extends React.PureComponent {
 }
 ```
 
-1、ZliveForm.FormViewer 的例子
+1、ZliveForm. FormViewer 的例子
 
-<div class="z-demo-box" data-render="demo1" data-title="ZliveForm.FormViewer的例子"></div>
+<div class="z-demo-box" data-render="demo1" data-title="ZliveForm. FormViewer的例子"></div>
 
-```jsx
+``` jsx
 import React from "react";
 import { ZliveForm } from "zerod";
 import formData from "./formData";
@@ -60,9 +65,9 @@ class Myjavascript extends React.PureComponent {
 
 <div class="z-doc-titles"></div>
 
-## ZliveForm.FormViewer 的 props
+## ZliveForm. FormViewer 的 props
 
-可追 `className`、`style`
+可追 `className` 、 `style` 
 
 | 参数               | 说明                                                                                                                                             | 类型                                       | 默认值 |
 | ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------ | ------ |
@@ -70,22 +75,25 @@ class Myjavascript extends React.PureComponent {
 | formValues         | 表单字段对应的值                                                                                                                                 | object                                     | --     |
 | onSubmit           | submit 类型的按钮触发表单验证通过后的确定回调函数，同/Zform 的 onSubmit                                                                          | function(values){return Promise.resolve()} | --     |
 | momentFormat       | 是否在触发 onSubmit 函数后里面传出的 values 中存在 moment 对象进行表单控件对应的 format 格式化，启用此属性，相关 moment 值的控件必需 format 属性 | boolean                                    | false  |
-| submitBtnRender    | 表单之下的渲染函数，可以渲染一个或多个按钮，或者其他内容。提供了一个 submit 函数，可以直接绑定给提交按钮 click 等,触发后会用 onSubmit 回调       | (submit)=>{return ReactNode}               | --     |
+| submitBtnRender    | 表单之下的渲染函数，可以渲染一个或多个按钮，或者其他内容。提供了一个 submit 函数，可以直接绑定给提交按钮 click 等, 触发后会用 onSubmit 回调       | (submit)=>{return ReactNode}               | --     |
 | linkage            | 是否启用联动功能 (联动的前提 formData 中存在 linkages 配置)                                                                                      | boolean                                    | true   |
-| title              | 表单的标题，默认来自 formData.name, 如果 title==false,则不显示标题                                                                               | boolean \| string                          | --     |
+| title              | 表单的标题，默认来自 formData.name, 如果 title==false, 则不显示标题                                                                               | boolean \| string                          | --     |
 | afterItemsRendered | 所有表单控件渲染完成（包括异步）的回调                                                                                                           | funcion                                    | --     |
+| customOnChange | 为某些控件添加onChange事件                                                                                                           | object                                    | --     |
+| customFormRules | 为某些控件添加自定义rules                                                                                                           | object                                    | --     |
+| customControlRender | 添加对应的自定义占位控件的渲染函数                                                                                                           | object                                    | --     |
 
-## ZliveForm.FormViewer 实例方法 (通过 Ref 取得)
+## ZliveForm. FormViewer 实例方法 (通过 Ref 取得)
 
 | 参数              | 说明                                     | 使用                | 返回值           |
 | ----------------- | ---------------------------------------- | ------------------- | ---------------- |
-| getEachFormMethod | 获取所有 Zform 的 form 实例和 methods    | getEachFormMethod() | [{form,methods}] |
+| getEachFormMethod | 获取所有 Zform 的 form 实例和 methods    | getEachFormMethod() | [{form, methods}] |
 
 ## formData 基本结构
 
 <div class="z-demo-box" data-render="demo2" data-title="formData"></div>
 
-```json
+``` json
 {
 	"id": 111, //formId
 	"name": "养犬信息登记表",
@@ -293,6 +301,12 @@ class Myjavascript extends React.PureComponent {
 				}
 			];
 		}
+	},
+	"customControlRender":{
+		"customsKey":function({field,linkages,getGroupsFn}){
+			return <div>9999999</div>
+		}
 	}
 }
 ```
+

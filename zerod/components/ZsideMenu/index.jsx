@@ -1,9 +1,9 @@
-import React from "react";import ZpureComponent from "../ZpureComponent";
+import React from "react";
 import { Menu, Icon } from "antd";
 import { withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
-import cssClass from "./style.scss";
 import { itemsFromTree } from "../zTool";
+import "./style.scss";
 /**
  * menuData
  * [{
@@ -12,12 +12,11 @@ import { itemsFromTree } from "../zTool";
  * iconClass
  * }]
  */
-class Com extends ZpureComponent {
+class SideMenu extends React.PureComponent {
 	static propTypes = {
 		openAllSubmenu: PropTypes.bool,
 		onSelect: PropTypes.func,
 		collapsed: PropTypes.bool,
-		onOpenChange: PropTypes.func,
 		menuData: PropTypes.arrayOf(PropTypes.object).isRequired,
 		// iconTheme: PropTypes.string,
 		theme: PropTypes.string,
@@ -26,9 +25,68 @@ class Com extends ZpureComponent {
 		// iconTheme: "outlined",
 		theme: "light",
 	};
-	allSubKeys = [];
-	getMenuItems(data) {
-		return data.map((el, i) => {
+
+	state = {
+		items: [],
+	};
+	componentDidMount() {
+		this.initItems();
+	}
+	componentDidUpdate(prevProps, prevState) {
+		if (this.props.menuData !== prevProps.menuData) {
+			this.initItems();
+		}
+	}
+	render() {
+		const {
+			openAllSubmenu,
+			onSelect,
+			collapsed,
+			menuData,
+			theme,
+			history,
+			location,
+			match,
+			staticContext,
+			...others
+		} = this.props;
+		return (
+			<div className="z-side-menu">
+				{this.state.items.length ? (
+					<Menu
+						mode="inline"
+						defaultSelectedKeys={this.selectKeys}
+						defaultOpenKeys={this.defaultOpenKeys}
+						onSelect={this.onSelect}
+						inlineCollapsed={this.props.collapsed}
+						theme={this.props.theme == "light" ? "light" : "dark"}
+						{...others}
+					>
+						{this.state.items}
+					</Menu>
+				) : null}
+			</div>
+		);
+	}
+	selectKeys = [];
+	defaultOpenKeys = [];
+	initItems = () => {
+		const { selectKeys, defaultOpenKeys, menuItems } = this.getMenuItems(
+			this.props.menuData,
+			this.props.location.pathname,
+			this.props.openAllSubmenu,
+		);
+		this.selectKeys = selectKeys;
+		this.defaultOpenKeys = defaultOpenKeys;
+		this.setState({
+			items: menuItems,
+		});
+	};
+
+	getMenuItems = (data, currentPath, isAllopen) => {
+		let selectKeys = [];
+		let defaultOpenKeys = [];
+		const menuItems = data.map((el, i) => {
 			const icon = el.iconClass ? (
 				typeof el.iconClass == "function" ? (
 					el.iconClass()
@@ -37,7 +95,14 @@ class Com extends ZpureComponent {
 				)
 			) : null;
 			if (el.children && el.children.length) {
-				this.allSubKeys.push(el.path);
+				const childMenu = this.getMenuItems(el.children, currentPath, isAllopen);
+				if (isAllopen || childMenu.selectKeys.length) {
+					defaultOpenKeys.push(el.path);
+					defaultOpenKeys = defaultOpenKeys.concat(childMenu.defaultOpenKeys);
+				}
+				if (childMenu.selectKeys.length) {
+					selectKeys = selectKeys.concat(childMenu.selectKeys);
+				}
 				return (
 					<Menu.SubMenu
 						title={
@@ -48,10 +113,14 @@ class Com extends ZpureComponent {
 						}
 						key={el.path}
 					>
-						{this.getMenuItems(el.children)}
+						{childMenu.menuItems}
 					</Menu.SubMenu>
 				);
 			} else {
+				if (currentPath.startsWith(el.path)) {
+					const lastPath = currentPath.replace(el.path, "");
+					if (!lastPath || lastPath.startsWith("/")) selectKeys.push(el.path);
+				}
 				return (
 					<Menu.Item key={el.path}>
 						<span>
@@ -62,30 +131,19 @@ class Com extends ZpureComponent {
 				);
 			}
 		});
-	}
-	openTimer = null;
-	isOpenClick = false;
-	openChange = (keys) => {
-		if (this.props.onOpenChange) {
-			clearTimeout(this.openTimer);
-			this.openTimer = setTimeout(() => {
-				this.props.onOpenChange(keys);
-			}, 300);
-		}
-		this.isOpenClick = true;
-		this.setState({
-			openKeys: keys,
-		});
+		return { selectKeys, defaultOpenKeys, menuItems };
 	};
 	onSelect = ({ item, key, selectedKeys }) => {
 		let selected = true;
-		if (this.props.onSelect) selected = this.props.onSelect({ item, key, selectedKeys });
+		if (this.props.onSelect) {
+			selected = this.props.onSelect({ item, key, selectedKeys });
+		}
 		if (selected !== false) {
 			let data = null;
 			itemsFromTree({
 				tree: this.props.menuData,
 				sourceItem: { path: key },
-				keyObj:{id:"path",children:"children"},
+				keyObj: { id: "path", children: "children" },
 				action: function({ tree, currentItem, item, index, keyObj }) {
 					data = currentItem;
 				},
@@ -97,100 +155,6 @@ class Com extends ZpureComponent {
 			}
 		}
 	};
-	defaultOpenKeys = [];
-	findKeys = (arr, currentPath) => {
-		let keys = [];
-		arr.forEach((item) => {
-			if (item.children && item.children.length) {
-				let childKeys = this.findKeys(item.children, currentPath);
-				if (childKeys.length) {
-					keys = keys.concat(childKeys);
-					this.defaultOpenKeys.push(item.path);
-				}
-			} else if (currentPath.startsWith(item.path)) {
-				const lastPath = currentPath.replace(item.path, "");
-				if (!lastPath || lastPath.startsWith("/")) keys.push(item.path);
-			}
-		});
-		return keys;
-	};
-	getDefaultKeys = () => {
-		const currentPath = this.props.location.pathname;
-		return this.findKeys(this.props.menuData, currentPath);
-	};
-	initKeys = () => {
-		this.defaultOpenKeys = [];
-		const selectKeys = this.getDefaultKeys();
-		if (!this.props.collapsed)
-			this.defaultOpenKeys = [...new Set([...this.state.openKeys, ...this.defaultOpenKeys])];
-		this.setState({
-			selectKeys,
-			openKeys: this.defaultOpenKeys,
-		});
-	};
-	state = {
-		selectKeys: [],
-		openKeys: [],
-		noOpen: false,
-		items: this.getMenuItems(this.props.menuData),
-	};
-	noOpenTimer = null;
-	componentDidUpdate(prevProps, prevState) {
-		if (this.props.location.pathname !== prevProps.location.pathname) {
-			this.initKeys();
-		}
-		if (this.props.menuData !== prevProps.menuData) {
-			this.allSubKeys = [];
-			this.setState({
-				items: this.getMenuItems(this.props.menuData),
-			});
-		}
-		if (this.props.collapsed !== prevProps.collapsed) {
-			const currentSelectedKey = this.state.selectKeys[0];
-			if (currentSelectedKey) {
-				this.defaultOpenKeys = [];
-				this.findKeys(this.props.menuData, currentSelectedKey);
-				this.setState({
-					openKeys: this.defaultOpenKeys,
-				});
-			}
-			if (this.props.collapsed) {
-				this.setState({
-					noOpen: true,
-				});
-				clearTimeout(this.noOpenTimer);
-				this.noOpenTimer = setTimeout(() => {
-					this.setState({
-						noOpen: false,
-					});
-				}, 200);
-			}
-		}
-	}
-	componentDidMount() {
-		this.initKeys();
-	}
-	render() {
-		const openKeys =
-			!this.props.collapsed && this.props.openAllSubmenu && !this.isOpenClick
-				? this.allSubKeys
-				: this.state.openKeys;
-		return (
-			<div className={cssClass["z-side-menu"]}>
-				<Menu
-					mode="inline"
-					selectedKeys={this.state.selectKeys}
-					openKeys={!this.state.noOpen ? openKeys : []}
-					onSelect={this.onSelect}
-					onOpenChange={this.openChange}
-					inlineCollapsed={this.props.collapsed}
-					theme={this.props.theme == "light" ? "light" : "dark"}
-				>
-					{this.state.items}
-				</Menu>
-			</div>
-		);
-	}
 }
-export const ZsideMenu = withRouter(Com);
+export const ZsideMenu = withRouter(SideMenu);
 export default ZsideMenu;

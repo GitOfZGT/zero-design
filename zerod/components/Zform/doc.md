@@ -1,3 +1,10 @@
+<!--
+ * @Author: zgt
+ * @Date: 2018-08-21 10:59:31
+ * @LastEditors: zgt
+ * @LastEditTime: 2019-10-11 17:36:23
+ * @Description: file content
+ -->
 <div class="z-doc-titles"></div>
 
 # 普通表单：Zform
@@ -154,7 +161,7 @@ class Myjavascript extends React.PureComponent {
 		return (
 			<Zform
 				labelLayout="horizontal"
-				formDefaultValues={this.defaultValue}
+				values={this.defaultValue}
 				items={this.items}
 				onSubmit={values => {
 					// console.log(values);
@@ -243,8 +250,8 @@ class Myjavascript extends React.PureComponent {
 			<td>--</td>
 		</tr>
         <tr>
-			<td>formDefaultValues</td>
-			<td>表单控件的默认值，如{serviceName:"名称"}，"serviceName"对应items属性里面的key, (请使用变量缓存所需设置的值而非直接使用字面量)。如需后续修改表单控件的值，也可以选择getFormInstance导出的methods.setFieldsValue(newValues)或者form.setFieldsValue(newValues)</td>
+			<td>values</td>
+			<td>所有表单控件的值，如{serviceName:"名称"}，"serviceName"对应items属性里面的key</td>
 			<td>object</td>
 			<td>--</td>
 		</tr>
@@ -273,8 +280,8 @@ class Myjavascript extends React.PureComponent {
 			<td>--</td>
 		</tr>
 		 <tr>
-			<td>initAnimation</td>
-			<td>渲染items是否初始化动画</td>
+			<td>booleanToNumber</td>
+			<td>表单验证通过后是否把boolean类型的值转成0或1，通常处理Switch控件的值</td>
 			<td>boolean</td>
 			<td>true</td>
 		</tr>
@@ -443,8 +450,8 @@ const items = [
 
 ## getControl(name,config)中
 
-name 可选：`Input`、`Input.Group`、`TextArea`、`Select`、`Checkbox`、`InputNumber`、`DatePicker`、`Radio`、`Checkbox.Group`、`Radio.Group`、`TimePicker`、`Upload`、`TreeSelect`、`Mention`、
-`RangePicker`、`MonthPicker`、`Rate`、`AutoComplete`（在 antd-design 可找到对应的表单控件）、`TreeInput`(就是 ZtreeInput)、`Cascader`、`ColorPicker`(即 ZcolorPicker)、`TimeRange`(即ZtimeRange)  、`YearPicker`(年份)  
+name 可选：`Input`、`Input.Group`、`TextArea`、`Switch`、`Select`、`Checkbox`、`InputNumber`、`DatePicker`、`Radio`、`Checkbox.Group`、`Radio.Group`、`TimePicker`、`Upload`、`TreeSelect`、`Mention`、
+`RangePicker`、`MonthPicker`、`Rate`、`AutoComplete`（在 antd-design 可找到对应的表单控件）、`TreeInput`(就是 ZtreeInput)、`Cascader`、`ColorPicker`(即 ZcolorPicker)、`TimeRange`(即 ZtimeRange) 、`YearPicker`(年份)
 
 当`Select`、`Checkbox.Group`、`Radio.Group`，需 config.selectList=[{label:"label",value:"value"},]
 

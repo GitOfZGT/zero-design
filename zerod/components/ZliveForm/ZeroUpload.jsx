@@ -1,10 +1,12 @@
 import React, { useState, useEffect, useRef, useImperativeHandle, useCallback } from "react";
 import PropTypes from "prop-types";
+import ReactDOM from "react-dom";
 import { Icon, Modal, message } from "antd";
 import { getControl } from "../Zform/controls";
-import { httpAjax } from "zerod/components/zTool";
+import { httpAjax, dataType } from "zerod/components/zTool";
 import ZerodMainContext from "../ZerodMainContext";
 import ZerodLayerContext from "../ZerodLayerContext";
+import Zviewer from "../Zviewer";
 function getFileUids(files, key = "uid") {
 	return files.map(file => {
 		return file[key];
@@ -34,13 +36,18 @@ const defaultProps = {
 /**
  * config
  * 	{
- * 		url:多文件上传的接口,
- * 		urlMethod:多文件上传请求方式,
- * 		urlParamName:上传接口的参数名,
- * 		detailUrl:获取多文件列表的接口,
- * 		detailUrlMethod:获取多文件请求类型，
- * 		detailUrlParamName:获取多文件列表的接口的参数名,
- * 		userIdName:"userId",// 用户id参数名
+ * 		url: string //多文件上传的接口,
+ * 		urlMethod: string //多文件上传请求方式,
+ * 		urlParamName: string //上传接口的参数名,
+ *      uploaderResponse: object //转发value接收的字段名
+ * 		userIdName: string ,// 用户id参数名
+ *      autoUpload ：boolean //是否自动上传（是否出现确认上传按钮）
+ *      requestMode: string  //上传接口上传模式  single(单文件) | multiple(多文件)
+ *      isSourceFile ： boolean // onChange事件导出的value是否带着文件流数据，true时以上属性都无效，即不会调用上传接口，不会出现确认上传按钮
+ *      fileAccept: string //上传可选的文件类型
+ *      maxUploadLength ： number  //最大上传数量
+ *      fileListType ： stirng  //列表展示模式  picture | picture-card
+ *      maxMegabytes : number // 允许选择最大文件大小（M） 默认 10M
  * 	}
  */
 //上传文件组件(多文件)
@@ -54,12 +61,27 @@ const MyUpload = React.forwardRef(function(props, ref) {
 		showLayerModalLoading,
 		value,
 		onChange,
+		field,
 	} = props;
 	const wrapperElRef = useRef(null);
+	const { fileAccept, requestMode, maxUploadLength, autoUpload, isSourceFile } = config;
+	const fileListType = config.fileListType || "picture-card";
+	const maxMegabytes = typeof config.maxMegabytes === "number" ? config.maxMegabytes : 10;
+	const isPictureCardType = fileListType === "picture-card";
+	const isOnlyPicture = fileAccept === "image/*";
+	const uploaderResponse = config.uploaderResponse || {
+		id: "id",
+		filePath: "filePath",
+		fileSuffix: "fileSuffix",
+		originalFileName: "originalFileName",
+	};
+	//是否单文件接口
+	const isSingle = requestMode === "single";
 	//fileList：上传文件的列表数据，setTruefileList：文件数据流
 	const [fileState, setFileState] = useState({ fileList: [], setTruefileList: [] });
 	//保存已上传文件的uid和服务id
 	const hasUploadDoneServerIdsRef = useRef([]);
+	//过滤出未上传的文件
 	const noUploader = fileState.setTruefileList.filter(file => {
 		// console.log("---ids", hasUploadDoneServerIdsRef.current, getFileUids(hasUploadDoneServerIdsRef.current));
 		return !getFileUids(hasUploadDoneServerIdsRef.current).includes(file.uid);
@@ -85,80 +107,67 @@ const MyUpload = React.forwardRef(function(props, ref) {
 			  };
 	//处理value
 	useEffect(() => {
-		if (!Array.isArray(value)||!value.length) {
+		if (!Array.isArray(value) || !value.length) {
 			setFileState({
 				fileList: [],
 				setTruefileList: [],
 			});
 			return;
 		}
-		// if (!config.detailUrl) {
-		// 	message.error("未配置请求多文件的后台地址");
-		// 	return;
-		// }
-		// const hasGetDetailIds = value.filter(id => {
-		// 	return !getFileUids(hasUploadDoneServerIdsRef.current, "serverId").includes(id);
-		// });
 		const hasGetDetailIds = value.filter(server => {
+			const isObject = dataType.isObject(server);
 			const currentServers = getFileUids(hasUploadDoneServerIdsRef.current, "serverId");
-			const hasServer = currentServers.find(item => item.id === server.id);
+
+			const hasServer = currentServers.find(item =>
+				isObject
+					? item[uploaderResponse.id]
+						? item[uploaderResponse.id] === server[uploaderResponse.id]
+						: item[uploaderResponse.filePath] === server[uploaderResponse.filePath]
+					: item === server,
+			);
 			return !hasServer;
 		});
-		// console.log(modalRef.current)
 		if (hasGetDetailIds.length) {
 			const files = hasGetDetailIds
 				.filter(item => {
-					const isPic = item.id && item.filePath;
+					const isPic = dataType.isObject(item) ? item[uploaderResponse.filePath] : item;
 					if (!isPic) {
-						console.warn("上传控件的value缺少id、filePath等字段");
+						console.warn("上传控件的value缺少相关的文件地址");
 					}
 					return isPic;
 				})
 				.map(item => {
-					hasUploadDoneServerIdsRef.current.push({ uid: item.id, serverId: item });
-					return {
-						uid: item.id,
-						name: `${item.originalFileName}.${item.fileSuffix}`,
-						status: "done",
-						type: item.fileType,
-						url: item.filePath,
-					};
+					const isObject = dataType.isObject(item);
+					hasUploadDoneServerIdsRef.current.push({
+						uid: isObject ? item[uploaderResponse.id] || item[uploaderResponse.filePath] : item,
+						serverId: item,
+					});
+					if (isObject) {
+						return {
+							uid: item[uploaderResponse.id] || item[uploaderResponse.filePath],
+							name: `${item[uploaderResponse.originalFileName]}.${item[uploaderResponse.fileSuffix]}`,
+							status: "done",
+							type:
+								item[uploaderResponse.fileSuffix] &&
+								/(webp|svg|png|gif|jpg|jpeg|bmp|dpg)$/.test(item[uploaderResponse.fileSuffix])
+									? "image"
+									: "",
+							url: item[uploaderResponse.filePath],
+						};
+					} else {
+						return {
+							uid: item,
+							name: "",
+							status: "done",
+							type: /\.(webp|svg|png|gif|jpg|jpeg|bmp|dpg)$/.test(item) ? "image" : "",
+							url: item,
+						};
+					}
 				});
 			setFileState({
 				fileList: [...fileState.fileList, ...files],
 				setTruefileList: [...fileState.setTruefileList, ...files],
 			});
-			// showLoading(true, modalRef.current, "获取文件中...");
-			// httpAjax(config.detailUrlMethod ? config.detailUrlMethod : "post", config.detailUrl, {
-			// 	[config.detailUrlParamName ? config.detailUrlParamName : "fileIds"]: hasGetDetailIds,
-			// })
-			// 	.then(re => {
-			// 		const files = re.data.map(item => {
-			// 			return {
-			// 				uid: item.id,
-			// 				name: `${item.originalFileName}.${item.fileSuffix}`,
-			// 				status: "done",
-			// 				type: item.fileType,
-			// 				url: item.filePath,
-			// 			};
-			// 		});
-			// 		hasUploadDoneServerIdsRef.current = [
-			// 			...hasUploadDoneServerIdsRef.current,
-			// 			...re.data.map(item => {
-			// 				return { uid: item.id, serverId: item.id };
-			// 			}),
-			// 		];
-			// 		setFileState({
-			// 			fileList: [...fileState.fileList, ...files],
-			// 			setTruefileList: [...fileState.setTruefileList, ...files],
-			// 		});
-			// 	})
-			// 	.catch(re => {
-			// 		message.error(re && re.msg ? re.msg : "获取已上传列表失败。");
-			// 	})
-			// 	.finally(() => {
-			// 		showLoading(false, modalRef.current);
-			// 	});
 		}
 	}, [value]);
 	//上传文件
@@ -167,6 +176,7 @@ const MyUpload = React.forwardRef(function(props, ref) {
 			message.error("未配置上传多文件的后台地址");
 			return;
 		}
+
 		const userinfo = getUserInfo();
 		const userId = userinfo && userinfo.userDO ? userinfo.userDO.id : "";
 		// console.log("userinfo---", userinfo);
@@ -175,38 +185,54 @@ const MyUpload = React.forwardRef(function(props, ref) {
 			formData.append(config.urlParamName ? config.urlParamName : "files", file);
 		});
 		showLoading(true, modalRef.current, "上传中...");
-		httpAjax(
-			config.urlMethod ? config.urlMethod : "post",
-			`${config.url}?${config.userIdName ? config.userIdName : "userId"}=${userId}`,
-			formData,
-		)
-			.then(re => {
-				hasUploadDoneServerIdsRef.current = [
-					...hasUploadDoneServerIdsRef.current,
-					...re.data.map((server, i) => {
-						return { uid: noUploader[i].uid, serverId: server };
-					}),
-				];
-				setFileState({
-					...fileState,
-					fileList: fileState.fileList.map(file => {
-						return {
-							...file,
-							status: getFileUids(hasUploadDoneServerIdsRef.current).includes(file.uid)
-								? "done"
-								: "undetermined",
-						};
-					}),
+		if (config.url)
+			httpAjax(
+				config.urlMethod ? config.urlMethod : "post",
+				`${config.url}?${config.userIdName ? config.userIdName : "userId"}=${userId}`,
+				formData,
+			)
+				.then(re => {
+					const ulploadData = isSingle ? [re.data] : re.data;
+					hasUploadDoneServerIdsRef.current = [
+						...hasUploadDoneServerIdsRef.current,
+						...ulploadData.map((server, i) => {
+							return { uid: noUploader[i].uid, serverId: server };
+						}),
+					];
+					setFileState({
+						...fileState,
+						fileList: fileState.fileList.map(file => {
+							return {
+								...file,
+								status: getFileUids(hasUploadDoneServerIdsRef.current).includes(file.uid)
+									? "done"
+									: "undetermined",
+							};
+						}),
+					});
+					message.success("上传成功。");
+					typeof onChange === "function" &&
+						onChange(getFileUids(hasUploadDoneServerIdsRef.current, "serverId"));
+				})
+				.catch(re => {
+					message.error(re && re.msg ? re.msg : "上传失败。");
+					//自动上传模式，上传失败时移除列表
+					if (autoUpload) {
+						setFileState({
+							fileList: fileState.fileList.filter(file => {
+								const isNoUploader = noUploader.find(item => item.uid === file.uid);
+								return !isNoUploader;
+							}),
+							setTruefileList: fileState.setTruefileList.filter(file => {
+								const isNoUploader = noUploader.find(item => item.uid === file.uid);
+								return !isNoUploader;
+							}),
+						});
+					}
+				})
+				.finally(() => {
+					showLoading(false, modalRef.current);
 				});
-				message.success("上传成功。");
-				typeof onChange === "function" && onChange(getFileUids(hasUploadDoneServerIdsRef.current, "serverId"));
-			})
-			.catch(re => {
-				message.error(re && re.msg ? re.msg : "上传失败。");
-			})
-			.finally(() => {
-				showLoading(false, modalRef.current);
-			});
 	};
 	//确认上传事件
 	const handleUpload = () => {
@@ -215,36 +241,62 @@ const MyUpload = React.forwardRef(function(props, ref) {
 		}
 	};
 	//确认上传按钮
-	const commitButton = (
+	const commitButton = isPictureCardType ? (
+		<div
+			className="ant-upload ant-upload-select ant-upload-select-picture-card z-float-left z-flex-items-center"
+			onClick={handleUpload}
+		>
+			<Icon type="check" />
+			<div>确认上传</div>
+		</div>
+	) : (
 		<div className="z-liveform-upload-btn z-margin-top-10" onClick={handleUpload}>
 			<span>
-				<Icon type="check" /> 上传
+				<Icon type="check" /> 确认上传
 			</span>
 		</div>
 	);
+	const uploadButtonName = isOnlyPicture ? "选择图片" : "选择文件";
 	//选文件按钮
-	const uploadButton = (
-		<div className="z-liveform-upload-btn">
+	const uploadButton =
+		isSingle && noUploader.length ? null : isPictureCardType ? (
 			<span>
-				<Icon type="upload" /> 选择文件
+				<Icon type="upload" /> {uploadButtonName}
 			</span>
-		</div>
-	);
+		) : (
+			<div className="z-liveform-upload-btn">
+				<span>
+					<Icon type="upload" /> {uploadButtonName}
+				</span>
+			</div>
+		);
+	const viewerRef = useRef();
+	useEffect(() => {
+		autoUpload && !isSourceFile && handleUpload();
+	}, [fileState]);
 	return (
-		<div className="z-liveform-upload-wrapper" ref={wrapperElRef}>
+		<div className="z-liveform-upload-wrapper z-clear-fix" ref={wrapperElRef}>
 			{/* 使用antd的上传组件 */}
 			{getControl("Upload", {
-				children: uploadButton,
-				multiple: config.multiple,
+				disabled: !!field.disabled,
+				children: maxUploadLength && maxUploadLength <= fileState.fileList.length ? null : uploadButton,
+				multiple: false,
 				// action: config.url,
-				listType: "picture",
+				listType: fileListType,
 				name: "file",
-				className: "z-liveform-upload",
-				accept: config.accept,
+				className: `z-liveform-upload ${fileListType === "picture-card" ? "z-float-left" : ""}`,
+				accept: fileAccept !== "all" ? fileAccept : undefined,
 				//onChange={this.handleUploadChange}
 				fileList: fileState.fileList,
 				onPreview: file => {
-					console.log("----", file);
+					// console.log("----", file, fileState.fileList);
+					if (file.type && !file.type.includes("image")) {
+						message.error("无法预览非图片文件");
+						return;
+					}
+					viewerRef.current && viewerRef.current.viewer.show(true);
+					viewerRef.current &&
+						viewerRef.current.viewer.view(fileState.fileList.findIndex(item => item.url === file.url));
 				},
 				//移除
 				onRemove: file => {
@@ -288,9 +340,34 @@ const MyUpload = React.forwardRef(function(props, ref) {
 				},
 				//取消自动上传，实现手动上传
 				beforeUpload: file => {
+					// console.log("--beforeload--", file);
+					const currM = file.size / 1024 / 1024;
+					if (currM > maxMegabytes) {
+						message.error(`选择的文件近${currM.toFixed(2)}M,不允许上传超过${maxMegabytes}M的文件`);
+						return;
+					}
+
 					let reader = new FileReader();
 					reader.readAsDataURL(file);
 					reader.onloadend = () => {
+						let setTruefileList = [];
+
+						if (isSourceFile) {
+							const sourceFile = {
+								[uploaderResponse.id]: file.uid,
+								uid: file.uid,
+								[uploaderResponse.filePath]: reader.result,
+								sourceFile: file,
+							};
+							hasUploadDoneServerIdsRef.current = [
+								...hasUploadDoneServerIdsRef.current,
+								{ uid: file.uid, serverId: sourceFile },
+							];
+							setTruefileList = [...fileState.setTruefileList, sourceFile];
+							typeof onChange === "function" && onChange(setTruefileList);
+						} else {
+							setTruefileList = [...fileState.setTruefileList, file];
+						}
 						setFileState({
 							fileList: [
 								...fileState.fileList,
@@ -302,13 +379,35 @@ const MyUpload = React.forwardRef(function(props, ref) {
 									url: reader.result,
 								},
 							],
-							setTruefileList: [...fileState.setTruefileList, file],
+							setTruefileList,
 						});
 					};
 					return false;
 				},
 			})}
-			{noUploader.length ? commitButton : null}
+			{noUploader.length && !autoUpload && !isSourceFile ? commitButton : null}
+			{fileState.fileList.length
+				? ReactDOM.createPortal(
+						<div
+							style={{
+								position: "fixed",
+								visibility: "hidden",
+								top: 0,
+								left: 0,
+								width: "100%",
+								transform: "translate(-100%,0)",
+							}}
+						>
+							<Zviewer
+								urls={fileState.fileList
+									.filter(item => item.type && item.type.includes("image"))
+									.map(item => item.url)}
+								ref={viewerRef}
+							/>
+						</div>,
+						document.body,
+				  )
+				: null}
 		</div>
 	);
 });

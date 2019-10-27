@@ -1,5 +1,4 @@
 import React from "react";
-import ZpureComponent from "../ZpureComponent";
 import "../../zero-icon/iconfont.css";
 import { withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
@@ -12,11 +11,11 @@ import {
 	const_getPanelDefaultFormItems,
 	const_extendPanelFormConfig,
 	const_searchFormNode,
-	requireValid
+	requireValid,
 } from "../constant";
 import { Tree, Modal } from "antd";
 const TreeNode = Tree.TreeNode;
-import cssClass from "./style.scss";
+import "./style.scss";
 import TreeTitle from "./TreeTitle";
 import ZerodMainContext from "../ZerodMainContext";
 import {
@@ -42,7 +41,7 @@ function getTreeAllId(tree, keyMap) {
 }
 // import { Zlayout } from "../Zlayout";
 let defaultConfig = const_getListConfig("list", "ZtreePanel");
-class ZtreePanel extends ZpureComponent {
+class ZtreePanel extends React.PureComponent {
 	static propTypes = {
 		treeDataKeys: PropTypes.object,
 		panelBeforeRender: PropTypes.func,
@@ -81,6 +80,9 @@ class ZtreePanel extends ZpureComponent {
 
 	methods = {
 		...const_getMethods.call(this),
+		getWrapperProps: () => {
+			return this.props.wrapperProps;
+		},
 		// 获取列表数据
 		loadTreeData: moreQuery => {
 			const { defaultExpandAll } = this.props.treeProps || {};
@@ -139,9 +141,9 @@ class ZtreePanel extends ZpureComponent {
 					apiPromise
 						.then(re => {
 							const noData = requireValid.hasData(re);
-						if (noData) {
-							return noData;
-						}
+							if (noData) {
+								return noData;
+							}
 							treeNode.props.dataRef[childrenKey] = re.data;
 							const _defaultExpandAll =
 								typeof defaultExpandAll === "function"
@@ -481,7 +483,7 @@ class ZtreePanel extends ZpureComponent {
 					{this.getPanleHeader()}
 					<div>
 						{this.searchForm}
-						<div className={cssClass["z-editor-tree"]}>
+						<div className="z-editor-tree">
 							{this.state.treeData.length ? (
 								<Tree
 									showLine
