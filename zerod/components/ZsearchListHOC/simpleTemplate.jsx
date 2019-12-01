@@ -1,12 +1,12 @@
-import React from "react";import ZpureComponent from "../ZpureComponent";
+import React from "react";
+import ZpureComponent from "../ZpureComponent";
 import { animateTimout } from "../constant";
 import { Row, Col, Pagination } from "antd";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
 // my component
 import { Zlayout } from "../Zlayout";
 import { ZsorterBtn } from "../ZsorterBtn";
-import { deepCopy } from "zerod/components/zTool";
-import { dataType } from "../zTool";
+import { dataType, deepCopy } from "../zTool";
 
 export default function simpleTemplate() {
 	const tool = this.getExportSomething();
@@ -72,7 +72,7 @@ export default function simpleTemplate() {
 									const cicle_bg = `hsl(${ramder_number},70%,65%)`;
 									item.hsl = cicle_bg;
 								}
-								const getColContent = (col) => {
+								const getColContent = col => {
 									if (!col) return null;
 									return typeof col.render === "function"
 										? col.render(item[col.dataIndex], item, i, tool)
@@ -90,10 +90,7 @@ export default function simpleTemplate() {
 										timeout={animateTimout.flipInTime}
 										classNames="fadeIn-to-down"
 									>
-										<Col
-											{..._span}
-											className={`z-list-simple-col z-margin-bottom-50`}
-										>
+										<Col {..._span} className={`z-list-simple-col z-margin-bottom-50`}>
 											<div className="z-list-simple">
 												<div className="z-list-simple-left">
 													{typeof this.props.cardCoverRender == "function" ? (
@@ -110,7 +107,7 @@ export default function simpleTemplate() {
 												<div className="z-list-simple-right">
 													<h1
 														className={`z-list-card-title z-margin-bottom-18-important`}
-														onClick={(e) => {
+														onClick={e => {
 															this.methods.onDetail(item);
 														}}
 													>

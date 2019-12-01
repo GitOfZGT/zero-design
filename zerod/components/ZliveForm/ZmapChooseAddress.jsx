@@ -75,26 +75,29 @@ function getWebService(
 //获取坐标位置详细信息
 const geocoder = {
 	amap: (location, webserviceUrlDO) => {
-		return getWebService(webserviceUrlDO, {
-			serviceApi: `https://restapi.amap.com/v3/geocode/regeo`,
-			query: {
-				key: "8c0945ac5a3ca41937724434563346c2",
-				//高德的是"经度,纬度"
-				location: `${location.longitude},${location.latitude}`,
-			},
-		});
+	  //process.env.amap 内网环境的映射路径
+	  const amaporigin = process && process.env && process.env.amap ? process.env.amap : 'https://restapi.amap.com';
+	  return getWebService(webserviceUrlDO, {
+		serviceApi: `${amaporigin}/v3/geocode/regeo`,
+		query: {
+		  key: '8c0945ac5a3ca41937724434563346c2',
+		  //高德的是"经度,纬度"
+		  location: `${location.longitude},${location.latitude}`,
+		},
+	  });
 	},
 	qqmap: (location, webserviceUrlDO) => {
-		return getWebService(webserviceUrlDO, {
-			serviceApi: `https://apis.map.qq.com/ws/geocoder/v1`,
-			query: {
-				key: "63QBZ-B5GKV-46RPH-UCUF2-K5TUJ-OKBAK",
-				//腾讯的是"纬度,经度"
-				location: `${location.latitude},${location.longitude}`,
-			},
-		});
+	  const qqmaporigin = process && process.env && process.env.qqmap ? process.env.qqmap : 'https://apis.map.qq.com';
+	  return getWebService(webserviceUrlDO, {
+		serviceApi: `${qqmaporigin}/ws/geocoder/v1`,
+		query: {
+		  key: '63QBZ-B5GKV-46RPH-UCUF2-K5TUJ-OKBAK',
+		  //腾讯的是"纬度,经度"
+		  location: `${location.latitude},${location.longitude}`,
+		},
+	  });
 	},
-};
+  };
 
 export const MapChooseAddress = React.memo(
 	React.forwardRef(function(props, ref) {
@@ -144,6 +147,8 @@ export const MapChooseAddress = React.memo(
 											city: ac.city,
 											district: ac.district,
 											street: ac.streetNumber ? ac.streetNumber.street : "",
+											pointWkt: `POINT(${val.longitude} ${val.latitude})`,
+											pointWkt2000: "",
 										};
 									} else if (thisType === "qqmap") {
 										const ac = res.data.result.ad_info;
@@ -155,6 +160,8 @@ export const MapChooseAddress = React.memo(
 											city: ac.city, //城市
 											district: ac.district, //区
 											street: ac.street, //街道
+											pointWkt: `POINT(${val.longitude} ${val.latitude})`,
+											pointWkt2000: "",
 										};
 									}
 									onChange && onChange({ ...val, ...area });
@@ -188,7 +195,7 @@ export const MapChooseAddress = React.memo(
 			},
 			onBlur(e) {
 				if (dataType.isObject(value)) {
-					value.name = e;
+					value.name = e.target.value;
 					onChange && onChange({ ...value });
 				}
 			},

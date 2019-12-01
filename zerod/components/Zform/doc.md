@@ -285,6 +285,12 @@ class Myjavascript extends React.PureComponent {
 			<td>boolean</td>
 			<td>true</td>
 		</tr>
+		 <tr>
+			<td>controlSize</td>
+			<td>表单控件大小</td>
+			<td>default\|large\|small</td>
+			<td>default</td>
+		</tr>
 	</tbody>
 </table>
 

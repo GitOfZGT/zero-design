@@ -1,8 +1,9 @@
 @import "../../scssMixin/generateClassName2";
-$--w: 38px;
+@import "../../scss/vars";
+$--w: $input-height-base;
 $--p: 8px;
 @include z("color-box") {
-	vertical-align: top;
+	vertical-align: middle;
 	cursor: pointer;
 	position: relative;
 	display: inline-block;
@@ -11,7 +12,7 @@ $--p: 8px;
 	min-width: $--w;
 	height: $--w;
 	border-radius: 4px;
-	border: 1px solid #d9d9d9;
+	border: 1px solid $border-color-base;
 	padding: $--p;
 	@include z("bg") {
 		position: relative;
@@ -42,6 +43,38 @@ $--p: 8px;
 	&.disabled {
 		cursor: no-drop;
 		background-color: #f5f5f5;
+	}
+	&.large {
+		$--w-lg: $input-height-lg;
+		$--p-lg: 8px;
+		min-width: $--w-lg;
+		height: $--w-lg;
+		padding: $--p-lg;
+		.z-bg {
+			height: $--w-lg - ($--p-lg * 2) - 2;
+		}
+		.z-color {
+			top: $--p-lg;
+			left: $--p-lg;
+			right: $--p-lg;
+			height: $--w-lg - ($--p-lg * 2) - 2;
+		}
+	}
+	&.small {
+		$--w-sm: $input-height-sm;
+		$--p-sm: 4px;
+		min-width: $--w-sm;
+		height: $--w-sm;
+		padding: $--p-sm;
+		.z-bg {
+			height: $--w-sm - ($--p-sm * 2) - 2;
+		}
+		.z-color {
+			top: $--p-sm;
+			left: $--p-sm;
+			right: $--p-sm;
+			height: $--w-sm - ($--p-sm * 2) - 2;
+		}
 	}
 }
 @include z("cover") {

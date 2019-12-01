@@ -44,11 +44,13 @@ export function debounceInput(InputControl, valueType = "", timer = 70) {
 			}
 		}
 		render() {
-			const { value, onChange, children, ...others } = this.props;
+			const { value, onChange, defaultValue, children, ...others } = this.props;
 			return (
 				<InputControl
 					{...others}
-					value={this.state.value}
+					value={
+						this.state.value !== null && this.state.value !== undefined ? this.state.value : defaultValue
+					}
 					onChange={(e, ...rest) => {
 						let valueTypeNames = [];
 						if (valueType) {
@@ -125,10 +127,10 @@ const controls = {
 	Switch,
 };
 
-function recursionOption(selectList, Option, OptGroup, optLabelRender) {
+function recursionOption(selectList, Option, OptGroup, optLabelRender, layout) {
 	return (
 		Array.isArray(selectList) &&
-		selectList.map(item => {
+		selectList.map((item, index) => {
 			let label,
 				value,
 				key,
@@ -144,15 +146,16 @@ function recursionOption(selectList, Option, OptGroup, optLabelRender) {
 				return (
 					<OptGroup label={label} key={label}>
 						{Array.isArray(item.children) &&
-							recursionOption(item.children, Option, OptGroup, optLabelRender)}
+							recursionOption(item.children, Option, OptGroup, optLabelRender, layout)}
 					</OptGroup>
 				);
 			} else {
-				return (
+				const content = (
 					<Option value={value} key={key} disabled={disabled}>
-						{typeof optLabelRender === "function" ? optLabelRender(item) : label}
+						{typeof optLabelRender === "function" ? optLabelRender(item, index) : label}
 					</Option>
 				);
+				return layout === "vertical" ? <p key={key}>{content}</p> : content;
 			}
 		})
 	);
@@ -161,9 +164,11 @@ function recursionOption(selectList, Option, OptGroup, optLabelRender) {
 function getSelects(Control, Option, OptGroup, opt) {
 	const selectList = opt.selectList;
 	const optLabelRender = opt.optLabelRender;
+	const layout = opt.layout;
 	delete opt.selectList;
 	delete opt.optLabelRender;
-	return <Control {...opt}>{recursionOption(selectList, Option, OptGroup, optLabelRender)}</Control>;
+	delete opt.layout;
+	return <Control {...opt}>{recursionOption(selectList, Option, OptGroup, optLabelRender, layout)}</Control>;
 }
 
 export function getControl(name, opt = {}) {

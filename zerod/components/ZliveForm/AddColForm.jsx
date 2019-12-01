@@ -1,12 +1,11 @@
 import React, { useState, useEffect, useRef, useImperativeHandle, useCallback } from "react";
 import ZeditSimpleFormHOC from "../ZeditSimpleFormHOC";
 import { getControl, getOptions } from "../Zform/controls";
-import { itemsFromTree, GenNonDuplicateID } from "../zTool";
+import { itemsFromTree, GenNonDuplicateID, dataType } from "../zTool";
 import { dateFormats } from "./controls";
 import ZselectInput from "./ZselectInput";
 import ZauxiliaryInput from "./ZauxiliaryInput";
 import { getFormItem, removeSomeLinkage } from "./common";
-import { dataType } from "zerod/components/zTool";
 import { Input, message, Icon, Tooltip, Modal } from "antd";
 
 const PercentInput = React.memo(
@@ -67,24 +66,17 @@ const selectKeys = [
 ];
 const cascaderKeys = [...selectKeys, "changeOnSelect"];
 const dateKeys = ["format"];
-const uploadKeys = [
-	"url",
-	"fileAccept",
-	"fileListType",
-	"wxSourceTypes",
-	"uploaderResponse",
-	"minUploadLength",
-	"maxUploadLength",
-	"autoUpload",
-	"maxMegabytes",
-];
+const loadKey = ["url", "wxSourceTypes", "uploaderResponse", "autoUpload", "maxMegabytes"];
+const uploadKeys = [...loadKey, "minUploadLength", "maxUploadLength", "fileAccept", "fileListType"];
+const prosAndConsKeys = [...loadKey, "ocrUrl", "ocrEnabled"];
+
 const colorKeys = ["colorValueType", "minSaturability"];
 const mapSelectKeys = ["mapType", "secretKey", "webserviceUrlDO"];
 const inputNumberKeys = ["min", "max"];
 //微信小程序组件库wux-weapp-ex支持标识
 const wechat = { key: "wechat", title: "微信小程序可用" };
 //控件类型在微信小程序组件库wux-weapp-ex支持情况
-const controlWechat = [1, 2, 3, 4, 5, 6, 8, 9, 11, 13];
+const controlWechat = [1, 2, 3, 4, 5, 6, 8, 9, 11, 13, 14, 15];
 //日期格式在微信小程序组件库wux-weapp-ex支持情况
 const formatWechat = ["YYYY", "YYYY-MM", "YYYY-MM-DD", "YYYY-MM-DD HH:mm", "HH:mm"];
 //控件类型列表
@@ -174,6 +166,18 @@ export const controlList = [
 		configKeys: [],
 	},
 	{
+		label: "电子签名",
+		value: 15,
+		showKeys: [...commonKeys, "isRequstSign", "getSignUrl", "setSignUrl"],
+		configKeys: ["isRequstSign", "getSignUrl", "setSignUrl"],
+	},
+	{
+		label: "证件照(OCR)",
+		value: 16,
+		showKeys: [...commonKeys, ...prosAndConsKeys],
+		configKeys: prosAndConsKeys,
+	},
+	{
 		label: "文书",
 		value: 20,
 		showKeys: [...commonKeys, "docCode"],
@@ -200,9 +204,9 @@ function showFieldTypeLinkOther(changeFormItems, formItems, val, excludeKeys = [
 		true,
 	);
 }
-const getSwitchOpt = (options = {}) => ({
+const getSwitchOpt = (options = {}, getProps) => ({
 	render(form, changeFormItems) {
-		return getControl("Switch");
+		return getControl("Switch", getProps && getProps(form, changeFormItems));
 	},
 	options: getOptions({
 		required: true,
@@ -226,7 +230,10 @@ function getCorresFormItem({ key, label, initialValue }) {
 				multiple: false,
 				showBtns: false,
 				inputType: "coustom",
-				customInputKeys: [{ key: "label", initValue: "" }, { key: "value", initValue: "" }],
+				customInputKeys: [
+					{ key: "label", initValue: "" },
+					{ key: "value", initValue: "" },
+				],
 				children: (states, setStates, customInputKeys) => {
 					return getControl("Input.Group", {
 						compact: true,
@@ -303,9 +310,18 @@ const urlRules = function(keys = []) {
 	];
 };
 
-function getKeyControl(keyDisabledRef, isUpdateRef, changeFormItems) {
+function getKeyControl(keyDisabledRef, isUpdateRef, changeFormItems, form) {
 	const inputOpt = {
 		disabled: keyDisabledRef.current,
+		onBlur(e) {
+			const fieldType = form.getFieldValue("fieldType");
+			if (fieldType === 15 && !e.target.value.match(/Sign$/g)) {
+				//电子签名的fieldKey自动添加Sign后缀
+				form.setFieldsValue({
+					fieldKey: `${e.target.value}Sign`,
+				});
+			}
+		},
 	};
 	if (isUpdateRef.current) {
 		inputOpt.addonAfter = (
@@ -320,7 +336,7 @@ function getKeyControl(keyDisabledRef, isUpdateRef, changeFormItems) {
 									{
 										key: "fieldKey",
 										newItem: {
-											control: getKeyControl(keyDisabledRef, isUpdateRef, changeFormItems),
+											control: getKeyControl(keyDisabledRef, isUpdateRef, changeFormItems, form),
 										},
 									},
 								],
@@ -418,7 +434,7 @@ function useFormItems(groupId, formViewerRef, type) {
 			label: "字段Key",
 			labelFocused: true,
 			render(form, changeFormItems) {
-				return getKeyControl(keyDisabledRef, isUpdateRef, changeFormItems);
+				return getKeyControl(keyDisabledRef, isUpdateRef, changeFormItems, form);
 			},
 			options: getOptions({
 				required: true,
@@ -591,8 +607,8 @@ function useFormItems(groupId, formViewerRef, type) {
 								: undefined
 						}
 						leftSpan={6}
-						centerSpan={[3, 8, 9].includes(form.getFieldValue("fieldType")) ? 18 : 12}
-						rightSpan={[3, 8, 9].includes(form.getFieldValue("fieldType")) ? null : 6}
+						centerSpan={[3, 8, 9, 15].includes(form.getFieldValue("fieldType")) ? 18 : 12}
+						rightSpan={[3, 8, 9, 15].includes(form.getFieldValue("fieldType")) ? null : 6}
 						selectList={["post", "get"].map(m => ({ label: m, value: m }))}
 						valueKey={{ left: "selectionsUrlMethod", center: "selectionsUrl", right: "requireType" }}
 						leftPlaceholde="请求方式"
@@ -736,7 +752,7 @@ function useFormItems(groupId, formViewerRef, type) {
 			render(form, changeFormItems) {
 				return (
 					<ZselectInput
-						selectList={["post", "get"].map(m => ({ label: m, value: m }))}
+						selectList={["post"].map(m => ({ label: m, value: m }))}
 						valueKey={{ left: "urlMethod", center: "url", right: "urlParamName" }}
 						leftPlaceholde="请求方式"
 						centerPlaceholder="请求地址"
@@ -861,7 +877,10 @@ function useFormItems(groupId, formViewerRef, type) {
 			show: false,
 			render() {
 				return getControl("Checkbox.Group", {
-					selectList: [{ label: "从相册选图", value: "album" }, { label: "使用相机", value: "camera" }],
+					selectList: [
+						{ label: "从相册选图", value: "album" },
+						{ label: "使用相机", value: "camera" },
+					],
 				});
 			},
 			options: getOptions({
@@ -878,7 +897,10 @@ function useFormItems(groupId, formViewerRef, type) {
 			show: false,
 			render(form, changeFormItems) {
 				return getControl("Select", {
-					selectList: [{ label: "hex", value: "hex" }, { label: "rgb", value: "rgb" }],
+					selectList: [
+						{ label: "hex", value: "hex" },
+						{ label: "rgb", value: "rgb" },
+					],
 				});
 			},
 			options: getOptions({
@@ -961,6 +983,113 @@ function useFormItems(groupId, formViewerRef, type) {
 			}),
 		},
 		//<--地图选点特有属性---> end
+		//<--电子签名特有属性---> start
+		{
+			key: "isRequstSign",
+			label: "是否异步获取签名",
+			show: false,
+			labelFocused: true,
+			...getSwitchOpt({ initialValue: true }, (form, changeFormItems) => ({
+				onChange(checked) {
+					changeFormItems(
+						[
+							{
+								key: "getSignUrl",
+								show: checked,
+							},
+							{
+								key: "setSignUrl",
+								show: checked,
+							},
+						],
+						true,
+					);
+				},
+			})),
+		},
+		// {
+		// 	key: "getSignUrl",
+		// 	label: "请求签名的地址",
+		// 	show: false,
+		// 	labelFocused: true,
+		// 	render(form, changeFormItems) {
+		// 		return (
+		// 			<ZselectInput
+		// 				leftSpan={6}
+		// 				centerSpan={18}
+		// 				rightSpan={null}
+		// 				selectList={["post", "get"].map(m => ({ label: m, value: m }))}
+		// 				valueKey={{ left: "getSignUrlMethod", center: "getSignUrl" }}
+		// 				leftPlaceholde="请求方式"
+		// 				centerPlaceholder="请求地址"
+		// 			/>
+		// 		);
+		// 	},
+		// 	options: getOptions({
+		// 		required: true,
+		// 		initialValue: { getSignUrlMethod: "post", getSignUrl: "" },
+		// 		rules: urlRules(["getSignUrlMethod", "getSignUrl"]),
+		// 	}),
+		// },
+		// {
+		// 	key: "setSignUrl",
+		// 	label: "提交签名的地址",
+		// 	show: false,
+		// 	labelFocused: true,
+		// 	render(form, changeFormItems) {
+		// 		return (
+		// 			<ZselectInput
+		// 				leftSpan={6}
+		// 				centerSpan={18}
+		// 				rightSpan={null}
+		// 				selectList={["post", "put"].map(m => ({ label: m, value: m }))}
+		// 				valueKey={{ left: "setSignUrlMethod", center: "setSignUrl" }}
+		// 				leftPlaceholde="请求方式"
+		// 				centerPlaceholder="请求地址"
+		// 			/>
+		// 		);
+		// 	},
+		// 	options: getOptions({
+		// 		required: true,
+		// 		initialValue: { setSignUrlMethod: "post", setSignUrl: "" },
+		// 		rules: urlRules(["setSignUrlMethod", "setSignUrl"]),
+		// 	}),
+		// },
+		//<-电子签名特有属性---> end
+
+		//证件照控件特有属性
+		{
+			key: "ocrEnabled",
+			label: "启用OCR",
+			show: false,
+			labelFocused: true,
+			...getSwitchOpt({ initialValue: true }),
+		},
+		{
+			key: "ocrUrl",
+			label: "OCR识别的地址",
+			show: false,
+			labelFocused: true,
+			render(form, changeFormItems) {
+				return (
+					<ZselectInput
+						leftSpan={6}
+						centerSpan={18}
+						rightSpan={null}
+						selectList={["post"].map(m => ({ label: m, value: m }))}
+						valueKey={{ left: "ocrUrlMethod", center: "ocrUrl" }}
+						leftPlaceholde="请求方式"
+						centerPlaceholder="请求地址"
+					/>
+				);
+			},
+			options: getOptions({
+				required: true,
+				initialValue: { ocrUrlMethod: "post", ocrUrl: "/file-upload-service/webapi/v1.0/ocr/upload" },
+				rules: urlRules(["ocrUrlMethod", "ocrUrl"]),
+			}),
+		},
+		//<-自定义区域特有属性---> start
 		{
 			key: "isFormItem",
 			label: "自定义内容是否为表单控件",
@@ -968,7 +1097,7 @@ function useFormItems(groupId, formViewerRef, type) {
 			show: false,
 			...getSwitchOpt(),
 		},
-
+		//<-自定义区域特有属性---> end
 		//<--共用属性---> start
 		{
 			key: "initialValue",
@@ -1094,30 +1223,21 @@ function useEditPage(groupId, formItem, formViewerRef, linkageRef, type) {
 										config[keyName] = undefined;
 									}
 								};
-								//当是上传控件
-								if (formItem["fieldType"] === 11) {
-									const url = { urlMethod: "", url: "", urlParamName: "" };
-									// const detailUrl = { detailUrlMethod: "", detailUrl: "", detailUrlParamName: "" };
+								const extractConfig = (config, keys, targetKey) => {
+									const url = {};
 									Object.keys(config).forEach(key => {
-										switch (key) {
-											case "urlMethod":
-											case "url":
-											case "urlParamName":
-											case "requestMode":
-												url[key] = config[key];
-												delete config[key];
-												break;
-											// case "detailUrlMethod":
-											// case "detailUrl":
-											// case "detailUrlParamName":
-											// detailUrl[key] = config[key];
-											// delete config[key];
-											// break;
+										if (keys.includes(key)) {
+											url[key] = config[key];
+											delete config[key];
 										}
 									});
-									config["url"] = url;
+									config[targetKey] = url;
+								};
+								//当是上传控件
+								if ([11, 16].includes(formItem["fieldType"])) {
+									extractConfig(config, ["urlMethod", "url", "urlParamName", "requestMode"], "url");
+									extractConfig(config, ["ocrUrlMethod", "ocrUrl"], "ocrUrl");
 									objToArr("uploaderResponse");
-									// config["detailUrl"] = detailUrl;
 								} else if ([3, 6, 7, 8, 9].includes(formItem["fieldType"])) {
 									config.selectionsType =
 										config.selectionsType === undefined ? 1 : Number(config.selectionsType);
@@ -1154,6 +1274,9 @@ function useEditPage(groupId, formItem, formViewerRef, linkageRef, type) {
 					const fieldTypeItem = controlList.find(item => {
 						return item.value === values["fieldType"];
 					});
+					if (values["fieldType"] === 15 && !values["fieldKey"].match(/Sign$/g)) {
+						values["fieldKey"] = `${values["fieldKey"]}Sign`;
+					}
 					const config = {};
 					if (Array.isArray(fieldTypeItem.configKeys)) {
 						fieldTypeItem.configKeys.forEach(key => {
@@ -1174,14 +1297,14 @@ function useEditPage(groupId, formItem, formViewerRef, linkageRef, type) {
 						values.config[keyName] = newSelectionsQuery;
 					};
 					//上传控件的config要特殊处理
-					if (values["fieldType"] === 11) {
+					if ([11, 16].includes(values["fieldType"])) {
 						let newConf = values.config;
 						Object.keys(values.config).forEach(key => {
 							const val = values.config[key];
 							// if (key === "url" || key === "detailUrl") {
 							// 	newConf = { ...newConf, ...val };
 							// }
-							if (key === "url") {
+							if (["url", "ocrUrl"].includes(key)) {
 								newConf = { ...newConf, ...val };
 							}
 						});
@@ -1192,6 +1315,11 @@ function useEditPage(groupId, formItem, formViewerRef, linkageRef, type) {
 						arrToObj("selectListFieldNames");
 					}
 					if (values.config) {
+						if (formItem) {
+							const prevConfig =
+								typeof formItem.config === "string" ? JSON.parse(formItem.config) : formItem.config;
+							values.config = { ...prevConfig, ...values.config };
+						}
 						values.config = JSON.stringify(values.config);
 					}
 

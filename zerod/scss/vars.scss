@@ -39,9 +39,9 @@ $--danger-bg-active: $--red-deep;
 		height: $--defatul-ScrollbarSize;
 	}
 	*::-webkit-scrollbar-thumb {
-		background: transparent;
 		border-radius: $--defatul-ScrollbarRadius;
-		background: $--defatul-ScrollbarColor;
+		// background: $--defatul-ScrollbarColor;
+		background: #D3D3D3;
 	}
 	
 

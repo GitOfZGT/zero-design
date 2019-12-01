@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { getControl } from "../Zform/controls";
 import { httpAjax } from "../zTool";
+import { treeDataAddKey } from "./common";
 //Cascader 异步加载子节点组件
 const CascaderLoader = React.forwardRef(function(props, ref) {
 	const {

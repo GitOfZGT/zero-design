@@ -19,7 +19,7 @@ function concatKeys(values, arr, a, d) {
 		});
 	};
 	if (
-		["6", "7", "8"].includes(a.linkageType) ||
+		["6", "7", "8", "9"].includes(a.linkageType) ||
 		(d.srcValue !== undefined && values[a.src.fieldKey] !== undefined && d.srcValue == values[a.src.fieldKey])
 	) {
 		arr = arr.concat(getNewFields());
@@ -50,6 +50,7 @@ const initialValueLinkageAction = debounce(function(ages = [], getGroupsFn, seft
 	let cardGetBirthdayKeys = [];
 	let asyncParamNameKeys = [];
 	let regionNameKeys = [];
+	let ocrParamNameKeys = [];
 	let groupHiddenIds = [];
 	let hiddenKeys = [];
 	let disabledKeys = [];
@@ -60,6 +61,13 @@ const initialValueLinkageAction = debounce(function(ages = [], getGroupsFn, seft
 	ages.forEach(a => {
 		if (values.hasOwnProperty(a.src.fieldKey)) {
 			switch (a.linkageType) {
+				//OCR识别联动
+				case "9":
+					a.dist.forEach(d => {
+						ocrParamNameKeys = concatKeys(values, ocrParamNameKeys, a, d);
+					});
+					console.log(ocrParamNameKeys);
+					break;
 				//地图选点取行政区划
 				case "8":
 					a.dist.forEach(d => {
@@ -137,14 +145,13 @@ const initialValueLinkageAction = debounce(function(ages = [], getGroupsFn, seft
 					const selectOptionsFields = arrayFilterBy(selectOptions, { fieldKey: field.fieldKey });
 
 					let e = { ...field };
-					if (disabledFields.length) {
-						e.required = 0;
-					} else if (requiredFields.length && noRequiredFields.length) {
+					if (requiredFields.length && noRequiredFields.length) {
 						console.error(`同个控件不应该同时存在"必填"和"非必填"联动配置，请纠正`);
+					}
+					if (disabledFields.length || noRequiredFields.length) {
+						e.required = 0;
 					} else if (requiredFields.length) {
 						e.required = 1;
-					} else if (noRequiredFields.length) {
-						e.required = 0;
 					}
 					if (typeof e.config == "string") {
 						try {
@@ -252,12 +259,33 @@ const initialValueLinkageAction = debounce(function(ages = [], getGroupsFn, seft
 			const formValues = o.form.getFieldsValue();
 			regionNameKeys.forEach(field => {
 				if (formValues.hasOwnProperty(field.fieldKey)) {
-					let mapInfo = values[field.srcFieldKey];
-					if (dataType.isObject(mapInfo) && field.regionName) {
+					let info = values[field.srcFieldKey];
+					if (dataType.isObject(info) && field.regionName) {
 						const regions = field.regionName.split(",");
 						let inputString = "";
 						regions.forEach(key => {
-							inputString += mapInfo[key];
+							inputString += info[key];
+						});
+						o.form.setFieldsValue({
+							[field.fieldKey]: inputString,
+						});
+					}
+				}
+			});
+		}
+		//处理OCR联动其他控件
+		if (ocrParamNameKeys.length) {
+			const formValues = o.form.getFieldsValue();
+			ocrParamNameKeys.forEach(field => {
+				if (seftItem && seftItem.fieldKey !== field.srcFieldKey) return;
+				if (formValues.hasOwnProperty(field.fieldKey)) {
+					let info = Array.isArray(values[field.srcFieldKey]) ? values[field.srcFieldKey] : [];
+					if (dataType.isObject(info[0]) && field.ocrParamName) {
+						const ocr = info[0].ocr || {};
+						const regions = field.ocrParamName.split(",");
+						let inputString = "";
+						regions.forEach(key => {
+							inputString += ocr[key];
 						});
 						o.form.setFieldsValue({
 							[field.fieldKey]: inputString,

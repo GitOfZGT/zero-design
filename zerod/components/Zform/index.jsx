@@ -31,6 +31,7 @@ export const Zform = Form.create()(
 			// initAnimation: PropTypes.bool,
 			momentFormat: PropTypes.bool,
 			booleanToNumber: PropTypes.bool,
+			controlSize:PropTypes.string,
 		};
 		static defaultProps = {
 			confirm: {},
@@ -49,6 +50,7 @@ export const Zform = Form.create()(
 			// initAnimation: true,
 			momentFormat: false,
 			booleanToNumber:true,
+			controlSize:'default'
 		};
 		state = {
 			items: [],
@@ -311,6 +313,7 @@ export const Zform = Form.create()(
 						ref={item.ref}
 						labelLayout={this.props.labelLayout}
 						getInsideItems={this.methods.getInsideItems}
+						controlSize={this.props.controlSize}
 					/>
 				);
 				return colItem;
@@ -333,12 +336,13 @@ export const Zform = Form.create()(
 				submitBtnRender,
 				labelLayout,
 				// initAnimation,
+				controlSize
 			} = this.props;
 			const items = this.getFormItems();
 			const wrapperClassname = classNames("z-form", className || "");
 			return (
 				<Form onSubmit={this.methods.onSubmit} className={wrapperClassname} style={style}>
-					<Row type="flex" className={`z-form-row ${"z-form-label-" + labelLayout}`}>
+					<Row type="flex" className={`z-form-row ${"z-form-label-" + labelLayout} z-form-control-${controlSize}`}>
 						{items}
 						{/* {initAnimation ? (
 							<TransitionGroup component={null} enter={true} exit={true} appear={true}>

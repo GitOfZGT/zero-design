@@ -31,7 +31,7 @@ function diff_Prev_Next(prev, next) {
 class ColFormItem extends React.Component {
 	static defaultProps = {
 		item: {},
-		// colContentRender:()=>{}
+		controlSize:"default"
 	};
 
 	state = {
@@ -66,22 +66,32 @@ class ColFormItem extends React.Component {
 	}
 	getInlineControl = control => {
 		if (React.isValidElement(control)) {
-			const newControl = React.cloneElement(control, {
-				...control.props,
-				placeholder: "",
-				onFocus: e => {
-					this.setState({
-						focus: true,
-					});
-					control.props.onFocus && control.props.onFocus(e);
-				},
-				onBlur: e => {
-					this.setState({
-						focus: false,
-					});
-					control.props.onBlur && control.props.onBlur(e);
-				},
-			});
+			let newControl = control;
+			if (this.props.labelLayout === "inline") {
+				newControl = React.cloneElement(control, {
+					...control.props,
+					placeholder: "",
+					size: this.props.controlSize,
+					onFocus: e => {
+						this.setState({
+							focus: true,
+						});
+						control.props.onFocus && control.props.onFocus(e);
+					},
+					onBlur: e => {
+						this.setState({
+							focus: false,
+						});
+						control.props.onBlur && control.props.onBlur(e);
+					},
+				});
+			} else {
+				newControl = React.cloneElement(control, {
+					...control.props,
+					size: this.props.controlSize,
+				});
+			}
+
 			return newControl;
 		} else {
 			return control;
@@ -109,10 +119,10 @@ class ColFormItem extends React.Component {
 		const span = const_itemSpan(control, item.span, item.defaultSpan);
 		const isFormItem = typeof item.isFormItem === "boolean" ? item.isFormItem : true;
 		let formItemClassName = item.itemClassName;
-		if (!this.state.loading&&isFormItem) {
-			if (this.props.labelLayout === "inline") {
-				control = this.getInlineControl(control);
-			}
+		if (!this.state.loading && isFormItem) {
+			// if (this.props.labelLayout === "inline") {
+			control = this.getInlineControl(control);
+			// }
 			control = getFieldDecorator(item.key, dataType.isFunction(item.options) ? item.options() : item.options)(
 				control,
 			);
@@ -142,10 +152,10 @@ class ColFormItem extends React.Component {
 						className={`z-form-item ${formItemClassName} ${controlDisabled ? "has-disabled" : ""}`}
 					>
 						{loader}
-						{this.state.loading ? <Input placeholder="加载中..." disabled /> : control}
+						{this.state.loading ? <Input size={this.props.controlSize} placeholder="加载中..." disabled /> : control}
 					</Form.Item>
 				) : (
-					<div className={this.props.labelLayout==="inline"?"z-margin-bottom-10":""}>
+					<div className={this.props.labelLayout === "inline" ? "z-margin-bottom-10" : ""}>
 						{loader}
 						{control}
 					</div>

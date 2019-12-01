@@ -3,7 +3,8 @@ import PropTypes from "prop-types";
 import ReactDOM from "react-dom";
 import { Icon, Modal, message } from "antd";
 import { getControl } from "../Zform/controls";
-import { httpAjax, dataType } from "zerod/components/zTool";
+import httpAjax from "../zTool/httpAjax";
+import { dataType } from "../zTool";
 import ZerodMainContext from "../ZerodMainContext";
 import ZerodLayerContext from "../ZerodLayerContext";
 import Zviewer from "../Zviewer";
@@ -21,6 +22,7 @@ const propTypes = {
 	showLayerModalLoading: PropTypes.func,
 	value: PropTypes.array,
 	onChange: PropTypes.func,
+	field: PropTypes.object,
 };
 const defaultProps = {
 	getUserInfo: function() {
@@ -62,8 +64,11 @@ const MyUpload = React.forwardRef(function(props, ref) {
 		value,
 		onChange,
 		field,
+		buttonName,
 	} = props;
-	const wrapperElRef = useRef(null);
+	const getModalName = getLayerModalInsertLocation || getInsertLocation;
+	const showLoading = showLayerModalLoading || showModalLoading;
+
 	const { fileAccept, requestMode, maxUploadLength, autoUpload, isSourceFile } = config;
 	const fileListType = config.fileListType || "picture-card";
 	const maxMegabytes = typeof config.maxMegabytes === "number" ? config.maxMegabytes : 10;
@@ -89,22 +94,6 @@ const MyUpload = React.forwardRef(function(props, ref) {
 	// console.log(noUploader, hasUploadDoneServerIdsRef.current, fileState);
 	//获取调用showModalLoading的第二个参数
 	const modalRef = useRef("");
-	useEffect(() => {
-		modalRef.current =
-			getLayerModalInsertLocation && typeof getLayerModalInsertLocation === "function"
-				? getLayerModalInsertLocation(wrapperElRef.current)
-				: typeof getInsertLocation === "function"
-				? getInsertLocation(wrapperElRef.current)
-				: null;
-	}, []);
-	const showLoading =
-		showLayerModalLoading && typeof showLayerModalLoading === "function"
-			? showLayerModalLoading
-			: typeof showModalLoading === "function"
-			? showModalLoading
-			: () => {
-					return null;
-			  };
 	//处理value
 	useEffect(() => {
 		if (!Array.isArray(value) || !value.length) {
@@ -211,11 +200,13 @@ const MyUpload = React.forwardRef(function(props, ref) {
 						}),
 					});
 					message.success("上传成功。");
-					typeof onChange === "function" &&
-						onChange(getFileUids(hasUploadDoneServerIdsRef.current, "serverId"));
+					return (
+						typeof onChange === "function" &&
+						onChange(getFileUids(hasUploadDoneServerIdsRef.current, "serverId"), noUploader)
+					);
 				})
 				.catch(re => {
-					message.error(re && re.msg ? re.msg : "上传失败。");
+					// message.error(re && re.msg ? re.msg : "上传失败。");
 					//自动上传模式，上传失败时移除列表
 					if (autoUpload) {
 						setFileState({
@@ -256,7 +247,7 @@ const MyUpload = React.forwardRef(function(props, ref) {
 			</span>
 		</div>
 	);
-	const uploadButtonName = isOnlyPicture ? "选择图片" : "选择文件";
+	const uploadButtonName = buttonName ? buttonName : isOnlyPicture ? "选择图片" : "选择文件";
 	//选文件按钮
 	const uploadButton =
 		isSingle && noUploader.length ? null : isPictureCardType ? (
@@ -275,7 +266,12 @@ const MyUpload = React.forwardRef(function(props, ref) {
 		autoUpload && !isSourceFile && handleUpload();
 	}, [fileState]);
 	return (
-		<div className="z-liveform-upload-wrapper z-clear-fix" ref={wrapperElRef}>
+		<div
+			className="z-clear-fix"
+			ref={el => {
+				modalRef.current = getModalName(el);
+			}}
+		>
 			{/* 使用antd的上传组件 */}
 			{getControl("Upload", {
 				disabled: !!field.disabled,

@@ -498,7 +498,8 @@ class ZlistPanel extends ZpureComponent {
 			showUpdateBtn ||
 			showDeleteBtn ||
 			this.hasMoreMenu ||
-			typeof this.props.actionRender === "function"
+			typeof this.props.actionRender === "function" ||
+			typeof this.props.addCustomBtnsRender === "function"
 			? [
 					{
 						title: "操作",

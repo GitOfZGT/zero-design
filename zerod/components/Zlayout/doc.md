@@ -145,7 +145,7 @@
 			<td>height</td>
 			<td>高度</td>
 			<td>string|number</td>
-			<td>"100%"</td>
+			<td>"64px"</td>
 		</tr>
         <tr>
 			<td>className</td>
@@ -237,7 +237,7 @@
 			<td>height</td>
 			<td>高度</td>
 			<td>string|number</td>
-			<td>"100%"</td>
+			<td>"40px"</td>
 		</tr>
         <tr>
 			<td>className</td>

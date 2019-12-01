@@ -160,3 +160,12 @@
 7、`npm run eslint`： 全局检测代码规范 前提先要全局安装 `npm install eslint eslint-plugin-react eslint-plugin-react-hooks -g`一次
 
 8、`npm run initFiles` 发现根目录下没有 babel.config.js 等文件时，执行一次
+
+
+## npm run build --basepath=  --amap=  --qqmap=
+
+1、process.env. BASE_NAME || process.env.basepath  : 路由的基础路径  
+
+2、process.env.amap  : `https://restapi.amap.com` 的映射地址  
+
+3、process.env.qqmap  : `https://apis.map.qq.com` 的映射地址  

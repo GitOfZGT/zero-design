@@ -10,10 +10,12 @@ import linkageAction from "./linkageAction";
 import { getControl, getOptions, regExps } from "../Zform/controls";
 import { dataType, httpAjax } from "../zTool";
 import ZeroUpload from "./ZeroUpload";
+import ZprosAndCons from "./ZprosAndCons";
 import moment from "moment";
 import MapChooseAddress from "./ZmapChooseAddress";
 import TreeSelectLoader from "./TreeSelectLoader";
 import CascaderLoader from "./CascaderLoader";
+import { treeDataAddKey } from "./common";
 //处理默认的校验规则
 export const getOptionsRules = function(e, rules = [], opt = {}) {
 	const reg = typeof e.regularExpression === "string" ? e.regularExpression.replace(/((^\/)|(\/$))/g, "") : "";
@@ -61,22 +63,7 @@ function docustomOnChange(e, opt, ...rest) {
 	}
 	typeof opt.onChange === "function" && opt.onChange(...rest);
 }
-function treeDataAddKey(tree = [], distMap, srcMap, isLeaf) {
-	const distKey = Object.assign({ label: "label", value: "value", children: "children", key: "key" }, distMap || {});
-	const srcKey = Object.assign({ label: "label", value: "value", children: "children" }, srcMap || {});
-	return Array.isArray(tree)
-		? tree.map(item => {
-				const ciilds = treeDataAddKey(item[srcKey.children], distKey, srcKey, isLeaf);
-				return {
-					[distKey.label]: item[srcKey.label],
-					[distKey.value]: item[srcKey.value],
-					[distKey.children]: ciilds.length ? ciilds : null,
-					[distKey.key]: item[srcKey.value],
-					isLeaf,
-				};
-		  })
-		: [];
-}
+
 const defaultFieldConfig = {
 	selectionsType: 1,
 	selectionsUrl: {},
@@ -393,7 +380,7 @@ const controls = {
 				}
 			}
 			//异步类型
-			if (selectionsType == 2 && !hasAsync&&!noAsync) {
+			if (selectionsType == 2 && !hasAsync && !noAsync) {
 				if (currentForm && currentForm.saveFieldOptions[e.fieldKey]) {
 					return getCurrentControl(currentForm.saveFieldOptions[e.fieldKey]);
 				}
@@ -480,7 +467,7 @@ const controls = {
 				}
 			}
 			//异步类型
-			if (selectionsType == 2 && !hasAsync&&!noAsync) {
+			if (selectionsType == 2 && !hasAsync && !noAsync) {
 				if (currentForm && currentForm.saveFieldOptions[e.fieldKey]) {
 					return getCurrentControl(currentForm.saveFieldOptions[e.fieldKey]);
 				}
@@ -568,7 +555,11 @@ const controls = {
 				} catch (e) {}
 			}
 			config = { ...defaultFieldConfig, ...config };
-			return <ZeroUpload config={config} field={e} />;
+			return (
+				<div className="z-liveform-upload-wrapper">
+					<ZeroUpload config={config} field={e} />
+				</div>
+			);
 		},
 		getOptions(e, rules = []) {
 			let config = e.config || {};
@@ -692,6 +683,66 @@ const controls = {
 			return <div className="z-form-control-placeholder">自定义区域</div>;
 		},
 		getOptions: getOptionsRules,
+	},
+	//电子签名
+	15: {
+		getControl(e = {}, linkages, getGroupsFn = () => [], opt = {}) {
+			if (dataType.isObject(e.customControlRender)) {
+				const confun = e.customControlRender[e.fieldKey];
+				if (dataType.isFunction(confun)) {
+					return confun({ field: e, linkages, getGroupsFn, linkageAction });
+				}
+			}
+
+			return <div className="z-form-control-placeholder">手动电子签名只支持小程序</div>;
+		},
+		getOptions: getOptionsRules,
+	},
+	//证件照
+	16: {
+		getControl(e = {}, linkages, getGroupsFn = () => [], opt = {}, requestQuery = {}) {
+			delete opt.noAsync;
+			let config = e.config || {};
+			if (typeof e.config == "string") {
+				try {
+					config = JSON.parse(e.config);
+				} catch (e) {}
+			}
+			config = { ...defaultFieldConfig, ...config };
+			return (
+				<ZprosAndCons
+					config={config}
+					field={e}
+					onChange={(...rest) => {
+						linkageAction(linkages, getGroupsFn, e);
+						docustomOnChange(e, opt, ...rest);
+					}}
+				></ZprosAndCons>
+			);
+		},
+		getOptions(e, rules = []) {
+			let config = e.config || {};
+			if (typeof e.config == "string") {
+				try {
+					config = JSON.parse(e.config);
+				} catch (e) {}
+			}
+			config = { ...defaultFieldConfig, ...config };
+			const newRules = [
+				{
+					validator(rule, value, callback) {
+						if (Array.isArray(value)) {
+							if (!value[0] || !value[1]) {
+								return callback("正反面图片都要上传");
+							}
+						}
+						return callback();
+					},
+				},
+			];
+
+			return getOptionsRules(e, newRules.concat(rules));
+		},
 	},
 	//文书配置
 	20: {

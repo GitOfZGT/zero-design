@@ -11,6 +11,7 @@ export class ZcolorPicker extends ZpureComponent {
 		defaultValue: PropTypes.string,
 		onChange: PropTypes.func,
 		className: PropTypes.string,
+		size: PropTypes.string,
 		valueType: PropTypes.string, // hex | rgb
 		disabled: PropTypes.bool,
 	};
@@ -20,6 +21,7 @@ export class ZcolorPicker extends ZpureComponent {
 	state = {
 		showPicker: false,
 		color: "",
+		size: "default",
 	};
 	componentDidMount() {
 		this.methods.initValue();
@@ -124,10 +126,10 @@ export class ZcolorPicker extends ZpureComponent {
 		},
 	};
 	render() {
-		const { className, disabled, style } = this.props;
+		const { className, disabled, style,size } = this.props;
 		return (
 			<span
-				className={`z-color-box ${className ? className : ""} ${disabled ? "disabled" : ""}`}
+				className={`z-color-box ${size} ${className ? className : ""} ${disabled ? "disabled" : ""}`}
 				ref={el => (this.boxEl = el)}
 				style={style}
 				onClick={this.methods.triggerPicker}

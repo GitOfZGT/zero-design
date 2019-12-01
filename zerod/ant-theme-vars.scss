@@ -105,15 +105,17 @@ $border-radius-base: 4px;
 $primary-color: $blue-6;
 
 //--按钮
-$btn-border-radius-base: 30px;
-$btn-border-radius-sm: 14px;
+// $btn-border-radius-base: 30px;
+// $btn-border-radius-sm: 14px;
 
 $btn-padding-sm: 0 14px;
-
+$input-height-base           : 32px;
+$input-height-lg             : 40px;
+$input-height-sm             : 26px;
 //
-$table-header-bg: transparent;
-$table-header-sort-bg: $--light-grey;
-$input-height-base: 38px;
+$table-header-bg: #E8EDED;
+$table-header-sort-bg: darken(#E8EDED,5%);
+// $input-height-base: 32px;
 // 将如下的@开头的变量改成$开头的变量来改变antd主题
 
 // // -------- Colors -----------

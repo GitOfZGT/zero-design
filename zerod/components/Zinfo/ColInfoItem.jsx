@@ -2,13 +2,13 @@ import React from "react";
 import { Col } from "antd";
 import ZpageLoading from "../ZpageLoading";
 import { const_itemSpan, animateTimout } from "../constant";
-import { CSSTransition } from "react-transition-group";
+// import { CSSTransition } from "react-transition-group";
 class ColInfoItem extends React.PureComponent {
 	static defaultProps = {
 		item: {},
 	};
 	methods = {
-		showLoading: (show) => {
+		showLoading: show => {
 			this.setState({
 				loading: show,
 			});
@@ -45,7 +45,7 @@ class ColInfoItem extends React.PureComponent {
 		const span = const_itemSpan(control, item.span, item.defaultSpan);
 		return (
 			<Col {...span}>
-				<div className="z-info z-margin-bottom--1 is-border-right">
+				<div className="z-info is-border-right" style={{ marginBottom: "-1px" }}>
 					<div
 						className="z-info-left z-padding-bottom-10"
 						style={{ width: item.width ? item.width : "160px" }}

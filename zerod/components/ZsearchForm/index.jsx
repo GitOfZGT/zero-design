@@ -13,6 +13,7 @@ export const ZsearchForm = Form.create()(
 			hidden: PropTypes.bool,
 			labelLayout: PropTypes.string, //'horizontal'|'vertical'
 			className: PropTypes.string,
+			controlSize: PropTypes.string,
 			colFormItems: PropTypes.arrayOf(PropTypes.object), //兼容旧版本，现由items替代
 			items: PropTypes.arrayOf(PropTypes.object),
 			onSearch: PropTypes.func,
@@ -36,7 +37,8 @@ export const ZsearchForm = Form.create()(
 			hidden: false,
 			labelLayout: "vertical",
 			initAnimation: true,
-			booleanToNumber:true,
+			booleanToNumber: true,
+			controlSize: "default",
 		};
 		state = {
 			expand: this.props.noCollapse,
@@ -244,6 +246,7 @@ export const ZsearchForm = Form.create()(
 						ref={item.ref}
 						labelLayout={this.props.labelLayout}
 						getInsideItems={this.methods.getInsideItems}
+						controlSize={this.props.controlSize}
 					/>
 				);
 				return colItem;
@@ -258,11 +261,14 @@ export const ZsearchForm = Form.create()(
 		}
 		render() {
 			this.items = this.getFormItems();
-			const { className, hidden, labelLayout, initAnimation } = this.props;
+			const { className, hidden, labelLayout, controlSize, initAnimation } = this.props;
 			return (
 				<div ref={el => (this.formEl = el)} className={`z-search-form ${className || ""}`}>
-					<Form onSubmit={this.methods.handleSearch} className="z-padding-top-14">
-						<Row type="flex" className={`z-form-row ${"z-form-label-" + labelLayout}`}>
+					<Form onSubmit={this.methods.handleSearch} style={{paddingTop:'14px'}}>
+						<Row
+							type="flex"
+							className={`z-form-row ${"z-form-label-" + labelLayout} z-form-control-${controlSize}`}
+						>
 							{this.items}
 							{/* {initAnimation ? (
 								<TransitionGroup component={null} enter={true} exit={true} appear={true}>

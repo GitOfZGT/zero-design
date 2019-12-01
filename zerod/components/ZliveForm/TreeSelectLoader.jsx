@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { getControl } from "../Zform/controls";
 import { httpAjax, itemsFromTree } from "../zTool";
+import { treeDataAddKey } from "./common";
 //treeSelect 异步加载子节点组件
 const TreeSelectLoader = React.forwardRef(function(props, ref) {
 	const { selectList, selectionsUrl, selectionsQuery, selectListFieldNames, optionsChange, ...others } = props;

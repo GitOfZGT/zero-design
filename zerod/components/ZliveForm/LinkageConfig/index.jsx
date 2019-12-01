@@ -47,6 +47,10 @@ const linkageTypes = [
 		tab: "地图选点取行政区划",
 		key: "8",
 	},
+	{
+		tab: "OCR识别取值",
+		key: "9",
+	},
 ];
 const itemKeys = {
 	name: "tab",
@@ -78,6 +82,7 @@ function LinkageConfig(props) {
 	const curentLinkTypeRef = useRef(linkageTypesState.find(item => item.active));
 	const objRef = useRef(null);
 	const defaultLinkagesRef = useRef(defaultValue);
+	// console.log("defaultValue", defaultValue);
 	const [insetLocaltion, setInsetLocaltion] = useState();
 	useEffect(() => {
 		// 首先得获取wrapperRef.current元素所在得位置
@@ -107,7 +112,7 @@ function LinkageConfig(props) {
 	//取ValueLinkConfigured提供的属性
 	const configuredRef = useRef(null);
 	useEffect(() => {
-		if (Array.isArray(defaultLinkagesRef.current) && ["6", "7", "8"].includes(curentLinkTypeRef.current.key)) {
+		if (Array.isArray(defaultLinkagesRef.current) && ["6", "7", "8", "9"].includes(curentLinkTypeRef.current.key)) {
 			const IDconfigured = defaultLinkagesRef.current.filter(age => {
 				return age.linkageType === curentLinkTypeRef.current.key;
 			});
@@ -117,7 +122,7 @@ function LinkageConfig(props) {
 		}
 	}, [curentLinkTypeRef.current.key]);
 
-	const onRemove = (currentConf, currentIndex) => {
+	const onRemove = (currentConf, srcIndex, distIndex) => {
 		Modal.confirm({
 			title: "是否确认移除这条配置?",
 			okText: "确定",
@@ -131,20 +136,29 @@ function LinkageConfig(props) {
 						return item.linkageType === currentLinkageType && item.src.fieldKey === currentKey;
 					});
 				};
-				if (["6", "7", "8"].includes(currentLinkageType)) {
+				if (["6", "7", "8", "9"].includes(currentLinkageType)) {
 					ageIndex = getageIndex(currentConf.src.fieldKey);
 				} else {
 					ageIndex = getageIndex(currentConf.srcKey);
 				}
 				if (ageIndex > -1) {
-					currentConfigured.splice(currentIndex, 1);
-					const newConfigs = [...currentConfigured];
-					configuredRef.current.setConfigured(newConfigs);
-					if (["6", "7", "8"].includes(currentLinkageType)) {
-						defaultLinkagesRef.current.splice(ageIndex, 1);
+					if (["6", "7", "8", "9"].includes(currentLinkageType)) {
+						currentConf.dist.splice(distIndex, 1);
+						currentConfigured[srcIndex].dist = currentConf.dist;
+						defaultLinkagesRef.current[ageIndex].dist = currentConf.dist;
+						if (!currentConf.dist.length) {
+							currentConfigured.splice(srcIndex, 1);
+							defaultLinkagesRef.current.splice(ageIndex, 1);
+						}
 					} else {
-						defaultLinkagesRef.current[ageIndex].dist = newConfigs;
+						currentConfigured.splice(srcIndex, 1);
+						defaultLinkagesRef.current[ageIndex].dist = [...currentConfigured];
+						if (!currentConfigured.length) {
+							defaultLinkagesRef.current.splice(ageIndex, 1);
+						}
 					}
+					const newConfigured = [...currentConfigured];
+					configuredRef.current.setConfigured(newConfigured);
 					defaultLinkagesRef.current = [...defaultLinkagesRef.current];
 					onChange && onChange(defaultLinkagesRef.current);
 				}
@@ -153,10 +167,10 @@ function LinkageConfig(props) {
 	};
 
 	return (
-		<section ref={wrapperRef} className="z-linkage-config">
+		<section ref={wrapperRef} className="z-age-config">
 			{objRef.current
 				? ReactDom.createPortal(
-						<div className="z-linkage-tab">
+						<div className="z-age-tab">
 							<Ztabs
 								tabPanes={tabPanes}
 								activeKey={tabKey}
@@ -207,14 +221,14 @@ function LinkageConfig(props) {
 										// }
 
 										//转成linkage
-										let linkage = {
+										let age = {
 											linkageType: curentLinkTypeRef.current.key,
 											name: curentLinkTypeRef.current.tab,
 											src: null,
 											dist: null,
 										};
 										if (links.srcControl) {
-											linkage.src = {
+											age.src = {
 												fieldKey: links.srcControl.fieldKey,
 												label: links.srcControl.label,
 												fieldType: links.srcControl.fieldType,
@@ -222,7 +236,7 @@ function LinkageConfig(props) {
 										}
 										let linkages = [];
 										if (["1", "2", "3", "5.2"].includes(curentLinkTypeRef.current.key)) {
-											linkage.dist = links.srcValues.map(val => {
+											age.dist = links.srcValues.map(val => {
 												const fields = links.distControls.map(d => {
 													return {
 														fieldKey: d.fieldKey,
@@ -231,14 +245,14 @@ function LinkageConfig(props) {
 													};
 												});
 												return {
-													srcKey: linkage.src.fieldKey,
+													srcKey: age.src.fieldKey,
 													srcValue: val.value,
 													valueLabel: val.label,
 													fields,
 												};
 											});
 										} else if (["4"].includes(curentLinkTypeRef.current.key)) {
-											linkage.dist = links.srcValues.map(val => {
+											age.dist = links.srcValues.map(val => {
 												const fields = [
 													{
 														fieldKey: links.distControl.fieldKey,
@@ -250,14 +264,14 @@ function LinkageConfig(props) {
 													},
 												];
 												return {
-													srcKey: linkage.src.fieldKey,
+													srcKey: age.src.fieldKey,
 													srcValue: val.value,
 													valueLabel: val.label,
 													fields,
 												};
 											});
 										} else if (["5.1"].includes(curentLinkTypeRef.current.key)) {
-											linkage.dist = links.srcValues.map(val => {
+											age.dist = links.srcValues.map(val => {
 												const fields = links.distControls.map(d => {
 													return {
 														groupId: d.id,
@@ -265,40 +279,45 @@ function LinkageConfig(props) {
 													};
 												});
 												return {
-													srcKey: linkage.src.fieldKey,
+													srcKey: age.src.fieldKey,
 													srcValue: val.value,
 													valueLabel: val.label,
 													fields,
 												};
 											});
-										} else if (["6", "7", "8"].includes(curentLinkTypeRef.current.key)) {
+										} else if (["6", "7", "8", "9"].includes(curentLinkTypeRef.current.key)) {
 											const asyncParamName =
 												curentLinkTypeRef.current.key === "7"
 													? other.asyncParamName
 													: undefined;
 											const regionName =
 												curentLinkTypeRef.current.key === "8" ? other.regionName : undefined;
+											const ocrParamName =
+												curentLinkTypeRef.current.key === "9" ? other.ocrParamName : undefined;
 											linkages = links.srcControls.map(l => {
+												const fields = links.distControls.map(d => {
+													return {
+														fieldKey: d.fieldKey,
+														fieldType: d.fieldType,
+														label: d.label,
+														asyncParamName,
+														regionName,
+														ocrParamName,
+													};
+												});
 												return {
-													...linkage,
+													...age,
 													src: {
 														fieldKey: l.fieldKey,
 														label: l.label,
 														fieldType: l.fieldType,
 													},
-													asyncParamName,
-													regionName,
 													dist: [
 														{
-															fields: links.distControls.map(d => {
-																return {
-																	fieldKey: d.fieldKey,
-																	fieldType: d.fieldType,
-																	label: d.label,
-																	asyncParamName,
-																	regionName,
-																};
-															}),
+															fields,
+															asyncParamName,
+															regionName,
+															ocrParamName,
 														},
 													],
 												};
@@ -306,11 +325,11 @@ function LinkageConfig(props) {
 										}
 
 										//查找配置的选项中是否存在，存在就替换，不存在就追加
-										if (Array.isArray(linkage.dist) && linkage.dist.length) {
+										if (Array.isArray(age.dist) && age.dist.length) {
 											const currentConfigured = configuredRef.current.getCurrentConfigured();
-											linkage.dist.forEach(di => {
+											age.dist.forEach(di => {
 												const existIndex = currentConfigured.findIndex(con => {
-													return con.srcValue === di.srcValue;
+													return con.srcValue !== undefined && con.srcValue === di.srcValue;
 												});
 												if (existIndex > -1) {
 													const newFields = [];
@@ -334,22 +353,22 @@ function LinkageConfig(props) {
 													currentConfigured.push(di);
 												}
 											});
-											linkage.dist = [...currentConfigured];
+											age.dist = [...currentConfigured];
 											configuredRef.current.setConfigured([...currentConfigured]);
 											//新的linkages
 											let existLinkageIndex = -1;
 											if (Array.isArray(defaultLinkagesRef.current)) {
-												existLinkageIndex = defaultLinkagesRef.current.findIndex(age => {
+												existLinkageIndex = defaultLinkagesRef.current.findIndex(item => {
 													return (
-														age.linkageType === linkage.linkageType &&
-														age.src.fieldKey === linkage.src.fieldKey
+														age.linkageType === item.linkageType &&
+														age.src.fieldKey === item.src.fieldKey
 													);
 												});
 											}
 											if (existLinkageIndex > -1) {
-												defaultLinkagesRef.current.splice(existLinkageIndex, 1, linkage);
+												defaultLinkagesRef.current.splice(existLinkageIndex, 1, age);
 											} else {
-												defaultLinkagesRef.current.push(linkage);
+												defaultLinkagesRef.current.push(age);
 											}
 										}
 										if (
@@ -357,26 +376,48 @@ function LinkageConfig(props) {
 											linkages.length &&
 											Array.isArray(defaultLinkagesRef.current)
 										) {
-											linkages.forEach(linkage => {
-												const hasAgeIndex = defaultLinkagesRef.current.findIndex(age => {
+											linkages.forEach(age => {
+												const hasAgeIndex = defaultLinkagesRef.current.findIndex(item => {
 													return (
-														age.linkageType === linkage.linkageType &&
-														age.src.fieldKey === linkage.src.fieldKey
+														age.linkageType === item.linkageType &&
+														age.src.fieldKey === item.src.fieldKey
 													);
 												});
 												if (hasAgeIndex > -1) {
-													defaultLinkagesRef.current.splice(hasAgeIndex, 1, linkage);
+													const hasAge = defaultLinkagesRef.current[hasAgeIndex];
+													let currageKeysConcat = "";
+													const currAgeDist = age.dist[0];
+													currAgeDist.fields.forEach(f => {
+														currageKeysConcat += f.fieldKey;
+													});
+													currageKeysConcat += `${currAgeDist.asyncParamName}${currAgeDist.regionName}${currAgeDist.ocrParamName}`;
+													const fieldsIndex = hasAge.dist.findIndex(item => {
+														let keysConcat = "";
+														item.fields.forEach(f => {
+															keysConcat += f.fieldKey;
+														});
+														keysConcat += `${item.asyncParamName}${item.regionName}${item.ocrParamName}`;
+														return currageKeysConcat === keysConcat;
+													});
+													if (fieldsIndex > -1) {
+														hasAge.dist.splice(fieldsIndex, 1, currAgeDist);
+													} else {
+														hasAge.dist.push(currAgeDist);
+													}
+													age.dist = hasAge.dist;
+													defaultLinkagesRef.current.splice(hasAgeIndex, 1, age);
 												} else {
-													defaultLinkagesRef.current.push(linkage);
+													defaultLinkagesRef.current.push(age);
 												}
 											});
-											const IDconfigured = defaultLinkagesRef.current.filter(age => {
-												return age.linkageType === curentLinkTypeRef.current.key;
+											const IDconfigured = defaultLinkagesRef.current.filter(item => {
+												return item.linkageType === curentLinkTypeRef.current.key;
 											});
 											configuredRef.current.setConfigured(IDconfigured);
 										}
 										defaultLinkagesRef.current = [...defaultLinkagesRef.current];
 										onChange && onChange(defaultLinkagesRef.current);
+										// console.log("联动配置", age, linkages, defaultLinkagesRef.current);
 									}}
 									onBack={() => {
 										showRightModal({
@@ -393,7 +434,7 @@ function LinkageConfig(props) {
 								</span>
 							</div>
 							<div className="z-panel-body">
-								{["6", "7", "8"].includes(curentLinkTypeRef.current.key) ? (
+								{["6", "7", "8", "9"].includes(curentLinkTypeRef.current.key) ? (
 									<IDLinkagesConfigured ref={configuredRef} onRemove={onRemove} />
 								) : (
 									<ValueLinkConfigured

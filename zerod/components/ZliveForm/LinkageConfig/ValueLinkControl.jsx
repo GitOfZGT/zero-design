@@ -6,7 +6,7 @@ import ZoneWayTransfer from "../../ZoneWayTransfer";
 import { itemsFromTree } from "../../zTool";
 import { controlList } from "../AddColForm";
 import { linkRemark1, linkRemark2, linkRemark3, linkRemark4 } from "./linkRemark";
-import { regionNames } from "../common";
+import { regionNames, ocrFieldNames } from "../common";
 function turnSelectOptions(
 	section,
 	needChild,
@@ -71,6 +71,7 @@ function ValueLinkControl(props) {
 	const [rightTransferSelected, setRightTransferSelected] = useState([]);
 	const asyncParamNameRef = useRef("id");
 	const regionNameRef = useRef("province,city,district");
+	const ocrFieldNameRef = useRef("name");
 	useEffect(() => {
 		switch (linkageType) {
 			case "1":
@@ -124,6 +125,18 @@ function ValueLinkControl(props) {
 				setLeftTransferSelections(
 					turnSelectOptions(newFormData.sectionList, true, list => {
 						return list.filter(item => [13].includes(item.fieldType));
+					}),
+				);
+				setRightTransferSelections(
+					turnSelectOptions(newFormData.sectionList, true, list => {
+						return list.filter(item => [1, 2].includes(item.fieldType));
+					}),
+				);
+				break;
+			case "9":
+				setLeftTransferSelections(
+					turnSelectOptions(newFormData.sectionList, true, list => {
+						return list.filter(item => [16].includes(item.fieldType));
 					}),
 				);
 				setRightTransferSelections(
@@ -217,7 +230,7 @@ function ValueLinkControl(props) {
 			},
 			rightTitle: "已选择的选项",
 		};
-	} else if (["6", "7", "8"].includes(linkageType)) {
+	} else if (["6", "7", "8", "9"].includes(linkageType)) {
 		leftTransferPropsRef.current = {
 			leftTitle: "可选控件列表",
 			rightTitle: "已选择的控件",
@@ -305,7 +318,30 @@ function ValueLinkControl(props) {
 		case "8":
 			linkRemark = linkRemark3(linkValue, { remmak1: "地图选点控件：", remmak2: "联动接收控件：" });
 			break;
+		case "9":
+			linkRemark = linkRemark3(linkValue, { remmak1: "证件照(OCR)控件：", remmak2: "联动接收控件：" });
+			break;
 	}
+
+	const selectParamname = {
+		8: {
+			remark: linkRemark4(linkValue, { remmak1: "选项的行政区划信息传入：", remmak2: "的内容是：" }),
+			defaultValue: regionNameRef.current,
+			onChange: val => {
+				regionNameRef.current = val;
+			},
+			selectList: regionNames,
+		},
+		9: {
+			remark: linkRemark4(linkValue, { remmak1: "选项的证件信息传入：", remmak2: "的内容是：" }),
+			defaultValue: ocrFieldNameRef.current,
+			onChange: val => {
+				ocrFieldNameRef.current = val;
+			},
+			selectList: ocrFieldNames,
+		},
+	};
+
 	return (
 		<Row gutter={20} className="z-margin-top-15" type="flex">
 			<Col span={12}>
@@ -321,7 +357,7 @@ function ValueLinkControl(props) {
 					rightTargetData={leftTransferSelected}
 					onChange={(actionType, rightData, actionItem, sibligItem) => {
 						setLinkValue(
-							["6", "7", "8"].includes(linkageType)
+							["6", "7", "8", "9"].includes(linkageType)
 								? { ...linkValue, srcControls: rightData }
 								: {
 										...linkValue,
@@ -384,18 +420,14 @@ function ValueLinkControl(props) {
 						})}
 					</div>
 				) : null}
-				{linkageType === "8" ? (
+				{["8", "9"].includes(linkageType) ? (
 					<div className="z-linkage-remark">
-						<div className="z-margin-bottom-12">
-							{linkRemark4(linkValue, { remmak1: "选项的行政区划信息传入：", remmak2: "的内容是：" })}
-						</div>
+						<div className="z-margin-bottom-12">{selectParamname[linkageType].remark}</div>
 						{getControl("Select", {
 							style: { width: "240px" },
-							defaultValue: regionNameRef.current,
-							selectList: regionNames,
-							onChange: val => {
-								regionNameRef.current = val;
-							},
+							defaultValue: selectParamname[linkageType].defaultValue,
+							selectList: selectParamname[linkageType].selectList,
+							onChange: selectParamname[linkageType].onChange,
 						})}
 					</div>
 				) : null}
@@ -411,7 +443,7 @@ function ValueLinkControl(props) {
 						type="primary"
 						onClick={e => {
 							let error = false;
-							if (["6", "7", "8"].includes(linkageType)) {
+							if (["6", "7", "8", "9"].includes(linkageType)) {
 								if (!linkValue.srcControls.length || !linkValue.distControls.length) {
 									error = true;
 								}
@@ -439,6 +471,7 @@ function ValueLinkControl(props) {
 								onOk(linkValue, {
 									asyncParamName: asyncParamNameRef.current,
 									regionName: regionNameRef.current,
+									ocrParamName: ocrFieldNameRef.current,
 								});
 						}}
 					>

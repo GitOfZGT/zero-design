@@ -40,9 +40,9 @@ export class ZfullLayer extends ZpureComponent {
 		showLayerRightModal: (show, witch, content, scroll, onTransitionend, wrapperEl, width) => {
 			const_showRightModal.call(this, show, witch, content, scroll, onTransitionend, wrapperEl, width);
 		},
-		showLayerModalLoading: (show, witch) => {
+		showLayerModalLoading: (show, witch,tip) => {
 			if (witch === "mainRoute") {
-				this.methods.showLoading(show);
+				this.methods.showLoading(show,tip);
 				return;
 			}
 			const_showModalLoading.call(this, show, witch);
@@ -60,8 +60,8 @@ export class ZfullLayer extends ZpureComponent {
 			}
 			return const_getScrollAreaWrapperEl.call(this, witch);
 		},
-		showLoading: show => {
-			this.ZpageLoadingRef.current.methods.showLoading(show);
+		showLoading: (show,tip) => {
+			this.ZpageLoadingRef.current.methods.showLoading(show,tip);
 		},
 		showLayer: (show, callback, scale) => {
 			if (show) {
@@ -122,8 +122,9 @@ export class ZfullLayer extends ZpureComponent {
 			}, 10);
 		},
 		closeLayer: () => {
-			this.methods.showLayer(false);
-			this.RightModalsRef.current.methods.closeAllModal();
+			this.RightModalsRef.current.methods.closeAllModal(() => {
+				this.methods.showLayer(false);
+			});
 		},
 	};
 	componentDidMount() {

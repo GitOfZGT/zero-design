@@ -18,7 +18,15 @@ export const regionNames = [
 	{ label: "省市区", value: "province,city,district" },
 	{ label: "省市区街道", value: "province,city,district,street" },
 ];
-
+export const ocrFieldNames = [
+	{ label: "姓名", value: "name" },
+	{ label: "性别", value: "sex" },
+	{ label: "民族", value: "national" },
+	{ label: "出生日期", value: "born" },
+	{ label: "地址", value: "address" },
+	{ label: "证件号码", value: "idCard" },
+	{ label: "年龄", value: "age" },
+];
 //以 "seq" 字段排序
 function sortList(o1, o2) {
 	const v1 = o1.hasOwnProperty("seq") ? o1["seq"] : 0;
@@ -47,7 +55,10 @@ export function getFormItem({
 	noAsync,
 }) {
 	const getRules = customFormRules ? customFormRules[field.fieldKey] : null;
-	
+	let config = field.config || {};
+	try {
+		config = JSON.parse(field.config);
+	} catch (e) {}
 	const newField = {
 		...field,
 		groupId: group.id,
@@ -55,7 +66,13 @@ export function getFormItem({
 		key: field.fieldKey,
 		label: field.label,
 		span: field.span ? field.span : 8,
-		labelFocused: [5, 8, 9, 10, 11, 14].includes(field.fieldType),
+		tagName:
+			Array.isArray(field.tagName) && field.tagName.length
+				? field.tagName
+				: Array.isArray(config.tagName)
+				? config.tagName
+				: [],
+		labelFocused: [5, 8, 9, 10, 11, 14, 15, 16].includes(field.fieldType),
 		imperative,
 		customOnChange,
 		customControlRender: field.fieldType === 14 ? customControlRender : undefined,
@@ -73,7 +90,7 @@ export function getFormItem({
 			newField,
 			linkage,
 			getGroupsFn,
-			{ disabled: field.disabled ,noAsync},
+			{ disabled: field.disabled, noAsync },
 			undefined,
 			currentForm,
 		);
@@ -154,4 +171,21 @@ export function removeSomeLinkage(linkageRef, fieldKey) {
 		return unlikeness;
 	});
 	return hasRemoveAge;
+}
+
+export function treeDataAddKey(tree = [], distMap, srcMap, isLeaf) {
+	const distKey = Object.assign({ label: "label", value: "value", children: "children", key: "key" }, distMap || {});
+	const srcKey = Object.assign({ label: "label", value: "value", children: "children" }, srcMap || {});
+	return Array.isArray(tree)
+		? tree.map(item => {
+				const ciilds = treeDataAddKey(item[srcKey.children], distKey, srcKey, isLeaf);
+				return {
+					[distKey.label]: item[srcKey.label],
+					[distKey.value]: item[srcKey.value],
+					[distKey.children]: ciilds.length ? ciilds : null,
+					[distKey.key]: item[srcKey.value],
+					isLeaf,
+				};
+		  })
+		: [];
 }

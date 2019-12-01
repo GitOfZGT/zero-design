@@ -4,16 +4,16 @@ import { withRouter } from "react-router-dom";
 // my component
 // import { Zlayout } from "../Zlayout";
 import { ZpageHeader } from "../ZpageHeader";
-import { ZpageFooter } from "../ZpageFooter";
+// import { ZpageFooter } from "../ZpageFooter";
 
 import "./style.scss";
 //
-import { footerLinks, footerCopyright } from "../myPageFooter.js";
+// import { footerLinks, footerCopyright } from "../myPageFooter.js";
 // 上下文
 import ZerodRootContext from "../ZerodRootContext";
 import ZerodMainContext from "../ZerodMainContext";
 import { dataType } from "../zTool";
-import debounce from 'lodash/debounce'
+// import debounce from 'lodash/debounce'
 // 递归获取面包屑数据
 const getBreadcrumbsFromMenu = function(arr, path, rootArr) {
 	let newArr = [];
@@ -79,40 +79,40 @@ class Page extends ZpureComponent {
 		return header;
 	};
 	newPageHeader = this.getNewPageHeader();
-	initDoms = debounce((e) => {
-		if (e && (e.target.localName == "input" || e.target.localName == "textarea" || e.target.localName == "button"))
-			return;
-		if (this.footerWrapEl) {
-			const pos = this.wrapEl.getBoundingClientRect();
-			const fpos = this.footerWrapEl.getBoundingClientRect();
-			if (pos.top >= 0) {
-				let H = document.documentElement.clientHeight - pos.top - fpos.height;
-				this.wrapEl.style.minHeight = H + "px";
-			}
-		}
-	},60);
+	// initDoms = debounce((e) => {
+	// 	if (e && (e.target.localName == "input" || e.target.localName == "textarea" || e.target.localName == "button"))
+	// 		return;
+	// 	if (this.footerWrapEl) {
+	// 		const pos = this.wrapEl.getBoundingClientRect();
+	// 		const fpos = this.footerWrapEl.getBoundingClientRect();
+	// 		if (pos.top >= 0) {
+	// 			let H = document.documentElement.clientHeight - pos.top - fpos.height;
+	// 			this.wrapEl.style.minHeight = H + "px";
+	// 		}
+	// 	}
+	// },60);
 
-	componentDidMount() {
-		document.addEventListener("transitionend", this.initDoms, false);
-		setTimeout(() => {
-			this.initDoms();
-		}, 100);
-		window.addEventListener("resize", this.initDoms, false);
-		// console.log(this.props.location.pathname)
-	}
-	componentWillUnmount() {
-		window.removeEventListener("resize", this.initDoms, false);
-		document.removeEventListener("transitionend", this.initDoms, false);
-	}
+	// componentDidMount() {
+	// 	document.addEventListener("transitionend", this.initDoms, false);
+	// 	setTimeout(() => {
+	// 		this.initDoms();
+	// 	}, 100);
+	// 	window.addEventListener("resize", this.initDoms, false);
+	// 	// console.log(this.props.location.pathname)
+	// }
+	// componentWillUnmount() {
+	// 	window.removeEventListener("resize", this.initDoms, false);
+	// 	document.removeEventListener("transitionend", this.initDoms, false);
+	// }
 	render() {
 		const { className, pageFooter } = this.props;
 		const { show, links, copyright, ref, ...footerOther } = pageFooter;
-		const _footerLinks = links ? links : this.props.footerLinks ? this.props.footerLinks : footerLinks;
-		const _footerCopyright = copyright
-			? copyright
-			: this.props.footerCopyright
-			? this.props.footerCopyright
-			: footerCopyright;
+		// const _footerLinks = links ? links : this.props.footerLinks ? this.props.footerLinks : footerLinks;
+		// const _footerCopyright = copyright
+		// 	? copyright
+		// 	: this.props.footerCopyright
+		// 	? this.props.footerCopyright
+		// 	: footerCopyright;
 
 		return (
 			<>
@@ -125,14 +125,14 @@ class Page extends ZpureComponent {
 				>
 					{this.props.children}
 				</div>
-				{pageFooter.show ? (
+				{/* {pageFooter.show ? (
 					<ZpageFooter
 						links={_footerLinks}
 						copyright={_footerCopyright}
 						ref={(el) => (this.footerWrapEl = el)}
 						{...footerOther}
 					/>
-				) : null}
+				) : null} */}
 			</>
 		);
 	}

@@ -18,6 +18,7 @@ import GroupNameEdit from "./GroupNameEdit";
 import LinkageConfig from "./LinkageConfig";
 import { getGroupItem, pareLinkages, removeSomeLinkage } from "./common";
 import ZfullLayer from "../ZfullLayer";
+import AddTagName from "./AddTagName";
 //校验、提取最新的formData数据
 function commitFormData(formViewerRef, layoutFormRef, linkageRef, onSave) {
 	layoutFormRef.current.validateFields((errors, values) => {
@@ -33,11 +34,13 @@ function commitFormData(formViewerRef, layoutFormRef, linkageRef, onSave) {
 		let hasEmptyGroup = false;
 		newFormData.sectionList = groups.map((g, gindex) => {
 			const formList = g.groupRef.current.getFormItems().map((item, itemindex) => {
+				const config = JSON.parse(item.config);
+				config.tagName = item.tagName || [];
 				return {
 					fieldKey: item.fieldKey,
 					fieldType: item.fieldType,
 					id: item.id,
-					config: item.config,
+					config: JSON.stringify(config),
 					disabled: item.disabled,
 					initialValue: item.initialValue,
 					label: item.label,
@@ -97,7 +100,7 @@ function useGetItems(
 		hasCodeRef.current = !!formData.code;
 		linkageRef.current = pareLinkages(formData.linkages);
 	}, [formData, layoutFormRef.current, formRenderedRef.current]);
-
+	const allTagNameRef = useRef([]);
 	const itemsRef = useRef([
 		{
 			key: "name",
@@ -170,6 +173,7 @@ function useGetItems(
 							{ label: "文书编辑", value: 2 },
 							{ label: "文件签名", value: 3 },
 							{ label: "文件盖章", value: 4 },
+							{ label: "文件制作", value: 5 },
 						],
 					},
 				});
@@ -219,6 +223,39 @@ function useGetItems(
 							导出JOSN
 						</Button> */}
 						<Button
+							type="primary"
+							onClick={() => {
+								Modal.confirm({
+									title: `为所有控件添加标签?`,
+									content: (
+										<AddTagName
+											onChange={val => {
+												allTagNameRef.current = val;
+											}}
+										></AddTagName>
+									),
+									okText: "确定",
+									cancelText: "取消",
+									onOk() {
+										const groups = formViewerRef.current.getFormGroups();
+										groups.forEach(g => {
+											const currentItems = g.groupRef.current.getFormItems();
+											g.groupRef.current.setFormItems(
+												currentItems.map(item => {
+													return { ...item, tagName: allTagNameRef.current };
+												}),
+											);
+										});
+									},
+								});
+							}}
+							icon="tag"
+							size="small"
+							className="z-margin-right-12"
+						>
+							全局打标签
+						</Button>
+						<Button
 							size="small"
 							type="primary"
 							icon="block"
@@ -233,7 +270,7 @@ function useGetItems(
 												newFormData={newFormData}
 												defaultValue={linkageRef.current}
 												onChange={newLinkages => {
-													console.log(JSON.stringify(newLinkages));
+													// console.log(JSON.stringify(newLinkages));
 													linkageRef.current = newLinkages;
 												}}
 											/>
@@ -322,8 +359,10 @@ function setNewCurrentGroupItems(formViewerRef, item, action) {
 }
 
 function useFormProps(showModal, formViewerRef, linkageRef) {
+	const tagNameRef = useRef([]);
 	return useRef({
 		colContentRender: (item, form) => {
+			tagNameRef.current = item.tagName || [];
 			return (
 				<div className="z-live-tool">
 					<div style={{ width: "40%" }} className="z-padding-left-10">
@@ -340,6 +379,37 @@ function useFormProps(showModal, formViewerRef, linkageRef) {
 						/>
 					</div>
 					<div>
+						<Tooltip placement="top" title="标签">
+							<div
+								className="z-live-tool-item right-item tag"
+								onClick={() => {
+									Modal.confirm({
+										title: `为 [${item.label}] 这个控件添加标签?`,
+										content: (
+											<AddTagName
+												value={item.tagName}
+												onChange={val => {
+													tagNameRef.current = val;
+												}}
+											></AddTagName>
+										),
+										okText: "确定",
+										cancelText: "取消",
+										onOk() {
+											setNewCurrentGroupItems(formViewerRef, item, function(currentItems, i) {
+												currentItems.splice(i, 1, {
+													...currentItems[i],
+													tagName: tagNameRef.current,
+												});
+												return [...currentItems];
+											});
+										},
+									});
+								}}
+							>
+								<Icon type="tag" />
+							</div>
+						</Tooltip>
 						<Tooltip placement="top" title="移除控件">
 							<div
 								className="z-live-tool-item right-item delete"
