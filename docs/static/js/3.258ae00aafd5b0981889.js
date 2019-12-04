@@ -276,8 +276,8 @@ module.exports = function (namespace, method) {
 
 
 module.exports = {
-  path: "/zero-design/docs/" // path:"/"
-
+  // path:"/zero-design/docs/"
+  path: "/"
 };
 
 /***/ }),
@@ -3206,7 +3206,8 @@ var pageConfig = {
   }],
   footerLinks: null,
   // footerCopyright: "2018 华云中盛-政务事业部技术团队出品",
-  routerType: publiced.path == "/" ? "history" : "hash"
+  // routerType: publiced.path == "/" ? "history" : "hash",
+  routerType: "hash"
 };
 
 var _default = (0, _ZappHOC2.default)(pageConfig);
@@ -23072,4 +23073,4 @@ $({ target: 'Object', stat: true, forced: FAILS_ON_PRIMITIVES, sham: !FREEZING }
 /***/ })
 
 },[[0,4,2,5,1]]]);
-//# sourceMappingURL=3.6b78d34cc2c585efd6a1.js.map
+//# sourceMappingURL=3.258ae00aafd5b0981889.js.map
