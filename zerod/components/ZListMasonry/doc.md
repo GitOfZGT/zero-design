@@ -41,9 +41,10 @@ class Mylist extends React.PureComponent {
 	};
 	colContentRender = (record, index) => {
 		const random = Math.round(Math.random() * 400);
+		const height = random < 60 ? 60 : random + "px";
 		return (
 			<div className="z-panel z-margin-bottom-15">
-				<div className="z-panel-body" style={{ height: `${random < 60 ? 60 : random}px` }}>
+				<div className="z-panel-body" style={{ height }}>
 					切块内容自适应
 				</div>
 			</div>
