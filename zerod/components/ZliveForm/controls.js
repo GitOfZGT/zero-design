@@ -84,14 +84,22 @@ function selectControl(controlName) {
 			} catch (e) {}
 		}
 		config = { ...defaultFieldConfig, ...config };
-		const { selectionsType, selectionsUrl, selectList, selectionsQuery, selectListFieldNames, ...others } = config;
+		const {
+			selectionsType,
+			selectionsUrl,
+			selectList,
+			selectionsQuery,
+			selectListFieldNames,
+			tagName,
+			...others
+		} = config;
 		function getCurrentControl(selectList) {
 			if (currentForm) {
 				//保存已有的selectList
 				currentForm.saveFieldOptions[e.fieldKey] = selectList;
-				if (selectList.length) {
-					selectList[0].selected = true;
-				}
+				// if (selectList.length) {
+				// 	selectList[0].selected = true;
+				// }
 				// currentForm.saveOptionsMapKey[e.fieldKey] = selectListFieldNames;
 			}
 			return getControl(controlName, {
@@ -555,11 +563,7 @@ const controls = {
 				} catch (e) {}
 			}
 			config = { ...defaultFieldConfig, ...config };
-			return (
-				<div className="z-liveform-upload-wrapper">
-					<ZeroUpload config={config} field={e} />
-				</div>
-			);
+			return <ZeroUpload config={config} field={e} />;
 		},
 		getOptions(e, rules = []) {
 			let config = e.config || {};
@@ -572,12 +576,13 @@ const controls = {
 			const newRules = [
 				{
 					validator(rule, value, callback) {
+						console.log("验证", value, config);
 						if (Array.isArray(value)) {
 							if (!value.length) {
 								return callback("未上传任何文件");
 							}
 							if (config.minUploadLength && config.minUploadLength > value.length) {
-								return callback(`最少上传${config.minUploadLength}个`);
+								return callback(`上传数量不能少于${config.minUploadLength}`);
 							}
 						}
 						return callback();
@@ -585,7 +590,7 @@ const controls = {
 				},
 			];
 
-			return getOptionsRules(e, newRules.concat(rules));
+			return getOptionsRules(e, newRules.concat(rules), { validateTrigger: "onChange" });
 		},
 	},
 	//ColorPicker

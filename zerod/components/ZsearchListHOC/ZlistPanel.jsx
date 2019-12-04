@@ -96,8 +96,8 @@ class ZlistPanel extends ZpureComponent {
 			expandedSearch: this.searchFormConfig && this.searchFormConfig.defaultExpanded,
 		});
 	}
-	componentDidUpdate(prevProps) {
-		if (this.props.tableColumns !== prevProps.tableColumns || this.props.tableParams !== prevProps.tableParams) {
+	componentDidUpdate(prevProps,prevState) {
+		if (this.props.tableColumns !== prevProps.tableColumns || this.props.tableParams !== prevProps.tableParams||prevState.listData!==this.state.listData) {
 			this.setState({
 				tableColumns: this.getShowTableColumns(),
 			});

@@ -23,6 +23,7 @@ const propTypes = {
 	value: PropTypes.array,
 	onChange: PropTypes.func,
 	field: PropTypes.object,
+	noWrapper: PropTypes.bool,
 };
 const defaultProps = {
 	getUserInfo: function() {
@@ -34,6 +35,7 @@ const defaultProps = {
 	showModalLoading: function() {
 		return null;
 	},
+	noWrapper: false,
 };
 /**
  * config
@@ -65,6 +67,7 @@ const MyUpload = React.forwardRef(function(props, ref) {
 		onChange,
 		field,
 		buttonName,
+		noWrapper,
 	} = props;
 	const getModalName = getLayerModalInsertLocation || getInsertLocation;
 	const showLoading = showLayerModalLoading || showModalLoading;
@@ -95,6 +98,7 @@ const MyUpload = React.forwardRef(function(props, ref) {
 	//获取调用showModalLoading的第二个参数
 	const modalRef = useRef("");
 	//处理value
+	// console.log("render", value);
 	useEffect(() => {
 		if (!Array.isArray(value) || !value.length) {
 			setFileState({
@@ -200,10 +204,9 @@ const MyUpload = React.forwardRef(function(props, ref) {
 						}),
 					});
 					message.success("上传成功。");
-					return (
-						typeof onChange === "function" &&
-						onChange(getFileUids(hasUploadDoneServerIdsRef.current, "serverId"), noUploader)
-					);
+					const newValue = getFileUids(hasUploadDoneServerIdsRef.current, "serverId");
+					console.log("上传完的value", newValue);
+					return typeof onChange === "function" && onChange(newValue, noUploader);
 				})
 				.catch(re => {
 					// message.error(re && re.msg ? re.msg : "上传失败。");
@@ -265,7 +268,8 @@ const MyUpload = React.forwardRef(function(props, ref) {
 	useEffect(() => {
 		autoUpload && !isSourceFile && handleUpload();
 	}, [fileState]);
-	return (
+
+	const contentNode = (
 		<div
 			className="z-clear-fix"
 			ref={el => {
@@ -305,8 +309,9 @@ const MyUpload = React.forwardRef(function(props, ref) {
 						});
 						if (serverIndex > -1) {
 							hasUploadDoneServerIdsRef.current.splice(serverIndex, 1);
-							typeof onChange === "function" &&
-								onChange(getFileUids(hasUploadDoneServerIdsRef.current, "serverId"));
+							const newValue = getFileUids(hasUploadDoneServerIdsRef.current, "serverId");
+							console.log("移除完的value", newValue);
+							typeof onChange === "function" && onChange(newValue);
 						}
 						if (index > -1) {
 							fileState.fileList.splice(index, 1);
@@ -406,6 +411,8 @@ const MyUpload = React.forwardRef(function(props, ref) {
 				: null}
 		</div>
 	);
+
+	return noWrapper ? contentNode : <div className="z-liveform-upload-wrapper">{contentNode}</div>;
 });
 MyUpload.propTypes = propTypes;
 MyUpload.defaultProps = defaultProps;

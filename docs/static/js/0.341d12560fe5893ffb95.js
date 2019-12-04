@@ -40147,8 +40147,8 @@ function (_ZpureComponent) {
     }
   }, {
     key: "componentDidUpdate",
-    value: function componentDidUpdate(prevProps) {
-      if (this.props.tableColumns !== prevProps.tableColumns || this.props.tableParams !== prevProps.tableParams) {
+    value: function componentDidUpdate(prevProps, prevState) {
+      if (this.props.tableColumns !== prevProps.tableColumns || this.props.tableParams !== prevProps.tableParams || prevState.listData !== this.state.listData) {
         this.setState({
           tableColumns: this.getShowTableColumns()
         });
@@ -61369,4 +61369,4 @@ exports.default = _default;
 /***/ })
 
 }]);
-//# sourceMappingURL=0.3c309360bb7d29c2766a.js.map
+//# sourceMappingURL=0.341d12560fe5893ffb95.js.map

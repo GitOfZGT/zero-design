@@ -18095,6 +18095,8 @@ function (_React$PureComponent) {
         className: "z-padding-left-40 z-padding-top-50"
       }, _react.default.createElement(_timeline.default, null, _react.default.createElement(_timeline.default.Item, null, _react.default.createElement("p", {
         className: "z-text-black"
+      }, "v0.0.141---2019-12-02"), _react.default.createElement("p", null, "\u4FEE\u590D\uFF1AZliveForm\u52A8\u6001\u8868\u5355\u4FEE\u590D\u4E0A\u4F20\u63A7\u4EF6\u503C\u6821\u9A8C\u95EE\u9898")), _react.default.createElement(_timeline.default.Item, null, _react.default.createElement("p", {
+        className: "z-text-black"
       }, "v0.0.140---2019-11-30"), _react.default.createElement("p", null, "\u65B0\u589E\uFF1AZliveForm\u52A8\u6001\u8868\u5355\u65B0\u589E\u8BC1\u4EF6\u7167OCR\u63A7\u4EF6"), _react.default.createElement("p", null, "\u65B0\u589E\uFF1AZliveForm\u52A8\u6001\u8868\u5355\u8054\u52A8\u914D\u7F6E\u65B0\u589E\u8BC1\u4EF6\u7167OCR\u8054\u52A8\u5176\u4ED6\u63A7\u4EF6\u914D\u7F6E"), _react.default.createElement("p", null, "\u79FB\u9664\uFF1AZpageWrapper\u79FB\u9664\u5E95\u90E8\u94FE\u63A5"), _react.default.createElement("p", null, "\u4FEE\u590D\uFF1AZviewer\u5B9E\u5217\u62A5\u9519\u95EE\u9898"), _react.default.createElement("p", null, "\u6837\u5F0F\uFF1A\u5168\u5C40\u6EDA\u52A8\u6761\u6837\u5F0F\u4FEE\u6B63")), _react.default.createElement(_timeline.default.Item, null, _react.default.createElement("p", {
         className: "z-text-black"
       }, "v0.0.139---2019-11-05"), _react.default.createElement("p", null, "\u4FEE\u590D\uFF1AZfullLayer\u4FEE\u590D\u5173\u95ED\u540E\u518D\u6253\u5F00\u65E0\u6CD5\u518D\u6253\u5F00\u4FA7\u62C9\u7A97\u53E3\u7684\u95EE\u9898"), _react.default.createElement("p", null, "\u65B0\u589E\uFF1AZliveForm\u52A8\u6001\u8868\u5355\u65B0\u589E\u63A7\u4EF6\u6253\u6807\u7B7E"), _react.default.createElement("p", null, "\u65B0\u589E\uFF1AZliveForm\u52A8\u6001\u8868\u5355\u65B0\u589E\u5C0F\u7A0B\u5E8F\u7B7E\u540D\u63A7\u4EF6\u914D\u7F6E"), _react.default.createElement("p", null, "\u65B0\u589E\uFF1AZliveForm\u52A8\u6001\u8868\u5355\u5730\u56FE\u9009\u70B9\u63A7\u4EF6\u652F\u6301npm run build --qqmap= --amap= \u6DFB\u52A0\u5185\u7F51\u73AF\u5883\u7684\u6620\u5C04\u57DF\u540D\u4EE3\u66FF\u5185\u7F6E\u57DF\u540D")), _react.default.createElement(_timeline.default.Item, null, _react.default.createElement("p", {
@@ -35250,7 +35252,7 @@ module.exports = (__webpack_require__("9w1k"))(57);
 /***/ "wLiZ":
 /***/ (function(module) {
 
-module.exports = JSON.parse("{\"name\":\"zerod\",\"version\":\"0.0.140\",\"description\":\"react+antd+scss的扩展组件，结合zerod-admin-web脚手架使用\",\"author\":\"zgt\",\"main\":\"index.js\",\"module\":\"index.js\",\"scripts\":{\"login\":\"npm login --registry=http://172.16.8.10:8081/repository/hosted-npm/\"},\"repositories\":[{\"type\":\"git\",\"url\":\"http://172.16.26.120/components/zerod-component-doc.git\"}],\"dependencies\":{\"blueimp-md5\":\"^2.10.0\",\"contra\":\"1.9.4\",\"crossvent\":\"1.5.4\",\"iscroll\":\"^5.2.0\",\"js-base64\":\"^2.5.1\",\"lodash\":\"^4.17.15\",\"prismjs\":\"^1.15.0\",\"react-color\":\"^2.14.1\",\"swiper\":\"^4.3.5\",\"uuid\":\"^3.3.2\",\"viewerjs\":\"^1.2.0\",\"masonry-layout\":\"^4.2.2\"},\"peerDependencies\":{\"react\":\">=16.0.0\",\"react-dom\":\">=16.0.0\"},\"license\":\"MIT\",\"engines\":{\"node\":\">= 6.11.0\",\"npm\":\">= 5.0.0\"},\"browserslist\":[\"> 1%\",\"last 2 versions\",\"not ie <= 8\"],\"publishConfig\":{\"registry\":\"http://172.16.8.10:8081/repository/hosted-npm/\"}}");
+module.exports = JSON.parse("{\"name\":\"zerod\",\"version\":\"0.0.141\",\"description\":\"react+antd+scss的扩展组件，结合zerod-admin-web脚手架使用\",\"author\":\"zgt\",\"main\":\"index.js\",\"module\":\"index.js\",\"scripts\":{\"login\":\"npm login --registry=http://172.16.8.10:8081/repository/hosted-npm/\"},\"repositories\":[{\"type\":\"git\",\"url\":\"http://172.16.26.120/components/zerod-component-doc.git\"}],\"dependencies\":{\"blueimp-md5\":\"^2.10.0\",\"contra\":\"1.9.4\",\"crossvent\":\"1.5.4\",\"iscroll\":\"^5.2.0\",\"js-base64\":\"^2.5.1\",\"lodash\":\"^4.17.15\",\"prismjs\":\"^1.15.0\",\"react-color\":\"^2.14.1\",\"swiper\":\"^4.3.5\",\"uuid\":\"^3.3.2\",\"viewerjs\":\"^1.2.0\",\"masonry-layout\":\"^4.2.2\"},\"peerDependencies\":{\"react\":\">=16.0.0\",\"react-dom\":\">=16.0.0\"},\"license\":\"MIT\",\"engines\":{\"node\":\">= 6.11.0\",\"npm\":\">= 5.0.0\"},\"browserslist\":[\"> 1%\",\"last 2 versions\",\"not ie <= 8\"],\"publishConfig\":{\"registry\":\"http://172.16.8.10:8081/repository/hosted-npm/\"}}");
 
 /***/ }),
 
@@ -36096,4 +36098,4 @@ module.exports = scrollIntoView;
 /***/ })
 
 }]);
-//# sourceMappingURL=6.1ccd044ee7b8bf62fe28.js.map
+//# sourceMappingURL=6.b02c03abe7ae0320eee9.js.map

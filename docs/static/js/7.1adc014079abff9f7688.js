@@ -4652,7 +4652,7 @@ var _default = {
       placeholder: null,
       span: 24,
       labelWidth: null,
-      config: '{"url":"/file-upload-service/webapi/v1.0/fileUpload/huawei/uploadFile","fileAccept":"image/*","fileListType":"picture-card","wxSourceTypes":["album","camera"],"uploaderResponse":{"id":"id","filePath":"filePath","fileSuffix":"fileSuffix","originalFileName":"originalFileName"},"autoUpload":1,"maxMegabytes":10,"urlMethod":"post","urlParamName":"file","requestMode":"single"}',
+      config: '{"url":"/file-upload-service/webapi/v1.0/fileUpload/huawei/uploadFile","fileAccept":"image/*","fileListType":"picture-card","wxSourceTypes":["album","camera"],"uploaderResponse":{"id":"id","filePath":"filePath","fileSuffix":"fileSuffix","originalFileName":"originalFileName"},"autoUpload":1,"maxMegabytes":10,"urlMethod":"post","urlParamName":"file","requestMode":"single","minUploadLength":2}',
       initialValue: null,
       seq: 1,
       gmtCreate: "2019-08-22 09:03:22",
@@ -4926,7 +4926,7 @@ var _default = {
   buttonList: [],
   formSubmitTypeCode: 1,
   customControlRender: {
-    "mycustoms": function mycustoms(data) {
+    mycustoms: function mycustoms(data) {
       console.log(data);
       return 999;
     }
@@ -5193,7 +5193,8 @@ var propTypes = {
   showLayerModalLoading: _propTypes.default.func,
   value: _propTypes.default.array,
   onChange: _propTypes.default.func,
-  field: _propTypes.default.object
+  field: _propTypes.default.object,
+  noWrapper: _propTypes.default.bool
 };
 var defaultProps = {
   getUserInfo: function getUserInfo() {
@@ -5204,7 +5205,8 @@ var defaultProps = {
   },
   showModalLoading: function showModalLoading() {
     return null;
-  }
+  },
+  noWrapper: false
 };
 /**
  * config
@@ -5235,7 +5237,8 @@ var MyUpload = _react.default.forwardRef(function (props, ref) {
       value = props.value,
       onChange = props.onChange,
       field = props.field,
-      buttonName = props.buttonName;
+      buttonName = props.buttonName,
+      noWrapper = props.noWrapper;
   var getModalName = getLayerModalInsertLocation || getInsertLocation;
   var showLoading = showLayerModalLoading || showModalLoading;
   var fileAccept = config.fileAccept,
@@ -5274,6 +5277,7 @@ var MyUpload = _react.default.forwardRef(function (props, ref) {
   //获取调用showModalLoading的第二个参数
 
   var modalRef = (0, _react.useRef)(""); //处理value
+  // console.log("render", value);
 
   (0, _react.useEffect)(function () {
     if (!Array.isArray(value) || !value.length) {
@@ -5369,7 +5373,9 @@ var MyUpload = _react.default.forwardRef(function (props, ref) {
 
       _message2.default.success("上传成功。");
 
-      return typeof onChange === "function" && onChange(getFileUids(hasUploadDoneServerIdsRef.current, "serverId"), noUploader);
+      var newValue = getFileUids(hasUploadDoneServerIdsRef.current, "serverId");
+      console.log("上传完的value", newValue);
+      return typeof onChange === "function" && onChange(newValue, noUploader);
     }).catch(function (re) {
       // message.error(re && re.msg ? re.msg : "上传失败。");
       //自动上传模式，上传失败时移除列表
@@ -5426,7 +5432,8 @@ var MyUpload = _react.default.forwardRef(function (props, ref) {
   (0, _react.useEffect)(function () {
     autoUpload && !isSourceFile && handleUpload();
   }, [fileState]);
-  return _react.default.createElement("div", {
+
+  var contentNode = _react.default.createElement("div", {
     className: "z-clear-fix",
     ref: function ref(el) {
       modalRef.current = getModalName(el);
@@ -5467,7 +5474,9 @@ var MyUpload = _react.default.forwardRef(function (props, ref) {
 
         if (serverIndex > -1) {
           hasUploadDoneServerIdsRef.current.splice(serverIndex, 1);
-          typeof onChange === "function" && onChange(getFileUids(hasUploadDoneServerIdsRef.current, "serverId"));
+          var newValue = getFileUids(hasUploadDoneServerIdsRef.current, "serverId");
+          console.log("移除完的value", newValue);
+          typeof onChange === "function" && onChange(newValue);
         }
 
         if (index > -1) {
@@ -5559,6 +5568,10 @@ var MyUpload = _react.default.forwardRef(function (props, ref) {
     }),
     ref: viewerRef
   })), document.body) : null);
+
+  return noWrapper ? contentNode : _react.default.createElement("div", {
+    className: "z-liveform-upload-wrapper"
+  }, contentNode);
 });
 
 MyUpload.propTypes = propTypes;
@@ -5655,6 +5668,7 @@ var ZprosAndCons = _react.default.memo(function (props) {
       modalRef.current = getModalName(el);
     }
   }, _react.default.createElement(_ZeroUpload.default, {
+    noWrapper: true,
     value: currentValue[0] ? [currentValue[0]] : undefined,
     onChange: function onChange(val, uploadFiles) {
       if (val.length && uploadFiles && uploadFiles.length) {
@@ -5693,6 +5707,7 @@ var ZprosAndCons = _react.default.memo(function (props) {
     field: field,
     buttonName: "\u6B63\u9762"
   }), _react.default.createElement(_ZeroUpload.default, {
+    noWrapper: true,
     value: currentValue[1] ? [currentValue[1]] : undefined,
     onChange: function onChange(val, formData) {
       currentValue[1] = val[0] || null;
@@ -6476,17 +6491,16 @@ function selectControl(controlName) {
         selectList = _config.selectList,
         selectionsQuery = _config.selectionsQuery,
         selectListFieldNames = _config.selectListFieldNames,
-        others = (0, _objectWithoutProperties2.default)(_config, ["selectionsType", "selectionsUrl", "selectList", "selectionsQuery", "selectListFieldNames"]);
+        tagName = _config.tagName,
+        others = (0, _objectWithoutProperties2.default)(_config, ["selectionsType", "selectionsUrl", "selectList", "selectionsQuery", "selectListFieldNames", "tagName"]);
 
     function getCurrentControl(selectList) {
       if (currentForm) {
         //保存已有的selectList
-        currentForm.saveFieldOptions[e.fieldKey] = selectList;
-
-        if (selectList.length) {
-          selectList[0].selected = true;
-        } // currentForm.saveOptionsMapKey[e.fieldKey] = selectListFieldNames;
-
+        currentForm.saveFieldOptions[e.fieldKey] = selectList; // if (selectList.length) {
+        // 	selectList[0].selected = true;
+        // }
+        // currentForm.saveOptionsMapKey[e.fieldKey] = selectListFieldNames;
       }
 
       return (0, _controls.getControl)(controlName, _objectSpread({
@@ -7064,12 +7078,10 @@ var controls = {
       }
 
       config = _objectSpread({}, defaultFieldConfig, {}, config);
-      return _react.default.createElement("div", {
-        className: "z-liveform-upload-wrapper"
-      }, _react.default.createElement(_ZeroUpload.default, {
+      return _react.default.createElement(_ZeroUpload.default, {
         config: config,
         field: e
-      }));
+      });
     },
     getOptions: function getOptions(e) {
       var rules = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
@@ -7084,20 +7096,24 @@ var controls = {
       config = _objectSpread({}, defaultFieldConfig, {}, config);
       var newRules = [{
         validator: function validator(rule, value, callback) {
+          console.log("验证", value, config);
+
           if (Array.isArray(value)) {
             if (!value.length) {
               return callback("未上传任何文件");
             }
 
             if (config.minUploadLength && config.minUploadLength > value.length) {
-              return callback("\u6700\u5C11\u4E0A\u4F20".concat(config.minUploadLength, "\u4E2A"));
+              return callback("\u4E0A\u4F20\u6570\u91CF\u4E0D\u80FD\u5C11\u4E8E".concat(config.minUploadLength));
             }
           }
 
           return callback();
         }
       }];
-      return getOptionsRules(e, newRules.concat(rules));
+      return getOptionsRules(e, newRules.concat(rules), {
+        validateTrigger: "onChange"
+      });
     }
   },
   //ColorPicker
@@ -9162,4 +9178,4 @@ module.exports = (__webpack_require__("9w1k"))(371);
 /***/ })
 
 }]);
-//# sourceMappingURL=7.566ef7e60ff91e18e488.js.map
+//# sourceMappingURL=7.1adc014079abff9f7688.js.map

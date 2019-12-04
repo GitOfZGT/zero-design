@@ -49,6 +49,7 @@ const ZprosAndCons = React.memo(props => {
 			}}
 		>
 			<ZeroUpload
+				noWrapper={true}
 				value={currentValue[0] ? [currentValue[0]] : undefined}
 				onChange={(val, uploadFiles) => {
 					if (val.length && uploadFiles && uploadFiles.length) {
@@ -80,6 +81,7 @@ const ZprosAndCons = React.memo(props => {
 				buttonName="正面"
 			/>
 			<ZeroUpload
+				noWrapper={true}
 				value={currentValue[1] ? [currentValue[1]] : undefined}
 				onChange={(val, formData) => {
 					currentValue[1] = val[0] || null;
