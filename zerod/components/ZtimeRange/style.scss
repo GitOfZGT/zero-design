@@ -1,5 +1,13 @@
-:global{
-    .z-timeRange-right .ant-time-picker-input{
-        border-left: 0;
-    }
+:global {
+        .z-timeRange-segmentation{
+            display: flex !important;
+            align-items: center;
+            padding:0 5px;
+        }
+        .z-timeRange-morrow{
+            display: flex !important;
+            align-items: center;
+            padding:0 5px;
+            font-size: 12px;
+        }
 }

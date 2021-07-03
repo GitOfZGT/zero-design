@@ -1,10 +1,3 @@
-/*
- * @Author: zgt
- * @Date: 2019-08-19 12:12:21
- * @LastEditors: zgt
- * @LastEditTime: 2019-08-19 14:05:33
- * @Description: file content
- */
 module.exports = {
     presets: [
         [
@@ -15,7 +8,7 @@ module.exports = {
     ],
     plugins: [
         ['@babel/plugin-transform-runtime', { corejs: false }],
-        '@babel/plugin-syntax-dynamic-import',
+        ['@babel/plugin-syntax-dynamic-import'],
         ['import', { libraryName: 'antd', style: false, libraryDirectory: 'es' }, 'antd'],
         [
             'import',
@@ -24,6 +17,7 @@ module.exports = {
         ],
         ['@babel/plugin-proposal-decorators', { legacy: true }],
         ['@babel/plugin-proposal-class-properties', { loose: true }],
-        '@babel/plugin-transform-modules-commonjs',
+        ['@babel/plugin-proposal-private-methods', { loose: true }],
+        ['@babel/plugin-transform-modules-commonjs'],
     ],
 };

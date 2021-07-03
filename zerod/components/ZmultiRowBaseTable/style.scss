@@ -1,0 +1,81 @@
+@import '../ZtreeInput/style.scss';
+@import '../../scss/vars.scss';
+$--table-item-bg: mix($primary-color, #ffffff,4%);
+$--table-item-bordercolor: darken($--table-item-bg, 4%);
+:global {
+    .z-multi-row-wrapper {
+        position: relative;
+        overflow: auto;
+    }
+    .z-multi-row-table-wrapper {
+        border-left: 1px solid $--table-item-bordercolor;
+        border-right: 1px solid $--table-item-bordercolor;
+
+ 
+        &.__header {
+            overflow: hidden;
+            border-radius: $border-radius-base $border-radius-base 0 0;
+            .z-multi-row-table {
+                border-top: 1px solid $--table-item-bordercolor;
+            }
+        }
+        &.__body {
+            overflow-x: auto;
+            overflow-y: hidden;
+            border-radius: 0 0 $border-radius-base $border-radius-base;
+            border-bottom: 1px solid $--table-item-bordercolor;
+        }
+    }
+    .z-multi-row-table {
+        position: relative;
+        min-width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        table-layout: fixed;
+        tr > th {
+            box-sizing: border-box;
+            text-align: center;
+
+            border-bottom: 1px solid $--table-item-bordercolor;
+            padding: 10px 8px;
+            background-color: $--table-item-bg;
+            font-weight: normal;
+            line-height: 1;
+            border-right: 1px solid $--table-item-bordercolor;
+            &:last-child {
+                border-right: 0;
+            }
+        }
+        tr > td {
+            position: relative;
+            box-sizing: border-box;
+            line-height: 1;
+            border-bottom: 1px solid $--table-item-bordercolor;
+            padding: 2px 0;
+            background-color: transparent;
+            font-weight: normal;
+            border-right: 1px solid $--table-item-bordercolor;
+            &:last-child {
+                border-right: 0;
+            }
+            &.text-center {
+                text-align: center;
+            }
+        }
+        tr:last-child > td {
+            border-bottom: 0;
+        }
+        .z-multi-row-checked {
+            line-height: 0;
+        }
+    }
+
+    .z-multi-row-tool {
+        text-align: left;
+        padding: 6px 0;
+        line-height: 0;
+        .z-option-btn-item + .z-option-btn-item {
+            margin-left: 10px;
+        }
+    }
+}

@@ -9,15 +9,17 @@
 //z-padding-left-20;z-padding-left-20-important;
 
 @mixin setMargin($name:'margin',$value:0,$p:'',$important:false){
+    $marginPos:'';
         @if $p==''{
-            $marginPos:'' !global;
+            $marginPos:'' ;
         }@else{
-            $marginPos:'-'+$p !global;
+            $marginPos:'-'+$p;
         }
+        $marginName:'';
         @if $important{
-            $marginName:$name+$marginPos+'-'+$value+'-important' !global;
+            $marginName:$name+$marginPos+'-'+$value+'-important';
         }@else{
-            $marginName:$name+$marginPos+'-'+$value !global;
+            $marginName:$name+$marginPos+'-'+$value;
         }
         @include z($marginName,$global:true){
             @if $important{
@@ -52,6 +54,6 @@
     @include setMargin('padding',$v,'',true);
 }
 
-@for $i from 0 through 100 {
+@for $i from 0 through 50 {
     @include margins($i);
 }

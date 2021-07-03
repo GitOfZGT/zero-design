@@ -8,6 +8,7 @@
 		top: 3px;
 		right: 3px;
 		bottom: 3px;
+		z-index: 99999;
 	}
 
 	.iScrollHorizontalScrollbar {
@@ -22,7 +23,7 @@
 	}
 
 	.iScrollIndicator {
-		background-color: $--defatul-ScrollbarColor;
+		background-image: $--defatul-ScrollbarColor;
 		border-radius: $--defatul-ScrollbarRadius;
 	}
 }
@@ -87,7 +88,7 @@
 	width: $--h;
 	height: $--h;
 	line-height: $--h;
-	background-color: rgba(47, 107, 170, 1);
+	background-color: $primary-color;
 	display: block;
 	border-radius: $--h/2;
 	text-align: center;

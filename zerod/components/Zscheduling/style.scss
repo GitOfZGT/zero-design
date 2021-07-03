@@ -1,6 +1,7 @@
 @import '../../scssMixin/generateClassName2';
+@import '../../scss/vars';
 :global {
-    $--border-color: #d9e2ee;
+    $--border-color: #ebeff3;
     $--border-darken-color: darken($--border-color, 10%);
     $--td-height: 60px;
     .z-scheduling-table {
@@ -26,17 +27,17 @@
                     background-color: rgba(3, 128, 243, 0.1);
                     thead > tr > td + td,
                     tbody > tr > td + td {
-                        border-left: 1px dashed  $--border-darken-color;
+                        border-left: 1px solid $--border-darken-color;
                     }
                     tbody > tr + tr {
-                        border-top: 1px dashed  $--border-darken-color;
+                        border-top: 1px solid $--border-darken-color;
                     }
                     thead > tr {
-                        border-bottom: 1px solid  $--border-darken-color;
+                        border-bottom: 1px solid $--border-darken-color;
                     }
                 }
                 &.selected {
-                    background-color: #0380f3;
+                    background-color: $primary-color;
                     color: white;
                     & > * {
                         opacity: 0.7;
@@ -58,11 +59,11 @@
         }
         thead > tr > td + td,
         tbody > tr > td + td {
-            border-left: 1px dashed $--border-color;
+            border-left: 1px solid $--border-color;
         }
 
         tbody > tr + tr {
-            border-top: 1px dashed $--border-color;
+            border-top: 1px solid $--border-color;
         }
         thead > tr {
             border-bottom: 1px solid $--border-color;
@@ -84,7 +85,7 @@
         height: 100%;
     }
     .z-scheduling-swiper-slide + .z-scheduling-swiper-slide table {
-        border-left: 1px dashed $--border-color;
+        border-left: 1px solid $--border-color;
     }
 
     .z-scheduling-box {
@@ -106,8 +107,32 @@
     }
     .z-swiper-pagination {
         padding-right: 15px;
-        .swiper-pagination-bullet + .swiper-pagination-bullet {
-            margin-left: 5px;
+        counter-reset: slideNum;
+        .swiper-pagination-bullet {
+            margin-right: 5px;
+            width: 20px;
+            height: 20px;
+            text-align: center;
+            line-height: 20px;
+            color: #666666;
+            opacity: 1;
+            background-color: rgba(#000000, $alpha: 0.1);
+            counter-increment: slideNum;
+            outline: none;
+            font-size: 12px;
+            &:hover {
+                background-color: rgba(#000000, $alpha: 0.3);
+            }
+            &::before {
+                content: counter(slideNum);
+            }
+            &.swiper-pagination-bullet-active {
+                color: white;
+                background-color: $primary-color;
+            }
+        }
+        .swiper-pagination-bullet:last-child {
+            margin-right: 0;
         }
     }
     .z-scheduling-mask {
@@ -136,7 +161,7 @@
             height: 100%;
         }
     }
-   .z-scheduling-content {
+    .z-scheduling-content {
         opacity: 1;
         transition: opacity 0.25s;
         // margin-left: -1px;
@@ -168,7 +193,7 @@
             position: relative;
 
             .z-cutting-line {
-                border-bottom: 1px dashed $--border-color;
+                border-bottom: 1px solid $--border-color;
                 // background-color: $--border-color;
                 position: absolute;
                 top: 0;
@@ -192,7 +217,7 @@
         .z-weekend-color {
             color: red;
         }
-       .z-day-disabled-color {
+        .z-day-disabled-color {
             color: #bfbfbf;
         }
         .z-day-disabled-bg {
@@ -216,7 +241,7 @@
                 box-shadow: 0 0 4px 2px rgba(197, 203, 218, 0.5);
             }
             &.ant-checkbox-wrapper-checked {
-                color: #0380f3;
+                color: $primary-color;
             }
         }
     }
@@ -258,7 +283,7 @@
     .z-cell-tag {
         display: inline-block;
         padding: 2px 0px;
-        .ant-tag{
+        .ant-tag {
             white-space: normal;
             word-break: break-all;
         }
@@ -276,5 +301,14 @@
         border-radius: 3px;
         vertical-align: -0.25em;
         margin-right: 4px;
+    }
+    .z-scheduling-next-btn{
+        flex:1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        color: #333333;
+        height: 100%;
     }
 }

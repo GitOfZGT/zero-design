@@ -1,3 +1,4 @@
+<!-- @routePath:/context-doc/ZerodRootContext-doc -->
 # ZerodRootContext
 
 在`ZappHOC`中启用了`ZerodRootContext`的上文，通过`ZerodRootContext.setConsumer(组件)`包装的组件，可以使用`this.props`调用以下东西：

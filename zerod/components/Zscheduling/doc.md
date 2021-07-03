@@ -1,4 +1,4 @@
-<div class="z-doc-titles"></div>
+<!-- @routePath:/component-doc/Zscheduling-doc -->
 
 # 排班组件：Zscheduling
 
@@ -10,137 +10,163 @@ Zscheduling 分自定义列（左）和日期列（右），日期列可视区�
 
 1、基本使用
 
-<div class="z-demo-box" data-render="demo1" data-title=""></div>
-
 ```jsx
-class Myjavascript extends React.PureComponent {
-	state = {
-		list: [],
-	};
-	componentDidMount() {
-		this.ZschedulingMethods.showLoading(true);
-		api.scheduling
-			.getList()
-			.then((re) => {
-				this.setState({
-					list: re.data.list,
-				});
-			})
-			.finally(() => {
-				this.ZschedulingMethods.showLoading(false);
-			});
-	}
-	planList = [
-		{
-			name: "早班",
-			id: 1,
-			color: "#E54D4D",
-			startTime: "09:00",
-			endTime: "11:00",
-		},
-		{
-			name: "中班",
-			id: 2,
-			color: "#4DB4E5",
-			startTime: "13:00",
-			endTime: "15:00",
-		},
-		{
-			name: "晚班",
-			id: 3,
-			color: "#81E54D",
-			startTime: "16:00",
-			endTime: "19:00",
-		},
-	];
-	checkName = (item, i) => {
-		return `${item.name}-[${item.startTime}-${item.endTime}]`;
-	};
-	planOk = (checkedValue, props) => {
-		const { row, trindex, col, tdindex } = props;
-		message.success(`${checkedValue.join(",")}`);
-	};
-	popover = {
-		leftPopoverTitleRender: (row, trindex, col, tdindex) => {
-			// console.log(row,trindex,col,tdindex)
-			return false;
-		}, //checkBox列的 popover的title渲染函数，
-		// leftPopoverContentRender: (row, trindex, col, tdindex) => {
-		// 	return row.record.name;
-		// }, //checkBox列的 popover的content渲染函数，
-		rightPopoverTitleRender: (row, trindex, col, tdindex) => {
-			return col.title + "_" + row.record.name;
-		}, //日期列的 popover的title渲染函数，
-		rightPopoverContentRender: (row, trindex, col, tdindex) => {
-			//row[col.key]是日期单元格的独立对象
-			return (
-				<Zscheduling.CellCheckList
-					checkList={this.planList}
-					exportMethods={(methods) => {
-						row[col.key]["cellMethods"] = methods;
-					}}
-					checkNameRender={this.checkName}
-					{...{ row, trindex, col, tdindex }}
-					onOk={this.planOk}
-				/>
-			);
-		}, //日期列的 popover的content渲染函数，
-		dateColCellRender: (row, trindex, col, tdindex) => {
-			//row.record
-			return <Zscheduling.CellTag title="时间段" name="早班" color="#854522" />;
-		},
-	};
-	columns = [
-		{
-			key: "name",
-			width: "80px",
-			dataIndex: "name",
-			title: "人员",
-		},
-	];
-	methods = {
-		getData: () => {
-			const data = this.ZschedulingMethods.getSelectedCells();
-			if (Object.keys(data).length) {
-				message.success(JSON.stringify(data));
-			} else {
-				message.warning("未选择单元格");
-			}
-		},
-		clears: () => {
-			this.ZschedulingMethods.cancelAllSelected();
-		},
-	};
-	toolbarRender = () => {
-		return (
-			<span>
-				<Button className="z-margin-left-15" size="small" type="primary" onClick={this.methods.getData}>
-					选择的单元格数据
-				</Button>
-				<Button className="z-margin-left-15" size="small" type="primary" onClick={this.methods.clears}>
-					清空选择
-				</Button>
-			</span>
-		);
-	};
-	importMethods = (methods) => {
-		this.ZschedulingMethods = methods;
-	};
-	render() {
-		return (
-			<Zscheduling
-				exportMethods={this.importMethods}
-				toolbarRender={this.toolbarRender}
-				columns={this.columns}
-				dataSource={this.state.list}
-				{...this.popover}
-			/>
-		);
-	}
+/**
+ * @renderMode: inline
+ * @componentName: Zscheduling
+ * @description: Zscheduling的简单使用示例
+ * @title: Zscheduling
+ */
+// @import : ./mock.md
+
+import React from 'react';
+import { Zscheduling, zTool } from 'zerod';
+import { Button } from 'antd';
+const api = {
+    getList() {
+        return zTool.httpAjax('get', '/mockjs/get/Zscheduling/list');
+    },
+};
+export default class Myjavascript extends React.PureComponent {
+    state = {
+        list: [],
+    };
+    componentDidMount() {
+        this.ZschedulingMethods.showLoading(true);
+        api.getList()
+            .then((re) => {
+                this.setState({
+                    list: re.data.list,
+                });
+            })
+            .finally(() => {
+                this.ZschedulingMethods.showLoading(false);
+            });
+    }
+    planList = [
+        {
+            name: '早班',
+            id: 1,
+            color: '#E54D4D',
+            startTime: '09:00',
+            endTime: '11:00',
+        },
+        {
+            name: '中班',
+            id: 2,
+            color: '#4DB4E5',
+            startTime: '13:00',
+            endTime: '15:00',
+        },
+        {
+            name: '晚班',
+            id: 3,
+            color: '#81E54D',
+            startTime: '16:00',
+            endTime: '19:00',
+        },
+    ];
+    checkName = (item, i) => {
+        return `${item.name}-[${item.startTime}-${item.endTime}]`;
+    };
+    planOk = (checkedValue, props) => {
+        const { row, trindex, col, tdindex } = props;
+        message.success(`${checkedValue.join(',')}`);
+    };
+    popover = {
+        leftPopoverTitleRender: (row, trindex, col, tdindex) => {
+            // console.log(row,trindex,col,tdindex)
+            return false;
+        }, //checkBox列的 popover的title渲染函数，
+        // leftPopoverContentRender: (row, trindex, col, tdindex) => {
+        // 	return row.record.name;
+        // }, //checkBox列的 popover的content渲染函数，
+        rightPopoverTitleRender: (row, trindex, col, tdindex) => {
+            return col.title + '_' + row.record.name;
+        }, //日期列的 popover的title渲染函数，
+        rightPopoverContentRender: (row, trindex, col, tdindex) => {
+            //row[col.key]是日期单元格的独立对象
+            return (
+                <Zscheduling.CellCheckList
+                    checkList={this.planList}
+                    exportMethods={(methods) => {
+                        row[col.key]['cellMethods'] = methods;
+                    }}
+                    checkNameRender={this.checkName}
+                    {...{ row, trindex, col, tdindex }}
+                    onOk={this.planOk}
+                />
+            );
+        }, //日期列的 popover的content渲染函数，
+        dateColCellRender: (row, trindex, col, tdindex) => {
+            //row.record
+            return <Zscheduling.CellTag title="时间段" name="早班" color="#854522" />;
+        },
+        dateDisabledFormat: (dateString, date) => {
+            const colYear = date.getFullYear();
+            const colMonth = date.getMonth();
+            const colDate = date.getDate();
+            const nowDate = new Date();
+            const currYear = nowDate.getFullYear();
+            const currMonth = nowDate.getMonth();
+            const currDate = nowDate.getDate();
+            const disabled =
+                colYear < currYear ||
+                (colYear === currYear && colMonth < currMonth) ||
+                (colYear === currYear && colMonth === currMonth && colDate <= currDate);
+            console.log(disabled,date, colYear, colMonth, colDate, currYear, currMonth, currDate);
+            return disabled;
+        },
+    };
+    columns = [
+        {
+            key: 'name',
+            width: '80px',
+            dataIndex: 'name',
+            title: '人员',
+        },
+    ];
+    methods = {
+        getData: () => {
+            const data = this.ZschedulingMethods.getSelectedCells();
+            if (Object.keys(data).length) {
+                message.success(JSON.stringify(data));
+            } else {
+                message.warning('未选择单元格');
+            }
+        },
+        clears: () => {
+            this.ZschedulingMethods.cancelAllSelected();
+        },
+    };
+    toolbarRender = () => {
+        return (
+            <span>
+                <Button className="z-margin-left-15" size="small" type="primary" onClick={this.methods.getData}>
+                    选择的单元格数据
+                </Button>
+                <Button className="z-margin-left-15" size="small" type="primary" onClick={this.methods.clears}>
+                    清空选择
+                </Button>
+            </span>
+        );
+    };
+    importMethods = (methods) => {
+        this.ZschedulingMethods = methods;
+    };
+    render() {
+        return (
+            <Zscheduling
+                exportMethods={this.importMethods}
+                toolbarRender={this.toolbarRender}
+                columns={this.columns}
+                dataSource={this.state.list}
+                {...this.popover}
+            />
+        );
+    }
 }
 ```
-
-<div class="z-doc-titles"></div>
 
 ## Zscheduling 的 props
 
@@ -159,8 +185,7 @@ class Myjavascript extends React.PureComponent {
 | <i class="zero-icon zerod-shengchangzhouqi"></i> rightPopoverTitleRender   | 日期列的 popover 的 content 渲染函数                             | function(row, rowindex, col, colindex){return}  | --     |
 | <i class="zero-icon zerod-shengchangzhouqi"></i> rightPopoverContentRender | 日期列的 popover 的 content 渲染函数                             | function(row, rowindex, col, colindex){return}  | --     |
 | onRightPopoverVisibleChange                                                | 日期列的 popover 的 popover 的打开/隐藏的回调                    | function(show,row, rowindex, col, colindex){}   | --     |
-
-<div class="z-doc-titles"></div>
+| disabled                                                                   | 禁用勾选、单元格选中、右键 popover 等操作                        | boolean                                         | false  |
 
 ## Zscheduling 的 columns 结构
 
@@ -172,8 +197,6 @@ class Myjavascript extends React.PureComponent {
 | width                                                        | 列宽度                                   | string                                      | --     |
 | <i class="zero-icon zerod-shengchangzhouqi"></i> render      | 列单元格的渲染函数                       | function(row,rowindex,col,colindex){return} | --     |
 
-<div class="z-doc-titles"></div>
-
 ## Zscheduling 的 methods
 
 | 参数              | 说明                                                                        | 使用                        | 返回值类型 |
@@ -183,8 +206,6 @@ class Myjavascript extends React.PureComponent {
 | cancelAllSelected | 取消所有的日期单元格选择                                                    | methods.cancelAllSelected() | --         |
 | showLoading       | 显示 Zscheduling 内部的 loading                                             | methods.showLoading(true)   | --         |
 
-<div class="z-doc-titles"></div>
-
 ## Zscheduling.CellTag 的 props
 
 | 参数     | 说明                                     | 类型       | 默认值 |
@@ -192,8 +213,6 @@ class Myjavascript extends React.PureComponent {
 | title    | ToolTip 的 title                         | string     | --     |
 | name     | Tag 的 name                              | string     | --     |
 | color    | Tag 的 color,如 #f0f1f2                  | string     | --     |
-
-<div class="z-doc-titles"></div>
 
 ## Zscheduling.CellCheckList 的 props
 
@@ -205,8 +224,6 @@ class Myjavascript extends React.PureComponent {
 | checkNameRender | CheckBox 的名称渲染函数                                                                                        | function(item,i){return name}  | --     |
 | onOk            | 确定按钮的点击事件，如果没有就不会显示确定按钮                                                                 | function(checkedValue,props){} | --     |
 | onCancel        | 取消按钮的点击事件，如果没有就不会显示取消按钮                                                                 | function(checkedValue,props){} | --     |
-
-<div class="z-doc-titles"></div>
 
 ## Zscheduling.CellCheckList 的 methods
 

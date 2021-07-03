@@ -1,0 +1,101 @@
+@import '../../scss/common/z-info.scss';
+
+:global {
+    .z-infoViewer-group + .z-infoViewer-group {
+        margin-top: 10px;
+    }
+    .z-infoViewer-sign {
+        height: 40px;
+        cursor: zoom-in;
+    }
+    .z-infoViewer-imgs {
+        display: flex;
+        flex-wrap: wrap;
+        min-width: 100%;
+        overflow: hidden;
+    }
+    .z-infoViewer-imgs-child {
+        width: 160px;
+        height: 90px;
+        cursor: zoom-in;
+        margin-bottom: 10px;
+        margin-right: 10px;
+    }
+    .z-infoViewer-imgs-child:last-child {
+        margin-bottom: 0px;
+        margin-right: 0px;
+    }
+    .z-infoViewer-file {
+        width: 100%;
+        margin-bottom: 0;
+        a{
+            color: $primary-color;
+           &:hover{
+            text-decoration: underline;
+           }
+        }
+    }
+    .z-infoViewer-imgs+.z-infoViewer-file{
+        margin-top: 20px;
+    }
+    .z-infoViewer-file + .z-infoViewer-file {
+        margin-top: 10px;
+    }
+    .z-infoViewer-colorpicker {
+        border: 1px solid $border-color-base;
+        border-radius: 4px;
+        background-color: white;
+        padding: 4px;
+        & > div {
+            height: 32px;
+            width: 32px;
+        }
+    }
+    .z-infoViewer-location-modal {
+        width: 640px;
+        height: 96%;
+        margin: 0 auto;
+        position: relative;
+        top: 50%;
+        transform: translate(0, -50%);
+    }
+    .z-infoViewer-location {
+        color: $primary-color;
+        width: 100%;
+        &:hover {
+            text-decoration: underline;
+            cursor: pointer;
+        }
+    }
+    .z-infoViewer-location-address {
+        font-weight: normal;
+
+        width: 100%;
+    }
+    .z-infoViewer-location + .z-infoViewer-location-address {
+        margin-top: 5px;
+    }
+    .z-infoViewer-multi-row {
+        .z-multi-row-table-wrapper {
+            border-color: $border-color;
+            &.__header {
+                .z-multi-row-table {
+                    border-color: $border-color;
+                    color: $--label-color;
+                }
+            }
+            &.__body {
+                border-color: $border-color;
+            }
+        }
+        .z-multi-row-table {
+            tr > th {
+                background-color: $bg-color;
+                border-color: $border-color;
+            }
+            tr > td {
+                border-color: $border-color;
+            }
+        }
+    }
+}

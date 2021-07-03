@@ -1,10 +1,3 @@
-/*
- * @Author: zgt
- * @Date: 2019-04-24 09:28:54
- * @LastEditors: zgt
- * @LastEditTime: 2019-08-19 14:38:17
- * @Description: file content
- */
 module.exports = {
     presets: [
         [
@@ -21,24 +14,15 @@ module.exports = {
     ],
     plugins: [
         ['@babel/plugin-transform-runtime', { corejs: false }],
-        '@babel/plugin-syntax-dynamic-import',
-        [
-            'import',
-            {
-                libraryName: 'zerod',
-                style: false,
-                libraryDirectory: 'components',
-                camel2DashComponentName: false,
-            },
-            'zerod',
-        ],
+        ['@babel/plugin-syntax-dynamic-import'],
         ['@babel/plugin-proposal-decorators', { legacy: true }], //经测试，必须在"@babel/plugin-proposal-class-properties"之前才有效
         [
-			'@babel/plugin-proposal-class-properties',
+            '@babel/plugin-proposal-class-properties',
             {
-				loose: true,
+                loose: true,
             },
         ],
-		'@babel/plugin-transform-modules-commonjs',
+        ['@babel/plugin-proposal-private-methods', { loose: true }],
+        ['@babel/plugin-transform-modules-commonjs'],
     ],
 };

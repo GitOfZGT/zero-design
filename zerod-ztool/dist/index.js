@@ -2,92 +2,151 @@
  * @Author: zgt
  * @Date: 2019-06-24 11:04:00
  * @LastEditors: zgt
- * @LastEditTime: 2019-09-20 18:09:02
+ * @LastEditTime: 2019-09-07 15:48:07
  * @Description: file content
  */
 /*加载一批文件，_files:文件路径数组,可包括js,css,less文件,isSequence 是否按数组的顺序加载*/
+export function loadCss({ url, onload, attributes, rel }) {
+  let node = document.createElement("link");
+  node.rel = rel || "stylesheet";
+  node.as = "style";
+  node.href = url;
+  if (attributes) {
+    Object.keys(attributes).forEach(key => {
+      node[key] = attributes[key];
+    });
+  }
+  document.head.appendChild(node);
+  node.onload = function() {
+    onload(null, node);
+  };
+  node.onerror = function(e) {
+    onload(e);
+  };
+}
+
+export function loadScript({ url, onload, attributes, rel }) {
+  let node = document.createElement("script");
+  node.setAttribute("async", "async");
+  let timeID = null;
+  let supportLoad = "onload" in node;
+  let loadEvent = supportLoad ? "onload" : "onreadystatechange";
+  node[loadEvent] = function onLoad() {
+    if (!supportLoad && !timeID && /complete|loaded/.test(node.readyState)) {
+      timeID = setTimeout(onLoad);
+      return;
+    }
+    if (supportLoad || timeID) {
+      clearTimeout(timeID);
+      onload(null, node);
+    }
+  };
+  if (attributes) {
+    Object.keys(attributes).forEach(key => {
+      node[key] = attributes[key];
+    });
+  }
+  document.body.appendChild(node);
+  node.src = url;
+  node.onerror = function(e) {
+    onload(e);
+  };
+}
+/*获取文件类型,后缀名，小写*/
+const GetFileType = function(url) {
+  let httpType = "";
+  let suffix = "";
+  if (url != null && url.length > 0) {
+    const lasindex = url.lastIndexOf(".");
+    if (/^(http:|https:)/.test(url)) {
+      httpType = "http";
+    }
+    if (lasindex > -1) {
+      suffix = url.substr(url.lastIndexOf(".")).toLowerCase();
+    }
+  }
+  return { httpType, suffix };
+};
+/*文件是否已加载*/
+const FileIsExt = function(FileArray, _url) {
+  if (FileArray != null && FileArray.length > 0) {
+    let len = FileArray.length;
+    for (let i = 0; i < len; i++) {
+      if (FileArray[i] == _url) {
+        return true;
+      }
+    }
+  }
+  return false;
+};
 export const loadFileList = (function() {
   /* 已加载文件缓存列表,用于判断文件是否已加载过，若已加载则不再次加载*/
   let classcodes = [];
   /*加载JS文件,url:文件路径*/
-  const loadFile = function(url) {
+  const loadFile = function(url, opt) {
     let newUrl = "";
-    let protos = null;
+    let attributes = null;
     if (dataTypeTest(url) === "object") {
       newUrl = url.url;
-      protos = url.protos;
+      attributes = url.attributes;
     } else {
       newUrl = url;
     }
     if (!FileIsExt(classcodes, newUrl)) {
-      var ThisType = GetFileType(newUrl);
-      var fileObj = null;
-      if (ThisType == ".js" || ThisType == "http") {
-        fileObj = document && document.createElement("script");
-        fileObj.src = newUrl;
-      } else if (ThisType == ".css") {
-        fileObj = document && document.createElement("link");
-        fileObj.href = newUrl;
-        fileObj.type = "text/css";
-        fileObj.rel = "stylesheet";
-      } else if (ThisType == ".less") {
-        fileObj = document && document.createElement("link");
-        fileObj.href = newUrl;
-        fileObj.type = "text/css";
-        fileObj.rel = "stylesheet/less";
-      }
-      if (dataTypeTest(protos) === "object" && fileObj) {
-        Object.keys(protos).forEach(key => {
-          fileObj[key] = protos[key];
-        });
-      }
-      if (fileObj)
-        return new Promise(function(resolve, reject) {
-          fileObj.onload = fileObj.onreadystatechange = function() {
-            if (
-              !this.readyState ||
-              "loaded" === this.readyState ||
-              "complete" === this.readyState
-            ) {
-              // success();
-              classcodes.push(newUrl);
+      const { httpType, suffix } = GetFileType(newUrl);
+      let fileObj = null;
+      let promise = Promise.resolve();
+      if (suffix === ".css") {
+        promise = new Promise((resolve, reject) => {
+          loadCss({
+            url: newUrl,
+            onload: function(err) {
+              if (err) {
+                console.warn(err);
+              }
               resolve();
-            }
-          };
-          document &&
-            document.getElementsByTagName("head")[0].appendChild(fileObj);
+            },
+            attributes
+          });
         });
-      else return Promise.resolve();
+      } else if (suffix === ".less") {
+        promise = new Promise((resolve, reject) => {
+          loadCss({
+            url: newUrl,
+            onload: function(err) {
+              if (err) {
+                console.warn(err);
+              }
+              resolve();
+            },
+            attributes,
+            rel: "stylesheet/less"
+          });
+        });
+      } else if (suffix === ".js" || httpType === "http") {
+        promise = new Promise((resolve, reject) => {
+          loadScript({
+            url: newUrl,
+            onload: function(err) {
+              if (err) {
+                console.warn(err);
+              }
+              resolve();
+            },
+            attributes
+          });
+        });
+      }
+
+      return promise;
     } else {
       return Promise.resolve();
     }
   };
-  /*获取文件类型,后缀名，小写*/
-  const GetFileType = function(url) {
-    if (url != null && url.length > 0) {
-      const lasindex = url.lastIndexOf(".");
-      if (lasindex > -1) {
-        return url.substr(url.lastIndexOf(".")).toLowerCase();
-      } else if (/^(http:|https:)/.test(url)) {
-        return "http";
-      }
-    }
-    return "";
-  };
-  /*文件是否已加载*/
-  const FileIsExt = function(FileArray, _url) {
-    if (FileArray != null && FileArray.length > 0) {
-      var len = FileArray.length;
-      for (var i = 0; i < len; i++) {
-        if (FileArray[i] == _url) {
-          return true;
-        }
-      }
-    }
-    return false;
-  };
-  return function(_files, isSequence) {
-    var FileArray = [];
+
+  return function(_files, isSequence, opt) {
+    opt = opt || {};
+    let FileArray = [];
     if (dataTypeTest(_files) === "array") {
       FileArray = _files;
     } else if (dataTypeTest(_files) === "string") {
@@ -95,18 +154,19 @@ export const loadFileList = (function() {
       FileArray = _files.split(",");
     }
     if (FileArray != null && FileArray.length > 0) {
-      var LoadedCount = 0;
+      let LoadedCount = 0;
       if (isSequence) {
         //依次加载
         return new Promise(function(resolve, reject) {
           const len = FileArray.length;
-          let P = loadFile(FileArray.shift());
-          for (var i = 0; i < len - 1; i++) {
-            const url = FileArray[i];
+          let P = loadFile(FileArray.shift(), opt);
+          for (let i = 0; i < len - 1; i++) {
+            const url = FileArray.shift();
             P = P.then(function() {
               LoadedCount++;
-              return loadFile(url);
+              return loadFile(url, opt);
             });
+            console.log("FileArray i", FileArray);
           }
           P.then(function() {
             LoadedCount++;
@@ -119,9 +179,9 @@ export const loadFileList = (function() {
         //非依次加载
         return new Promise(function(resolve, reject) {
           const len = FileArray.length;
-          for (var i = 0; i < len; i++) {
+          for (let i = 0; i < len; i++) {
             const url = FileArray[i];
-            loadFile(url).then(function() {
+            loadFile(url, opt).then(function() {
               LoadedCount++;
               if (LoadedCount === len) {
                 resolve();
@@ -350,6 +410,15 @@ export function setStyle(element, styleName, value) {
 export const firstWordToUpperCase = function(str) {
   return str.toLowerCase().replace(/( |^)[a-z]/g, L => L.toUpperCase());
 };
+
+export function isPromise(obj) {
+  return (
+    !!obj &&
+    (typeof obj === "object" || typeof obj === "function") &&
+    ((obj.constructor && obj.constructor.name === "Promise") ||
+      typeof obj.then === "function")
+  );
+}
 const data_types = {
   array: "[object Array]",
   object: "[object Object]",
@@ -377,6 +446,9 @@ Object.keys(data_types).forEach(key => {
 });
 //检测数据类型 ，返回对应数据类型的名称
 export const dataTypeTest = function(item) {
+  if (isPromise(item)) {
+    return "promise";
+  }
   const types = Object.keys(data_types);
   let hasType = null;
   const value = Object.prototype.toString.call(item);
@@ -590,11 +662,12 @@ export const formatDate = function(time, format) {
 
 //随机产生不重复id
 export const GenNonDuplicateID = function(randomLength = 8) {
-  let id = Number(
-    Math.random()
-      .toString()
-      .substr(3, randomLength) + Date.now()
-  ).toString();
+  const id = (
+    Number((Math.random() + Math.random()).toString().substr(2, 13)) +
+    Date.now()
+  )
+    .toString(36)
+    .slice(-parseInt(randomLength, 10));
   return id;
 };
 //科学计数法转 字符串
@@ -752,7 +825,10 @@ function accMul(arg1, arg2) {
 export function digitUppercase(n) {
   const fraction = ["角", "分"];
   const digit = ["零", "壹", "贰", "叁", "肆", "伍", "陆", "柒", "捌", "玖"];
-  const unit = [["元", "万", "亿"], ["", "拾", "佰", "仟", "万"]];
+  const unit = [
+    ["元", "万", "亿"],
+    ["", "拾", "佰", "仟", "万"]
+  ];
   let num = Math.abs(n);
   let s = "";
   fraction.forEach((item, index) => {
@@ -807,9 +883,9 @@ export function formatterMapKey(
     mapKey ? mapKey : {}
   );
   return data.map(item => {
-    let path = item[mapKey.path];
+    let path = item[mapKey.path] || "";
     if (!notParPath && !isHttpStart(path))
-      path = parentPath + path.replace(/^\/*/, "");
+      path = (parentPath + path).replace(/\/(?=\/[^\/]*)/g, "");
     const newData = {
       ...item,
       iconClass:
@@ -817,7 +893,7 @@ export function formatterMapKey(
           ? item[mapKey.iconClass]
           : "smile-o",
       path,
-      parPath: parentPath.replace(/\/$/, ""),
+      parPath: parentPath,
       name: item[mapKey.name]
     };
     if (Array.isArray(item[mapKey.children]) && item[mapKey.children].length) {
@@ -831,6 +907,7 @@ export function formatterMapKey(
     return newData;
   });
 }
+
 
 export function itemsFromTree({
   tree,
@@ -862,7 +939,8 @@ export function itemsFromTree({
         item,
         keyObj,
         action,
-        parentItem: currentItem
+        parentItem: currentItem,
+        condition
       });
     }
     if (finished) break;
@@ -1002,7 +1080,7 @@ export function turnMapKeys(
   return Array.isArray(tree)
     ? tree.map(item => {
         const children = item[srcMapKeys.children];
-        const sourceItem = includesSourceItem ? item : {};
+        const sourceItem = includesSourceItem ? { ...item } : {};
         delete sourceItem[srcMapKeys.children];
         const newItem = {
           ...sourceItem,
@@ -1013,7 +1091,8 @@ export function turnMapKeys(
             item[srcMapKeys.value] !== undefined
               ? item[srcMapKeys.value].toString()
               : item[srcMapKeys.value],
-          ...extands
+          ...extands,
+          _origin_value: item[srcMapKeys.value]
         };
         if (children) {
           newItem[distMapKeys.children] = turnMapKeys(
@@ -1059,7 +1138,49 @@ export function turnLabelOrValue(
   }
   return Array.isArray(value) ? newValueArr : newValueArr[0];
 }
+//支持a.b.c的key取值
+export function getMapValue(map = {}, key = "") {
+  const keys = key.split(".");
+  let value = "";
+  let newMap = map;
+  keys.forEach(k => {
+    if (Object.prototype.toString.call(newMap[k]) === "[object Object]") {
+      newMap = newMap[k];
+    }
+    value = newMap[k];
+  });
+  // console.log(map,value,key)
+  return value;
+}
+//对比两个时间格式为 HH:mm:ss 的时间字符串，是否跨第二天
+export function isMorrowTime(fromTime, toTime) {
+  if (!fromTime || !toTime) {
+    return false;
+  }
+  const fromTimeseries = fromTime.split(":");
+  const toTimeseries = toTime.split(":");
 
+  const formHour = Number(fromTimeseries[0] || 0);
+  const formMinutes = Number(fromTimeseries[1] || 0);
+  const formSeconds = Number(fromTimeseries[2] | 0);
+
+  const toHour = Number(toTimeseries[0] | 0);
+  const toMinutes = Number(toTimeseries[1] | 0);
+  const toSeconds = Number(toTimeseries[2] | 0);
+  const morrow =
+    (formHour && formHour > toHour) ||
+    (formHour &&
+      formMinutes &&
+      formHour === toHour &&
+      formMinutes > toMinutes) ||
+    (formHour &&
+      formMinutes &&
+      formSeconds &&
+      formHour === toHour &&
+      formMinutes === toMinutes &&
+      formSeconds >= toSeconds);
+  return morrow;
+}
 export const zTool = {
   getStyle,
   setStyle,
@@ -1092,6 +1213,8 @@ export const zTool = {
   itemsFromTree,
   isWhiteColor,
   turnMapKeys,
-  turnLabelOrValue
+  turnLabelOrValue,
+  isMorrowTime,
+  isPromise
 };
 export default zTool;

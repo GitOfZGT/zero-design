@@ -85,7 +85,6 @@ $--panel-padding: 24px;
 @include z("panel-body", $global: true) {
 	padding: $--panel-padding;
 	position: relative;
-	z-index: 2;
 	@include is("no-padding") {
 		//面板body全无padding
 		padding: 0;

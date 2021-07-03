@@ -1,109 +1,90 @@
-@import "../../scssMixin/generateClassName2";
-@import "../../scss/vars";
+@import '../../scssMixin/generateClassName2';
+@import '../../scss/vars';
 
-@mixin navTheme($name, $nav-bg, $selected-bg, $select-border) {
-	@at-root {
-		:global {
-			.z-layout-#{$name} .z-scroll-color {
-				.iScrollIndicator {
-					// background-color: rgba($color: lighten($color: $nav-bg, $amount: 40%), $alpha: 0.7);
-					background-image: $--defatul-ScrollbarColor;
-				}
-			}
-		}
-	}
+:global {
+    .z-collapse-btn {
+        position: absolute;
+        top: 8px;
+        left: 0px;
+        padding: 3px 10px 3px 6px;
+        border-radius: 0 $border-radius-base $border-radius-base 0;
+        color: white;
+        font-size: 12px;
+        transform: translate(-64%, 0);
+        transition: transform 0.25s ease-in;
+        background-color: rgba($primary-color, 0.4);
+        z-index: 9;
+        &:hover {
+            transform: translate(0, 0);
+            cursor: pointer;
+            background-color: $primary-color;
+        }
+    }
+}
 
-	@include is($name) {
-		background-color: $nav-bg;
-
-		.ant-menu-dark .ant-menu-inline.ant-menu-sub {
-			box-shadow: none;
-		}
-
-		.ant-menu-dark .ant-menu-item:hover,
-		.ant-menu-dark.ant-menu-inline-collapsed .ant-menu-submenu-title:hover {
-			background-color: #1c3e5f;
-		}
-		.ant-menu.ant-menu-root.ant-menu-dark .ant-menu-item-selected {
-			color: lighten($color: $nav-bg, $amount: 90%);
-			background-color: $selected-bg;
-			&:after {
-				border-right: 4px solid $select-border;
-				transform: scaleY(1);
-				opacity: 1;
-			}
-		}
-		.ant-menu-dark .ant-menu-sub {
-			// background-color: lighten($color: $nav-bg, $amount: 4%);
-			background-color: $nav-bg;
-		}
-
-		.ant-menu-dark.ant-menu-inline-collapsed .ant-menu-submenu-selected {
-			background-color: #1c3e5f;
-		}
-
-		// .ant-menu-dark .ant-menu-item:hover,
-		// .ant-menu-dark .ant-menu-submenu-title:hover {
-		//     background-color: #1C4B76;
-		// }
-	}
+@mixin navTheme($name, $nav-bg) {
+    @include is($name) {
+        background-color: $nav-bg;
+    }
+    @at-root {
+        :global {
+            .z-side-menu-#{$name} {
+                 .ant-menu-sub {
+                    background-color: $nav-bg;
+                }
+            }
+        }
+    }
 }
 
 @mixin logoTheme($name, $nav-bg) {
-	@include is($name) {
-		background-color: $nav-bg;
-		border-bottom: 1px solid $nav-bg;
-		color: lighten($nav-bg, 90%);
-	}
+    @include is($name) {
+        background-color: $nav-bg;
+        border-bottom: 1px solid $nav-bg;
+        color: lighten($nav-bg, 90%);
+    }
 }
 
-@include z("main-left") {
-	position: relative;
-	z-index: 3;
+@include z('main-left') {
+    position: relative;
+    z-index: 3;
 
-	user-select: none;
-	@include is("dark") {
-		box-shadow: none;
-	}
-	@include is("light") {
-		border-right: 1px solid #e3e6ea;
-	}
+    user-select: none;
+    @include is('dark') {
+        box-shadow: none;
+    }
+    @include is('light') {
+        box-shadow: 2px 0px 20px $--shadow-black;
+    }
 }
 
-@include z("main-logo") {
-	white-space: nowrap;
-	overflow: hidden;
-	@include logoTheme("light", $--main-logo-light-bg);
-	@include logoTheme("dark", $--main-logo-dark-bg);
-	@include logoTheme("mazarine", $--main-logo-mazarine-bg);
-	@include is("light") {
-		background-color: $--main-logo-light-bg;
-		border-bottom: 1px solid #e3e6ea;
-		color: #333333;
-	}
+@include z('main-logo') {
+    overflow: hidden;
+    @include logoTheme('light', $--main-logo-light-bg);
+    @include logoTheme('dark', $--main-logo-dark-bg);
+    @include logoTheme('mazarine', $--main-logo-mazarine-bg);
+    @include is('light') {
+        background-color: $--main-logo-light-bg;
+        border-bottom: 1px solid $border-color-base;
+        color: $text-color;
+    }
 }
-@include z("main-nav") {
-	.ant-menu-dark {
-		background-color: transparent;
-	}
-
-	@include navTheme("light", $--main-nav-light-bg, $--blue-deep, $--yellow-color);
-	@include navTheme("dark", $--main-nav-dark-bg, $--blue-deep, $--yellow-color);
-	@include navTheme("mazarine", $--main-nav-mazarine-bg, $--blue-deep, $--yellow-color);
-	@include is("light") {
-		.ant-menu-submenu.ant-menu-submenu-open .ant-menu-submenu-title {
-			color: $primary-color;
-		}
-	}
-
-	.ant-menu-inline,
-	.ant-menu-vertical,
-	.ant-menu-vertical-left {
-		border-right: 0;
-	}
+@include z('main-nav') {
+    .ant-menu-dark {
+        background-color: transparent;
+    }
+    @include navTheme('light', $--main-nav-light-bg);
+    @include navTheme('dark', $--main-nav-dark-bg);
+    @include navTheme('mazarine', $--main-nav-mazarine-bg);
+    @include is('light') {
+        .iScrollIndicator {
+            background-color: rgba(#c1c1c1, 0.3);
+            background-image: none;
+        }
+    }
 }
 
-@include z("main-header") {
-	background-color: white;
-	border-bottom: 1px solid #e3e6ea;
+@include z('main-header') {
+    background-color: white;
+    border-bottom: 1px solid $border-color-base;
 }

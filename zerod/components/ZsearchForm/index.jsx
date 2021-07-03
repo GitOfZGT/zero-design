@@ -1,319 +1,313 @@
-import React from "react";
-import { Form, Row, Col, Input, Button, Icon } from "antd";
-import PropTypes from "prop-types";
-// import { CSSTransition, TransitionGroup } from "react-transition-group";
-import { animateTimout, const_initItems, const_execAsync, const_changeFormItems } from "../constant";
-// import ZpageLoading from "../ZpageLoading";
-import { once, dataType } from "../zTool";
-import ColFormItem from "../Zform/ColFormItem";
-import "./style.scss";
-export const ZsearchForm = Form.create()(
-	class extends React.PureComponent {
-		static propTypes = {
-			hidden: PropTypes.bool,
-			labelLayout: PropTypes.string, //'horizontal'|'vertical'
-			className: PropTypes.string,
-			controlSize: PropTypes.string,
-			colFormItems: PropTypes.arrayOf(PropTypes.object), //兼容旧版本，现由items替代
-			items: PropTypes.arrayOf(PropTypes.object),
-			onSearch: PropTypes.func,
-			onReset: PropTypes.func,
-			getFormInstance: PropTypes.func,
-			exportMethods: PropTypes.func,
-			noCollapse: PropTypes.bool,
-			defaultSpan: PropTypes.oneOfType([PropTypes.number, PropTypes.object]),
-			formDefaultValues: PropTypes.object,
-			values: PropTypes.object,
-			collapseCount: PropTypes.number,
-			afterItemsRendered: PropTypes.func, // 表单控件渲染完的回调
-			initAnimation: PropTypes.bool,
-			momentFormat: PropTypes.bool,
-			booleanToNumber: PropTypes.bool,
-		};
-		static defaultProps = {
-			defaultSpan: { xxl: 6, xl: 8, lg: 12, md: 24 },
-			collapseCount: 3,
-			noCollapse: false,
-			hidden: false,
-			labelLayout: "vertical",
-			initAnimation: true,
-			booleanToNumber: true,
-			controlSize: "default",
-		};
-		state = {
-			expand: this.props.noCollapse,
-			items: [],
-			currentForm: {
-				...this.props.form,
-				zformItems: [],
-				saveFieldOptions: {},
-				saveOptionsMapKey: {},
-				getAsyncQueue: () => this.allAsync,
-			},
-		};
-		allAsync = [];
-		methods = {
-			unfold: callback => {
-				this.setAnimate(callback);
-			},
-			handleSearch: e => {
-				e.preventDefault();
-				this.props.form.validateFields((err, values) => {
-					if (!err) {
-						const newValues = {};
-						if (dataType.isObject(values)) {
-							Object.keys(values).forEach(key => {
-								if (dataType.isString(values[key])) {
-									//字符串类型的值去掉首尾空格
-									newValues[key] = values[key].trim();
-									//凡是只有%_的都会转义
-									const hasSyml = newValues[key].match(/^[\%\_]+$/g);
-									if (hasSyml) {
-										//转义通配符% _
-										hasSyml.forEach(syml => {
-											newValues[key] = newValues[key].replace(syml, `\\${syml}`);
-										});
-									}
-								} else if (this.props.momentFormat) {
-									//如果需要把moment对象格式化对应的format
-									const formating = val => {
-										if (dataType.isObject(val) && val._isAMomentObject) {
-											const currentItem = this.state.items.find(item => item.key === key);
-											return val.format(currentItem.format);
-										} else {
-											return val;
-										}
-									};
-									if (dataType.isArray(values[key])) {
-										newValues[key] = values[key].map(val => formating(val));
-									} else {
-										newValues[key] = formating(values[key]);
-									}
-								} else if (this.props.booleanToNumber && dataType.isBoolean(values[key])) {
-									newValues[key] = Number(values[key]);
-								} else {
-									newValues[key] = values[key];
-								}
-							});
-						}
-						this.props.onSearch && this.props.onSearch(newValues);
-					}
-				});
-			},
-			handleReset: () => {
-				this.props.form.resetFields();
-				this.props.onReset && this.props.onReset();
-			},
-			expandToggle: () => {
-				this.setState({ expand: !this.state.expand });
-			},
-			changeFormItems: (newItems, part = false, callback) => {
-				const_changeFormItems.call(this, newItems, part, callback);
-			},
-			getInsideItems: () => {
-				return this.state.items;
-			},
-		};
-		config = {
-			collapseCount: this.props.collapseCount,
-		};
-		setFieldsValue(values) {
-			values = values ? values : this.props.values || this.props.formDefaultValues;
-			if (values && this.state.items.length) {
-				const newValues = {};
-				this.filedKeys.forEach(key => {
-					const value = values[key];
-					if (value !== undefined) {
-						if (this.props.momentFormat) {
-							const currentItem = this.state.items.find(item => item.key === key);
-							if (currentItem && currentItem.format) {
-								const toMoment = (val, format) => {
-									return moment(val, format);
-								};
-								if (dataType.isArray(value)) {
-									newValues[key] = value.map(val => {
-										return val ? toMoment(val, currentItem.format) : undefined;
-									});
-								} else {
-									newValues[key] = value ? toMoment(value, currentItem.format) : undefined;
-								}
-							} else {
-								newValues[key] = value;
-							}
-						} else {
-							newValues[key] = value;
-						}
-					}
-				});
-				// console.log("--zform", newValues);
-				if (Object.keys(newValues).length) this.form.setFieldsValue(newValues);
-			}
-		}
-		execAsync(newItems) {
-			const items = this.props.items ? this.props.items : this.props.colFormItems;
-			const_initItems.call(
-				this,
-				Array.isArray(newItems) ? newItems : items,
-				this.props.form,
-				this.methods.changeFormItems,
-				() => {
-					const_execAsync.call(this, this.props.afterItemsRendered);
-				},
-			);
-		}
-		hidden = this.props.hidden;
-		setAnimate = (callback, init) => {
-			if (this.hidden) {
-				if (init) {
-					this.formEl.style.height = "0px";
-					this.formEl.style.overflow = "hidden";
-					this.hidden = false;
-				} else {
-					this.formEl.style.height = (this.formEl.scrollHeight > 0 ? this.formEl.scrollHeight : 1) + "px";
-					setTimeout(() => {
-						this.formEl.style.height = "0px";
-						this.formEl.style.overflow = "hidden";
-						this.hidden = false;
-						callback && callback(this.hidden);
-					}, 10);
-				}
-			} else {
-				this.formEl.style.height = "0px";
-				setTimeout(() => {
-					this.formEl.style.height = (this.formEl.scrollHeight > 0 ? this.formEl.scrollHeight : 1) + "px";
-					once(this.formEl, "transitionend", () => {
-						this.formEl.style.height = "";
-						this.formEl.style.overflow = "";
-					});
-					this.hidden = true;
-					callback && callback(this.hidden);
-				}, 10);
-			}
-		};
-		componentDidMount() {
-			this.form = this.state.currentForm;
-			this.props.getFormInstance && this.props.getFormInstance(this.form, this.methods);
-			this.props.exportMethods && this.props.exportMethods(this.methods);
-			this.execAsync();
-			this.setAnimate(null, true);
-		}
-		componentDidUpdate(prevProps, prevState) {
-			if (
-				this.props.values !== prevProps.values ||
-				this.props.formDefaultValues !== prevProps.formDefaultValues
-			) {
-				this.setFieldsValue();
-			}
-			if (
-				(this.props.items !== prevProps.items || this.props.colFormItems !== prevProps.colFormItems) &&
-				!this.allAsync.length
-			) {
-				this.execAsync();
-			}
-			if (this.props.form !== prevProps.form || this.state.items !== prevState.items) {
-				this.form = {
-					...this.props.form,
-					zformItems: this.state.items,
-					saveFieldOptions: this.form.saveFieldOptions,
-					saveOptionsMapKey: this.form.saveOptionsMapKey,
-					getAsyncQueue: () => this.allAsync,
-				};
-				if (this.props.form !== prevProps.form) {
-					this.setState({
-						currentForm: this.form,
-					});
-				}
-				this.props.getFormInstance && this.props.getFormInstance(this.form, this.methods);
-			}
-			// if (this.props.hidden !== prevProps.hidden) {
-			// 	this.setAnimate();
-			// }
-		}
-		componentWillUnmount() {
-			//组件卸载标识，用在异步回调阻止任何setState操作
-			this.unmounted = true;
-		}
-		getFormItems() {
-			const items = this.state.expand ? this.state.items : this.state.items.slice(0, this.config.collapseCount);
-			return items.map((item, i) => {
-				const colItem = (
-					<ColFormItem
-						key={item.key}
-						loading={item.loading}
-						form={this.state.currentForm}
-						changeFormItems={this.methods.changeFormItems}
-						item={item}
-						ref={item.ref}
-						labelLayout={this.props.labelLayout}
-						getInsideItems={this.methods.getInsideItems}
-						controlSize={this.props.controlSize}
-					/>
-				);
-				return colItem;
-				// return this.props.initAnimation ? (
-				// 	<CSSTransition key={item.key} timeout={animateTimout.flipInTime} classNames="fadeIn-to-down">
-				// 		{colItem}
-				// 	</CSSTransition>
-				// ) : (
-				// 	colItem
-				// );
-			});
-		}
-		render() {
-			this.items = this.getFormItems();
-			const { className, hidden, labelLayout, controlSize, initAnimation } = this.props;
-			return (
-				<div ref={el => (this.formEl = el)} className={`z-search-form ${className || ""}`}>
-					<Form onSubmit={this.methods.handleSearch} style={{paddingTop:'14px'}}>
-						<Row
-							type="flex"
-							className={`z-form-row ${"z-form-label-" + labelLayout} z-form-control-${controlSize}`}
-						>
-							{this.items}
-							{/* {initAnimation ? (
-								<TransitionGroup component={null} enter={true} exit={true} appear={true}>
-									{this.items}
-								</TransitionGroup>
-							) : (
-								this.items
-							)} */}
-							{this.items.length ? (
-								<Col
-									{...(typeof this.props.defaultSpan == "number"
-										? { md: this.props.defaultSpan }
-										: this.props.defaultSpan)}
-									className="z-flex-items-end"
-								>
-									<div className="ant-form-item z-form-item" style={{ paddingBottom: "4px" }}>
-										<Button type="primary" htmlType="submit" icon="search">
-											查询
-										</Button>
-										<Button
-											className={`z-margin-left-15`}
-											onClick={this.methods.handleReset}
-											icon="reload"
-										>
-											重置
-										</Button>
-										{this.state.items.length > this.config.collapseCount &&
-										!this.props.noCollapse ? (
-											<Button
-												className={`z-margin-left-15 z-font-size-12`}
-												onClick={this.methods.expandToggle}
-											>
-												{this.state.expand ? "折叠" : "展开"}
-												<Icon type={this.state.expand ? "up" : "down"} />
-											</Button>
-										) : null}
-									</div>
-								</Col>
-							) : null}
-						</Row>
-					</Form>
-				</div>
-			);
-		}
-	},
-);
+import React from 'react';
+import { Button, Modal, Spin, Badge, Popover } from 'antd';
+import PropTypes from 'prop-types';
+import Zform from '../Zform';
+import { dataType } from '../zTool';
+import './style.scss';
+export class ZsearchForm extends React.PureComponent {
+    static propTypes = {
+        hidden: PropTypes.bool,
+        labelLayout: PropTypes.string, //'horizontal'|'vertical'
+        className: PropTypes.string,
+        controlSize: PropTypes.string,
+        colFormItems: PropTypes.arrayOf(PropTypes.object), //兼容旧版本，现由items替代
+        items: PropTypes.arrayOf(PropTypes.object),
+        onSearch: PropTypes.func,
+        onReset: PropTypes.func,
+        getFormInstance: PropTypes.func,
+        exportMethods: PropTypes.func,
+        noCollapse: PropTypes.bool,
+        defaultSpan: PropTypes.oneOfType([PropTypes.number, PropTypes.object]),
+        formDefaultValues: PropTypes.object,
+        values: PropTypes.object,
+        collapseCount: PropTypes.number,
+        afterItemsRendered: PropTypes.func, // 表单控件渲染完的回调
+        initAnimation: PropTypes.bool,
+        momentFormat: PropTypes.bool,
+        booleanToNumber: PropTypes.bool,
+        excludeHideValid: PropTypes.bool,
+        noControlBorder: PropTypes.bool,
+        searchColConfig: PropTypes.object,
+    };
+    static defaultProps = {
+        excludeHideValid: true,
+        defaultSpan: { xxl: 6, xl: 8, lg: 12, md: 24 },
+        collapseCount: 2,
+        noCollapse: false,
+        labelLayout: 'vertical',
+        initAnimation: true,
+        booleanToNumber: true,
+        controlSize: 'default',
+    };
+    state = {
+        items: [],
+        moreSearchVisible: false,
+        loading: false,
+        controlValueCount: 0,
+    };
+    componentDidMount() {
+        this.setItems();
+    }
+    componentDidUpdate(prevProps) {
+        if (prevProps.items !== this.props.items || prevProps.colFormItems !== this.props.colFormItems) {
+            this.setItems();
+        }
+    }
 
+    render() {
+        const { searchColConfig } = this.props;
+        const colConfig = searchColConfig || {};
+        let collapse = colConfig.collapse || {};
+        collapse = { ...searchColConfig, ...collapse, normal: null, collapse: null };
+        return (
+            <Zform
+                className={`z-search-form ${this.props.noControlBorder ? 'z-no-control-border' : ''}`}
+                {...this.props}
+                items={this.state.items}
+                submitBtnName=""
+                onSubmit={this.methods.onSubmit}
+                getFormInstance={this.methods.getFormInstance}
+                confirm={this.confirm}
+                excludeHideValue={false}
+                excludeHideValid={this.props.excludeHideValid}
+            ></Zform>
+        );
+    }
+    confirm = { show: false };
+    setItems = () => {
+        const { searchColConfig } = this.props;
+        const items = this.props.items || this.props.colFormItems;
+        const stateItems = [];
+        items.forEach((item, i) => {
+            const newItem = { ...item };
+            if (this.props.collapseCount - 1 < i && !this.props.noCollapse) {
+                newItem.show = false;
+            }
+            stateItems.push(newItem);
+        });
+        const colConfig = searchColConfig || {};
+        let normal = colConfig.normal || {};
+        normal = { ...searchColConfig, ...normal, normal: null, collapse: null };
+        let collapse = colConfig.collapse || {};
+        collapse = { ...searchColConfig, ...collapse, normal: null, collapse: null };
+        stateItems.push({
+            ...normal,
+            isFormItem: false,
+            label: '',
+            key: 'search-btns',
+            render: () => {
+                return (
+                    <div className="ant-form-item z-form-item" style={{ paddingBottom: '4px', paddingTop: '4px' }}>
+                        {this.props.collapseCount > 0 || this.props.noCollapse ? (
+                            <Button type="primary" htmlType="submit">
+                                查询
+                            </Button>
+                        ) : null}
+                        {this.methods.showFilterBtn() ? (
+                            <Badge count={this.state.controlValueCount}>
+                                <Popover
+                                    placement="bottom"
+                                    title={
+                                        <span>
+                                            全部查询条件
+                                            <span
+                                                className="z-search-all-form-close"
+                                                onClick={this.methods.closeMoreSearch}
+                                            >
+                                                x
+                                            </span>
+                                        </span>
+                                    }
+                                    overlayClassName="z-search-all-form"
+                                    overlayStyle={{ width: '60%' }}
+                                    visible={this.state.moreSearchVisible}
+                                    content={
+                                        <Spin spinning={this.state.loading}>
+                                            <ZsearchForm
+                                                {...this.props}
+                                                getFormInstance={(form, methods) => {
+                                                    this.moreSearchForm = form;
+                                                    this.moreSearchMethods = methods;
+                                                    this.props.getFormInstance &&
+                                                        this.props.getFormInstance(form, {
+                                                            ...methods,
+                                                            setFieldsValue: this.methods.setFieldsValue,
+                                                            getFieldsValue: this.methods.getFieldsValue,
+                                                            changeFormItems: this.methods.changeFormItems,
+                                                            resetSearchFormFields: this.methods.resetSearchFormFields,
+                                                        });
+                                                }}
+                                                exportMethods={() => {}}
+                                                noCollapse={true}
+                                                onSearch={(newValues) => {
+                                                    this.form.setFieldsValue(newValues);
+                                                    this.popoverValues = newValues;
+                                                    this.methods.setControlValueCount(newValues);
+                                                    this.props.onSearch && this.props.onSearch(newValues);
+                                                    this.methods.closeMoreSearch();
+                                                }}
+                                                onReset={(values) => {
+                                                    this.methods.setControlValueCount(values);
+                                                    this.methods.handleReset();
+                                                }}
+                                                values={this.state.moreSearchValues}
+                                                excludeHideValid={false}
+                                                afterItemsRendered={(...rest) => {
+                                                    if (!this.firstItemsRendered) {
+                                                        this.setState({
+                                                            loading: false,
+                                                        });
+                                                        this.firstItemsRendered = true;
+                                                        if (this.changedItems) {
+                                                            this.moreSearchMethods &&
+                                                                this.moreSearchMethods.changeFormItems(
+                                                                    this.changedItems,
+                                                                    this.changedPart,
+                                                                );
+                                                        }
+                                                    }
+                                                    this.props.afterItemsRendered &&
+                                                        this.props.afterItemsRendered(...rest);
+                                                }}
+                                                noControlBorder={false}
+                                                searchColConfig={collapse}
+                                            ></ZsearchForm>
+                                        </Spin>
+                                    }
+                                    onVisibleChange={this.methods.handleVisibleChange}
+                                    trigger="click"
+                                >
+                                    <Button type="primary" className={`z-margin-left-10`}>
+                                        更多查询
+                                    </Button>
+                                </Popover>
+                            </Badge>
+                        ) : null}
+                        <Button className={`z-margin-left-10`} onClick={this.methods.handleReset}>
+                            重置
+                        </Button>
+                    </div>
+                );
+            },
+        });
+        this.setState({
+            items: stateItems,
+        });
+    };
+    methods = {
+        showFilterBtn: () => {
+            return this.state.items.length - 1 > this.props.collapseCount && !this.props.noCollapse;
+        },
+        setControlValueCount: (values) => {
+            if (values && this.methods.showFilterBtn()) {
+                const items = this.props.items || this.props.colFormItems;
+                this.setState({
+                    controlValueCount: items.filter((item, i) => {
+                        if (this.props.collapseCount > 0 && this.props.collapseCount > i) {
+                            return false;
+                        }
+                        const val = values[item.key];
+                        return val !== undefined && val !== null && val !== '';
+                    }).length,
+                });
+            }
+        },
+        handleReset: () => {
+            this.popoverValues = {};
+            this.methods.resetSearchFormFields();
+            const values = this.formMethods.getFieldsValue();
+            this.methods.setControlValueCount(values);
+            this.props.onReset && this.props.onReset(values);
+        },
+        resetSearchFormFields: () => {
+            this.form.resetFields();
+            this.moreSearchForm && this.moreSearchForm.resetFields();
+        },
+        onSubmit: (values) => {
+            const newValues = { ...(this.popoverValues || {}), ...values };
+            this.popoverValues = newValues;
+            this.methods.setControlValueCount(newValues);
+            this.props.onSearch && this.props.onSearch(newValues);
+        },
+        getFormInstance: (form, methods) => {
+            this.form = form;
+            this.formMethods = methods;
+            this.props.getFormInstance &&
+                this.props.getFormInstance(form, {
+                    ...methods,
+                    setFieldsValue: this.methods.setFieldsValue,
+                    getFieldsValue: this.methods.getFieldsValue,
+                    changeFormItems: this.methods.changeFormItems,
+                    resetSearchFormFields: this.methods.resetSearchFormFields,
+                });
+        },
+        changeFormItems: (newItems, part = false, callback) => {
+            const items = this.props.items || this.props.colFormItems;
+            this.changedItems = newItems;
+            this.changedPart = part;
+            let changingItems = null;
+            if (dataType.isObject(newItems)) {
+                changingItems = { ...newItems };
+                const i = items.findIndex((item) => newItems.key === item.key);
+                if (this.props.collapseCount - 1 < i && !this.props.noCollapse) {
+                    delete changingItems.show;
+                }
+            } else if (dataType.isArray(newItems)) {
+                changingItems = newItems.map((nitem) => {
+                    const returnItem = { ...nitem };
+                    const i = items.findIndex((item) => nitem.key === item.key);
+                    if (this.props.collapseCount - 1 < i && !this.props.noCollapse) {
+                        delete returnItem.show;
+                    }
+                    return returnItem;
+                });
+            }
+            this.formMethods && this.formMethods.changeFormItems(changingItems, part, callback);
+            this.moreSearchMethods && this.moreSearchMethods.changeFormItems(newItems, part, callback);
+        },
+        getFieldsValue: (...rest) => {
+            const mainValues = this.formMethods ? this.formMethods.getFieldsValue(...rest) : {};
+            const assistantValues = this.moreSearchMethods ? this.moreSearchMethods.getFieldsValue(...rest) : {};
+            return { ...mainValues, ...assistantValues };
+        },
+        setFieldsValue: (...rest) => {
+            this.formMethods && this.formMethods.setFieldsValue(...rest);
+            this.moreSearchMethods && this.moreSearchMethods.setFieldsValue(...rest);
+        },
+        openMoreSearch: () => {
+            if (this.state.moreSearchVisible) {
+                this.setState({
+                    moreSearchVisible: false,
+                });
+                return;
+            }
+            const newState = {
+                moreSearchVisible: true,
+                moreSearchValues: { ...(this.popoverValues || {}), ...this.form.getFieldsValue() },
+            };
+            if (!this.firstItemsRendered) {
+                newState.loading = true;
+            }
+            this.setState(newState);
+        },
+        closeMoreSearch: (e) => {
+            this.setState({
+                moreSearchVisible: false,
+            });
+        },
+        handleVisibleChange: (visible) => {
+            const newState = {
+                moreSearchVisible: visible,
+            };
+            if (visible) {
+                newState.moreSearchValues = { ...(this.popoverValues || {}), ...this.form.getFieldsValue() };
+            }
+            if (!this.firstItemsRendered) {
+                newState.loading = true;
+            }
+
+            this.setState(newState);
+        },
+    };
+}
 export default ZsearchForm;

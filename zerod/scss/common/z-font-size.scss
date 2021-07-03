@@ -11,6 +11,6 @@
     }
 }
 // 12-100px的字大小 className  :   z-font-size-12  
-@for $i from 12 through 100 {
+@for $i from 12 through 50 {
     @include setSizes($i);
 }

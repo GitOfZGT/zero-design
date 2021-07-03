@@ -1,8 +1,8 @@
-//自动加载./context/下的*.context.js
+//自动加载./context/下的*Context.js
 const components = require.context('./context', true, /Context.js$/);
 const loadContext = {};
 const names = [];
-components.keys().forEach(key => {
+components.keys().forEach((key) => {
     let defines;
     try {
         defines = components(key).default;

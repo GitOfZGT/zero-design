@@ -1,0 +1,42 @@
+:global {
+    .z-gap-filling {
+        line-height: 2;
+        padding: 10px;
+        .z-gap-filling-control {
+            margin: 0 5px;
+            text-indent: initial;
+            text-align: initial;
+            display: inline-block;
+        }
+        .ant-radio-group,
+        .ant-checkbox-group {
+            display: inline !important;
+            border: 0 !important;
+            padding: 0 !important;
+        }
+        .ant-input,
+        .ant-select-selection {
+            border-width: 0 0 1px 0;
+            border-radius: 0;
+        }
+        .ant-input:focus,
+        .ant-input:hover,
+        .ant-select-selection:focus,
+        .ant-select-selection:hover {
+            border-right: 0;
+        }
+        textarea.ant-input {
+            display: block;
+        }
+        .ant-input[disabled],
+        .ant-select-disabled .ant-select-selection {
+            background-color: transparent;
+        }
+        .ant-input[disabled],
+        .ant-select-disabled .ant-select-selection,
+        .ant-checkbox-disabled + span,
+        .ant-radio-disabled + span {
+            color: inherit;
+        }
+    }
+}

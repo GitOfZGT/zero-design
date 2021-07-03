@@ -15,6 +15,7 @@
 		.ant-tree-node-content-wrapper {
 			height: 36px;
 			line-height: 36px;
+			overflow: hidden;
 		}
 		.ant-tree-title {
 			display: block;
@@ -34,10 +35,10 @@
 	}
 }
 @include z("tree-title") {
+	min-width: 0;
+	overflow: hidden;
 	white-space: nowrap;
 	text-overflow: ellipsis;
-	overflow: hidden;
-	max-width: 100px;
 }
 @include z("tree-btns") {
 	button:not(:first-child) {

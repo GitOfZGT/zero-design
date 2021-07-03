@@ -3,16 +3,15 @@ import React from 'react';
 import PropTypes from 'prop-types';
 // zerod
 import { Zlayout, ZmainHOC } from 'zerod';
-// import GlobalLoading from "@/lazyLoad/Loading.jsx";
+import GlobalLoading from 'zerod/lazyLoad/Loading.jsx';
 // 路由组件
 import mainRoutes from './load-child-routes.js';
 // ant ui
 import { Icon, Dropdown, Menu } from 'antd';
 // img
 import logo from '@/assets/images/logo.png';
-import flower from '@/assets/images/flower.jpg';
 // 样式类
-import cssClass from './style.scss';
+import './style.scss';
 // 后台接口
 // import api from "@/App.api.js";
 
@@ -38,13 +37,11 @@ const pageConfig = {
     // 路由配置信息
     mainRoutes,
     // 加载前要显示一个全局loading
-    // globalLoading: () => <GlobalLoading />,
+    globalLoading: () => <GlobalLoading />,
     // 侧边导航设置
     sideMenu: {
         mapKeys: { iconClass: 'permIconUrl', path: 'permUrl', name: 'permName', children: 'children' },
     },
-    // 顶部栏左边内容的渲染钩子
-    headerLeftRender: () => <img className="z-margin-left-20" src={flower} height="60" />,
     // 顶部栏右边内容的渲染钩子
     headerRightRender: () => <UserDropdown />,
     // 侧边栏折叠按钮触发后，过渡动画之前
@@ -60,6 +57,11 @@ const pageConfig = {
             {
                 permUrl: 'home',
                 permName: '首页',
+                permIconUrl: 'home',
+            },
+            {
+                permUrl: 'secondPage',
+                permName: '测试页',
                 permIconUrl: 'home',
             },
         ]);
@@ -135,7 +137,7 @@ class UserDropdown extends React.Component {
 
     dropdownMenu = (
         <Menu
-            className={cssClass['z-main-user-menu']}
+            styleName="z-main-user-menu"
             selectedKeys={[]}
             onClick={this.methods.onMenuClick && this.methods.onMenuClick}
         >

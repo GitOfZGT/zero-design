@@ -1,73 +1,96 @@
-@import "../../scssMixin/generateClassName2";
+@import '../../scssMixin/generateClassName2';
 
-@include z("viewer-ul") {
-	list-style: none;
-	overflow: hidden;
-	> li {
-		position: relative;
-		float: left;
-		overflow: hidden;
-		width: 180px;
-		height: 140px;
-		&:not(:last-child) {
-			margin-right: 8px;
-			margin-bottom:8px;
-		}
-		& > img {
-			position: absolute;
-			top: 0;
-			left: 0;
-			z-index: 9;
-			opacity: 0;
-			height: 100%;
-			width: 100%;
-			vertical-align: middle;
-			border-style: none;
-			cursor: zoom-in;
-		}
-	}
-	$--alt-h:30px;
-	@include z('viewer-thumb'){
-		height: calc(100% - 30px);
-	}
-	@include z("viewer-alt"){
-		height: $--alt-h;
-		line-height: $--alt-h;
-		text-align: center;
-		border:1px dashed #eaeaea;
-		border-top: 0;
-		font-size: 14px;
-	}
+@include z('viewer-ul') {
+    list-style: none;
+    overflow: hidden;
+    > li {
+        position: relative;
+        float: left;
+        overflow: hidden;
+        width: 180px;
+        height: 140px;
+        &:not(:last-child) {
+            margin-right: 8px;
+            margin-bottom: 8px;
+        }
+        & > img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 9;
+            opacity: 0;
+            height: 100%;
+            width: 100%;
+            vertical-align: middle;
+            border-style: none;
+            cursor: zoom-in;
+        }
+    }
+    $--alt-h: 30px;
+    @include z('viewer-thumb') {
+        height: calc(100% - 30px);
+    }
+    @include z('viewer-alt') {
+        height: $--alt-h;
+        line-height: $--alt-h;
+        text-align: center;
+        border: 1px dashed #eaeaea;
+        border-top: 0;
+        font-size: 14px;
+    }
 }
 $--btn-h: 100px;
 $--btn-w: 48px;
 %btnCommon {
-	cursor: pointer;
-	position: absolute;
-	top: 50%;
-	margin-top: -$--btn-h/2;
-	width: $--btn-w;
-	height: $--btn-h;
-	z-index: 999;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	background-color: rgba($color: #eaeaea, $alpha: 0.5);
-	font-size: 24px;
-	color: white;
-	opacity: 0.5;
-	&:hover {
-		opacity: 1;
-	}
+    cursor: pointer;
+    position: absolute;
+    top: 50%;
+    margin-top: -$--btn-h/2;
+    width: $--btn-w;
+    height: $--btn-h;
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba($color: #eaeaea, $alpha: 0.5);
+    font-size: 24px;
+    color: white;
+    opacity: 0.5;
+    &:hover {
+        opacity: 1;
+    }
 }
-$--border-ra:3px;
-@include z("prev") {
-	left: 0;
-	border-radius: 0 $--border-ra $--border-ra 0;
-	@extend %btnCommon;
+$--border-ra: 3px;
+@include z('prev') {
+    left: 0;
+    border-radius: 0 $--border-ra $--border-ra 0;
+    @extend %btnCommon;
 }
-@include z("next") {
-	right: 0;
-	border-radius: $--border-ra 0 0 $--border-ra;
-	@extend %btnCommon;
+@include z('next') {
+    right: 0;
+    border-radius: $--border-ra 0 0 $--border-ra;
+    @extend %btnCommon;
+}
+
+:global {
+    .viewer-button {
+        background-color: rgba(177, 177, 177, 0.5);
+        border-radius: 4px;
+        cursor: pointer;
+        height: 32px;
+        right: 10px;
+        top: 10px;
+        width: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        &:hover {
+            background-color: rgba(177, 177, 177, 0.8);
+        }
+    }
+    .viewer-button:before {
+        position: relative;
+        bottom: auto;
+        left: auto;
+    }
 }

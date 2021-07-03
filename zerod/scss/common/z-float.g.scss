@@ -1,0 +1,12 @@
+/* create by zgt */
+:global .z-clear-fix::after {
+  display: table;
+  content: '';
+  height: 0;
+  clear: both; }
+
+:global .z-float-left {
+  float: left; }
+
+:global .z-float-right {
+  float: right; }

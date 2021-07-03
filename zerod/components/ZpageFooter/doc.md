@@ -1,3 +1,5 @@
+<!-- @routePath:/component-doc/ZpageFooter-doc -->
+
 # 页脚组件：ZpageFooter
 
 1、基本使用
@@ -5,32 +7,42 @@
 <div class="z-demo-box" data-render="demo1" data-title="基本使用"></div>
 
 ```jsx
-import React from "react";import ZpureComponent from "zerod/components/ZpureComponent";
-import { ZpageFooter } from "zerod";
-import { Icon } from "antd";
-class PageFooter extends ZpureComponent {
-	footerLinks = [
-		{
-			key: "hua-cloud",
-			title: "华云中盛科技有限公司",
-			href: "http://www.hua-cloud.com.cn/",
-			blankTarget: true,
-		},
-		{
-			key: "szhcf",
-			title: "华成峰集团",
-			href: "http://www.szhcf.com.cn/",
-			blankTarget: true,
-		},
-	];
-	footerCopyright = () => (
-		<div>
-			Copyright <Icon type="copyright" /> 2018 华云中盛-政务事业部技术团队出品
-		</div>
-	);
-	render() {
-		return <ZpageFooter links={this.footerLinks} copyright={this.footerCopyright} />;
-	}
+/**
+ * @renderMode: inline
+ * @componentName: PageHeader2
+ * @description: 非置顶头部
+ * @title: 追加更多内容
+ */
+import React from 'react';
+import { ZpageFooter } from 'zerod';
+import { Icon } from 'antd';
+class PageFooter extends React.PureComponent {
+    footerLinks = [
+        {
+            key: 'hua-cloud',
+            title: 'xxx有限公司',
+            href: 'http://www.baidu.cn/',
+            blankTarget: true,
+        },
+        {
+            key: 'szhcf',
+            title: 'xxx集团',
+            href: 'http://www.baidu.cn/',
+            blankTarget: true,
+        },
+    ];
+    footerCopyright = () => (
+        <div>
+            Copyright <Icon type="copyright" /> 2021 版权
+        </div>
+    );
+    render() {
+        return (
+            <div className="app-body" style={{ padding: '20px' }}>
+                <ZpageFooter links={this.footerLinks} copyright={this.footerCopyright} />
+            </div>
+        );
+    }
 }
 
 export default PageFooter;
@@ -40,27 +52,7 @@ export default PageFooter;
 
 可追加`className`、`style`
 
-<table>
-	<thead>
-		<tr>
-			<th>参数</th>
-			<th>说明</th>
-			<th>类型</th>
-			<th>默认值</th>
-		</tr>
-	</thead>
-	<tbody>
-		<tr>
-			<td>links</td>
-			<td>快速链接</td>
-			<td>array</td>
-			<td>--</td>
-		</tr>
-		<tr>
-			<td><i class="zero-icon zerod-shengchangzhouqi"></i> copyright</td>
-			<td>版权信息</td>
-			<td>string | function</td>
-			<td>--</td>
-		</tr>
-	</tbody>
-</table>
+| 参数                                                       | 说明                                     | 类型               | 默认值 |
+| ---------------------------------------------------------- | ---------------------------------------- | ------------------ | ------ |
+| links                                                      | 快速链接                                 | array              | --     |
+| <i class="zero-icon zerod-shengchangzhouqi"></i> copyright | 版权信息                                 | string \| function | --     |

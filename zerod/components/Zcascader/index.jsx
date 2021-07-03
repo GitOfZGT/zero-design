@@ -2,7 +2,7 @@ import React from 'react';
 import ZpureComponent from '../ZpureComponent';
 import ZpageLoading from '../ZpageLoading';
 import PropTypes from 'prop-types';
-import { hasClass, addClass, removeClass, getStyle, GenNonDuplicateID } from '../zTool';
+import { hasClass, addClass, removeClass, getStyle, GenNonDuplicateID, dataType } from '../zTool';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import throttle from 'lodash/throttle';
 import debounce from 'lodash/debounce';
@@ -16,16 +16,17 @@ export class ZcascaderItemGroup extends ZpureComponent {
         itemData: PropTypes.arrayOf(PropTypes.object),
         itemKeys: PropTypes.object,
         onItemClick: PropTypes.func,
-        label: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
+        label: PropTypes.oneOfType([PropTypes.string, PropTypes.func, PropTypes.object]),
         itemMaxWidth: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
         popoverContentRender: PropTypes.func,
         autoExpanded: PropTypes.bool,
+        labelWidth: PropTypes.string
     };
     static defaultProps = {
         itemKeys: {},
         itemData: [],
-        itemMaxWidth: '180px',
-        autoExpanded: false,
+        itemMaxWidth: '220px',
+        autoExpanded: false
     };
     itemKeys = Object.assign({ name: 'name', id: 'id' }, this.props.itemKeys);
     getDefaultListData = (list) => {
@@ -37,7 +38,7 @@ export class ZcascaderItemGroup extends ZpureComponent {
                 disabled: item.disabled,
                 data: item,
                 name,
-                id: item[this.itemKeys.id],
+                id: item[this.itemKeys.id]
             };
         });
     };
@@ -55,13 +56,13 @@ export class ZcascaderItemGroup extends ZpureComponent {
     state = {
         itemData: [],
         animateEnter: true,
-        animateExit: false,
+        animateExit: false
     };
     componentDidUpdate(prevProps) {
         if (prevProps.itemData !== this.props.itemData) {
             this.setState({
                 animateEnter: true,
-                animateExit: false,
+                animateExit: false
             });
             this.setShowLens();
         }
@@ -72,22 +73,22 @@ export class ZcascaderItemGroup extends ZpureComponent {
                 this.setState({
                     animateEnter: true,
                     animateExit: true,
-                    itemData: [...this.saveDefaultData.slice(0, this.itemLens)],
+                    itemData: [...this.saveDefaultData.slice(0, this.itemLens)]
                 });
                 removeClass(this.moreBtnEl, rotateClassName);
             } else {
                 this.setState({
                     animateEnter: true,
                     animateExit: true,
-                    itemData: [...this.saveDefaultData.slice(0)],
+                    itemData: [...this.saveDefaultData.slice(0)]
                 });
                 addClass(this.moreBtnEl, rotateClassName);
             }
-        },
+        }
     };
     setShowLens = () => {
         this.bodyEl = this.infoEl.querySelector('.z-info-right');
-        const bodyWidth = parseFloat(getStyle(this.bodyEl, 'width'), 10) - 22 - 40;
+        const bodyWidth = parseFloat(getStyle(this.bodyEl, 'width'), 10) - 32 - 28;
         const itemMaxWidth =
             typeof this.props.itemMaxWidth === 'string'
                 ? parseInt(this.props.itemMaxWidth, 10)
@@ -104,8 +105,8 @@ export class ZcascaderItemGroup extends ZpureComponent {
             const itemWidth = parseFloat(getStyle(_item, 'width'), 10);
             const boxW =
                 (typeof itemMaxWidth === 'number' && itemMaxWidth < itemWidth ? itemMaxWidth : itemWidth) +
-                12 +
-                (this.props.popoverContentRender && (typeof item.popovered !== 'boolean' || item.popovered) ? 13 : 0);
+                10 +
+                (this.props.popoverContentRender && (typeof item.popovered !== 'boolean' || item.popovered) ? 12 : 0);
             this.bodyEl.removeChild(_item);
             if (rowCountWidth + boxW > bodyWidth) {
                 break;
@@ -115,18 +116,34 @@ export class ZcascaderItemGroup extends ZpureComponent {
             }
         }
         this.setState({
-            itemData: this.showLensData(),
+            itemData: this.showLensData()
         });
     };
     componentDidMount() {
         this.setShowLens();
     }
     render() {
-        const { popoverContentRender, itemMaxWidth, label } = this.props;
+        const { popoverContentRender, itemMaxWidth, label, labelWidth } = this.props;
+        let name = null;
+        if (dataType.isObject(label)) {
+            const canClick = typeof label.onIconClick === 'function';
+            name = (
+                <span className="z-cascader-label">
+                    <span className={`z-cascader-label-icon ${canClick ? 'click' : ''}`} onClick={label.onIconClick}>
+                        {label.icon}
+                    </span>
+                    <span className="z-cascader-label-text">{label.text}</span>
+                </span>
+            );
+        } else if (dataType.isFunction(label)) {
+            name = label();
+        } else {
+            name = label;
+        }
         return (
             <dl className="z-info" ref={(el) => (this.infoEl = el)}>
-                <dt className="z-info-left">
-                    {typeof label === 'function' ? label() : <span className="z-margin-bottom-10">{label}</span>}
+                <dt className="z-info-left z-cascader-left" style={labelWidth ? { width: labelWidth } : null}>
+                    {name}
                 </dt>
                 <TransitionGroup
                     component="dd"
@@ -157,10 +174,7 @@ export class ZcascaderItemGroup extends ZpureComponent {
                                         {item.name}
                                     </div>
                                     {popoverContentRender && (typeof item.popovered !== 'boolean' || item.popovered) ? (
-                                        <Popover
-                                            content={popoverContentRender(item, i)}
-                                            title={item.name}
-                                        >
+                                        <Popover content={popoverContentRender(item, i)} title={item.name}>
                                             <div className="z-cascader-action" onClick={(e) => e.stopPropagation()}>
                                                 <i className="zero-icon zerod-action"></i>
                                             </div>
@@ -172,13 +186,12 @@ export class ZcascaderItemGroup extends ZpureComponent {
                     })}
                 </TransitionGroup>
                 {this.saveDefaultData.length > this.itemLens ? (
-                    <dd className="z-cascader-right">
+                    <dd className="z-cascader-right" onClick={this.methods.showMore}>
                         <i
-                            className="zero-icon zerod-doubleleft"
+                            className="zero-icon zerod-up"
                             ref={(el) => {
                                 this.moreBtnEl = el;
                             }}
-                            onClick={this.methods.showMore}
                         />
                     </dd>
                 ) : null}
@@ -197,16 +210,25 @@ export class Zcascader extends ZpureComponent {
         onSelect: PropTypes.func,
         popoverContentRender: PropTypes.func,
         unselected: PropTypes.bool,
+        loading: PropTypes.bool,
+        labelWidth: PropTypes.string
     };
     static defaultProps = {
-        lables: ['省', '市', '区/县', '街道/镇', '村'],
+        lables: [
+            { text: '省', icon: 'a' },
+            { text: '市', icon: 'b' },
+            { text: '区/县', icon: 'c' },
+            { text: '街道/镇', icon: 'd' },
+            { text: '村', icon: 'e' }
+        ],
         tree: [],
         selections: [],
         unselected: true,
+        loading: false
     };
     itemKeys = Object.assign(
         { name: 'name', id: 'id', disabled: 'disabled', children: 'children' },
-        this.props.itemKeys,
+        this.props.itemKeys
     );
 
     getSelections = () => {
@@ -214,7 +236,7 @@ export class Zcascader extends ZpureComponent {
     };
     state = {
         cascaders: [],
-        showLoading: false,
+        showLoading: this.props.loading
     };
 
     methods = {
@@ -241,11 +263,11 @@ export class Zcascader extends ZpureComponent {
                 }
                 this.setState(
                     {
-                        cascaders: [...currentCascaders],
+                        cascaders: [...currentCascaders]
                     },
                     () => {
                         this.props.onSelect && this.props.onSelect(this.selectItems);
-                    },
+                    }
                 );
             } else {
                 //选择
@@ -275,7 +297,7 @@ export class Zcascader extends ZpureComponent {
             const childs = data[this.itemKeys.children];
             if (this.props.treeAsync) {
                 this.setState({
-                    showLoading: true,
+                    showLoading: true
                 });
                 this.props.treeAsync(data, this.methods.resolveChilds);
             } else {
@@ -291,11 +313,11 @@ export class Zcascader extends ZpureComponent {
                 this.setState(
                     {
                         cascaders: [...currentCascaders],
-                        showLoading: false,
+                        showLoading: false
                     },
                     () => {
                         this.props.onSelect && this.selections.length && this.props.onSelect(this.selectItems);
-                    },
+                    }
                 );
                 return;
             }
@@ -319,9 +341,9 @@ export class Zcascader extends ZpureComponent {
                     return {
                         ...item,
                         active,
-                        disabled: item[this.itemKeys.disabled],
+                        disabled: item[this.itemKeys.disabled]
                     };
-                }),
+                })
             });
             if (activeChils) {
                 this.methods.resolveChilds(activeChils);
@@ -330,13 +352,13 @@ export class Zcascader extends ZpureComponent {
             this.setState(
                 {
                     cascaders: [...currentCascaders],
-                    showLoading: false,
+                    showLoading: false
                 },
                 () => {
                     this.props.onSelect && this.selections.length && this.props.onSelect(this.selectItems);
-                },
+                }
             );
-        },
+        }
     };
     initSelected() {
         this.initVars();
@@ -357,11 +379,16 @@ export class Zcascader extends ZpureComponent {
         if (prevProps.tree !== this.props.tree || prevProps.selections !== this.props.selections) {
             this.initSelected();
         }
+        if (this.props.loading !== prevProps.loading && this.props.loading !== this.state.showLoading) {
+            this.setState({
+                showLoading: this.props.loading
+            });
+        }
     }
     render() {
         return (
             <section className="z-cascader">
-                <ZpageLoading showLoading={this.state.showLoading} />
+                <ZpageLoading showLoading={this.state.showLoading} size="small" />
                 {this.state.cascaders.map((item, i) => {
                     return (
                         <ZcascaderItemGroup
@@ -369,6 +396,7 @@ export class Zcascader extends ZpureComponent {
                             index={i}
                             itemData={item.itemData}
                             label={item.label}
+                            labelWidth={this.props.labelWidth}
                             onItemClick={this.methods.onSelectClick}
                             itemKeys={this.props.itemKeys}
                             popoverContentRender={this.props.popoverContentRender}

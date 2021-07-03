@@ -1,6 +1,9 @@
-@import '../../scssMixin/generateClassName2';
 
-
-@include  z('wraper-body'){
-    padding:14px 14px 0px;
+:global {
+	.z-wraper-body {
+        padding: 0px 20px 20px;
+        &.is-paddding-top{
+            padding-top:20px;
+        }
+	}
 }

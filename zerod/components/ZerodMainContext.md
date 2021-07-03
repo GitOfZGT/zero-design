@@ -1,10 +1,4 @@
-<!--
- * @Author: zgt
- * @Date: 2018-08-21 10:59:31
- * @LastEditors: zgt
- * @LastEditTime: 2019-08-24 17:47:26
- * @Description: file content
- -->
+<!-- @routePath:/context-doc/ZerodMainContext-doc -->
 
 # ZerodMainContext
 
@@ -220,37 +214,13 @@ getScrollAreaWrapperEl 方法有一个参数，`modal`:哪个地方的滚动条:
 
 ### obj.methods
 
-<table>
-	<thead>
-		<tr>
-			<th>参数</th>
-			<th>说明</th>
-			<th>用法</th>
-		</tr>
-	</thead>
-	<tbody>
-    	<tr>
-			<td>setScrollAreaStyle</td>
-			<td>设置滚动区域的style （除了 height属性）</td>
-			<td>obj.methods.setScrollAreaStyle({backgroundColor:"#f0f0f0"})</td>
-		</tr>
-    	<tr>
-			<td>initScrollAreaSize</td>
-			<td>设置滚动区域的height</td>
-			<td>obj.methods.initScrollAreaSize(60)</td>
-		</tr>
-    	<tr>
-			<td>setScrollAreaClassName</td>
-			<td>设置滚动区域的className</td>
-			<td>obj.methods.setScrollAreaClassName(`z-margin-10 z-flex`})</td>
-		</tr>
-    	<tr>
-			<td>resetScrollArea</td>
-			<td>恢复到调用 setScrollAreaStyle 或 setScrollAreaClassName 之前的样式</td>
-			<td>obj.methods.resetScrollArea()</td>
-		</tr>
-	</tbody>
-</table>
+| 参数               | 说明                                 | 用法                                                        |
+| ------------------ | -------------------------------------| ---------------------------------------------------------- |
+| setScrollAreaStyle | 设置滚动区域的style （除了 height属性）| obj.methods.setScrollAreaStyle({backgroundColor:"#f0f0f0"}) |
+| initScrollAreaSize | 设置滚动区域的height                  | obj.methods.initScrollAreaSize(60)                          |
+| setScrollAreaClassName | 设置滚动区域的className           | obj.methods.setScrollAreaClassName("z-margin-10 z-flex")   |
+| resetScrollArea    | 恢复到调用 setScrollAreaStyle 或 setScrollAreaClassName 之前的样式 | obj.methods.resetScrollArea()  | 
+
 
 <div class="z-demo-box" data-render="myWrapperDemo" data-title="例如：使用ZeditSimpleFormHOC时，在pageCofig的panelAfterRender放入了如下代码的组件"></div>
 

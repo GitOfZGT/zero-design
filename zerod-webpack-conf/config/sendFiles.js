@@ -21,9 +21,9 @@ function mergeFiles(srcname, distname, addConf) {
     if (fs.existsSync(resolveCurrent(dist))) {
         const esConf = require(resolveCurrent(dist));
         const newConf = merge(baseConf, esConf);
-        newConfString = JSON.stringify(newConf);
+        newConfString = JSON.stringify(newConf, null, 4);
     } else {
-        newConfString = JSON.stringify(baseConf);
+        newConfString = JSON.stringify(baseConf, null, 4);
     }
     fs.writeFileSync(
         resolveCurrent(dist),
@@ -54,23 +54,36 @@ module.exports = function(config) {
     //.prettierrc.js
     mergeFiles('.prettierrc.js');
     //babel.config.js
+
     mergeFiles('babel.config.js', '', function(conf) {
-        conf.plugins.splice(2, 0, [
-            'import',
-            {
-                libraryName: config.platform == 'pc' ? 'antd' : 'antd-mobile',
-                style: false,
-                libraryDirectory: 'es',
-            },
-            config.platform == 'pc' ? 'antd' : 'antd-mobile',
-        ]);
+        if (config.platform !== 'simple') {
+            conf.plugins.splice(2, 0, [
+                'import',
+                {
+                    libraryName: config.platform == 'pc' ? 'antd' : 'antd-mobile',
+                    style: true,
+                    libraryDirectory: 'es',
+                },
+                config.platform == 'pc' ? 'antd' : 'antd-mobile',
+            ]);
+            if (config.platform == 'pc') {
+                conf.plugins.splice(3, 0, [
+                    'import',
+                    {
+                        libraryName: 'zerod',
+                        style: false,
+                        libraryDirectory: 'components',
+                        camel2DashComponentName: false,
+                    },
+                    'zerod',
+                ]);
+            }
+        }
     });
+
     //html
     if (!fs.existsSync(resolveCurrent('index.html'))) {
-        copyFile(
-            resolve(config.platform + '.html'),
-            resolveCurrent('index.html'),
-        );
+        copyFile(resolve(config.platform + '.html'), resolveCurrent('index.html'));
     }
     //.gitignore
     if (!fs.existsSync(resolveCurrent('.gitignore'))) {
@@ -83,9 +96,7 @@ module.exports = function(config) {
         // console.log(distmd.toString());
         fs.writeFileSync(
             resolveCurrent('README.md'),
-            `${distmd
-                .toString()
-                .replace(srcmd.toString(), '')}${srcmd.toString()}`,
+            `${distmd.toString().replace(srcmd.toString(), '')}${srcmd.toString()}`,
         );
     } else {
         copyFile(resolve('README.md'), resolveCurrent('README.md'));

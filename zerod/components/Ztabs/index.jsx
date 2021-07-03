@@ -22,7 +22,7 @@ export class Ztabs extends ZpureComponent {
 	render() {
 		const { tabPanes, className, ...others } = this.props;
 		return (
-			<Tabs className={`z-tabs ${className || ""}`} tabBarGutter={10} {...others}>
+			<Tabs className={`z-tabs ${className || ""}`} {...others}>
 				{this.getTabPanes()}
 			</Tabs>
 		);

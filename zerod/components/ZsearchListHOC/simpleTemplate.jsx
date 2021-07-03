@@ -47,10 +47,7 @@ export default function simpleTemplate() {
 	return (
 		<Zlayout.Template>
 			{this.props.panelBeforeRender && this.props.panelBeforeRender(tool)}
-			<div className="z-panel z-margin-bottom-15 is-radius-top">
-				{this.getPanleHeader()}
-				{this.searchForm}
-			</div>
+			{this.getPanleHeader()}
 			{sorters.length ? <div className="z-margin-bottom-15">{sorters}</div> : null}
 			<div className="z-panel z-margin-bottom-15">
 				<div className="z-panel-body">

@@ -1,3 +1,4 @@
+<!-- @routePath:/component-doc/ZcodeHighlight-doc -->
 <!--
  * @Author: zgt
  * @Date: 2018-08-21 10:59:31
@@ -77,33 +78,9 @@ class MyHtml extends ZpureComponent{
 
 ## ZcodeHighlight 的 props
 
-<table>
-	<thead>
-		<tr>
-			<th>参数</th>
-			<th>说明</th>
-			<th>类型</th>
-			<th>默认值</th>
-		</tr>
-	</thead>
-	<tbody>
-		<tr>
-			<td>mode</td>
-			<td>显示模式，block：块，inline：内联，html：直接是html元素</td>
-			<td>string : block | inline | html</td>
-			<td>block</td>
-		</tr>
-		<tr>
-			<td>lang</td>
-			<td>高亮代码的语言,更多支持的语言请查看：<a href="https://prismjs.com/#languages-list" target="_blank">https://prismjs.com/#languages-list</a>,当mode="html"时，lang参数无任何作用</td>
-			<td>string</td>
-			<td>html</td>
-		</tr>
-        <tr>
-			<td>children</td>
-			<td>要高亮的代码</td>
-			<td>string</td>
-			<td>-</td>
-		</tr>
-	</tbody>
-</table>
+| 参数            | 说明                                                                                 | 类型                                                  | 默认值     |
+| --------------- | ------------------------------------------------------------------------------------ | -------------------------------------------- | ---------- |
+| mode            | 显示模式，block：块，inline：内联，html：直接是html元素            | string : block \| inline \| html     | block     |
+| lang            | 高亮代码的语言,更多支持的语言请查看：[https://prismjs.com/#languages-list](https://prismjs.com#languages-list),当mode="html"时，lang参数无任何作用 | string    | html        |
+| children        | 要高亮的代码             | string    | -        |
+

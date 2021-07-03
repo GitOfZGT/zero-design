@@ -1,0 +1,53 @@
+/* create by zgt */
+:global .z-flex {
+  display: flex !important; }
+
+:global .z-flex-wrap {
+  display: flex !important;
+  flex-wrap: wrap; }
+
+:global .z-flex-items-h-center {
+  display: flex !important;
+  justify-content: center; }
+
+:global .z-flex-items-v-center {
+  display: flex !important;
+  align-items: center; }
+
+:global .z-flex-items-center {
+  display: flex !important;
+  align-items: center;
+  justify-content: center; }
+
+:global .z-flex-items-end {
+  display: flex !important;
+  align-items: flex-end; }
+
+:global .z-flex-self-baseline {
+  align-self: baseline; }
+
+:global .z-flex-space-between {
+  display: flex !important;
+  justify-content: space-between; }
+
+:global .z-flex-direction-column {
+  display: flex;
+  flex-direction: column; }
+
+:global .z-flex-self-center {
+  align-self: center; }
+
+:global .z-flex-1 {
+  flex: 1; }
+
+:global .z-flex-2 {
+  flex: 2; }
+
+:global .z-flex-3 {
+  flex: 3; }
+
+:global .z-flex-4 {
+  flex: 4; }
+
+:global .z-flex-5 {
+  flex: 5; }

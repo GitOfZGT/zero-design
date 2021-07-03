@@ -1,53 +1,56 @@
-<div class="z-doc-titles"></div>
+<!-- @routePath:/component-doc/ZpopoverButton-doc -->
 
 # 自带浮层按钮：ZpopoverButton
 
 ZpopoverButton 默认有一个按钮，自带 popover，左键和右键都会打开 popover，也可以是嵌入自定义按钮（必须是 ReactNode，且支持 onClick,style,disabled 等属性）
 
-1、基本使用
-
-<div class="z-demo-box" data-render="demo1" data-title=""></div>
-
 ```jsx
-class Myjavascript extends React.PureComponent {
-	methods = {
-		onCancel: () => {
-			this.ZpopoverButtonMethods.closePopover();
-		},
-	};
-	popover = {
-		title: <div>popover标题</div>,
-		content: (
-			<React.Fragment>
-				<div>popover内容</div>
-				<div className="z-margin-top-20">
-					<Button block onClick={this.methods.onCancel}>
-						取消
-					</Button>
-				</div>
-			</React.Fragment>
-		),
-		onVisibleChange: (visible) => {
-			console.log(visible);
-		},
-		onGetPopupContainer: function() {
-			return document.body;
-		},
-		exportMethods: (m) => {
-			this.ZpopoverButtonMethods = m;
-		},
-		defaultDisabled: false,
-		defaultShow: true,
-		placement: "right",
-		btnClassName: "z-margin-left-20",
-	};
-	render() {
-		return <ZpopoverButton {...this.popover}>内置按钮</ZpopoverButton>;
-	}
+/**
+ * @renderMode: inline
+ * @componentName: ZpopoverButton
+ * @description: 基本使用
+ * @title: ZpopoverButton
+ */
+import React from 'react';
+import { Button } from 'antd';
+import { ZpopoverButton } from 'zerod';
+export default class Myjavascript extends React.PureComponent {
+    methods = {
+        onCancel: () => {
+            this.ZpopoverButtonMethods.closePopover();
+        },
+    };
+    popover = {
+        title: <div>popover标题</div>,
+        content: (
+            <React.Fragment>
+                <div>popover内容</div>
+                <div className="z-margin-top-20">
+                    <Button block onClick={this.methods.onCancel}>
+                        取消
+                    </Button>
+                </div>
+            </React.Fragment>
+        ),
+        onVisibleChange: (visible) => {
+            console.log(visible);
+        },
+        onGetPopupContainer: function () {
+            return document.body;
+        },
+        exportMethods: (m) => {
+            this.ZpopoverButtonMethods = m;
+        },
+        defaultDisabled: false,
+        defaultShow: true,
+        placement: 'right',
+        btnClassName: 'z-margin-left-20',
+    };
+    render() {
+        return <ZpopoverButton {...this.popover}>内置按钮</ZpopoverButton>;
+    }
 }
 ```
-
-<div class="z-doc-titles"></div>
 
 ## ZpopoverButton 的 props
 

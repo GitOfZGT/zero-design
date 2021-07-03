@@ -1,0 +1,87 @@
+@import '../../scss/vars';
+:global {
+    .z-task-history-item {
+        display: flex;
+        &:first-child{
+            .z-task-history-item-line-top{
+                visibility: hidden;
+                max-height: 10px;
+            }
+        }
+        &:last-child{
+            .z-task-history-item-line-bottom{
+                visibility: hidden;
+            }
+        }
+    }
+    
+    .z-task-history-item + .z-task-history-item {
+        .z-task-history-item-right,
+        .z-task-history-item-line-top {
+            padding-top: 30px;
+        }
+    }
+    .z-task-history-item-left {
+        width: 96px;
+        display: flex;
+        flex-direction: column;
+        padding-right: 10px;
+    }
+    .z-task-history-item-right {
+        flex: 1;
+        overflow: hidden;
+    }
+    .z-task-history-item-right-content {
+        background-color: #f2f6fb;
+        border-radius: 8px;
+        padding: 10px 15px;
+    }
+    .z-task-history-item-line-top{
+        max-height: 40px;
+    }
+    .z-task-history-item-line-top,
+    .z-task-history-item-line-bottom {
+        width: 0px;
+        margin: 0 auto;
+        border: 1px dashed #a9acb8;
+        flex: 1;
+    }
+
+    .z-task-history-item-left-text {
+        padding: 15px 0;
+        text-align: center;
+    }
+    .z-task-history-item-right-title{
+        display: flex;
+        font-size: 16px;
+        
+        align-items: center;
+        .icon{
+            font-size: 22px;
+            margin-right: 10px;
+        }
+        .text{
+            flex: 1;
+            font-weight: 600;
+            
+        }
+        &.status-undone{
+            .icon,.status-name{
+                color: #ABAEB9;
+            }
+        }
+        &.status-processing{
+            .icon,.status-name{
+                color: $primary-color;
+            }
+        }
+        &.status-done{
+            .icon,.status-name{
+                color: #04BB6D;
+            }
+        }
+    }
+    .z-task-history-item-right-text{
+        margin-top:10px;
+    }
+}

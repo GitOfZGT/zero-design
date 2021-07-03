@@ -1,3 +1,5 @@
+<!-- @routePath:/component-doc/ZfullLayer-doc -->
+
 # 浮层窗口：ZfullLayer
 
 `ZfullLayer` 是一个背景黑色半透的覆盖在整个文档之上的窗口组件，分 header 和 children 两个内容区域
@@ -7,92 +9,116 @@
 <div class="z-demo-box" data-render="demo1" data-title=""></div>
 
 ```jsx
-import React from "react";
-import { Button } from "antd";
-import ZfullLayer from "zerod/components/ZfullLayer";
-import ZerodLayerContext from "zerod/components/ZerodLayerContext";
+/**
+ * @renderMode: inline
+ * @componentName: Demo1
+ * @title: 基本使用
+ * @description: 简单配置
+ *
+ */
+import React from 'react';
+import { Button } from 'antd';
+import ZfullLayer from 'zerod/components/ZfullLayer';
+import ZerodLayerContext from 'zerod/components/ZerodLayerContext';
 class Contents extends React.PureComponent {
-	openRightModal = () => {
-		//打开RightModal
-		this.props.showLayerRightModal({
-			show: true,
-			modal: "abc",
-			content: (
-				<div className="z-panel">
-					<div className="z-panel-body">内容</div>
-				</div>
-			),
-			width: "300px",
-			mask: false,
-			onTransitionend: () => {
-				//显示/隐藏modal的loading
-				this.props.showLayerModalLoading(true, "abc");
-				setTimeout(() => {
-					this.props.showLayerModalLoading(false, "abc");
-				}, 2000);
-			},
-		});
-	};
-	render() {
-		return (
-			<div className="z-panel" style={{ width: "90%", margin: "0 auto" }}>
-				<div className="z-panel-heading">面板标题</div>
-				<div className="z-panel-body">
-					<Button type="primary" onClick={this.openRightModal}>
-						打开RightModal
-					</Button>
-				</div>
-			</div>
-		);
-	}
+    openRightModal = () => {
+        //打开RightModal
+        this.props.showLayerRightModal({
+            show: true,
+            modal: 'abc',
+            content: (
+                <div className="z-panel">
+                    <div className="z-panel-body">内容</div>
+                </div>
+            ),
+            width: '300px',
+            mask: true,
+            onTransitionend: () => {
+                //显示/隐藏modal的loading
+                this.props.showLayerModalLoading(true, 'abc');
+                setTimeout(() => {
+                    this.props.showLayerModalLoading(false, 'abc');
+                }, 2000);
+            },
+        });
+    };
+    render() {
+        return (
+            <div className="z-panel" style={{ width: '90%', margin: '0 auto' }}>
+                <div className="z-panel-heading">面板标题</div>
+                <div className="z-panel-body">
+                    <Button type="primary" onClick={this.openRightModal}>
+                        打开RightModal
+                    </Button>
+                </div>
+            </div>
+        );
+    }
 }
 Contents = ZerodLayerContext.setConsumer(Contents);
 
 class Header extends React.PureComponent {
-	render() {
-		return (
-			<div className="z-padding-left-20 z-flex-items-center" style={{ height: "100%" }}>
-				<div>
-					<Button type="primary">按钮</Button>
-				</div>
-			</div>
-		);
-	}
+    render() {
+        return (
+            <div className="z-padding-left-20 z-flex-items-center" style={{ height: '100%' }}>
+                <div>
+                    <Button type="primary">按钮</Button>
+                </div>
+            </div>
+        );
+    }
 }
 class Myjavascript extends React.PureComponent {
-	methods = {
-		open: () => {
-			const amplify = this.ZfullLayerMethods.showLayer(
-				true,
-				() => {
-					console.log("open");
-				},
-				true, //是否先缩放
-			);
-			//再放大效果
-			amplify();
-		},
-	};
-	exportMethods = (m) => {
-		this.ZfullLayerMethods = m;
-	};
-	render() {
-		return (
-			<div>
-				<div className="z-panel">
-					<div className="z-panel-body">
-						<Button type="primary" onClick={this.methods.open}>
-							打开ZfullLayer
-						</Button>
-					</div>
-				</div>
-				<ZfullLayer header={<Header />} exportMethods={this.exportMethods}>
-					<Contents />
-				</ZfullLayer>
-			</div>
-		);
+	state={
+		type:'normal'
 	}
+    methods = {
+        open: () => {
+            const amplify = this.ZfullLayerMethods.showLayer(
+                true,
+                () => {
+                    console.log('open');
+                },
+                true, //是否先缩放
+            );
+            //再放大效果
+            amplify();
+        },
+    };
+    exportMethods = (m) => {
+        this.ZfullLayerMethods = m;
+    };
+    render() {
+        return (
+            <div>
+                <div className="z-panel">
+                    <div className="z-panel-body">
+                        <Button type="primary" onClick={()=>{
+							this.setState({
+								type:"normal"
+							});
+							this.methods.open()
+						}}>
+                            normal
+                        </Button>
+                        <Button style={{marginLeft:'20px'}} type="primary" onClick={()=>{
+							this.setState({
+								type:"dark"
+							});
+							this.methods.open()
+						}}>
+                            dark
+                        </Button>
+                    </div>
+                </div>
+                <ZfullLayer type={this.state.type} header={<Header />} exportMethods={this.exportMethods}>
+                    <Contents />
+                </ZfullLayer>
+            </div>
+        );
+    }
 }
+export default Myjavascript;
 ```
 
 ## ZfullLayer 的 props
@@ -106,8 +132,6 @@ class Myjavascript extends React.PureComponent {
 | type          | 主题                                                            | normal \| dark      | dark   |
 
 注： header 和 children 两个内容区域通信，请使用 `React.createRef()`
-
-一般场景只允许同时打开一个`ZfullLayer`
 
 ## methods 同 ZerodLayerContext 提供的内容如： methods.showLayer(true,null,true)();
 

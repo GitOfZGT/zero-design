@@ -1,6 +1,6 @@
 @import "../../scssMixin/generateClassName2";
 @import "../../scss/vars";
-$--z: 999;
+$--z: 499;
 @include z("pop-cover") {
 	position: absolute;
 	z-index: $--z - 1;
@@ -10,14 +10,14 @@ $--z: 999;
 	top: 0;
 	background-color: rgba(#000, 0.2);
 	cursor: pointer;
-	transition: all 0.3s;
+	transition: all 0.25s ease-out;
 	opacity: 1;
-	&.transparent{
+	&.transparent {
 		opacity: 0;
 	}
 }
 @include z("pop-content") {
-	transition: transform 0.25s ease-out;
+	transition: transform .3s cubic-bezier(.16,.22,.22,1.2);
 	position: absolute;
 	width: 90%;
 	max-width: 100%;
@@ -33,21 +33,26 @@ $--z: 999;
 	}
 	@at-root {
 		@include z("pop-close") {
-            position: absolute;
-            left: 0px;
-            top:0;
-            bottom:0;
-            z-index: 9999;
-            cursor: pointer;
-            @include z('btn'){
-                padding: 20px 0;
-                background-color: $--primary-color;
-                color: white;
-                border-top-right-radius: 8px;
-                border-bottom-right-radius: 8px;
-                font-size: 12px;
-            }
-
+			position: absolute;
+			left: 0px;
+			top: 0;
+			bottom: 0;
+			z-index: 9999;
+			cursor: pointer;
+			@include z("btn") {
+				height:64px;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				color: $--primary-color;
+				background-color: rgba($--primary-color, 0.2);
+				border-radius: 0 16px 16px 0;
+				font-size: 12px;
+				&::before{
+					transform: rotate(90deg);
+				}
+			}
+		
 		}
 	}
 }

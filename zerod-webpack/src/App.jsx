@@ -1,9 +1,7 @@
 // import React from "react";
 import { ZappHOC } from 'zerod';
-
 // 路由组件
-import lazyLoad from '@/lazyLoad/lazyLoad';
-const Main = lazyLoad(() => import('@/views/Main/'));
+import Main from '@/views/Main/';
 const pageConfig = {
     rootRoutes: [
         {
@@ -21,7 +19,5 @@ const pageConfig = {
             to: '/main/home',
         },
     ],
-    footerLinks: null,
-    footerCopyright: null,
 };
 export default ZappHOC(pageConfig);

@@ -41,10 +41,7 @@ export default function customTemplate() {
 	return (
 		<>
 			{this.props.panelBeforeRender && this.props.panelBeforeRender(tool)}
-			<div className="z-panel z-margin-bottom-15 is-radius-top">
-				{this.getPanleHeader()}
-				{this.searchForm}
-			</div>
+			{this.getPanleHeader()}
 			{sorters.length ? <div className="z-margin-bottom-15">{sorters}</div> : null}
 			{typeof customTemplateRender === "function" &&
 				customTemplateRender({ columns: this.state.tableColumns, listData: this.state.listData, tool })}

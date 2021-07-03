@@ -1,7 +1,9 @@
-:global {
-	.app-portal {
-		.pace {
-			display: none !important;
-		}
-	}
+:global{
+    .z-route-wrapper{
+        transition: all 0.3s ease-out;
+        opacity: 1;
+        &.fade-hide{
+            opacity: 0;
+        }
+    }
 }

@@ -1,0 +1,9 @@
+.z-my-box{
+    position: relative;
+    z-index: 1;
+    @at-root{
+        .actives{
+            z-index: 9;
+        }
+    }
+}

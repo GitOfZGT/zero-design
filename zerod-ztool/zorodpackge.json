@@ -1,6 +1,6 @@
 {
   "name": "zorod-ztool",
-  "version": "1.1.1",
+  "version": "1.1.3",
   "description": "zorod-ztool",
   "author": "zgt",
   "main": "index.js",
@@ -8,7 +8,10 @@
     "login": "npm login --registry=https://registry.npmjs.org"
   },
   "devDependencies": {},
-  "dependencies": {},
+  "dependencies": {
+    "blueimp-md5": "^2.10.0",
+    "axios": "^0.18.0"
+  },
   "license": "MIT",
   "miniprogram": "dist",
   "publishConfig": {

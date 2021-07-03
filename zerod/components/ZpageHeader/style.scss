@@ -1,9 +1,9 @@
 @import "../../scssMixin/generateClassName2";
 @import "../../scss/vars";
 @include z("page-header") {
-	background-color: white;
-	padding: 16px 32px 0;
-	box-shadow: $--box-shadow;
+	// background-color: white;
+	padding: 20px 20px 0;
+	// box-shadow: $--box-shadow;
 
 	@include z("page-header-title") {
 		margin-top: 0px;

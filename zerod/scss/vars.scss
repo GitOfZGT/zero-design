@@ -32,21 +32,3 @@ $--success-bg-active: $--green-deep;
 $--danger-bg: $--red-color;
 $--danger-bg-hover: $--red-tint;
 $--danger-bg-active: $--red-deep;
-
-:global {
-	*::-webkit-scrollbar {
-		width: $--defatul-ScrollbarSize;
-		height: $--defatul-ScrollbarSize;
-	}
-	*::-webkit-scrollbar-thumb {
-		border-radius: $--defatul-ScrollbarRadius;
-		// background: $--defatul-ScrollbarColor;
-		background: #D3D3D3;
-	}
-	
-
-	*::-webkit-scrollbar-track {
-		background: linear-gradient(to right,#F0F2F5,#E3E6EA 1px,#F0F2F5 1px,#F0F2F5);
-	}
-
-}

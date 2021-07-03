@@ -1,749 +1,777 @@
 //----------------------------zerod 的变量---------------------------
 /* 标准色 */
-$--red: #e54d42;
-$--orange: #f37b1d;
-$--yellow: #fbbd08;
-$--olive: #8dc63f;
-$--green: #39b54a;
-$--cyan: #1cbbb4;
-$--blue: #0081ff;
-$--purple: #6739b6;
-$--mauve: #9c26b0;
-$--pink: #e03997;
-$--brown: #a5673f;
-$--grey: #8799a3;
-$--black: #333333;
-$--darkGray: #666666;
-$--gray: #aaaaaa;
-$--ghostWhite: #f1f1f1;
-$--white: #ffffff;
+$--red: #e54d42 !default;
+$--orange: #f37b1d !default;
+$--yellow: #fbbd08 !default;
+$--olive: #8dc63f !default;
+$--green: #39b54a !default;
+$--cyan: #1cbbb4 !default;
+$--blue: #0081ff !default;
+$--purple: #6739b6 !default;
+$--mauve: #9c26b0 !default;
+$--pink: #e03997 !default;
+$--brown: #a5673f !default;
+$--grey: #8799a3 !default;
+$--black: #333333 !default;
+$--darkGray: #666666 !default;
+$--gray: #aaaaaa !default;
+$--ghostWhite: #f1f1f1 !default;
+$--white: #ffffff !default;
 /* 浅色 */
-$--light-red: #fadbd9;
-$--light-orange: #fde6d2;
-$--light-yellow: #fef2ce;
-$--light-olive: #e8f4d9;
-$--light-green: #d7f0db;
-$--light-cyan: #d2f1f0;
-$--light-blue: #cce6ff;
-$--light-purple: #e1d7f0;
-$--light-mauve: #ebd4ef;
-$--light-pink: #f9d7ea;
-$--light-brown: #ede1d9;
-$--light-grey: #e7ebed;
+$--light-red: #fadbd9 !default;
+$--light-orange: #fde6d2 !default;
+$--light-yellow: #fef2ce !default;
+$--light-olive: #e8f4d9 !default;
+$--light-green: #d7f0db !default;
+$--light-cyan: #d2f1f0 !default;
+$--light-blue: #cce6ff !default;
+$--light-purple: #e1d7f0 !default;
+$--light-mauve: #ebd4ef !default;
+$--light-pink: #f9d7ea !default;
+$--light-brown: #ede1d9 !default;
+$--light-grey: #e7ebed !default;
 /* 渐变色 */
-$--gradient-red: linear-gradient(45deg, #f43f3b, #ec008c);
-$--gradient-orange: linear-gradient(45deg, #ff9700, #ed1c24);
-$--gradient-green: linear-gradient(45deg, #39b54a, #8dc63f);
-$--gradient-purple: linear-gradient(45deg, #9000ff, #5e00ff);
-$--gradient-pink: linear-gradient(45deg, #ec008c, #6739b6);
-$--gradient-blue: linear-gradient(45deg, #0081ff, #1cbbb4);
+$--gradient-red: linear-gradient(45deg, #f43f3b, #ec008c) !default;
+$--gradient-orange: linear-gradient(45deg, #ff9700, #ed1c24) !default;
+$--gradient-green: linear-gradient(45deg, #39b54a, #8dc63f) !default;
+$--gradient-purple: linear-gradient(45deg, #9000ff, #5e00ff) !default;
+$--gradient-pink: linear-gradient(45deg, #ec008c, #6739b6) !default;
+$--gradient-blue: linear-gradient(45deg, #0081ff, #1cbbb4) !default;
 /* 阴影透明色 */
-$--shadow-size: 2px 2px 6px;
-$--shadow-red: rgba(204, 69, 59, 0.1);
-$--shadow-orange: rgba(217, 109, 26, 0.1);
-$--shadow-yellow: rgba(224, 170, 7, 0.1);
-$--shadow-olive: rgba(124, 173, 55, 0.1);
-$--shadow-green: rgba(48, 156, 63, 0.1);
-$--shadow-cyan: rgba(28, 187, 180, 0.1);
-$--shadow-blue: rgba(0, 102, 204, 0.1);
-$--shadow-purple: rgba(88, 48, 156, 0.1);
-$--shadow-mauve: rgba(133, 33, 150, 0.1);
-$--shadow-pink: rgba(199, 50, 134, 0.1);
-$--shadow-brown: rgba(140, 88, 53, 0.1);
-$--shadow-grey: rgba(114, 130, 138, 0.1);
-$--shadow-gray: rgba(114, 130, 138, 0.1);
-$--shadow-black: rgba(26, 26, 26, 0.1);
+$--shadow-size: 2px 2px 6px !default;
+$--shadow-red: rgba(204, 69, 59, 0.1) !default;
+$--shadow-orange: rgba(217, 109, 26, 0.1) !default;
+$--shadow-yellow: rgba(224, 170, 7, 0.1) !default;
+$--shadow-olive: rgba(124, 173, 55, 0.1) !default;
+$--shadow-green: rgba(48, 156, 63, 0.1) !default;
+$--shadow-cyan: rgba(28, 187, 180, 0.1) !default;
+$--shadow-blue: rgba(0, 102, 204, 0.1) !default;
+$--shadow-purple: rgba(88, 48, 156, 0.1) !default;
+$--shadow-mauve: rgba(133, 33, 150, 0.1) !default;
+$--shadow-pink: rgba(199, 50, 134, 0.1) !default;
+$--shadow-brown: rgba(140, 88, 53, 0.1) !default;
+$--shadow-grey: rgba(114, 130, 138, 0.1) !default;
+$--shadow-gray: rgba(114, 130, 138, 0.1) !default;
+$--shadow-black: rgba(26, 26, 26, 0.1) !default;
 
 //--颜色
-$--default-color: rgba(57, 61, 73, 1);
+$--special-color: #c7254e !default;
+$--default-color: rgba(57, 61, 73, 1) !default;
 
-$--blue-color: #4383c4;
-$--blue-tint: #009de8;
-$--blue-deep: #2f6baa;
+$--blue-color: #20a0ff !default;
+$--blue-tint: lighten($--blue-color, 6%) !default;
+$--blue-deep: darken($--blue-color, 6%) !default;
 
-$--yellow-color: #ff9a00;
-$--green-color: #21be2e;
-$--green-tint: #4dd41e;
-$--green-deep: #27ab0d;
+$--yellow-color: #ff9a00 !default;
+$--green-color: #21be2e !default;
+$--green-tint: #4dd41e !default;
+$--green-deep: #27ab0d !default;
 
-$--red-color: #db5050;
-$--red-deep: #d12020;
-$--red-tint: #fd7a7a;
+$--red-color: #db5050 !default;
+$--red-deep: #d12020 !default;
+$--red-tint: #fd7a7a !default;
 
+$--body-bgcolor: #f0f2f6 !default;
 //--卡片圆角
-$--card-radius: 8px;
+$--card-radius: 8px !default;
 
 //--shandow
-$--box-shadow: $--shadow-size $--shadow-blue;
+$--box-shadow: $--shadow-size $--shadow-blue !default;
 
-//--滚动条默认颜色
-$--defatul-ScrollbarColor: linear-gradient(to bottom, rgba(#ffe0af, 0.5), rgba(#a0c6ea, 0.5));
-$--defatul-ScrollbarSize: 10px;
-$--defatul-ScrollbarRadius: 8px;
+$--main-nav-padding: 0 15px !default;
+$--menu-nav-sub-selected-bg: $--blue-color !default;
+$--menu-nav-sub-hover-bg: rgba($--blue-color, 0.5) !default;
 //--ZmainHOC-light
-$--main-logo-light-bg: white;
-$--main-nav-light-bg: white;
+$--main-nav-light-bg: white !default;
+$--main-item-active-color: white !default;
+$--main-nav-sub-light-bg: $--main-nav-light-bg !default;
+$--main-logo-light-bg: $--main-nav-light-bg !default;
 //--ZmainHOC-dark
-$--main-logo-dark-bg: lighten($--default-color, 5%);
-$--main-nav-dark-bg: $--default-color;
+$--main-nav-dark-bg: $--default-color !default;
+$--main-nav-sub-dark-bg: $--main-nav-dark-bg !default;
+$--main-logo-dark-bg: lighten($--main-nav-dark-bg, 5%) !default;
 //--ZmainHOC-mazarine
-$--main-nav-mazarine-bg: #242c47;
-$--main-logo-mazarine-bg: darken($--main-nav-mazarine-bg,3%);
-
+$--main-nav-mazarine-bg: #3f516a !default;
+$--main-nav-sub-mazarine-bg: $--main-nav-mazarine-bg !default;
+$--main-logo-mazarine-bg: darken($--main-nav-mazarine-bg, 3%) !default;
+//--滚动条默认颜色
+$--defatul-ScrollbarColor-nomal: lighten($--main-nav-mazarine-bg, 40%) !default;
+$--defatul-ScrollbarColor: linear-gradient(to bottom, rgba(#ffe0af, 0.3), rgba(#a0c6ea, 0.3)) !default;
+$--defatul-ScrollbarSize: 10px !default;
+$--defatul-ScrollbarRadius: 8px !default;
 //--------------------------------antd 的变量-------------------------
 
 //--基础
-$blue-6: $--blue-color;
-$heading-color: #000000;
-$text-color: #333333;
-$border-color-base: $--light-blue;
-// $border-color-base: #d9d9d9;
-$border-color-split:lighten($--light-blue,4%);
-$border-radius-base: 4px;
+$blue-6: $--blue-color !default;
+$text-color: #333333 !default;
+$heading-color: #272727 !default;
+$border-color-base: #ebedf0 !default;
+$border-color-split: lighten($border-color-base, 4%) !default;
+$border-radius-base: 4px !default;
 
 // // -------- Colors -----------
-$primary-color: $blue-6;
+$primary-color: $blue-6 !default;
 
 //--按钮
-// $btn-border-radius-base: 30px;
-// $btn-border-radius-sm: 14px;
-
-$btn-padding-sm: 0 14px;
-$input-height-base           : 32px;
-$input-height-lg             : 40px;
-$input-height-sm             : 26px;
+$btn-padding-sm: 0 14px !default;
+$input-height-base: 32px !default;
+$input-height-lg: 40px !default;
+$input-height-sm: 26px !default;
+$btn-height-base: $input-height-base !default;
+$btn-height-lg: $input-height-lg !default;
+$btn-height-sm: $input-height-sm !default;
 //
-$table-header-bg: #E8EDED;
-$table-header-sort-bg: darken(#E8EDED,5%);
-// $input-height-base: 32px;
+$table-header-sort-bg: #f9f9f9 !default;
+$table-padding-vertical: 14px !default;
+$table-expanded-row-bg: transparent !default;
+//--menu
+$menu-item-group-title-color: #000000;
+$menu-item-height: 48px !default;
+$menu-inline-toplevel-item-height: 48px !default;
+$menu-item-active-bg: $primary-color !default;
+$menu-dark-bg: $--main-nav-dark-bg !default;
+$menu-dark-submenu-bg: $--main-nav-sub-dark-bg !default;
+// // Outline
+$outline-width: 0px !default;
+//tabs
+$tabs-active-color: #223031 !default;
+$tabs-card-active-color: #222831 !default;
+$tabs-ink-bar-color: $primary-color !default;
+$tabs-card-head-background: transparent !default;
+$tabs-horizontal-margin: 0 40px 0 0 !default;
+$tabs-bar-margin: 0 0 16px 0 !default;
+$tabs-horizontal-padding: 12px 0px !default;
+
+// Disabled states
+// $disabled-color: fade(#000, 60%)!default;
 // 将如下的@开头的变量改成$开头的变量来改变antd主题
 
 // // -------- Colors -----------
-// @primary-color          : @blue-6;
-// @info-color             : @blue-6;
-// @success-color          : @green-6;
-// @processing-color       : @blue-6;
-// @error-color            : @red-6;
-// @highlight-color        : @red-6;
-// @warning-color          : @gold-6;
-// @normal-color           : #d9d9d9;
+// @primary-color          : @blue-6!default;
+// @info-color             : @blue-6!default;
+// @success-color          : @green-6!default;
+// @processing-color       : @blue-6!default;
+// @error-color            : @red-6!default;
+// @highlight-color        : @red-6!default;
+// @warning-color          : @gold-6!default;
+// @normal-color           : #d9d9d9!default;
 
 // // Color used by default to control hover and active backgrounds and for
 // // alert info backgrounds.
-// @primary-1: color(~`colorPalette("@{primary-color}", 1)`);  // replace tint(@primary-color, 90%)
-// @primary-2: color(~`colorPalette("@{primary-color}", 2)`);  // replace tint(@primary-color, 80%)
-// @primary-3: color(~`colorPalette("@{primary-color}", 3)`);  // unused
-// @primary-4: color(~`colorPalette("@{primary-color}", 4)`);  // unused
-// @primary-5: color(~`colorPalette("@{primary-color}", 5)`);  // color used to control the text color in many active and hover states, replace tint(@primary-color, 20%)
-// @primary-6: @primary-color;                                 // color used to control the text color of active buttons, don't use, use @primary-color
-// @primary-7: color(~`colorPalette("@{primary-color}", 7)`);  // replace shade(@primary-color, 5%)
-// @primary-8: color(~`colorPalette("@{primary-color}", 8)`);  // unused
-// @primary-9: color(~`colorPalette("@{primary-color}", 9)`);  // unused
-// @primary-10: color(~`colorPalette("@{primary-color}", 10)`);  // unused
+// @primary-1: color(~`colorPalette("@{primary-color}", 1)`)!default;  // replace tint(@primary-color, 90%)
+// @primary-2: color(~`colorPalette("@{primary-color}", 2)`)!default;  // replace tint(@primary-color, 80%)
+// @primary-3: color(~`colorPalette("@{primary-color}", 3)`)!default;  // unused
+// @primary-4: color(~`colorPalette("@{primary-color}", 4)`)!default;  // unused
+// @primary-5: color(~`colorPalette("@{primary-color}", 5)`)!default;  // color used to control the text color in many active and hover states, replace tint(@primary-color, 20%)
+// @primary-6: @primary-color!default;                                 // color used to control the text color of active buttons, don't use, use @primary-color
+// @primary-7: color(~`colorPalette("@{primary-color}", 7)`)!default;  // replace shade(@primary-color, 5%)
+// @primary-8: color(~`colorPalette("@{primary-color}", 8)`)!default;  // unused
+// @primary-9: color(~`colorPalette("@{primary-color}", 9)`)!default;  // unused
+// @primary-10: color(~`colorPalette("@{primary-color}", 10)`)!default;  // unused
 
 // // Base Scaffolding Variables
 // // ---
 
 // // Background color for `<body>`
-// @body-background        : #fff;
+// @body-background        : #fff!default;
 // // Base background color for most components
-// @component-background   : #fff;
-// @font-family-no-number  : "Chinese Quote", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif;
-// @font-family            : "Monospaced Number", @font-family-no-number;
-// @code-family            : Consolas, Menlo, Courier, monospace;
-// @heading-color          : fade(#000, 85%);
-// @text-color             : fade(#000, 65%);
-// @text-color-secondary   : fade(#000, 45%);
-// @heading-color-dark     : fade(#fff, 100%);
-// @text-color-dark        : fade(#fff, 85%);
-// @text-color-secondary-dark: fade(#fff, 65%);
-// @font-size-base         : 14px;
-// @font-size-lg           : @font-size-base + 2px;
-// @font-size-sm           : 12px;
-// @line-height-base       : 1.5;
-// @border-radius-base     : 4px;
-// @border-radius-sm       : 2px;
+// @component-background   : #fff!default;
+// @font-family-no-number  : "Chinese Quote", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif!default;
+// @font-family            : "Monospaced Number", @font-family-no-number!default;
+// @code-family            : Consolas, Menlo, Courier, monospace!default;
+// @heading-color          : fade(#000, 85%)!default;
+// @text-color             : fade(#000, 65%)!default;
+// @text-color-secondary   : fade(#000, 45%)!default;
+// @heading-color-dark     : fade(#fff, 100%)!default;
+// @text-color-dark        : fade(#fff, 85%)!default;
+// @text-color-secondary-dark: fade(#fff, 65%)!default;
+// @font-size-base         : 14px!default;
+// @font-size-lg           : @font-size-base + 2px!default;
+// @font-size-sm           : 12px!default;
+// @line-height-base       : 1.5!default;
+// @border-radius-base     : 4px!default;
+// @border-radius-sm       : 2px!default;
 
 // // vertical paddings
-// @padding-lg    : 24px; // containers
-// @padding-md    : 16px; // small containers and buttons
-// @padding-sm    : 12px; // Form controls and items
-// @padding-xs    : 8px;  // small items
+// @padding-lg    : 24px!default; // containers
+// @padding-md    : 16px!default; // small containers and buttons
+// @padding-sm    : 12px!default; // Form controls and items
+// @padding-xs    : 8px!default;  // small items
 
 // // vertical padding for all form controls
-// @control-padding-horizontal: @padding-sm;
-// @control-padding-horizontal-sm: @padding-xs;
+// @control-padding-horizontal: @padding-sm!default;
+// @control-padding-horizontal-sm: @padding-xs!default;
 
 // // The background colors for active and hover states for things like
 // // list items or table cells.
-// @item-active-bg         : @primary-1;
-// @item-hover-bg          : @primary-1;
+// @item-active-bg         : @primary-1!default;
+// @item-hover-bg          : @primary-1!default;
 
 // // ICONFONT
-// @iconfont-css-prefix    : anticon;
-// @icon-url               : "https://at.alicdn.com/t/font_148784_v4ggb6wrjmkotj4i";
+// @iconfont-css-prefix    : anticon!default;
+// @icon-url               : "https://at.alicdn.com/t/font_148784_v4ggb6wrjmkotj4i"!default;
 
 // // LINK
-// @link-color             : @primary-color;
-// @link-hover-color       : color(~`colorPalette("@{link-color}", 5)`);
-// @link-active-color      : color(~`colorPalette("@{link-color}", 7)`);
-// @link-decoration        : none;
-// @link-hover-decoration  : none;
+// @link-color             : @primary-color!default;
+// @link-hover-color       : color(~`colorPalette("@{link-color}", 5)`)!default;
+// @link-active-color      : color(~`colorPalette("@{link-color}", 7)`)!default;
+// @link-decoration        : none!default;
+// @link-hover-decoration  : none!default;
 
 // // Animation
-// @ease-out            : cubic-bezier(0.215, 0.61, 0.355, 1);
-// @ease-in             : cubic-bezier(0.55, 0.055, 0.675, 0.19);
-// @ease-in-out         : cubic-bezier(0.645, 0.045, 0.355, 1);
-// @ease-out-back       : cubic-bezier(0.12, 0.4, 0.29, 1.46);
-// @ease-in-back        : cubic-bezier(0.71, -0.46, 0.88, 0.6);
-// @ease-in-out-back    : cubic-bezier(0.71, -0.46, 0.29, 1.46);
-// @ease-out-circ       : cubic-bezier(0.08, 0.82, 0.17, 1);
-// @ease-in-circ        : cubic-bezier(0.6, 0.04, 0.98, 0.34);
-// @ease-in-out-circ    : cubic-bezier(0.78, 0.14, 0.15, 0.86);
-// @ease-out-quint      : cubic-bezier(0.23, 1, 0.32, 1);
-// @ease-in-quint       : cubic-bezier(0.755, 0.05, 0.855, 0.06);
-// @ease-in-out-quint   : cubic-bezier(0.86, 0, 0.07, 1);
+// @ease-out            : cubic-bezier(0.215, 0.61, 0.355, 1)!default;
+// @ease-in             : cubic-bezier(0.55, 0.055, 0.675, 0.19)!default;
+// @ease-in-out         : cubic-bezier(0.645, 0.045, 0.355, 1)!default;
+// @ease-out-back       : cubic-bezier(0.12, 0.4, 0.29, 1.46)!default;
+// @ease-in-back        : cubic-bezier(0.71, -0.46, 0.88, 0.6)!default;
+// @ease-in-out-back    : cubic-bezier(0.71, -0.46, 0.29, 1.46)!default;
+// @ease-out-circ       : cubic-bezier(0.08, 0.82, 0.17, 1)!default;
+// @ease-in-circ        : cubic-bezier(0.6, 0.04, 0.98, 0.34)!default;
+// @ease-in-out-circ    : cubic-bezier(0.78, 0.14, 0.15, 0.86)!default;
+// @ease-out-quint      : cubic-bezier(0.23, 1, 0.32, 1)!default;
+// @ease-in-quint       : cubic-bezier(0.755, 0.05, 0.855, 0.06)!default;
+// @ease-in-out-quint   : cubic-bezier(0.86, 0, 0.07, 1)!default;
 
 // // Border color
-// @border-color-base      : hsv(0, 0, 85%);  // base border outline a component
-// @border-color-split     : hsv(0, 0, 91%);  // split border inside a component
-// @border-width-base      : 1px;            // width of the border for a component
-// @border-style-base      : solid;          // style of a components border
+// @border-color-base      : hsv(0, 0, 85%)!default;  // base border outline a component
+// @border-color-split     : hsv(0, 0, 91%)!default;  // split border inside a component
+// @border-width-base      : 1px!default;            // width of the border for a component
+// @border-style-base      : solid!default;          // style of a components border
 
 // // Outline
-// @outline-blur-size      : 0;
-// @outline-width          : 2px;
-// @outline-color          : @primary-color;
+// @outline-blur-size      : 0!default;
+// @outline-width          : 2px!default;
+// @outline-color          : @primary-color!default;
 
-// @background-color-light : hsv(0, 0, 98%);  // background of header and selected item
-// @background-color-base  : hsv(0, 0, 96%);  // Default grey background color
+// @background-color-light : hsv(0, 0, 98%)!default;  // background of header and selected item
+// @background-color-base  : hsv(0, 0, 96%)!default;  // Default grey background color
 
 // // Disabled states
-// @disabled-color         : fade(#000, 25%);
-// @disabled-bg            : @background-color-base;
-// @disabled-color-dark    : fade(#fff, 35%);
+// @disabled-color         : fade(#000, 25%)!default;
+// @disabled-bg            : @background-color-base!default;
+// @disabled-color-dark    : fade(#fff, 35%)!default;
 
 // // Shadow
-// @shadow-color           : rgba(0, 0, 0, .15);
-// @box-shadow-base        : @shadow-1-down;
-// @shadow-1-up            : 0 2px 8px @shadow-color;
-// @shadow-1-down          : 0 2px 8px @shadow-color;
-// @shadow-1-left          : -2px 0 8px @shadow-color;
-// @shadow-1-right         : 2px 0 8px @shadow-color;
-// @shadow-2               : 0 4px 12px @shadow-color;
+// @shadow-color           : rgba(0, 0, 0, .15)!default;
+// @box-shadow-base        : @shadow-1-down!default;
+// @shadow-1-up            : 0 2px 8px @shadow-color!default;
+// @shadow-1-down          : 0 2px 8px @shadow-color!default;
+// @shadow-1-left          : -2px 0 8px @shadow-color!default;
+// @shadow-1-right         : 2px 0 8px @shadow-color!default;
+// @shadow-2               : 0 4px 12px @shadow-color!default;
 
 // // Buttons
-// @btn-font-weight        : 400;
-// @btn-border-radius-base : @border-radius-base;
-// @btn-border-radius-sm   : @border-radius-base;
+// @btn-font-weight        : 400!default;
+// @btn-border-radius-base : @border-radius-base!default;
+// @btn-border-radius-sm   : @border-radius-base!default;
 
-// @btn-primary-color      : #fff;
-// @btn-primary-bg         : @primary-color;
+// @btn-primary-color      : #fff!default;
+// @btn-primary-bg         : @primary-color!default;
 
-// @btn-default-color      : @text-color;
-// @btn-default-bg         : #fff;
-// @btn-default-border     : @border-color-base;
+// @btn-default-color      : @text-color!default;
+// @btn-default-bg         : #fff!default;
+// @btn-default-border     : @border-color-base!default;
 
-// @btn-danger-color       : @error-color;
-// @btn-danger-bg          : @background-color-base;
-// @btn-danger-border      : @border-color-base;
+// @btn-danger-color       : @error-color!default;
+// @btn-danger-bg          : @background-color-base!default;
+// @btn-danger-border      : @border-color-base!default;
 
-// @btn-disable-color      : @disabled-color;
-// @btn-disable-bg         : @disabled-bg;
-// @btn-disable-border     : @border-color-base;
+// @btn-disable-color      : @disabled-color!default;
+// @btn-disable-bg         : @disabled-bg!default;
+// @btn-disable-border     : @border-color-base!default;
 
-// @btn-padding-base       : 0 @padding-md - 1px;
-// @btn-font-size-lg       : @font-size-lg;
-// @btn-font-size-sm       : @font-size-base;
-// @btn-padding-lg         : @btn-padding-base;
-// @btn-padding-sm         : 0 @padding-xs - 1px;
+// @btn-padding-base       : 0 @padding-md - 1px!default;
+// @btn-font-size-lg       : @font-size-lg!default;
+// @btn-font-size-sm       : @font-size-base!default;
+// @btn-padding-lg         : @btn-padding-base!default;
+// @btn-padding-sm         : 0 @padding-xs - 1px!default;
 
-// @btn-height-base        : 32px;
-// @btn-height-lg          : 40px;
-// @btn-height-sm          : 24px;
+// @btn-height-base        : 32px!default;
+// @btn-height-lg          : 40px!default;
+// @btn-height-sm          : 24px!default;
 
-// @btn-circle-size        : @btn-height-base;
-// @btn-circle-size-lg     : @btn-height-lg;
-// @btn-circle-size-sm     : @btn-height-sm;
+// @btn-circle-size        : @btn-height-base!default;
+// @btn-circle-size-lg     : @btn-height-lg!default;
+// @btn-circle-size-sm     : @btn-height-sm!default;
 
-// @btn-group-border       : @primary-5;
+// @btn-group-border       : @primary-5!default;
 
 // // Checkbox
-// @checkbox-size          : 16px;
-// @checkbox-color         : @primary-color;
-// @checkbox-check-color   : #fff;
+// @checkbox-size          : 16px!default;
+// @checkbox-color         : @primary-color!default;
+// @checkbox-check-color   : #fff!default;
 
 // // Radio
-// @radio-size             : 16px;
-// @radio-dot-color        : @primary-color;
+// @radio-size             : 16px!default;
+// @radio-dot-color        : @primary-color!default;
 
 // // Radio buttons
-// @radio-button-bg           : @btn-default-bg;
-// @radio-button-color        : @btn-default-color;
-// @radio-button-hover-color  : @primary-5;
-// @radio-button-active-color : @primary-7;
+// @radio-button-bg           : @btn-default-bg!default;
+// @radio-button-color        : @btn-default-color!default;
+// @radio-button-hover-color  : @primary-5!default;
+// @radio-button-active-color : @primary-7!default;
 
 // // Media queries breakpoints
 // // Extra small screen / phone
-// @screen-xs              : 480px;
-// @screen-xs-min          : @screen-xs;
+// @screen-xs              : 480px!default;
+// @screen-xs-min          : @screen-xs!default;
 
 // // Small screen / tablet
-// @screen-sm              : 576px;
-// @screen-sm-min          : @screen-sm;
+// @screen-sm              : 576px!default;
+// @screen-sm-min          : @screen-sm!default;
 
 // // Medium screen / desktop
-// @screen-md              : 768px;
-// @screen-md-min          : @screen-md;
+// @screen-md              : 768px!default;
+// @screen-md-min          : @screen-md!default;
 
 // // Large screen / wide desktop
-// @screen-lg              : 992px;
-// @screen-lg-min          : @screen-lg;
+// @screen-lg              : 992px!default;
+// @screen-lg-min          : @screen-lg!default;
 
 // // Extra large screen / full hd
-// @screen-xl              : 1200px;
-// @screen-xl-min          : @screen-xl;
+// @screen-xl              : 1200px!default;
+// @screen-xl-min          : @screen-xl!default;
 
 // // Extra extra large screen / large descktop
-// @screen-xxl              : 1600px;
-// @screen-xxl-min          : @screen-xxl;
+// @screen-xxl              : 1600px!default;
+// @screen-xxl-min          : @screen-xxl!default;
 
 // // provide a maximum
-// @screen-xs-max          : (@screen-sm-min - 1px);
-// @screen-sm-max          : (@screen-md-min - 1px);
-// @screen-md-max          : (@screen-lg-min - 1px);
-// @screen-lg-max          : (@screen-xl-min - 1px);
-// @screen-xl-max          : (@screen-xxl-min - 1px);
+// @screen-xs-max          : (@screen-sm-min - 1px)!default;
+// @screen-sm-max          : (@screen-md-min - 1px)!default;
+// @screen-md-max          : (@screen-lg-min - 1px)!default;
+// @screen-lg-max          : (@screen-xl-min - 1px)!default;
+// @screen-xl-max          : (@screen-xxl-min - 1px)!default;
 
 // // Grid system
-// @grid-columns           : 24;
-// @grid-gutter-width      : 0;
+// @grid-columns           : 24!default;
+// @grid-gutter-width      : 0!default;
 
 // // Layout
-// @layout-body-background         : #f0f2f5;
-// @layout-header-background       : #001529;
-// @layout-footer-background       : @layout-body-background;
-// @layout-header-height           : 64px;
-// @layout-header-padding          : 0 50px;
-// @layout-footer-padding          : 24px 50px;
-// @layout-sider-background        : @layout-header-background;
-// @layout-trigger-height          : 48px;
-// @layout-trigger-background      : #002140;
-// @layout-trigger-color           : #fff;
-// @layout-zerod-trigger-width      : 36px;
-// @layout-zerod-trigger-height     : 42px;
+// @layout-body-background         : #f0f2f5!default;
+// @layout-header-background       : #001529!default;
+// @layout-footer-background       : @layout-body-background!default;
+// @layout-header-height           : 64px!default;
+// @layout-header-padding          : 0 50px!default;
+// @layout-footer-padding          : 24px 50px!default;
+// @layout-sider-background        : @layout-header-background!default;
+// @layout-trigger-height          : 48px!default;
+// @layout-trigger-background      : #002140!default;
+// @layout-trigger-color           : #fff!default;
+// @layout-zerod-trigger-width      : 36px!default;
+// @layout-zerod-trigger-height     : 42px!default;
 // // Layout light theme
-// @layout-sider-background-light  : #fff;
-// @layout-trigger-background-light: #fff;
-// @layout-trigger-color-light     : @text-color;
+// @layout-sider-background-light  : #fff!default;
+// @layout-trigger-background-light: #fff!default;
+// @layout-trigger-color-light     : @text-color!default;
 
 // // z-index list
-// @zindex-affix           : 10;
-// @zindex-back-top        : 10;
-// @zindex-modal-mask      : 1000;
-// @zindex-modal           : 1000;
-// @zindex-notification    : 1010;
-// @zindex-message         : 1010;
-// @zindex-popover         : 1030;
-// @zindex-picker          : 1050;
-// @zindex-dropdown        : 1050;
-// @zindex-tooltip         : 1060;
+// @zindex-affix           : 10!default;
+// @zindex-back-top        : 10!default;
+// @zindex-modal-mask      : 1000!default;
+// @zindex-modal           : 1000!default;
+// @zindex-notification    : 1010!default;
+// @zindex-message         : 1010!default;
+// @zindex-popover         : 1030!default;
+// @zindex-picker          : 1050!default;
+// @zindex-dropdown        : 1050!default;
+// @zindex-tooltip         : 1060!default;
 
 // // Animation
-// @animation-duration-slow: .3s; // Modal
-// @animation-duration-base: .2s;
-// @animation-duration-fast: .1s; // Tooltip
+// @animation-duration-slow: .3s!default; // Modal
+// @animation-duration-base: .2s!default;
+// @animation-duration-fast: .1s!default; // Tooltip
 
 // // Form
 // // ---
-// @label-required-color        : @highlight-color;
-// @label-color                 : @heading-color;
-// @form-item-margin-bottom     : 24px;
-// @form-item-trailing-colon    : true;
-// @form-vertical-label-padding : 0 0 8px;
-// @form-vertical-label-margin  : 0;
+// @label-required-color        : @highlight-color!default;
+// @label-color                 : @heading-color!default;
+// @form-item-margin-bottom     : 24px!default;
+// @form-item-trailing-colon    : true!default;
+// @form-vertical-label-padding : 0 0 8px!default;
+// @form-vertical-label-margin  : 0!default;
 
 // // Input
 // // ---
-// @input-height-base           : 32px;
-// @input-height-lg             : 40px;
-// @input-height-sm             : 24px;
-// @input-padding-horizontal    : @control-padding-horizontal - 1px;
-// @input-padding-horizontal-base: @input-padding-horizontal;
-// @input-padding-horizontal-sm : @control-padding-horizontal-sm - 1px;
-// @input-padding-horizontal-lg : @input-padding-horizontal;
-// @input-padding-vertical-base : 4px;
-// @input-padding-vertical-sm   : 1px;
-// @input-padding-vertical-lg   : 6px;
-// @input-placeholder-color     : hsv(0, 0, 75%);
-// @input-color                 : @text-color;
-// @input-border-color          : @border-color-base;
-// @input-bg                    : #fff;
-// @input-addon-bg              : @background-color-light;
-// @input-hover-border-color    : @primary-color;
-// @input-disabled-bg           : @disabled-bg;
-// @input-outline-offset        : 0 0;
+// @input-height-base           : 32px!default;
+// @input-height-lg             : 40px!default;
+// @input-height-sm             : 24px!default;
+// @input-padding-horizontal    : @control-padding-horizontal - 1px!default;
+// @input-padding-horizontal-base: @input-padding-horizontal!default;
+// @input-padding-horizontal-sm : @control-padding-horizontal-sm - 1px!default;
+// @input-padding-horizontal-lg : @input-padding-horizontal!default;
+// @input-padding-vertical-base : 4px!default;
+// @input-padding-vertical-sm   : 1px!default;
+// @input-padding-vertical-lg   : 6px!default;
+// @input-placeholder-color     : hsv(0, 0, 75%)!default;
+// @input-color                 : @text-color!default;
+// @input-border-color          : @border-color-base!default;
+// @input-bg                    : #fff!default;
+// @input-addon-bg              : @background-color-light!default;
+// @input-hover-border-color    : @primary-color!default;
+// @input-disabled-bg           : @disabled-bg!default;
+// @input-outline-offset        : 0 0!default;
 
 // // Tooltip
 // // ---
 // //* Tooltip max width
-// @tooltip-max-width: 250px;
+// @tooltip-max-width: 250px!default;
 // //** Tooltip text color
-// @tooltip-color: #fff;
+// @tooltip-color: #fff!default;
 // //** Tooltip background color
-// @tooltip-bg: rgba(0, 0, 0, .75);
+// @tooltip-bg: rgba(0, 0, 0, .75)!default;
 // //** Tooltip arrow width
-// @tooltip-arrow-width: 5px;
+// @tooltip-arrow-width: 5px!default;
 // //** Tooltip distance with trigger
-// @tooltip-distance: @tooltip-arrow-width - 1px + 4px;
+// @tooltip-distance: @tooltip-arrow-width - 1px + 4px!default;
 // //** Tooltip arrow color
-// @tooltip-arrow-color: @tooltip-bg;
+// @tooltip-arrow-color: @tooltip-bg!default;
 
 // // Popover
 // // ---
 // //** Popover body background color
-// @popover-bg: #fff;
+// @popover-bg: #fff!default;
 // //** Popover text color
-// @popover-color: @text-color;
+// @popover-color: @text-color!default;
 // //** Popover maximum width
-// @popover-min-width: 177px;
+// @popover-min-width: 177px!default;
 // //** Popover arrow width
-// @popover-arrow-width: 6px;
+// @popover-arrow-width: 6px!default;
 // //** Popover arrow color
-// @popover-arrow-color: @popover-bg;
+// @popover-arrow-color: @popover-bg!default;
 // //** Popover outer arrow width
 // //** Popover outer arrow color
-// @popover-arrow-outer-color: @popover-bg;
+// @popover-arrow-outer-color: @popover-bg!default;
 // //** Popover distance with trigger
-// @popover-distance: @popover-arrow-width + 4px;
+// @popover-distance: @popover-arrow-width + 4px!default;
 
 // // Modal
 // // --
-// @modal-mask-bg: rgba(0, 0, 0, 0.65);
+// @modal-mask-bg: rgba(0, 0, 0, 0.65)!default;
 
 // // Progress
 // // --
-// @progress-default-color: @processing-color;
-// @progress-remaining-color: @background-color-base;
+// @progress-default-color: @processing-color!default;
+// @progress-remaining-color: @background-color-base!default;
 
 // // Menu
 // // ---
-// @menu-inline-toplevel-item-height: 40px;
-// @menu-item-height: 40px;
-// @menu-collapsed-width: 80px;
-// @menu-bg: @component-background;
-// @menu-item-color: @text-color;
-// @menu-highlight-color: @primary-color;
-// @menu-item-active-bg: @item-active-bg;
-// @menu-item-group-title-color: @text-color-secondary;
+// @menu-inline-toplevel-item-height: 40px!default;
+// @menu-item-height: 40px!default;
+// @menu-collapsed-width: 80px!default;
+// @menu-bg: @component-background!default;
+// @menu-item-color: @text-color!default;
+// @menu-highlight-color: @primary-color!default;
+// @menu-item-active-bg: @item-active-bg!default;
+// @menu-item-group-title-color: @text-color-secondary!default;
 // // dark theme
-// @menu-dark-color: @text-color-secondary-dark;
-// @menu-dark-bg: @layout-header-background;
-// @menu-dark-arrow-color: #fff;
-// @menu-dark-submenu-bg: #000c17;
-// @menu-dark-highlight-color: #fff;
-// @menu-dark-item-active-bg: @primary-color;
+// @menu-dark-color: @text-color-secondary-dark!default;
+// @menu-dark-bg: @layout-header-background!default;
+// @menu-dark-arrow-color: #fff!default;
+// @menu-dark-submenu-bg: #000c17!default;
+// @menu-dark-highlight-color: #fff!default;
+// @menu-dark-item-active-bg: @primary-color!default;
 
 // // Spin
 // // ---
-// @spin-dot-size-sm: 14px;
-// @spin-dot-size: 20px;
-// @spin-dot-size-lg: 32px;
+// @spin-dot-size-sm: 14px!default;
+// @spin-dot-size: 20px!default;
+// @spin-dot-size-lg: 32px!default;
 
 // // Table
 // // --
-// @table-header-bg: @background-color-light;
-// @table-header-sort-bg: @background-color-base;
-// @table-row-hover-bg: @primary-1;
-// @table-selected-row-bg: #fafafa;
-// @table-expanded-row-bg: #fbfbfb;
-// @table-padding-vertical: 16px;
-// @table-padding-horizontal: 16px;
+// @table-header-bg: @background-color-light!default;
+// @table-header-sort-bg: @background-color-base!default;
+// @table-row-hover-bg: @primary-1!default;
+// @table-selected-row-bg: #fafafa!default;
+// @table-expanded-row-bg: #fbfbfb!default;
+// @table-padding-vertical: 16px!default;
+// @table-padding-horizontal: 16px!default;
 
 // // Tag
 // // --
-// @tag-default-bg: @background-color-light;
-// @tag-default-color: @text-color;
-// @tag-font-size: @font-size-sm;
+// @tag-default-bg: @background-color-light!default;
+// @tag-default-color: @text-color!default;
+// @tag-font-size: @font-size-sm!default;
 
 // // TimePicker
 // // ---
-// @time-picker-panel-column-width: 56px;
-// @time-picker-panel-width: @time-picker-panel-column-width * 3;
-// @time-picker-selected-bg: @background-color-base;
+// @time-picker-panel-column-width: 56px!default;
+// @time-picker-panel-width: @time-picker-panel-column-width * 3!default;
+// @time-picker-selected-bg: @background-color-base!default;
 
 // // Carousel
 // // ---
-// @carousel-dot-width: 16px;
-// @carousel-dot-height: 3px;
-// @carousel-dot-active-width: 24px;
+// @carousel-dot-width: 16px!default;
+// @carousel-dot-height: 3px!default;
+// @carousel-dot-active-width: 24px!default;
 
 // // Badge
 // // ---
-// @badge-height: 20px;
-// @badge-dot-size: 6px;
-// @badge-font-size: @font-size-sm;
-// @badge-font-weight: normal;
-// @badge-status-size: 6px;
+// @badge-height: 20px!default;
+// @badge-dot-size: 6px!default;
+// @badge-font-size: @font-size-sm!default;
+// @badge-font-weight: normal!default;
+// @badge-status-size: 6px!default;
 
 // // Rate
 // // ---
-// @rate-star-color: @yellow-6;
-// @rate-star-bg: @border-color-split;
+// @rate-star-color: @yellow-6!default;
+// @rate-star-bg: @border-color-split!default;
 
 // // Card
 // // ---
-// @card-head-color: @heading-color;
-// @card-head-background: transparent;
-// @card-head-padding: 16px;
-// @card-inner-head-padding: 12px;
-// @card-padding-base: 24px;
-// @card-padding-wider: 32px;
-// @card-actions-background: @background-color-light;
-// @card-shadow: 0 2px 8px rgba(0, 0, 0, .09);
+// @card-head-color: @heading-color!default;
+// @card-head-background: transparent!default;
+// @card-head-padding: 16px!default;
+// @card-inner-head-padding: 12px!default;
+// @card-padding-base: 24px!default;
+// @card-padding-wider: 32px!default;
+// @card-actions-background: @background-color-light!default;
+// @card-shadow: 0 2px 8px rgba(0, 0, 0, .09)!default;
 
 // // Tabs
 // // ---
-// @tabs-card-head-background: @background-color-light;
-// @tabs-card-height: 40px;
-// @tabs-card-active-color: @primary-color;
-// @tabs-title-font-size: @font-size-base;
-// @tabs-title-font-size-lg: @font-size-lg;
-// @tabs-title-font-size-sm: @font-size-base;
-// @tabs-ink-bar-color: @primary-color;
-// @tabs-bar-margin: 0 0 16px 0;
-// @tabs-horizontal-margin: 0 32px 0 0;
-// @tabs-horizontal-padding: 12px 16px;
-// @tabs-vertical-padding: 8px 24px;
-// @tabs-vertical-margin: 0 0 16px 0;
-// @tabs-scrolling-size: 32px;
-// @tabs-highlight-color: @primary-color;
-// @tabs-hover-color: @primary-5;
-// @tabs-active-color: @primary-7;
+// @tabs-card-head-background: @background-color-light!default;
+// @tabs-card-height: 40px!default;
+// @tabs-card-active-color: @primary-color!default;
+// @tabs-title-font-size: @font-size-base!default;
+// @tabs-title-font-size-lg: @font-size-lg!default;
+// @tabs-title-font-size-sm: @font-size-base!default;
+// @tabs-ink-bar-color: @primary-color!default;
+// @tabs-bar-margin: 0 0 16px 0!default;
+// @tabs-horizontal-margin: 0 32px 0 0!default;
+// @tabs-horizontal-padding: 12px 16px!default;
+// @tabs-vertical-padding: 8px 24px!default;
+// @tabs-vertical-margin: 0 0 16px 0!default;
+// @tabs-scrolling-size: 32px!default;
+// @tabs-highlight-color: @primary-color!default;
+// @tabs-hover-color: @primary-5!default;
+// @tabs-active-color: @primary-7!default;
 
 // // BackTop
 // // ---
-// @back-top-color: #fff;
-// @back-top-bg: @text-color-secondary;
-// @back-top-hover-bg: @text-color;
+// @back-top-color: #fff!default;
+// @back-top-bg: @text-color-secondary!default;
+// @back-top-hover-bg: @text-color!default;
 
 // // Avatar
 // // ---
-// @avatar-size-base: 32px;
-// @avatar-size-lg: 40px;
-// @avatar-size-sm: 24px;
-// @avatar-font-size-base: 18px;
-// @avatar-font-size-lg: 24px;
-// @avatar-font-size-sm: 14px;
-// @avatar-bg: #ccc;
-// @avatar-color: #fff;
-// @avatar-border-radius: @border-radius-base;
+// @avatar-size-base: 32px!default;
+// @avatar-size-lg: 40px!default;
+// @avatar-size-sm: 24px!default;
+// @avatar-font-size-base: 18px!default;
+// @avatar-font-size-lg: 24px!default;
+// @avatar-font-size-sm: 14px!default;
+// @avatar-bg: #ccc!default;
+// @avatar-color: #fff!default;
+// @avatar-border-radius: @border-radius-base!default;
 
 // // Switch
 // // ---
-// @switch-height: 22px;
-// @switch-sm-height: 16px;
-// @switch-sm-checked-margin-left: -(@switch-sm-height - 3px);
-// @switch-disabled-opacity: 0.4;
-// @switch-color: @primary-color;
+// @switch-height: 22px!default;
+// @switch-sm-height: 16px!default;
+// @switch-sm-checked-margin-left: -(@switch-sm-height - 3px)!default;
+// @switch-disabled-opacity: 0.4!default;
+// @switch-color: @primary-color!default;
 
 // // Pagination
 // // ---
-// @pagination-item-size: 32px;
-// @pagination-item-size-sm: 24px;
-// @pagination-font-family: Arial;
-// @pagination-font-weight-active: 500;
+// @pagination-item-size: 32px!default;
+// @pagination-item-size-sm: 24px!default;
+// @pagination-font-family: Arial!default;
+// @pagination-font-weight-active: 500!default;
 
 // // Breadcrumb
 // // ---
-// @breadcrumb-base-color:        @text-color-secondary;
-// @breadcrumb-last-item-color:   @text-color;
-// @breadcrumb-font-size:         @font-size-base;
-// @breadcrumb-icon-font-size:    @font-size-sm;
-// @breadcrumb-link-color:        @text-color-secondary;
-// @breadcrumb-link-color-hover:  @primary-5;
-// @breadcrumb-separator-color:   @text-color-secondary;
-// @breadcrumb-separator-margin:  0 @padding-xs;
+// @breadcrumb-base-color:        @text-color-secondary!default;
+// @breadcrumb-last-item-color:   @text-color!default;
+// @breadcrumb-font-size:         @font-size-base!default;
+// @breadcrumb-icon-font-size:    @font-size-sm!default;
+// @breadcrumb-link-color:        @text-color-secondary!default;
+// @breadcrumb-link-color-hover:  @primary-5!default;
+// @breadcrumb-separator-color:   @text-color-secondary!default;
+// @breadcrumb-separator-margin:  0 @padding-xs!default;
 
 // // Slider
 // // ---
-// @slider-margin:                       14px 6px 10px;
-// @slider-rail-background-color:        @background-color-base;
-// @slider-rail-background-color-hover:  #e1e1e1;
-// @slider-track-background-color:       @primary-3;
-// @slider-track-background-color-hover: @primary-4;
-// @slider-handle-color:                 @primary-3;
-// @slider-handle-color-hover:           @primary-4;
-// @slider-handle-color-focus:           tint(@primary-color, 20%);
-// @slider-handle-color-focus-shadow:    tint(@primary-color, 50%);
-// @slider-handle-color-tooltip-open:    @primary-color;
-// @slider-dot-border-color:             @border-color-split;
-// @slider-dot-border-color-active:      tint(@primary-color, 50%);
-// @slider-disabled-color:               @disabled-color;
-// @slider-disabled-background-color:    @component-background;
+// @slider-margin:                       14px 6px 10px!default;
+// @slider-rail-background-color:        @background-color-base!default;
+// @slider-rail-background-color-hover:  #e1e1e1!default;
+// @slider-track-background-color:       @primary-3!default;
+// @slider-track-background-color-hover: @primary-4!default;
+// @slider-handle-color:                 @primary-3!default;
+// @slider-handle-color-hover:           @primary-4!default;
+// @slider-handle-color-focus:           tint(@primary-color, 20%)!default;
+// @slider-handle-color-focus-shadow:    tint(@primary-color, 50%)!default;
+// @slider-handle-color-tooltip-open:    @primary-color!default;
+// @slider-dot-border-color:             @border-color-split!default;
+// @slider-dot-border-color-active:      tint(@primary-color, 50%)!default;
+// @slider-disabled-color:               @disabled-color!default;
+// @slider-disabled-background-color:    @component-background!default;
 
 // // Tree
 // // ---
-// @tree-title-height:                   24px;
-// @tree-child-padding:                  18px;
-// @tree-directory-selected-color:       #fff;
-// @tree-directory-selected-bg:          @primary-color;
+// @tree-title-height:                   24px!default;
+// @tree-child-padding:                  18px!default;
+// @tree-directory-selected-color:       #fff!default;
+// @tree-directory-selected-bg:          @primary-color!default;
 
 // // Collapse
 // // ---
-// @collapse-header-padding:             12px 0 12px 40px;
-// @collapse-header-bg:                  @background-color-light;
-// @collapse-content-padding:            @padding-md;
-// @collapse-content-bg:                 @component-background;
+// @collapse-header-padding:             12px 0 12px 40px!default;
+// @collapse-header-bg:                  @background-color-light!default;
+// @collapse-content-padding:            @padding-md!default;
+// @collapse-content-bg:                 @component-background!default;
 
 // // Message
 // // ---
-// @message-notice-content-padding:      10px 16px;
+// @message-notice-content-padding:      10px 16px!default;
 
-// @import 'colorPalette';
+// @import 'colorPalette'!default;
 
 // // color palettes
-// @blue-1: color(~`colorPalette("@{blue-6}", 1)`);
-// @blue-2: color(~`colorPalette("@{blue-6}", 2)`);
-// @blue-3: color(~`colorPalette("@{blue-6}", 3)`);
-// @blue-4: color(~`colorPalette("@{blue-6}", 4)`);
-// @blue-5: color(~`colorPalette("@{blue-6}", 5)`);
-// @blue-6: #1890ff;
+// @blue-1: color(~`colorPalette("@{blue-6}", 1)`)!default;
+// @blue-2: color(~`colorPalette("@{blue-6}", 2)`)!default;
+// @blue-3: color(~`colorPalette("@{blue-6}", 3)`)!default;
+// @blue-4: color(~`colorPalette("@{blue-6}", 4)`)!default;
+// @blue-5: color(~`colorPalette("@{blue-6}", 5)`)!default;
+// @blue-6: #1890ff!default;
 
-// @blue-7: color(~`colorPalette("@{blue-6}", 7)`);
-// @blue-8: color(~`colorPalette("@{blue-6}", 8)`);
-// @blue-9: color(~`colorPalette("@{blue-6}", 9)`);
-// @blue-10: color(~`colorPalette("@{blue-6}", 10)`);
+// @blue-7: color(~`colorPalette("@{blue-6}", 7)`)!default;
+// @blue-8: color(~`colorPalette("@{blue-6}", 8)`)!default;
+// @blue-9: color(~`colorPalette("@{blue-6}", 9)`)!default;
+// @blue-10: color(~`colorPalette("@{blue-6}", 10)`)!default;
 
-// @purple-1: color(~`colorPalette("@{purple-6}", 1)`);
-// @purple-2: color(~`colorPalette("@{purple-6}", 2)`);
-// @purple-3: color(~`colorPalette("@{purple-6}", 3)`);
-// @purple-4: color(~`colorPalette("@{purple-6}", 4)`);
-// @purple-5: color(~`colorPalette("@{purple-6}", 5)`);
-// @purple-6: #722ed1;
-// @purple-7: color(~`colorPalette("@{purple-6}", 7)`);
-// @purple-8: color(~`colorPalette("@{purple-6}", 8)`);
-// @purple-9: color(~`colorPalette("@{purple-6}", 9)`);
-// @purple-10: color(~`colorPalette("@{purple-6}", 10)`);
+// @purple-1: color(~`colorPalette("@{purple-6}", 1)`)!default;
+// @purple-2: color(~`colorPalette("@{purple-6}", 2)`)!default;
+// @purple-3: color(~`colorPalette("@{purple-6}", 3)`)!default;
+// @purple-4: color(~`colorPalette("@{purple-6}", 4)`)!default;
+// @purple-5: color(~`colorPalette("@{purple-6}", 5)`)!default;
+// @purple-6: #722ed1!default;
+// @purple-7: color(~`colorPalette("@{purple-6}", 7)`)!default;
+// @purple-8: color(~`colorPalette("@{purple-6}", 8)`)!default;
+// @purple-9: color(~`colorPalette("@{purple-6}", 9)`)!default;
+// @purple-10: color(~`colorPalette("@{purple-6}", 10)`)!default;
 
-// @cyan-1: color(~`colorPalette("@{cyan-6}", 1)`);
-// @cyan-2: color(~`colorPalette("@{cyan-6}", 2)`);
-// @cyan-3: color(~`colorPalette("@{cyan-6}", 3)`);
-// @cyan-4: color(~`colorPalette("@{cyan-6}", 4)`);
-// @cyan-5: color(~`colorPalette("@{cyan-6}", 5)`);
-// @cyan-6: #13c2c2;
-// @cyan-7: color(~`colorPalette("@{cyan-6}", 7)`);
-// @cyan-8: color(~`colorPalette("@{cyan-6}", 8)`);
-// @cyan-9: color(~`colorPalette("@{cyan-6}", 9)`);
-// @cyan-10: color(~`colorPalette("@{cyan-6}", 10)`);
+// @cyan-1: color(~`colorPalette("@{cyan-6}", 1)`)!default;
+// @cyan-2: color(~`colorPalette("@{cyan-6}", 2)`)!default;
+// @cyan-3: color(~`colorPalette("@{cyan-6}", 3)`)!default;
+// @cyan-4: color(~`colorPalette("@{cyan-6}", 4)`)!default;
+// @cyan-5: color(~`colorPalette("@{cyan-6}", 5)`)!default;
+// @cyan-6: #13c2c2!default;
+// @cyan-7: color(~`colorPalette("@{cyan-6}", 7)`)!default;
+// @cyan-8: color(~`colorPalette("@{cyan-6}", 8)`)!default;
+// @cyan-9: color(~`colorPalette("@{cyan-6}", 9)`)!default;
+// @cyan-10: color(~`colorPalette("@{cyan-6}", 10)`)!default;
 
-// @green-1: color(~`colorPalette("@{green-6}", 1)`);
-// @green-2: color(~`colorPalette("@{green-6}", 2)`);
-// @green-3: color(~`colorPalette("@{green-6}", 3)`);
-// @green-4: color(~`colorPalette("@{green-6}", 4)`);
-// @green-5: color(~`colorPalette("@{green-6}", 5)`);
-// @green-6: #52c41a;
-// @green-7: color(~`colorPalette("@{green-6}", 7)`);
-// @green-8: color(~`colorPalette("@{green-6}", 8)`);
-// @green-9: color(~`colorPalette("@{green-6}", 9)`);
-// @green-10: color(~`colorPalette("@{green-6}", 10)`);
+// @green-1: color(~`colorPalette("@{green-6}", 1)`)!default;
+// @green-2: color(~`colorPalette("@{green-6}", 2)`)!default;
+// @green-3: color(~`colorPalette("@{green-6}", 3)`)!default;
+// @green-4: color(~`colorPalette("@{green-6}", 4)`)!default;
+// @green-5: color(~`colorPalette("@{green-6}", 5)`)!default;
+// @green-6: #52c41a!default;
+// @green-7: color(~`colorPalette("@{green-6}", 7)`)!default;
+// @green-8: color(~`colorPalette("@{green-6}", 8)`)!default;
+// @green-9: color(~`colorPalette("@{green-6}", 9)`)!default;
+// @green-10: color(~`colorPalette("@{green-6}", 10)`)!default;
 
-// @magenta-1: color(~`colorPalette("@{magenta-6}", 1)`);
-// @magenta-2: color(~`colorPalette("@{magenta-6}", 2)`);
-// @magenta-3: color(~`colorPalette("@{magenta-6}", 3)`);
-// @magenta-4: color(~`colorPalette("@{magenta-6}", 4)`);
-// @magenta-5: color(~`colorPalette("@{magenta-6}", 5)`);
-// @magenta-6: #eb2f96;
-// @magenta-7: color(~`colorPalette("@{magenta-6}", 7)`);
-// @magenta-8: color(~`colorPalette("@{magenta-6}", 8)`);
-// @magenta-9: color(~`colorPalette("@{magenta-6}", 9)`);
-// @magenta-10: color(~`colorPalette("@{magenta-6}", 10)`);
+// @magenta-1: color(~`colorPalette("@{magenta-6}", 1)`)!default;
+// @magenta-2: color(~`colorPalette("@{magenta-6}", 2)`)!default;
+// @magenta-3: color(~`colorPalette("@{magenta-6}", 3)`)!default;
+// @magenta-4: color(~`colorPalette("@{magenta-6}", 4)`)!default;
+// @magenta-5: color(~`colorPalette("@{magenta-6}", 5)`)!default;
+// @magenta-6: #eb2f96!default;
+// @magenta-7: color(~`colorPalette("@{magenta-6}", 7)`)!default;
+// @magenta-8: color(~`colorPalette("@{magenta-6}", 8)`)!default;
+// @magenta-9: color(~`colorPalette("@{magenta-6}", 9)`)!default;
+// @magenta-10: color(~`colorPalette("@{magenta-6}", 10)`)!default;
 
 // // alias of magenta
-// @pink-1: color(~`colorPalette("@{pink-6}", 1)`);
-// @pink-2: color(~`colorPalette("@{pink-6}", 2)`);
-// @pink-3: color(~`colorPalette("@{pink-6}", 3)`);
-// @pink-4: color(~`colorPalette("@{pink-6}", 4)`);
-// @pink-5: color(~`colorPalette("@{pink-6}", 5)`);
-// @pink-6: #eb2f96;
-// @pink-7: color(~`colorPalette("@{pink-6}", 7)`);
-// @pink-8: color(~`colorPalette("@{pink-6}", 8)`);
-// @pink-9: color(~`colorPalette("@{pink-6}", 9)`);
-// @pink-10: color(~`colorPalette("@{pink-6}", 10)`);
+// @pink-1: color(~`colorPalette("@{pink-6}", 1)`)!default;
+// @pink-2: color(~`colorPalette("@{pink-6}", 2)`)!default;
+// @pink-3: color(~`colorPalette("@{pink-6}", 3)`)!default;
+// @pink-4: color(~`colorPalette("@{pink-6}", 4)`)!default;
+// @pink-5: color(~`colorPalette("@{pink-6}", 5)`)!default;
+// @pink-6: #eb2f96!default;
+// @pink-7: color(~`colorPalette("@{pink-6}", 7)`)!default;
+// @pink-8: color(~`colorPalette("@{pink-6}", 8)`)!default;
+// @pink-9: color(~`colorPalette("@{pink-6}", 9)`)!default;
+// @pink-10: color(~`colorPalette("@{pink-6}", 10)`)!default;
 
-// @red-1: color(~`colorPalette("@{red-6}", 1)`);
-// @red-2: color(~`colorPalette("@{red-6}", 2)`);
-// @red-3: color(~`colorPalette("@{red-6}", 3)`);
-// @red-4: color(~`colorPalette("@{red-6}", 4)`);
-// @red-5: color(~`colorPalette("@{red-6}", 5)`);
-// @red-6: #f5222d;
-// @red-7: color(~`colorPalette("@{red-6}", 7)`);
-// @red-8: color(~`colorPalette("@{red-6}", 8)`);
-// @red-9: color(~`colorPalette("@{red-6}", 9)`);
-// @red-10: color(~`colorPalette("@{red-6}", 10)`);
+// @red-1: color(~`colorPalette("@{red-6}", 1)`)!default;
+// @red-2: color(~`colorPalette("@{red-6}", 2)`)!default;
+// @red-3: color(~`colorPalette("@{red-6}", 3)`)!default;
+// @red-4: color(~`colorPalette("@{red-6}", 4)`)!default;
+// @red-5: color(~`colorPalette("@{red-6}", 5)`)!default;
+// @red-6: #f5222d!default;
+// @red-7: color(~`colorPalette("@{red-6}", 7)`)!default;
+// @red-8: color(~`colorPalette("@{red-6}", 8)`)!default;
+// @red-9: color(~`colorPalette("@{red-6}", 9)`)!default;
+// @red-10: color(~`colorPalette("@{red-6}", 10)`)!default;
 
-// @orange-1: color(~`colorPalette("@{orange-6}", 1)`);
-// @orange-2: color(~`colorPalette("@{orange-6}", 2)`);
-// @orange-3: color(~`colorPalette("@{orange-6}", 3)`);
-// @orange-4: color(~`colorPalette("@{orange-6}", 4)`);
-// @orange-5: color(~`colorPalette("@{orange-6}", 5)`);
-// @orange-6: #fa8c16;
-// @orange-7: color(~`colorPalette("@{orange-6}", 7)`);
-// @orange-8: color(~`colorPalette("@{orange-6}", 8)`);
-// @orange-9: color(~`colorPalette("@{orange-6}", 9)`);
-// @orange-10: color(~`colorPalette("@{orange-6}", 10)`);
+// @orange-1: color(~`colorPalette("@{orange-6}", 1)`)!default;
+// @orange-2: color(~`colorPalette("@{orange-6}", 2)`)!default;
+// @orange-3: color(~`colorPalette("@{orange-6}", 3)`)!default;
+// @orange-4: color(~`colorPalette("@{orange-6}", 4)`)!default;
+// @orange-5: color(~`colorPalette("@{orange-6}", 5)`)!default;
+// @orange-6: #fa8c16!default;
+// @orange-7: color(~`colorPalette("@{orange-6}", 7)`)!default;
+// @orange-8: color(~`colorPalette("@{orange-6}", 8)`)!default;
+// @orange-9: color(~`colorPalette("@{orange-6}", 9)`)!default;
+// @orange-10: color(~`colorPalette("@{orange-6}", 10)`)!default;
 
-// @yellow-1: color(~`colorPalette("@{yellow-6}", 1)`);
-// @yellow-2: color(~`colorPalette("@{yellow-6}", 2)`);
-// @yellow-3: color(~`colorPalette("@{yellow-6}", 3)`);
-// @yellow-4: color(~`colorPalette("@{yellow-6}", 4)`);
-// @yellow-5: color(~`colorPalette("@{yellow-6}", 5)`);
-// @yellow-6: #fadb14;
-// @yellow-7: color(~`colorPalette("@{yellow-6}", 7)`);
-// @yellow-8: color(~`colorPalette("@{yellow-6}", 8)`);
-// @yellow-9: color(~`colorPalette("@{yellow-6}", 9)`);
-// @yellow-10: color(~`colorPalette("@{yellow-6}", 10)`);
+// @yellow-1: color(~`colorPalette("@{yellow-6}", 1)`)!default;
+// @yellow-2: color(~`colorPalette("@{yellow-6}", 2)`)!default;
+// @yellow-3: color(~`colorPalette("@{yellow-6}", 3)`)!default;
+// @yellow-4: color(~`colorPalette("@{yellow-6}", 4)`)!default;
+// @yellow-5: color(~`colorPalette("@{yellow-6}", 5)`)!default;
+// @yellow-6: #fadb14!default;
+// @yellow-7: color(~`colorPalette("@{yellow-6}", 7)`)!default;
+// @yellow-8: color(~`colorPalette("@{yellow-6}", 8)`)!default;
+// @yellow-9: color(~`colorPalette("@{yellow-6}", 9)`)!default;
+// @yellow-10: color(~`colorPalette("@{yellow-6}", 10)`)!default;
 
-// @volcano-1: color(~`colorPalette("@{volcano-6}", 1)`);
-// @volcano-2: color(~`colorPalette("@{volcano-6}", 2)`);
-// @volcano-3: color(~`colorPalette("@{volcano-6}", 3)`);
-// @volcano-4: color(~`colorPalette("@{volcano-6}", 4)`);
-// @volcano-5: color(~`colorPalette("@{volcano-6}", 5)`);
-// @volcano-6: #fa541c;
-// @volcano-7: color(~`colorPalette("@{volcano-6}", 7)`);
-// @volcano-8: color(~`colorPalette("@{volcano-6}", 8)`);
-// @volcano-9: color(~`colorPalette("@{volcano-6}", 9)`);
-// @volcano-10: color(~`colorPalette("@{volcano-6}", 10)`);
+// @volcano-1: color(~`colorPalette("@{volcano-6}", 1)`)!default;
+// @volcano-2: color(~`colorPalette("@{volcano-6}", 2)`)!default;
+// @volcano-3: color(~`colorPalette("@{volcano-6}", 3)`)!default;
+// @volcano-4: color(~`colorPalette("@{volcano-6}", 4)`)!default;
+// @volcano-5: color(~`colorPalette("@{volcano-6}", 5)`)!default;
+// @volcano-6: #fa541c!default;
+// @volcano-7: color(~`colorPalette("@{volcano-6}", 7)`)!default;
+// @volcano-8: color(~`colorPalette("@{volcano-6}", 8)`)!default;
+// @volcano-9: color(~`colorPalette("@{volcano-6}", 9)`)!default;
+// @volcano-10: color(~`colorPalette("@{volcano-6}", 10)`)!default;
 
-// @geekblue-1: color(~`colorPalette("@{geekblue-6}", 1)`);
-// @geekblue-2: color(~`colorPalette("@{geekblue-6}", 2)`);
-// @geekblue-3: color(~`colorPalette("@{geekblue-6}", 3)`);
-// @geekblue-4: color(~`colorPalette("@{geekblue-6}", 4)`);
-// @geekblue-5: color(~`colorPalette("@{geekblue-6}", 5)`);
-// @geekblue-6: #2f54eb;
-// @geekblue-7: color(~`colorPalette("@{geekblue-6}", 7)`);
-// @geekblue-8: color(~`colorPalette("@{geekblue-6}", 8)`);
-// @geekblue-9: color(~`colorPalette("@{geekblue-6}", 9)`);
-// @geekblue-10: color(~`colorPalette("@{geekblue-6}", 10)`);
+// @geekblue-1: color(~`colorPalette("@{geekblue-6}", 1)`)!default;
+// @geekblue-2: color(~`colorPalette("@{geekblue-6}", 2)`)!default;
+// @geekblue-3: color(~`colorPalette("@{geekblue-6}", 3)`)!default;
+// @geekblue-4: color(~`colorPalette("@{geekblue-6}", 4)`)!default;
+// @geekblue-5: color(~`colorPalette("@{geekblue-6}", 5)`)!default;
+// @geekblue-6: #2f54eb!default;
+// @geekblue-7: color(~`colorPalette("@{geekblue-6}", 7)`)!default;
+// @geekblue-8: color(~`colorPalette("@{geekblue-6}", 8)`)!default;
+// @geekblue-9: color(~`colorPalette("@{geekblue-6}", 9)`)!default;
+// @geekblue-10: color(~`colorPalette("@{geekblue-6}", 10)`)!default;
 
-// @lime-1: color(~`colorPalette("@{lime-6}", 1)`);
-// @lime-2: color(~`colorPalette("@{lime-6}", 2)`);
-// @lime-3: color(~`colorPalette("@{lime-6}", 3)`);
-// @lime-4: color(~`colorPalette("@{lime-6}", 4)`);
-// @lime-5: color(~`colorPalette("@{lime-6}", 5)`);
-// @lime-6: #a0d911;
-// @lime-7: color(~`colorPalette("@{lime-6}", 7)`);
-// @lime-8: color(~`colorPalette("@{lime-6}", 8)`);
-// @lime-9: color(~`colorPalette("@{lime-6}", 9)`);
-// @lime-10: color(~`colorPalette("@{lime-6}", 10)`);
+// @lime-1: color(~`colorPalette("@{lime-6}", 1)`)!default;
+// @lime-2: color(~`colorPalette("@{lime-6}", 2)`)!default;
+// @lime-3: color(~`colorPalette("@{lime-6}", 3)`)!default;
+// @lime-4: color(~`colorPalette("@{lime-6}", 4)`)!default;
+// @lime-5: color(~`colorPalette("@{lime-6}", 5)`)!default;
+// @lime-6: #a0d911!default;
+// @lime-7: color(~`colorPalette("@{lime-6}", 7)`)!default;
+// @lime-8: color(~`colorPalette("@{lime-6}", 8)`)!default;
+// @lime-9: color(~`colorPalette("@{lime-6}", 9)`)!default;
+// @lime-10: color(~`colorPalette("@{lime-6}", 10)`)!default;
 
-// @gold-1: color(~`colorPalette("@{gold-6}", 1)`);
-// @gold-2: color(~`colorPalette("@{gold-6}", 2)`);
-// @gold-3: color(~`colorPalette("@{gold-6}", 3)`);
-// @gold-4: color(~`colorPalette("@{gold-6}", 4)`);
-// @gold-5: color(~`colorPalette("@{gold-6}", 5)`);
-// @gold-6: #faad14;
-// @gold-7: color(~`colorPalette("@{gold-6}", 7)`);
-// @gold-8: color(~`colorPalette("@{gold-6}", 8)`);
-// @gold-9: color(~`colorPalette("@{gold-6}", 9)`);
-// @gold-10: color(~`colorPalette("@{gold-6}", 10)`);
+// @gold-1: color(~`colorPalette("@{gold-6}", 1)`)!default;
+// @gold-2: color(~`colorPalette("@{gold-6}", 2)`)!default;
+// @gold-3: color(~`colorPalette("@{gold-6}", 3)`)!default;
+// @gold-4: color(~`colorPalette("@{gold-6}", 4)`)!default;
+// @gold-5: color(~`colorPalette("@{gold-6}", 5)`)!default;
+// @gold-6: #faad14!default;
+// @gold-7: color(~`colorPalette("@{gold-6}", 7)`)!default;
+// @gold-8: color(~`colorPalette("@{gold-6}", 8)`)!default;
+// @gold-9: color(~`colorPalette("@{gold-6}", 9)`)!default;
+// @gold-10: color(~`colorPalette("@{gold-6}", 10)`)!default;

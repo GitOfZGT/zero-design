@@ -1,3 +1,4 @@
+<!-- @routePath:/component-doc/Zlayout-doc -->
 <!--
  * @Author: zgt
  * @Date: 2018-08-21 10:59:31
@@ -64,60 +65,15 @@
 
 可追加`className`、`style`
 
-<table>
-	<thead>
-		<tr>
-			<th>参数</th>
-			<th>说明</th>
-			<th>类型</th>
-			<th>默认值</th>
-		</tr>
-	</thead>
-	<tbody>
-		<tr>
-			<td>children</td>
-			<td>即this.props.children</td>
-			<td>any</td>
-			<td>--</td>
-		</tr>
-		<tr>
-			<td>flexRow</td>
-			<td>将Zlayout的子元素横向flex布局</td>
-			<td>boolean</td>
-			<td>--</td>
-		</tr>
-		<tr>
-			<td>flex</td>
-			<td>嵌套的Zlayout的flex占比</td>
-			<td>number</td>
-			<td>1</td>
-		</tr>
-        <tr>
-			<td>height</td>
-			<td>Zlayout的高度</td>
-			<td>string|number</td>
-			<td>"100%"</td>
-		</tr>
-        <tr>
-			<td>width</td>
-			<td>Zlayout的宽度</td>
-			<td>string|number</td>
-			<td>"100%"</td>
-		</tr>
-        <tr>
-			<td>className</td>
-			<td>Zlayout的className</td>
-			<td>string</td>
-			<td>-</td>
-		</tr>
-        <tr>
-			<td>onTransitionend</td>
-			<td>当Zlayout的width等样式改变所触发的过渡动画完成后执行的钩子</td>
-			<td>function</td>
-			<td>-</td>
-		</tr>
-	</tbody>
-</table>
+| 参数            | 说明                                                                                 | 类型                                                  | 默认值     |
+| --------------- | ------------------------------------------------------------------------------------ | -------------------------------------------- | ---------- |
+| children        | 即this.props.children                                                                | any             | --         |
+| flexRow         | 将Zlayout的子元素横向flex布局                                                         | boolean         | --         |
+| flex            | 嵌套的Zlayout的flex占比                                                               | number          | 1         |
+| height          | Zlayout的高度                                                                        | string \| number  | "100%"   |
+| width           | Zlayout的宽度                                                                        | string \| number  | "100%"   |
+| className       | Zlayout的className                                                                   | string          | --         |
+| onTransitionend | 当Zlayout的width等样式改变所触发的过渡动画完成后执行的钩子                              | function        | --         |
 
 <div class="z-doc-titles"></div>
 
@@ -125,36 +81,11 @@
 
 可追加`className`、`style`
 
-<table>
-	<thead>
-		<tr>
-			<th>参数</th>
-			<th>说明</th>
-			<th>类型</th>
-			<th>默认值</th>
-		</tr>
-	</thead>
-	<tbody>
-    	<tr>
-			<td>children</td>
-			<td>即this.props.children</td>
-			<td>any</td>
-			<td>--</td>
-		</tr>
-        <tr>
-			<td>height</td>
-			<td>高度</td>
-			<td>string|number</td>
-			<td>"64px"</td>
-		</tr>
-        <tr>
-			<td>className</td>
-			<td>className</td>
-			<td>string</td>
-			<td>--</td>
-		</tr>
-	</tbody>
-</table>
+| 参数            | 说明                                                                                 | 类型                                                  | 默认值     |
+| --------------- | ------------------------------------------------------------------------------------ | -------------------------------------------- | ---------- |
+| children        | 即this.props.children                                                                | any             | --         |
+| height          | 高度                                                                                 | string \| number  | "64px"   |
+| className       | className                                                                            | string          | --         |
 
 <div class="z-doc-titles"></div>
 
@@ -162,54 +93,12 @@
 
 可追加`className`、`style`
 
-<table>
-	<thead>
-		<tr>
-			<th>参数</th>
-			<th>说明</th>
-			<th>类型</th>
-			<th>默认值</th>
-		</tr>
-	</thead>
-	<tbody>
-    	<tr>
-			<td>children</td>
-			<td>即this.props.children</td>
-			<td>any</td>
-			<td>--</td>
-		</tr>
-		<tr>
-			<td>scroll</td>
-			<td>是否启用滚动条</td>
-			<td>boolean</td>
-			<td>--</td>
-		</tr>
-		<tr>
-			<td>getScrollInstance</td>
-			<td>获取滚动条的实例，scroll=true时有效</td>
-			<td>function</td>
-			<td>--</td>
-		</tr>
-        <tr>
-			<td>insertToScrollWraper</td>
-			<td>插入到具有滚动条区域外的内容，不受滚动事件的影响</td>
-			<td>any</td>
-			<td>--</td>
-		</tr>
-        <tr>
-			<td>getWrapperEl</td>
-			<td>获取最外层包裹元素,(el,metods)=>{}</td>
-			<td>function</td>
-			<td>--</td>
-		</tr>
-        <tr>
-			<td>useCustomScroll</td>
-			<td>在chrome浏览器默认使用原生滚动条，在其他浏览器默认启用js自定义滚动条，如需chrome也启用js自定义滚动条，useCustomScroll为true即可</td>
-			<td>boolean</td>
-			<td>false</td>
-		</tr>
-	</tbody>
-</table>
+| 参数            | 说明                                                                                 | 类型                                                  | 默认值     |
+| --------------- | ------------------------------------------------------------------------------------ | -------------------------------------------- | ---------- |
+| children        | 即this.props.children                                                                | any             | --         |
+| scroll          | 是否启用滚动条                                                                        | boolean         | --         || getScrollInstance | 获取滚动条的实例，scroll=true时有效                                                  | function        | --         || insertToScrollWraper | 插入到具有滚动条区域外的内容，不受滚动事件的影响                                   | any             | --         |
+| getWrapperEl    | 获取最外层包裹元素,(el,metods)=>{}                                                    | function        | --         |
+| useCustomScroll | 在chrome浏览器默认使用原生滚动条，在其他浏览器默认启用js自定义滚动条，如需chrome也启用js自定义滚动条，useCustomScroll为true即可 | boolean    | false      |
 
 <div class="z-doc-titles"></div>
 
@@ -217,36 +106,11 @@
 
 可追加`className`、`style`
 
-<table>
-	<thead>
-		<tr>
-			<th>参数</th>
-			<th>说明</th>
-			<th>类型</th>
-			<th>默认值</th>
-		</tr>
-	</thead>
-	<tbody>
-    	<tr>
-			<td>children</td>
-			<td>即this.props.children</td>
-			<td>any</td>
-			<td>--</td>
-		</tr>
-        <tr>
-			<td>height</td>
-			<td>高度</td>
-			<td>string|number</td>
-			<td>"40px"</td>
-		</tr>
-        <tr>
-			<td>className</td>
-			<td>className</td>
-			<td>string</td>
-			<td>--</td>
-		</tr>
-	</tbody>
-</table>
+| 参数            | 说明                                                                                 | 类型                                                  | 默认值     |
+| --------------- | ------------------------------------------------------------------------------------ | -------------------------------------------- | ---------- |
+| children        | 即this.props.children                                                                | any             | --         |
+| height          | 高度                                                                                 | string \| number | "40px"    |
+| className       | className                                                                            | string          | --         |
 
 <div class="z-doc-titles"></div>
 

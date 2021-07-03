@@ -1,13 +1,9 @@
-<!--
- * @Author: zgt
- * @Date: 2018-08-21 10:59:31
- * @LastEditors: zgt
- * @LastEditTime: 2019-08-22 16:22:10
- * @Description: file content
- -->
-<div class="z-doc-titles"></div>
+<!-- @routePath:/HOC-doc/ZdetailSimpleBaseHOC-doc -->
+
 
 # 详情页面：ZdetailSimpleBaseHOC
+
+> 创建简单的详情展示页面，不建议再使用，可直接用 ZpageWrapper 和 Zinfo 组装
 
 `ZdetailSimpleBaseHOC`是一个函数，传入`pageConfig`参数配置，返回一个展示详细内容结构的组件
 
@@ -16,6 +12,14 @@
 <div class="z-demo-box" data-render="demo1" data-title="基本使用"></div>
 
 ```jsx
+/**
+ * @renderMode: rightModal
+ * @componentName: ZdetailSimpleBaseHOCDemo
+ * @description: 基本使用
+ * @title: 基本使用
+ */
+import React from 'react';
+import { ZdetailSimpleBaseHOC } from 'zerod';
 let defaultConfig = {
 	pageHeader: {
 		show: true,
@@ -57,7 +61,12 @@ let defaultConfig = {
 		itemsRender: null,
 		// 获取详情数据的后台接口函数，必须返回 Promise
 		detailApiInterface: (id, props) => {
-			return api.config.getServiceDetail({ serviceId: id });
+			// return api.config.getServiceDetail({ serviceId: id });
+			return Promise.resolve({
+				data:{
+					serviceRemark:"测试我归属感",serviceName:"斗士大哥"
+				}
+			})
 		},
 	},
 	// 更多渲染内容
@@ -69,99 +78,39 @@ let defaultConfig = {
 		);
 	},
 };
+
+export default ZdetailSimpleBaseHOC(defaultConfig)
+
 ```
 
-<div class="z-doc-titles"></div>
+
 
 ## pageConfig
 
 除了如下的属性，pageConfig还包含 <span class="z-history-href" data-path="/main/HOC-doc/ZpageWraperHOC-doc">HOC/页面头尾结构：ZpageWrapper</span> 的props
 
-<table>
-	<thead>
-		<tr>
-			<th>参数</th>
-			<th>说明</th>
-			<th>类型</th>
-			<th>默认值</th>
-		</tr>
-	</thead>
-	<tbody>
-		<tr>
-			<td>detail</td>
-			<td>表单配置，请看下面的pageConfig.detail</td>
-			<td>object</td>
-			<td>--</td>
-		</tr>
-		<tr>
-			<td><i class="zero-icon zerod-shengchangzhouqi"></i> moreContentRender</td>
-			<td>在表单之后添加更多内容的渲染函数,有两个参数detail：detailApiInterface接口获取的详情数据、panel:组件的实例对象</td>
-			<td>(detail,tool) =>{return;}</td>
-			<td>--</td>
-		</tr>
-		<tr>
-			<td><i class="zero-icon zerod-shengchangzhouqi"></i> panelBeforeRender</td>
-			<td>列表面板上面的渲染函数</td>
-			<td>function(detail,tool){return ReacNode}</td>
-			<td>--</td>
-		</tr>
-		<tr>
-			<td><i class="zero-icon zerod-shengchangzhouqi"></i> panelAfterRender</td>
-			<td>列表面板下面的渲染函数</td>
-			<td>function(detail,tool){return ReacNode;}</td>
-			<td>--</td>
-		</tr>
-			<tr>
-			<td>exportSomething</td>
-			<td>是一个获取tool的钩子，相当于组件的componentDidMount</td>
-			<td>function(tool){ myTool=tool }</td>
-			<td>--</td>
-		</tr>
-	</tbody>
-</table>
+| 参数            | 说明                                                                                 | 类型                                                  | 默认值     |
+| --------------- | ------------------------------------------------------------------------------------ | -------------------------------------------- | ---------- |
+| detail          | 表单配置，请看下面的pageConfig.detail                                                 | object          | --         |
+| <i class="zero-icon zerod-shengchangzhouqi"></i> moreContentRender  | 在表单之后添加更多内容的渲染函数,有两个参数detail：detailApiInterface接口获取的详情数据、panel:组件的实例对象            | (detail,tool) =>{return;}          | --         |
+| <i class="zero-icon zerod-shengchangzhouqi"></i> panelBeforeRender  | 列表面板上面的渲染函数        | function(detail,tool){return ReacNode;} | --         |
+| <i class="zero-icon zerod-shengchangzhouqi"></i> panelAfterRender | 列表面板下面的渲染函数 | function(detail,tool){return ReacNode;}   | --         |
+| exportSomething  | 是一个获取tool的钩子，相当于组件的componentDidMount          | function(tool){ myTool=tool }          | --         |
 
-<div class="z-doc-titles"></div>
+
+
 
 ## pageConfig.detail
 
-<table>
-	<thead>
-		<tr>
-			<th>参数</th>
-			<th>说明</th>
-			<th>类型</th>
-			<th>默认值</th>
-		</tr>
-	</thead>
-	<tbody>
-		<tr>
-			<td>panelHeader</td>
-			<td>列表面板的头部内容,为null则不显示面板头部</td>
-			<td>string | function(tool){return ;}</td>
-			<td>列表</td>
-		</tr>
-		<tr>
-			<td>items</td>
-			<td>同 <span class="z-history-href" data-path="/main/component-doc/Zinfo-doc">组件/Zinfo</span> 的items属性</td>
-			<td>array[object]</td>
-			<td>--</td>
-		</tr>
-		<tr>
-			<td>defaultSpan</td>
-			<td>同 <span class="z-history-href" data-path="/main/component-doc/Zinfo-doc">组件/Zinfo</span> 的defaultSpan属性</td>
-			<td>array[object]</td>
-			<td>--</td>
-		</tr>
-		<tr>
-			<td>detailApiInterface</td>
-			<td>获取详细数据的后台接口函数,必须返回Promise,参数有 detailId : ZeditSimpleFormHOC(pageConfig)得到组件的detailId属性，props ：ZeditSimpleFormHOC(pageConfig)得到组件的其他属性。then((re)=>{})的回调中re结构须：{ data:{} }</td>
-			<td>(detailId, props,tool) =>{return Promise;}</td>
-			<td>--</td>
-		</tr>
-	</tbody>
-</table>
+| 参数            | 说明                                                                                 | 类型                                                  | 默认值     |
+| --------------- | ------------------------------------------------------------------------------------ | -------------------------------------------- | ---------- |
+| panelHeader     | 列表面板的头部内容,为null则不显示面板头部                                          | string \| function(tool){return ;}          | 列表         |
+| items           | 同 <span class="z-history-href" data-path="/main/component-doc/Zinfo-doc">组件/Zinfo</span> 的items属性 | array[object]          | --         |
+| defaultSpan     | 同 <span class="z-history-href" data-path="/main/component-doc/Zinfo-doc">组件/Zinfo</span> 的defaultSpan属性 | array[object]          | --         |
+| detailApiInterface | 获取详细数据的后台接口函数,必须返回Promise,参数有 detailId : ZeditSimpleFormHOC(pageConfig)得到组件的detailId属性，props ：ZeditSimpleFormHOC(pageConfig)得到组件的其他属性。then((re)=>{})的回调中re结构须：{ data:{} } | (detailId, props,tool) =>{return Promise;}          | --         |
 
-<div class="z-doc-titles"></div>
+
+
 
 ## tool 参数
 
@@ -173,72 +122,22 @@ pageConfig 中的一些函数如`moreContentRender`提供了`tool`参数出来�
 
 tool.methods 是一个对象，内容如下：
 
-<table>
-	<thead>
-		<tr>
-			<th>方法</th>
-			<th>说明</th>
-			<th>使用方式</th>
-		</tr>
-	</thead>
-	<tbody>
-		<tr>
-			<td>getWrapperProps</td>
-			<td>用于获取ZdetailSimpleBaseHOC()返回的那个组件的props</td>
-			<td>tool.methods.getWrapperProps()</td>
-		</tr>
-		<tr>
-			<td>showLoading</td>
-			<td>用于 显示/取消 当前页的loading的方法，必需参数show：true|false</td>
-			<td>tool.methods.showLoading(true)</td>
-		</tr>
-		<tr>
-			<td>getDetailData</td>
-			<td>会触发pageConfig.detail.detailApiInterface函数</td>
-			<td>tool.methods.getDetailData()</td>
-		</tr>
-		<tr>
-			<td>openModal</td>
-			<td>根据当前位置打开下一级rightModal</td>
-			<td>tool.methods.openModal(content)</td>
-		</tr>
-		<tr>
-			<td>closeCurrentModal</td>
-			<td>关闭当前的rightModal</td>
-			<td>tool.methods.closeCurrentModal()</td>
-		</tr>
-		<tr>
-			<td>notice</td>
-			<td>是一个对象，弹出提示通告的方式，跟ZmainHOC中的noticeType有关，属性函数有success、error、info、warning，它们的参数有 content:提示内容，config:同antd的 notification 和 message 参数</td>
-			<td>tool.methods.notice.success("操作成功" [,config])</td>
-		</tr>
-	</tbody>
-</table>
+| 方法               | 说明                                 | 使用方式                                                        |
+| ------------------ | -------------------------------------| ---------------------------------------------------------- |
+| getWrapperProps    | 用于获取ZdetailSimpleBaseHOC()返回的那个组件的props | tool.methods.getWrapperProps()                |
+| showLoading        | 用于 显示/取消 当前页的loading的方法，必需参数show：true\|false | tool.methods.showLoading(true)     |
+| getDetailData      | 会触发pageConfig.detail.detailApiInterface函数 | tool.methods.getDetailData()                      |
+| openModal          | 根据当前位置打开下一级rightModal       | tool.methods.openModal(content)                            |
+| closeCurrentModal  | 是一个对象，弹出提示通告的方式，跟ZmainHOC中的noticeType有关，属性函数有success、error、info、warning，它们的参数有 content:提示内容，config:同antd的 notification 和 message 参数  | tool.methods.closeCurrentModal()                         |
+| notice             | 设置滚动区域的style （除了 height属性）  | tool.methods.notice.success("操作成功" [,config])         |
 
-<div class="z-doc-titles"></div>
+
 
 ### tool.$router
 
 tool.$router是一个对象，内容如下：
 
-<table>
-	<thead>
-		<tr>
-			<th>属性</th>
-			<th>说明</th>
-			<th>使用方式</th>
-		</tr>
-	</thead>
-	<tbody>
-		<tr>
-			<td>history</td>
-			<td>可以调用push、replace等跳转路由path得方法，<a href="https://reacttraining.com/react-router/web/api/history" target="_blank"> 更多请查看react-router的history</a></td>
-			<td>tool.$router.history.push("/login")</td>
-		</tr>
-		<tr>
-			<td>location</td>
-			<td>当前路由的相关信息,<a href="https://reacttraining.com/react-router/web/api/location" target="_blank"> 更多请查看react-router的location</a></td>
-			<td>tool.$router.location.pathname</td>
-		</tr>
-	</tbody>
-</table>
+| 属性               | 说明                                 | 使用方式                                                        |
+| ------------------ | -------------------------------------| ---------------------------------------------------------- |
+| history            | 可以调用push、replace等跳转路由path得方法，[更多请查看react-router的history](https://reacttraining.com/react-router/web/api/history)  | tool.$router.history.push("/login")     |
+| location        | 当前路由的相关信息,[更多请查看react-router的location](https://reacttraining.com/react-router/web/api/location) | tool.$router.location.pathname               |

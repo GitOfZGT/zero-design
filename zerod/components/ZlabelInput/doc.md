@@ -1,13 +1,20 @@
+<!-- @routePath: /component-doc/ZlabelInput-doc -->
 # label+value输入框：ZlabelInput
 
 `ZlabelInput` 有两个输入框组成，得到的值如 {label:"男",value:"1"}
 
-1、基本使用
-
-<div class="z-demo-box" data-render="demo1" data-title="基本使用"></div>
-
 ```jsx
-class Myjavascript extends ZpureComponent {
+
+/**
+ * @renderMode: inline
+ * @componentName: ZlabelInputDemo
+ * @description: ZlabelInput基本使用的示例
+ * @title: ZlabelInput
+ */
+import React from 'react';
+import { ZlabelInput } from 'zerod';
+
+export default class Myjavascript extends React.PureComponent {
 	state = {
 		labelValue: null,
 	};
@@ -34,69 +41,14 @@ class Myjavascript extends ZpureComponent {
 
 可追加`className`、`style`
 
-<table>
-	<thead>
-		<tr>
-			<th>参数</th>
-			<th>说明</th>
-			<th>类型</th>
-			<th>默认值</th>
-		</tr>
-	</thead>
-	<tbody>
-		<tr>
-			<td>value</td>
-			<td>两个输入框的值，{label:"",value:""}</td>
-			<td>object</td>
-			<td>--</td>
-		</tr>
-		<tr>
-			<td>onChange</td>
-			<td>输入框内容变化时的回调</td>
-			<td>(value,e)=>{}</td>
-			<td>--</td>
-		</tr>
-		<tr>
-			<td>labelPlaceholder</td>
-			<td>label输入框没有值时显示的内容</td>
-			<td>string</td>
-			<td>--</td>
-		</tr>
-		<tr>
-			<td>valuePlaceholder</td>
-			<td>value输入框没有值时显示的内容</td>
-			<td>string</td>
-			<td>--</td>
-		</tr>
-		<tr>
-			<td>disabled</td>
-			<td>是否禁用状态，默认false</td>
-			<td>boolean</td>
-			<td>false</td>
-		</tr>
-		<tr>
-			<td>labelSpan</td>
-			<td>label输入框占总宽度的格数 1~24</td>
-			<td>number</td>
-			<td>10</td>
-		</tr>
-		<tr>
-			<td>valueSpan</td>
-			<td>value输入框占总宽度的格数 1~24</td>
-			<td>number</td>
-			<td>14</td>
-		</tr>
-		<tr>
-			<td>size</td>
-			<td>输入框的尺寸</td>
-			<td>default | small | large</td>
-			<td>default</td>
-		</tr>
-		<tr>
-			<td>sync</td>
-			<td>是否label输入和value输入同步</td>
-			<td>boolean</td>
-			<td>false</td>
-		</tr>
-	</tbody>
-</table>
+| 参数            | 说明                                                                                 | 类型                                                  | 默认值     |
+| --------------- | ------------------------------------------------------------------------------------ | -------------------------------------------- | ---------- |
+| value           | 两个输入框的值，{label:"",value:""}                                                   | object          | --         |
+| onChange        | 输入框内容变化时的回调                                                                | (value,e)=>{}    | --         |
+| labelPlaceholder | label输入框没有值时显示的内容                                                        | string          | --         |
+| valuePlaceholder | value输入框没有值时显示的内容                                                        | string          | --         |
+| disabled        | 是否禁用状态，默认false                                                               | boolean         | false      |
+| labelSpan       | label输入框占总宽度的格数 1~24                                                        | number          | 10         |
+| valueSpan       | value输入框占总宽度的格数 1~24                                                        | number          | 14         |
+| size            | 输入框的尺寸                                                                          | default \| small \| large | default           |
+| sync            | 是否label输入和value输入同步                                                          | boolean         | false      |

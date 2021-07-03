@@ -1,0 +1,14 @@
+:global{
+    .z-live-info-multi-row-body{
+        tr>td{
+            padding:10px 12px;
+            overflow: hidden;
+           
+        }
+    }
+    .z-live-info-multi-row-pagination{
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 10px;
+    }
+}

@@ -9,10 +9,10 @@ import { deepCopy } from "../zTool";
 export default function cardTemplate() {
 	const tool = this.getExportSomething();
 	const _cardSpan = this.props.cardSpan;
-	const _span = typeof _cardSpan == "number" ? { md: _cardSpan } : _cardSpan;
+	const _span = typeof _cardSpan === "number" ? { md: _cardSpan } : _cardSpan;
 	const contentColumns = deepCopy(this.state.tableColumns);
 	const actionCol = contentColumns[contentColumns.length - 1];
-	if (actionCol && actionCol.key == "actionBtns") {
+	if (actionCol && actionCol.key === "actionBtns") {
 		contentColumns.pop();
 	}
 	let sorters = [];
@@ -48,10 +48,7 @@ export default function cardTemplate() {
 	return (
 		<>
 			{this.props.panelBeforeRender && this.props.panelBeforeRender(tool)}
-			<div className="z-panel z-margin-bottom-15 is-radius-top">
-				{this.getPanleHeader()}
-				{this.searchForm}
-			</div>
+			{this.getPanleHeader()}
 			{sorters.length ? <div className="z-margin-bottom-15">{sorters}</div> : null}
 			<Row type="flex" className="z-card-row">
 				{_showAddBtn ? (
