@@ -1,5 +1,0 @@
-//如果在js中分别import './animate.css' 和 import "./weui/weui"; 会造成 @keyframes 打包压缩后的动画名字冲突
-//所以在这里统一 @import 带有 @keyframes 的样式 
-@import "./z-material-btn";
-
-  
